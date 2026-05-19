@@ -19,4 +19,9 @@ public extension Package {
         url: "https://github.com/navermaps/SPM-NMapsMap",
         requirement: .exact("3.23.0")
     )
+
+    static let lookinServer = Package.remote(
+        url: "https://github.com/QMUI/LookinServer",
+        requirement: .exact("1.2.8")
+    )
 }

@@ -1,128 +1,209 @@
 import UIKit
 
 import Common
+import DesignSystem
 import Model
 
 import Kingfisher
+import SnapKit
 
 final class HomeFilterCell: BaseCollectionViewCell {
     enum Layout {
-        static let iconSize = CGSize(width: 18, height: 18)
-        static let leadingMargin: CGFloat = 8
-        static let stackViewSpacing: CGFloat = 2
+        static let leadingMargin: CGFloat = 10
+        static let stackViewSpacing: CGFloat = 6
         static let trailingMargin: CGFloat = 10
-        static func size(title: String?) -> CGSize {
-            guard let title = title else { return .zero }
-            let stringWidth = NSString(string: title).size().width
-            let width = leadingMargin + iconSize.width + stackViewSpacing + stringWidth + trailingMargin
-            return CGSize(width: width, height: 34)
+        static let height: CGFloat = 34
+        static let labelHeight: CGFloat = 18
+        static let defaultIconSize: CGFloat = 20
+        static let closeButtonSize: CGFloat = 14
+
+        static func size(for chip: SDChip) -> CGSize {
+            sizingCell.bind(chip: chip)
+            return measureSizingCell()
+        }
+
+        static func size(for button: SDButton) -> CGSize {
+            sizingCell.bind(button: button, surface: nil)
+            return measureSizingCell()
+        }
+
+        static func sizeForSelectedCategory(chip: SDChip, current: HomeFilterCurrentCategory?) -> CGSize {
+            sizingCell.bindSelectedCategory(chip: chip, current: current, onClose: {})
+            return measureSizingCell()
+        }
+
+        private static let sizingCell = HomeFilterCell()
+
+        private static func measureSizingCell() -> CGSize {
+            sizingCell.setNeedsLayout()
+            sizingCell.layoutIfNeeded()
+            let fittingSize = sizingCell.contentView.systemLayoutSizeFitting(
+                CGSize(width: CGFloat.greatestFiniteMagnitude, height: height),
+                withHorizontalFittingPriority: .fittingSizeLevel,
+                verticalFittingPriority: .required
+            )
+            return CGSize(width: ceil(fittingSize.width), height: height)
         }
     }
-    
-    private let containerView = UIView()
-    
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.spacing = 2
+        stackView.spacing = Layout.stackViewSpacing
         stackView.axis = .horizontal
+        stackView.alignment = .center
         return stackView
     }()
-    
-    private let iconImage: UIImageView = {
+
+    private let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Icons.category.image
-            .resizeImage(scaledTo: 16)
-            .withTintColor(Colors.gray70.color)
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
+
     private let titleLabel: UILabel = {
-        let titleLabel = UILabel()
-        titleLabel.font = Fonts.medium.font(size: 12)
-        titleLabel.textColor = Colors.gray70.color
-        titleLabel.text = HomeStrings.homeCategoryFilterButton
-        return titleLabel
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 12)
+        label.textColor = Colors.gray70.color
+        return label
     }()
-    
+
+    private let closeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.isHidden = true
+        return button
+    }()
+
+    private var iconWidthConstraint: Constraint?
+    private var iconHeightConstraint: Constraint?
+    private var onClose: (() -> Void)?
+
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        setSelected(false)
+
+        iconImageView.kf.cancelDownloadTask()
+        iconImageView.image = nil
+        iconImageView.isHidden = false
+        titleLabel.text = nil
+        titleLabel.attributedText = nil
+        layer.borderColor = nil
+        layer.borderWidth = 0
+        layer.cornerRadius = 10
+        backgroundColor = nil
+        closeButton.isHidden = true
+        onClose = nil
     }
-    
+
     override func setup() {
-        layer.borderColor = Colors.gray30.color.cgColor
-        layer.borderWidth = 1
         layer.cornerRadius = 10
         layer.masksToBounds = true
-        clipsToBounds = true
-        backgroundColor = Colors.systemWhite.color
-        
-        stackView.addArrangedSubview(iconImage)
-        iconImage.snp.makeConstraints {
-            $0.size.equalTo(18)
-        }
+
+        stackView.addArrangedSubview(iconImageView)
         stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(closeButton)
+
+        iconImageView.snp.makeConstraints {
+            iconWidthConstraint = $0.width.equalTo(Layout.defaultIconSize).constraint
+            iconHeightConstraint = $0.height.equalTo(Layout.defaultIconSize).constraint
+        }
+
         titleLabel.snp.makeConstraints {
-            $0.height.equalTo(18)
+            $0.height.equalTo(Layout.labelHeight)
         }
-        
-        containerView.addSubview(stackView)
+
+        closeButton.snp.makeConstraints {
+            $0.size.equalTo(Layout.closeButtonSize)
+        }
+
+        closeButton.addAction(UIAction { [weak self] _ in
+            self?.onClose?()
+        }, for: .touchUpInside)
+
+        contentView.addSubview(stackView)
         stackView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(8)
-            $0.top.equalToSuperview().offset(8)
-            $0.height.equalTo(18)
-        }
-        
-        contentView.addSubview(containerView)
-        containerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.leading.equalToSuperview().offset(Layout.leadingMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.trailingMargin)
+            $0.centerY.equalToSuperview()
         }
     }
-    
-    func bind(category: StoreFoodCategoryResponse?) {
-        if let category = category,
-           let categoryUrl = URL(string: category.imageUrl) {
-            KingfisherManager.shared.retrieveImage(with: categoryUrl) { [weak self] result in
-                switch result {
-                case .success(let imageResult):
-                    let image = imageResult.image
-                        .resizeImage(scaledTo: 16)
-                        .withImageInset(insets: .init(top: 2, left: 2, bottom: 2, right: 2))
-                    self?.iconImage.image = image
-                case .failure(_):
-                    self?.iconImage.image = nil
-                }
+
+    func bind(chip: SDChip) {
+        closeButton.isHidden = true
+        applyImage(chip.image)
+        titleLabel.setSDText(chip.text)
+
+        if let style = chip.style {
+            backgroundColor = UIColor(hex: style.backgroundColor)
+            if let border = style.border {
+                layer.borderColor = UIColor(hex: border.color)?.cgColor
+                layer.borderWidth = border.width
             }
-            titleLabel.text = category.name
-            titleLabel.textColor = Colors.mainPink.color
-            backgroundColor = Colors.gray100.color
-        } else {
-            iconImage.image = Icons.category.image
-                .resizeImage(scaledTo: 16)
-                .withImageInset(insets: .init(top: 2, left: 2, bottom: 2, right: 2))
-                .withTintColor(Colors.gray70.color)
-            titleLabel.text = HomeStrings.homeCategoryFilterButton
-            titleLabel.textColor = Colors.gray70.color
-            backgroundColor = Colors.systemWhite.color
         }
     }
-    
-    func bind(icon: UIImage?, title: String?, isSelected: Bool = false) {
-        iconImage.image = icon
-        titleLabel.text = title
-        setSelected(isSelected)
+
+    func bind(button: SDButton, surface: SDSurfaceStyle?) {
+        closeButton.isHidden = true
+        applyImage(button.image)
+        titleLabel.setSDText(button.text)
+        applyBackground(
+            surface: surface,
+            fallbackHex: button.style.backgroundColor,
+            fallbackBorder: button.style.border
+        )
     }
-    
-    private func setSelected(_ isSelected: Bool) {
-        if isSelected {
+
+    /// `current` 가 있으면 서버가 내려준 fontColor/style 을 그대로 적용. nil 이면 SDU 미지원 fallback (분홍 pill).
+    func bindSelectedCategory(chip: SDChip, current: HomeFilterCurrentCategory?, onClose: @escaping () -> Void) {
+        applyImage(chip.image)
+        titleLabel.setSDText(chip.text)
+
+        if let current {
+            if let fontColor = UIColor(hex: current.fontColor) {
+                titleLabel.textColor = fontColor
+                closeButton.tintColor = fontColor
+            }
+            setSDSurfaceStyle(current.style)
+        } else {
+            titleLabel.textColor = Colors.pink500.color
             backgroundColor = Colors.pink100.color
-            layer.borderColor = Colors.mainPink.color.cgColor
-            titleLabel.textColor = Colors.mainPink.color
-        } else {
-            backgroundColor = Colors.systemWhite.color
-            layer.borderColor = Colors.gray30.color.cgColor
-            titleLabel.textColor = Colors.gray70.color
+            layer.borderColor = Colors.pink500.color.cgColor
+            layer.borderWidth = 1
+            layer.cornerRadius = 10
+            closeButton.tintColor = Colors.pink500.color
         }
+
+        closeButton.isHidden = false
+        self.onClose = onClose
+    }
+
+    private func applyImage(_ image: SDImage?) {
+        guard let image, let url = URL(string: image.url) else {
+            iconImageView.isHidden = true
+            iconWidthConstraint?.update(offset: 0)
+            iconHeightConstraint?.update(offset: 0)
+            return
+        }
+        iconImageView.isHidden = false
+        iconWidthConstraint?.update(offset: image.style.width)
+        iconHeightConstraint?.update(offset: image.style.height)
+        iconImageView.kf.setImage(with: url)
+    }
+
+    private func applyBackground(surface: SDSurfaceStyle?, fallbackHex: String?, fallbackBorder: SDBorder?) {
+        if let surface {
+            setSDSurfaceStyle(surface)
+            return
+        }
+        if let fallbackHex, let color = UIColor(hex: fallbackHex) {
+            backgroundColor = color
+            if let fallbackBorder, let borderColor = UIColor(hex: fallbackBorder.color) {
+                layer.borderColor = borderColor.cgColor
+                layer.borderWidth = fallbackBorder.width
+            }
+            return
+        }
+        backgroundColor = Colors.systemWhite.color
+        layer.borderColor = Colors.gray30.color.cgColor
+        layer.borderWidth = 1
     }
 }

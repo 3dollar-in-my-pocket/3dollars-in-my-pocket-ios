@@ -177,5 +177,7 @@ public extension TargetDependency {
         public static let admob = TargetDependency.package(product: "GoogleMobileAds")
         
         public static let naverMap = TargetDependency.package(product: "NMapsMap")
+
+        public static let lookinServer = TargetDependency.package(product: "LookinServer")
     }
 }

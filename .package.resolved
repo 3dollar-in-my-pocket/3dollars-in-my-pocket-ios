@@ -1,5 +1,5 @@
 {
-  "originHash" : "02698a62aeb1fd093df249c26758dd99a211206d84fe7430e0b6dc7b520c0216",
+  "originHash" : "2ac6b32dc5e422e21323b5e82be632b07e08794fa34f24302fc08daea0412e9c",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -125,6 +125,15 @@
       "state" : {
         "revision" : "0706abcc6b0bd9cedfbb015ba840e4a780b5159b",
         "version" : "1.22.2"
+      }
+    },
+    {
+      "identity" : "lookinserver",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/QMUI/LookinServer",
+      "state" : {
+        "revision" : "e553d1b689d147817dc54ad5c28fcff71e860101",
+        "version" : "1.2.8"
       }
     },
     {

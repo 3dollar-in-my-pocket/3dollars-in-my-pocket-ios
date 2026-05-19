@@ -1,5 +1,7 @@
 import Foundation
 
+import Model
+
 public protocol LogEventType {
     var screen: ScreenName { set get }
     var name: EventName { set get }
@@ -9,7 +11,7 @@ public protocol LogEventType {
 public extension LogEventType {
     var parameters: [String: Any] {
         var result: [String: Any] = [:]
-        
+
         if let extraParameters {
             extraParameters.forEach { key, value in
                 if let objectId = value as? LogObjectId {
@@ -21,7 +23,7 @@ public extension LogEventType {
                 }
             }
         }
-        
+
         result[ParameterName.screen.rawValue] = screen.rawValue
         return result
     }
@@ -50,6 +52,23 @@ public struct ClickEvent: LogEventType {
         }
 
         self.extraParameters = clickObject
+    }
+
+    /// 서버 드리븐 SDClickLog 를 GA 로그로 직렬화. 정적 케이스에 매핑되지 않은 화면명/파라미터 키도 raw 값 그대로 보존된다.
+    public init(clickLog: SDClickLog) {
+        self.screen = ScreenName(rawValue: clickLog.screenName)
+
+        var clickObject: [ParameterName: Any] = [
+            .objectId: clickLog.objectId,
+            .objectType: clickLog.objectType
+        ]
+
+        for (key, value) in clickLog.extraParameters {
+            guard let raw = value.anyValue else { continue }
+            clickObject[ParameterName(rawValue: key)] = raw
+        }
+
+        self.extraParameters = nil
     }
 }
 
