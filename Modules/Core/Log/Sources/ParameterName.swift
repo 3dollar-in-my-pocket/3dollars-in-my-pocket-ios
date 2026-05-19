@@ -35,4 +35,5 @@ public extension ParameterName {
     static let experimentKey = ParameterName(rawValue: "experiment_key")
     static let experimentVariant = ParameterName(rawValue: "experiment_variant")
     static let referer = ParameterName(rawValue: "referer")
+    static let reasonType = ParameterName(rawValue: "reason_type")
 }

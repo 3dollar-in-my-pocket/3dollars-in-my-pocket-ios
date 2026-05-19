@@ -190,4 +190,7 @@ public enum LogObjectId: String {
     case review
     case recommendStore
     case recommend
+    case disappearanceInquiryModal = "disappearance_inquiry_modal"
+    case visitInducementModal = "visit_inducement_modal"
+    case selectReason = "select_reason"
 }

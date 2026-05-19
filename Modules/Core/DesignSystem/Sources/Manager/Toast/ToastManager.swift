@@ -10,15 +10,21 @@ public class ToastManager {
     }
     
     public func show(message: String) {
+        show(message: message, icon: nil)
+    }
+
+    public func show(message: String, icon: UIImage?) {
         DispatchQueue.main.async {
             guard let window = self.keyWindow else { return }
             let toastView = ToastView()
             toastView.alpha = 0
-            toastView.bind(message: message)
+            toastView.bind(message: message, icon: icon)
             toastView.translatesAutoresizingMaskIntoConstraints = false
 
             window.addSubview(toastView)
 
+            toastView.leadingAnchor.constraint(greaterThanOrEqualTo: window.leadingAnchor, constant: 16).isActive = true
+            toastView.trailingAnchor.constraint(lessThanOrEqualTo: window.trailingAnchor, constant: -16).isActive = true
             toastView.centerXAnchor.constraint(equalTo: window.centerXAnchor).isActive = true
             toastView.bottomAnchor.constraint(equalTo: window.safeAreaLayoutGuide.bottomAnchor, constant: -42).isActive = true
 
