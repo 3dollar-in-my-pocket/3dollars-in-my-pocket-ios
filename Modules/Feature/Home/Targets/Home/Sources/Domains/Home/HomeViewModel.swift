@@ -91,6 +91,8 @@ extension HomeViewModel {
         case presentVisit(StoreResponse)
         case presentPolicy
         case presentMarkerAdvertisement
+        case presentStorePreview(storeId: Int, latitude: Double, longitude: Double)
+        case dismissStorePreview
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
         case deepLink(SDLink)
@@ -387,8 +389,8 @@ final class HomeViewModel: BaseViewModel {
 
         input.onTapMarker
             .withUnretained(self)
-            .sink(receiveValue: { (_: HomeViewModel, _: Int) in
-                // 마커 클릭 동작은 새 로직으로 교체 예정이라 의도적으로 비워둔다.
+            .sink(receiveValue: { (owner: HomeViewModel, index: Int) in
+                owner.handleMarkerTap(at: index)
             })
             .store(in: &cancellables)
 
@@ -499,6 +501,36 @@ final class HomeViewModel: BaseViewModel {
     private func emitCards() {
         output.bottomSheetCards.send(state.cards)
         output.markerCards.send(state_markerCards)
+    }
+
+    private func handleMarkerTap(at index: Int) {
+        let cards = state_markerCards
+        guard let card = cards[safe: index], let marker = card.marker else { return }
+        guard let storeId = extractStoreId(from: card) else { return }
+
+        sendClickMarkerLog()
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: marker.clickLog))
+
+        output.route.send(.presentStorePreview(
+            storeId: storeId,
+            latitude: marker.location.latitude,
+            longitude: marker.location.longitude
+        ))
+    }
+
+    private func extractStoreId(from card: HomeListBasicCardResponse) -> Int? {
+        if let value = card.clickLog.extraParameters["storeId"]?.anyValue {
+            if let int = value as? Int { return int }
+            if let str = value as? String, let parsed = Int(str) { return parsed }
+        }
+        if let link = card.link?.link ?? card.marker?.link?.link {
+            if let queryItems = URLComponents(string: "x://x/\(link)")?.queryItems,
+               let storeIdString = queryItems.first(where: { $0.name == "storeId" })?.value,
+               let storeId = Int(storeIdString) {
+                return storeId
+            }
+        }
+        return nil
     }
 
     private func handleBottomSheetCardTap(at index: Int) {

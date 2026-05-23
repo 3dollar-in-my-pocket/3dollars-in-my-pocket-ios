@@ -33,7 +33,24 @@ public extension UIButton {
             }
         }
 
-        backgroundColor = UIColor(hex: sdButton.style.backgroundColor)
+        if let backgroundColor = UIColor(hex: sdButton.style.backgroundColor) {
+            self.backgroundColor = backgroundColor
+        }
+
+        if let border = sdButton.style.border {
+            layer.borderColor = UIColor(hex: border.color)?.cgColor
+            layer.borderWidth = CGFloat(border.width)
+        } else {
+            layer.borderColor = nil
+            layer.borderWidth = 0
+        }
+
+        switch sdButton.imageAlignment {
+        case .end:
+            semanticContentAttribute = .forceRightToLeft
+        case .start, .unknown, .none:
+            semanticContentAttribute = .unspecified
+        }
     }
 
     private func isValidImageSize(width: Double, height: Double) -> Bool {

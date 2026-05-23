@@ -32,6 +32,8 @@ public final class HomeViewController: BaseViewController {
     private var markers: [NMFMarker?] = []
     private var bottomSheetViewController: HomeListViewController?
     private var bottomSheetController: FloatingPanelController?
+    private var storePreviewBottomSheet: StorePreviewBottomSheetViewController?
+    private var storePreviewBottomSheetController: FloatingPanelController?
 
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
@@ -85,6 +87,19 @@ public final class HomeViewController: BaseViewController {
 
             viewModel.input.onMapLoad.send(distance / 3)
         }
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 미리보기 패널은 tabBarController 에 부착되어 다른 탭에서도 살아있다.
+        // Home 이 다시 노출되면 패널을 다시 보이게 한다.
+        storePreviewBottomSheetController?.view.isHidden = false
+    }
+
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // 다른 탭/모달/푸시로 가려질 때 미리보기 패널이 위에 떠 있지 않도록 가린다.
+        storePreviewBottomSheetController?.view.isHidden = true
     }
 
     public override func sendPageView() {
@@ -223,6 +238,12 @@ public final class HomeViewController: BaseViewController {
 
                 case .presentMarkerAdvertisement:
                     owner.presentMarkerPopup()
+
+                case .presentStorePreview(let storeId, let latitude, let longitude):
+                    owner.presentStorePreview(storeId: storeId, latitude: latitude, longitude: longitude)
+
+                case .dismissStorePreview:
+                    owner.dismissStorePreview()
 
                 case .presentSearchAddress(let viewModel):
                     owner.presentSearchAddress(viewModel)
@@ -504,5 +525,117 @@ extension HomeViewController: UIViewControllerTransitioningDelegate {
         transition.maskOriginalFrame = homeView.addressButton.frame
 
         return transition
+    }
+}
+
+// MARK: - Store Preview Bottom Sheet
+extension HomeViewController {
+    /// 마커 탭으로 미리보기 시트를 띄운다.
+    /// - 이미 부착된 상태라면 ViewModel 만 갈아끼워 새 가게 정보로 갱신.
+    /// - 처음이거나 닫힌 상태라면 HomeList 패널을 제거하고 StorePreview 패널을 self 에 부착.
+    ///
+    /// FloatingPanel.addPanel(toParent:) 가 UITabBarController 를 parent 로 허용하지 않고
+    /// UIKit 의 view-controller hierarchy 정합성 검사가 layout/window-attach 단계에서도
+    /// 재실행되기 때문에, fpc.view 를 tabBarController.view subtree 로 옮길 방법은 사실상 없다.
+    /// 대신 StorePreview 가 노출되는 동안 탭바를 숨겨 시각적으로 패널이 탭바 위에 떠 있는 효과를 낸다
+    /// (UIKit 의 hidesBottomBarWhenPushed 와 동일한 패턴).
+    private func presentStorePreview(storeId: Int, latitude: Double, longitude: Double) {
+        let config = StorePreviewBottomSheetViewModel.Config(
+            storeId: storeId,
+            latitude: latitude,
+            longitude: longitude
+        )
+        let newViewModel = StorePreviewBottomSheetViewModel(config: config)
+
+        // 부착된 상태(연속 마커 탭) 라면 VM 만 교체하고 종료.
+        if let existing = storePreviewBottomSheet,
+           storePreviewBottomSheetController?.parent != nil {
+            existing.update(viewModel: newViewModel)
+            return
+        }
+
+        let viewController = storePreviewBottomSheet ?? makeStorePreviewViewController(viewModel: newViewModel)
+        if storePreviewBottomSheet != nil {
+            // 이전에 닫혀 detached 된 VC 를 재사용하는 경우 VM 만 교체.
+            viewController.update(viewModel: newViewModel)
+        }
+        let fpc = storePreviewBottomSheetController ?? makeStorePreviewPanelController(content: viewController)
+
+        storePreviewBottomSheet = viewController
+        storePreviewBottomSheetController = fpc
+
+        // 순서가 중요: HomeList 패널 제거 → 탭바 숨김(.tip anchor 의 safeArea 계산이 새 값으로 굳음)
+        // → StorePreview 패널 mount. 거꾸로 하면 패널이 부착된 뒤 safeArea 가 바뀌면서 미끄러져 보인다.
+        bottomSheetController?.removePanelFromParent(animated: true)
+        tabBarController?.tabBar.isHidden = true
+        fpc.addPanel(toParent: self, animated: true)
+        fpc.view.isHidden = false
+    }
+
+    private func dismissStorePreview() {
+        guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.
+        // 슬라이드 다운 도중 탭바가 먼저 나타나면 패널이 탭바를 가로지르는 어색한 프레임이 생긴다.
+        fpc.removePanelFromParent(animated: true) { [weak self] in
+            guard let self else { return }
+            self.tabBarController?.tabBar.isHidden = false
+            if self.bottomSheetController?.parent == nil, let homeListPanel = self.bottomSheetController {
+                homeListPanel.addPanel(toParent: self, animated: true)
+            }
+        }
+    }
+
+    private func makeStorePreviewViewController(
+        viewModel: StorePreviewBottomSheetViewModel
+    ) -> StorePreviewBottomSheetViewController {
+        let viewController = StorePreviewBottomSheetViewController(viewModel: viewModel)
+        wireStorePreviewCallbacks(viewController)
+        return viewController
+    }
+
+    private func makeStorePreviewPanelController(
+        content: UIViewController
+    ) -> FloatingPanelController {
+        let fpc = FloatingPanelController()
+        fpc.layout = StorePreviewLayout()
+        fpc.set(contentViewController: content)
+        fpc.isRemovalInteractionEnabled = false
+
+        let appearance = SurfaceAppearance()
+        appearance.cornerRadius = 16
+        appearance.backgroundColor = Colors.systemWhite.color
+        let shadow = SurfaceAppearance.Shadow()
+        shadow.color = .black
+        shadow.opacity = 0.2
+        shadow.offset = .zero
+        shadow.radius = 10
+        appearance.shadows = [shadow]
+        fpc.surfaceView.appearance = appearance
+        fpc.surfaceView.grabberHandle.isHidden = true
+
+        // 시트 외부(지도) 터치는 backdrop 가 가로채지 않도록 비활성화.
+        fpc.backdropView.isUserInteractionEnabled = false
+        fpc.backdropView.backgroundColor = .clear
+
+        return fpc
+    }
+
+    private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
+        viewController.onRequestPushStoreDetail = { [weak self] storeId in
+            self?.dismissStorePreview()
+            self?.pushStoreDetail(storeId: storeId)
+        }
+        viewController.onRequestPresentVisit = { [weak self] storeId in
+            self?.presentVisit(storeId: storeId)
+        }
+        viewController.onRequestPresentNavigation = { [weak self] _, _, _ in
+            // 외부 길찾기 흐름은 가게 상세에 이미 구현되어 있어 그곳으로 위임한다.
+            // TODO: 추후 추가 정보(주소/타입)가 미리보기에서 받아지면 인앱 액션시트로 대체.
+            guard let self else { return }
+            self.dismissStorePreview()
+        }
+        viewController.onRequestClose = { [weak self] in
+            self?.dismissStorePreview()
+        }
     }
 }
