@@ -308,16 +308,21 @@ public final class HomeViewController: BaseViewController {
         fpc.backdropView.backgroundColor = .clear
 
         fpc.addPanel(toParent: self)
-
-        // panel surface 의 상단 그림자가 주소/필터 영역에 비쳐 화면이 분리돼 보이는 것을 막기 위해,
-        // 상단 배경 → 주소 버튼 → 필터 순으로 panel 위로 z-order 를 끌어올린다.
-        // (배경이 먼저, 버튼이 나중에 와야 버튼이 배경 위에 보인다)
-        homeView.bringSubviewToFront(homeView.topBackgroundView)
-        homeView.bringSubviewToFront(homeView.addressButton)
-        homeView.bringSubviewToFront(homeView.homeFilterCollectionView)
+        bringTopChromeToFront()
 
         bottomSheetViewController = viewController
         bottomSheetController = fpc
+    }
+
+    /// 상단 배경/주소/필터 chrome 을 HomeList 패널 위로 끌어올린다.
+    /// panel surface 의 상단 그림자가 주소/필터 영역에 비쳐 화면이 분리돼 보이는 것을 막기 위함이다.
+    /// addPanel(toParent:) 은 패널 뷰를 homeView 서브뷰 스택 최상단에 삽입하므로,
+    /// 패널을 (재)부착할 때마다 호출해 chrome 이 항상 패널보다 높은 z-order 를 유지하도록 한다.
+    /// (배경이 먼저, 버튼이 나중에 와야 버튼이 배경 위에 보인다)
+    private func bringTopChromeToFront() {
+        homeView.bringSubviewToFront(homeView.topBackgroundView)
+        homeView.bringSubviewToFront(homeView.addressButton)
+        homeView.bringSubviewToFront(homeView.homeFilterCollectionView)
     }
 
     // MARK: Markers
@@ -401,8 +406,9 @@ public final class HomeViewController: BaseViewController {
     }
 
     private func presentVisit(storeId: Int) {
-        let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId) {
-            // TODO: 성공 시, 재조회 필요
+        let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId) { [weak self] in
+            // 방문 인증 성공 시 미리보기 시트를 최신 데이터로 갱신한다. (없으면 nil-safe 하게 무시)
+            self?.storePreviewBottomSheet?.reload()
         }
 
         tabBarController?.present(viewController, animated: true)
@@ -581,6 +587,8 @@ extension HomeViewController {
             self.tabBarController?.tabBar.isHidden = false
             if self.bottomSheetController?.parent == nil, let homeListPanel = self.bottomSheetController {
                 homeListPanel.addPanel(toParent: self, animated: true)
+                // 재부착으로 패널이 다시 최상단에 삽입되므로 상단 chrome 을 패널 위로 끌어올린다.
+                self.bringTopChromeToFront()
             }
         }
     }
@@ -622,20 +630,88 @@ extension HomeViewController {
 
     private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
         viewController.onRequestPushStoreDetail = { [weak self] storeId in
-            self?.dismissStorePreview()
+            // 미리보기 패널은 닫지 않고 유지한다. 상세 push 중에는 Home 의
+            // viewWillDisappear 가 패널을 가렸다가, pop 으로 돌아오면 다시 보여준다.
             self?.pushStoreDetail(storeId: storeId)
         }
         viewController.onRequestPresentVisit = { [weak self] storeId in
             self?.presentVisit(storeId: storeId)
         }
-        viewController.onRequestPresentNavigation = { [weak self] _, _, _ in
-            // 외부 길찾기 흐름은 가게 상세에 이미 구현되어 있어 그곳으로 위임한다.
-            // TODO: 추후 추가 정보(주소/타입)가 미리보기에서 받아지면 인앱 액션시트로 대체.
-            guard let self else { return }
-            self.dismissStorePreview()
+        viewController.onRequestPresentReviewWrite = { [weak self] storeId in
+            self?.presentStorePreviewReviewWrite(storeId: storeId)
+        }
+        viewController.onRequestShare = { storeId, storeType, storeName, latitude, longitude in
+            // 가게 상세 "공유하기"와 동일한 카카오 공유. 미리보기엔 overview 가 없어 이름/좌표만 받는 오버로드를 사용한다.
+            // storeType 은 서버 extraParams 값(일반/사장님 가게)을 그대로 전달한다.
+            Environment.appModuleInterface.shareKakao(
+                storeId: storeId,
+                storeType: storeType,
+                storeName: storeName,
+                latitude: latitude,
+                longitude: longitude
+            )
+        }
+        viewController.onRequestPresentNavigation = { [weak self] latitude, longitude, storeName in
+            // 가게 상세 "길 안내"와 동일한 지도앱 선택 액션시트.
+            self?.presentStorePreviewNavigation(latitude: latitude, longitude: longitude, storeName: storeName)
+        }
+        viewController.onRequestOpenLink = { link in
+            // 방문 인증 등 서버가 내려준 딥링크/링크를 공용 핸들러로 위임한다. (예: /visit → 방문 인증 화면)
+            Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
         }
         viewController.onRequestClose = { [weak self] in
             self?.dismissStorePreview()
         }
+        viewController.onContentHeightChanged = { [weak self] height in
+            self?.updateStorePreviewPanelHeight(height)
+        }
+    }
+
+    private func updateStorePreviewPanelHeight(_ height: CGFloat) {
+        guard let fpc = storePreviewBottomSheetController else { return }
+        fpc.layout = StorePreviewLayout(visibleHeight: height)
+        fpc.invalidateLayout()
+    }
+
+    /// 가게 상세 "리뷰쓰기"와 동일한 리뷰 작성 바텀시트(PanModal)를 띄운다.
+    private func presentStorePreviewReviewWrite(storeId: Int) {
+        let reviewViewController = Environment.storeInterface.getReviewBottomSheetViewController(storeId: storeId) { [weak self] in
+            // 리뷰 작성 성공 시 미리보기 시트를 최신 데이터로 갱신한다.
+            self?.storePreviewBottomSheet?.reload()
+        }
+
+        if let panModalViewController = reviewViewController as? (UIViewController & PanModalPresentable) {
+            presentPanModal(panModalViewController)
+        } else {
+            present(reviewViewController, animated: true)
+        }
+    }
+
+    /// 가게 상세 "길 안내"와 동일하게 지도앱(네이버/카카오/애플) 선택 액션시트를 띄우고 외부 앱으로 길찾기를 연다.
+    private func presentStorePreviewNavigation(latitude: Double, longitude: Double, storeName: String) {
+        let encodedName = storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let bundleId = Bundle.main.bundleIdentifier ?? ""
+
+        let alertController = UIAlertController(
+            title: "길 안내 앱 선택",
+            message: "지도앱이 설치되어있지 않은 경우 정상적으로 실행되지 않습니다.",
+            preferredStyle: .actionSheet
+        )
+        alertController.addAction(UIAlertAction(title: "네이버 지도", style: .default) { _ in
+            let urlString = "nmap://place?lat=\(latitude)&lng=\(longitude)&name=\(encodedName)&zoom=20&appname=\(bundleId)"
+            guard let url = URL(string: urlString) else { return }
+            UIApplication.shared.open(url)
+        })
+        alertController.addAction(UIAlertAction(title: "카카오 지도", style: .default) { _ in
+            guard let url = URL(string: "kakaomap://look?p=\(latitude),\(longitude)") else { return }
+            UIApplication.shared.open(url)
+        })
+        alertController.addAction(UIAlertAction(title: "애플 지도", style: .default) { _ in
+            guard let url = URL(string: "http://maps.apple.com/?daddr=\(latitude),\(longitude)&dirflg=d") else { return }
+            UIApplication.shared.open(url)
+        })
+        alertController.addAction(UIAlertAction(title: "취소", style: .cancel))
+
+        present(alertController, animated: true)
     }
 }

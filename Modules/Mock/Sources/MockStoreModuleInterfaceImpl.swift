@@ -17,7 +17,14 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
     public func getVisitViewController(storeId: Int, onSuccessVisit: @escaping () -> Void) -> UIViewController {
         EmptyViewController()
     }
-    
+
+    public func getReviewBottomSheetViewController(
+        storeId: Int,
+        onSuccessWriteReview: @escaping () -> Void
+    ) -> UIViewController {
+        EmptyViewController()
+    }
+
     public func getMapDetailViewController(location: LocationResponse, storeName: String) -> UIViewController {
         return EmptyViewController()
     }

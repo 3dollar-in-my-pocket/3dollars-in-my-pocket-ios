@@ -23,11 +23,8 @@ public struct SDCustomAction: Decodable, Equatable, Hashable {
 
 public enum SDCustomActionType: String, Decodable, Equatable, Hashable {
     case storePreviewShare = "STORE_PREVIEW_SECTION_SHARE"
-    case storePreviewFavorite = "STORE_PREVIEW_SECTION_FAVORITE"
-    case storePreviewUnfavorite = "STORE_PREVIEW_SECTION_UNFAVORITE"
     case storePreviewNavigation = "STORE_PREVIEW_SECTION_NAVIGATION"
     case storePreviewReviewWrite = "STORE_PREVIEW_SECTION_REVIEW_WRITE"
-    case storePreviewClose = "STORE_PREVIEW_SECTION_CLOSE"
     case unknown
 
     public init(from decoder: Decoder) throws {

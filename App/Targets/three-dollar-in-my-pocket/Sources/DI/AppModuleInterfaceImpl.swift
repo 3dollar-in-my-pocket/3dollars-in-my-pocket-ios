@@ -87,10 +87,16 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     }
     
     func shareKakao(storeId: Int, storeType: Model.StoreType, storeDetailOverview: StoreDetailOverview) {
-        let storeName = storeDetailOverview.storeName
-        let latitude = storeDetailOverview.location?.latitude ?? 0
-        let longitude = storeDetailOverview.location?.longitude ?? 0
-        
+        shareKakao(
+            storeId: storeId,
+            storeType: storeType,
+            storeName: storeDetailOverview.storeName,
+            latitude: storeDetailOverview.location?.latitude ?? 0,
+            longitude: storeDetailOverview.location?.longitude ?? 0
+        )
+    }
+
+    func shareKakao(storeId: Int, storeType: Model.StoreType, storeName: String, latitude: Double, longitude: Double) {
         let urlString =
         "https://map.kakao.com/link/map/\(storeName),\(latitude),\(longitude)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let webURL = URL(string: urlString)

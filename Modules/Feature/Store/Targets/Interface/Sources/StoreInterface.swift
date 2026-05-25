@@ -29,6 +29,12 @@ public protocol StoreInterface {
 
     func getVisitViewController(storeId: Int, onSuccessVisit: @escaping (() -> Void)) -> UIViewController
 
+    /// 가게 상세화면의 "리뷰쓰기"와 동일한 리뷰 작성 바텀시트(PanModal). 작성 성공 시 `onSuccessWriteReview` 가 호출된다.
+    func getReviewBottomSheetViewController(
+        storeId: Int,
+        onSuccessWriteReview: @escaping (() -> Void)
+    ) -> UIViewController
+
     func getMapDetailViewController(location: LocationResponse, storeName: String) -> UIViewController
 
     func getCouponListViewController(onReload: @escaping (() -> Void)) -> UIViewController

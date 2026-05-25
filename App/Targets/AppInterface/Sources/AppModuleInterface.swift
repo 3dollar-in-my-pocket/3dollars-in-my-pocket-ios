@@ -19,6 +19,8 @@ public protocol AppModuleInterface {
     func goToSignin()
     func createWebViewController(webviewType: WebViewType) -> UIViewController
     func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
+    /// `StoreDetailOverview` 없이 가게명/좌표만으로 카카오 공유한다. (홈 미리보기 시트처럼 overview 를 갖지 않는 화면용)
+    func shareKakao(storeId: Int, storeType: StoreType, storeName: String, latitude: Double, longitude: Double)
     func requestATTIfNeeded()
     func createBookmarkURL(folderId: String) -> String
     

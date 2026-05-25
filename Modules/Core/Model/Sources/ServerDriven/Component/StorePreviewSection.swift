@@ -4,11 +4,10 @@ public struct StorePreviewSection: Decodable, Hashable, StoreCardComponent {
     public let type: SDComponentType
     public let header: StorePreviewHeader
     public let metadata: StorePreviewMetadata
-    public let topActionBars: [StorePreviewActionBar]
     public let actionBars: [StorePreviewActionBar]
     public let images: [SDImage]
     public let bodies: [StorePreviewBody]
-    public let style: SDSurfaceStyle
+    public let style: SDSurfaceStyle?
 }
 
 public struct StorePreviewHeader: Decodable, Equatable, Hashable {
