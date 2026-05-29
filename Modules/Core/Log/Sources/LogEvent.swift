@@ -68,7 +68,7 @@ public struct ClickEvent: LogEventType {
             clickObject[ParameterName(rawValue: key)] = raw
         }
 
-        self.extraParameters = nil
+        self.extraParameters = clickObject
     }
 }
 

@@ -616,7 +616,13 @@ final class StoreDetailViewModel: BaseViewModel {
         guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self),
               let overview = state.storeDetailData?.overview else { return }
         
-        appInterface.shareKakao(storeId: state.storeId, storeType: .userStore, storeDetailOverview: overview)
+        appInterface.shareKakao(
+            storeId: state.storeId,
+            storeType: .userStore,
+            storeName: overview.storeName,
+            latitude: overview.location?.latitude ?? 0,
+            longitude: overview.location?.longitude ?? 0
+        )
     }
     
     private func copyAddressToClipBoard() {

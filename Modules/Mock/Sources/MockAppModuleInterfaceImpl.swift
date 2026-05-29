@@ -50,10 +50,6 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
         return EmptyViewController()
     }
     
-    public func shareKakao(storeId: Int, storeType: Model.StoreType, storeDetailOverview: StoreDetailOverview) {
-        ToastManager.shared.show(message: "shareKakao")
-    }
-
     public func shareKakao(storeId: Int, storeType: Model.StoreType, storeName: String, latitude: Double, longitude: Double) {
         ToastManager.shared.show(message: "shareKakao")
     }

@@ -436,7 +436,13 @@ final class BossStoreDetailViewModel: BaseViewModel {
         guard let appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self),
               let overview = state.storeDetailData?.overview, let storeIdInt = Int(storeId) else { return }
 
-        appInterface.shareKakao(storeId: storeIdInt, storeType: .bossStore, storeDetailOverview: overview)
+        appInterface.shareKakao(
+            storeId: storeIdInt,
+            storeType: .bossStore,
+            storeName: overview.storeName,
+            latitude: overview.location?.latitude ?? 0,
+            longitude: overview.location?.longitude ?? 0
+        )
     }
 
     private func goToNavigationApplication(type: NavigationAppType) {
