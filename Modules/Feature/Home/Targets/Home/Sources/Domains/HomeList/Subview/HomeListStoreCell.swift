@@ -176,6 +176,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
 
         headerStackView.addArrangedSubview(titleLabel)
         headerStackView.addArrangedSubview(badgeImageView)
+        headerStackView.addArrangedSubview(UIView())
 
         let bodyRightPaddingView = UIView()
         bodyRightPaddingView.snp.makeConstraints {

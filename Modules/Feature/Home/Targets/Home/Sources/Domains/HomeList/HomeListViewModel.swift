@@ -71,8 +71,11 @@ final class HomeListViewModel: BaseViewModel {
     }
 
     private func emitDataSource() {
+        // DiffableDataSource 는 중복 identifier 가 들어오면 crash 하므로,
+        // cardId 기준으로 한 번 더 디듭해 스냅샷에 같은 카드가 두 번 들어가지 않게 한다.
+        var seenIds = Set<String>()
         var items: [HomeListSectionItem] = []
-        for card in state.cards {
+        for card in state.cards where seenIds.insert(card.cardId).inserted {
             if let basic = card as? HomeListBasicCardResponse {
                 items.append(.basicCard(basic))
             } else if let admob = card as? HomeListAdmobCardResponse {

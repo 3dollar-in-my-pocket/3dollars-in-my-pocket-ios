@@ -24,7 +24,7 @@ extension StorePreviewBottomSheetViewModel {
     }
 
     enum Route {
-        case pushStoreDetail(storeId: Int)
+        case pushStoreDetail(storeId: Int, storeType: StoreType)
         case presentVisit(storeId: Int)
         case presentReviewWrite(storeId: Int)
         case share(storeId: Int, storeType: StoreType, storeName: String, latitude: Double, longitude: Double)
@@ -55,6 +55,7 @@ extension StorePreviewBottomSheetViewModel {
     struct State {
         var section: StorePreviewSection?
         var storeName: String = ""
+        var storeType: StoreType = .userStore
         var isFavorited: Bool = false
         var isLoading: Bool = false
     }
@@ -89,7 +90,7 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
         input.didTapBody
             .withUnretained(self)
             .sink { (owner: StorePreviewBottomSheetViewModel, _) in
-                owner.output.route.send(.pushStoreDetail(storeId: owner.config.storeId))
+                owner.output.route.send(.pushStoreDetail(storeId: owner.config.storeId, storeType: owner.state.storeType))
             }
             .store(in: &cancellables)
 
@@ -128,14 +129,19 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             latitude: config.latitude,
             longitude: config.longitude
         )
-        let result = await dependency.storeRepository.fetchStoreScreenV2(input: input)
+        let result = await dependency.storeRepository.fetchStorePreview(input: input)
 
         switch result {
         case .success(let response):
             guard let preview = response.sections.compactMap({ $0 as? StorePreviewSection }).first else { return }
             state.section = preview
             state.storeName = preview.header.title?.text ?? ""
+            // 가게 종류(일반/사장님)는 additionalInfos.storeType 으로 판별해 상세 진입 분기에 사용한다.
+            state.storeType = Self.resolveStoreType(from: preview)
+            // 서버의 isSubscriber 값으로 저장 버튼 초기 선택 상태를 동기화한다.
+            state.isFavorited = preview.additionalInfos?.isSubscriber ?? false
             output.section.send(preview)
+            output.isFavoriteOverride.send(state.isFavorited)
             output.pageViewLog.send(response.viewLog)
         case .failure:
             break
@@ -148,22 +154,23 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
         if let customAction = bar.button.customAction {
             switch customAction.actionType {
             case .storePreviewNavigation:
+                let extraParams = customAction.extraParams
                 output.route.send(.presentNavigation(
-                    latitude: config.latitude,
-                    longitude: config.longitude,
-                    storeName: state.storeName
+                    latitude: extraParams["LATITUDE"]?.doubleValue ?? config.latitude,
+                    longitude: extraParams["LONGITUDE"]?.doubleValue ?? config.longitude,
+                    storeName: extraParams["STORE_NAME"]?.stringValue ?? state.storeName
                 ))
             case .storePreviewShare:
-                // STORE_TYPE 은 서버 extraParams 가 결정한다. (일반/사장님 가게 모두 가능, 누락 시 일반 가게)
-                let storeType: StoreType
+                // 공유는 공유 액션 자체의 extraParams["STORE_TYPE"] 값을 사용한다. (가게 상세 분기와 독립)
+                let shareStoreType: StoreType
                 if let rawValue = customAction.extraParams["STORE_TYPE"]?.anyValue as? String {
-                    storeType = StoreType(value: rawValue)
+                    shareStoreType = StoreType(value: rawValue)
                 } else {
-                    storeType = .userStore
+                    shareStoreType = .userStore
                 }
                 output.route.send(.share(
                     storeId: config.storeId,
-                    storeType: storeType,
+                    storeType: shareStoreType,
                     storeName: state.storeName,
                     latitude: config.latitude,
                     longitude: config.longitude
@@ -171,7 +178,7 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             case .storePreviewReviewWrite:
                 output.route.send(.presentReviewWrite(storeId: config.storeId))
             case .unknown:
-                output.route.send(.pushStoreDetail(storeId: config.storeId))
+                output.route.send(.pushStoreDetail(storeId: config.storeId, storeType: state.storeType))
             }
             return
         }
@@ -188,7 +195,14 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             return
         }
 
-        output.route.send(.pushStoreDetail(storeId: config.storeId))
+        output.route.send(.pushStoreDetail(storeId: config.storeId, storeType: state.storeType))
+    }
+
+    /// 가게 종류(일반/사장님)를 additionalInfos.storeType(USER_STORE/BOSS_STORE) 으로 판별한다.
+    /// 값이 없으면 일반 가게로 간주한다.
+    private static func resolveStoreType(from section: StorePreviewSection) -> StoreType {
+        guard let rawValue = section.additionalInfos?.storeType else { return .userStore }
+        return StoreType(value: rawValue)
     }
 
     /// 우상단 찜 버튼 토글. 현재 찜 상태(state.isFavorited)를 기준으로 추가/삭제를 결정한다.

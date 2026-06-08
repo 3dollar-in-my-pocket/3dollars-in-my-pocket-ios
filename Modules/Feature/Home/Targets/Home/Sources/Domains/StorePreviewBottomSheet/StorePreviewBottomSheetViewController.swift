@@ -117,7 +117,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private let actionBarsRelay = PassthroughSubject<Int, Never>()
     private let bodyTapRelay = PassthroughSubject<Void, Never>()
 
-    var onRequestPushStoreDetail: ((Int) -> Void)?
+    var onRequestPushStoreDetail: ((Int, StoreType) -> Void)?
     var onRequestPresentVisit: ((Int) -> Void)?
     var onRequestPresentReviewWrite: ((Int) -> Void)?
     var onRequestShare: ((_ storeId: Int, _ storeType: StoreType, _ storeName: String, _ latitude: Double, _ longitude: Double) -> Void)?
@@ -312,8 +312,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             .sink { [weak self] route in
                 guard let self else { return }
                 switch route {
-                case .pushStoreDetail(let storeId):
-                    self.onRequestPushStoreDetail?(storeId)
+                case .pushStoreDetail(let storeId, let storeType):
+                    self.onRequestPushStoreDetail?(storeId, storeType)
                 case .presentVisit(let storeId):
                     self.onRequestPresentVisit?(storeId)
                 case .presentReviewWrite(let storeId):

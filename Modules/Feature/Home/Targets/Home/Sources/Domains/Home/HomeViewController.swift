@@ -29,7 +29,10 @@ public final class HomeViewController: BaseViewController {
 
     private lazy var homeView = HomeView(homeFilterSelectable: viewModel)
     private let viewModel = HomeViewModel()
-    private var markers: [NMFMarker?] = []
+    // 카드 인덱스 기준으로 마커와 마커 데이터를 보관해 선택 시 focused/unfocused 이미지를 토글한다.
+    private var markers: [Int: NMFMarker] = [:]
+    private var markerData: [Int: HomeListCardMarker] = [:]
+    private var focusedMarkerIndex: Int?
     private var bottomSheetViewController: HomeListViewController?
     private var bottomSheetController: FloatingPanelController?
     private var storePreviewBottomSheet: StorePreviewBottomSheetViewController?
@@ -139,11 +142,6 @@ public final class HomeViewController: BaseViewController {
             .subscribe(viewModel.input.onTapResearch)
             .store(in: &cancellables)
 
-        homeView.mapView.locationOverlay.touchHandler = { [weak self] _ in
-            self?.viewModel.input.onTapCurrentMarker.send(())
-            return true
-        }
-
         homeView.homeFilterCollectionView.onLoadFilter = { [weak self] in
             self?.viewModel.input.onLoadFilter.send(())
         }
@@ -185,6 +183,12 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeViewController, advertisement: AdvertisementResponse) in
                 owner.homeView.setAdvertisementMarker(advertisement)
+                // 광고가 있을 때만 내 위치 마커 탭 이벤트를 등록한다.
+                // 항상 등록하면 touchHandler 가 true 를 반환해 인접한 가게 마커 탭을 가로채기 때문.
+                owner.homeView.mapView.locationOverlay.touchHandler = { [weak owner] _ in
+                    owner?.viewModel.input.onTapCurrentMarker.send(())
+                    return true
+                }
             }
             .store(in: &cancellables)
 
@@ -338,15 +342,41 @@ public final class HomeViewController: BaseViewController {
             )
             nmfMarker.iconImage = NMFOverlayImage(name: "")
             nmfMarker.touchHandler = { [weak self] _ in
+                self?.focusMarker(at: index)
                 self?.viewModel.input.onTapMarker.send(index)
                 return true
             }
             nmfMarker.mapView = homeView.mapView
-            markers.append(nmfMarker)
+            markers[index] = nmfMarker
+            markerData[index] = cardMarker
 
             // 비동기로 unfocused 칩 이미지 렌더 후 마커에 반영.
             applyMarkerIcon(chip: cardMarker.unfocused, to: nmfMarker)
         }
+    }
+
+    /// 탭한 마커를 focused 이미지로 바꾸고, 기존에 선택된 마커는 unfocused 로 되돌린다. (선택은 항상 하나)
+    private func focusMarker(at index: Int) {
+        guard focusedMarkerIndex != index else { return }
+        unfocusSelectedMarker()
+
+        guard let marker = markers[index], let data = markerData[index] else { return }
+
+        // focused 마커가 인접 마커에 가려지지 않도록 위로 올린다.
+        marker.zIndex = 1
+        applyMarkerIcon(chip: data.focused, to: marker)
+        focusedMarkerIndex = index
+    }
+
+    /// 현재 선택된 마커를 unfocused 로 되돌린다. (미리보기 시트 닫힘·다른 마커 선택 시 호출)
+    private func unfocusSelectedMarker() {
+        defer { focusedMarkerIndex = nil }
+        guard let index = focusedMarkerIndex,
+              let marker = markers[index],
+              let data = markerData[index] else { return }
+
+        marker.zIndex = 0
+        applyMarkerIcon(chip: data.unfocused, to: marker)
     }
 
     private func applyMarkerIcon(chip: SDChip, to marker: NMFMarker) {
@@ -367,10 +397,12 @@ public final class HomeViewController: BaseViewController {
     }
 
     private func clearMarker() {
-        for marker in self.markers {
-            marker?.mapView = nil
+        for marker in markers.values {
+            marker.mapView = nil
         }
         markers.removeAll()
+        markerData.removeAll()
+        focusedMarkerIndex = nil
     }
 
     // MARK: Routing helpers
@@ -580,6 +612,8 @@ extension HomeViewController {
 
     private func dismissStorePreview() {
         guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
+        unfocusSelectedMarker()
         // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.
         // 슬라이드 다운 도중 탭바가 먼저 나타나면 패널이 탭바를 가로지르는 어색한 프레임이 생긴다.
         fpc.removePanelFromParent(animated: true) { [weak self] in
@@ -629,10 +663,16 @@ extension HomeViewController {
     }
 
     private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
-        viewController.onRequestPushStoreDetail = { [weak self] storeId in
+        viewController.onRequestPushStoreDetail = { [weak self] storeId, storeType in
             // 미리보기 패널은 닫지 않고 유지한다. 상세 push 중에는 Home 의
             // viewWillDisappear 가 패널을 가렸다가, pop 으로 돌아오면 다시 보여준다.
-            self?.pushStoreDetail(storeId: storeId)
+            // 가게 종류(일반/사장님)에 따라 상세 화면을 분기한다.
+            switch storeType {
+            case .bossStore:
+                self?.pushBossStoreDetail(storeId: String(storeId))
+            case .userStore, .unknown:
+                self?.pushStoreDetail(storeId: storeId)
+            }
         }
         viewController.onRequestPresentVisit = { [weak self] storeId in
             self?.presentVisit(storeId: storeId)

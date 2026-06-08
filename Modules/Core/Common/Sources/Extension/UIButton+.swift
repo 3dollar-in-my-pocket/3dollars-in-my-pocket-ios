@@ -45,11 +45,19 @@ public extension UIButton {
             layer.borderWidth = 0
         }
 
+        // 아이콘-텍스트 간격 4pt. forceRightToLeft 일 때는 left/right 가 자동 반전되지 않으므로
+        // 정렬에 맞춰 inset 의 좌우 값을 직접 뒤집어 음수 간격이 생기는 것을 방지한다.
+        let spacing: CGFloat = 4
+        let halfSpacing = spacing / 2
         switch sdButton.imageAlignment {
         case .end:
             semanticContentAttribute = .forceRightToLeft
+            titleEdgeInsets = UIEdgeInsets(top: 0, left: -halfSpacing, bottom: 0, right: halfSpacing)
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: halfSpacing, bottom: 0, right: -halfSpacing)
         case .start, .unknown, .none:
             semanticContentAttribute = .unspecified
+            titleEdgeInsets = UIEdgeInsets(top: 0, left: halfSpacing, bottom: 0, right: -halfSpacing)
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: -halfSpacing, bottom: 0, right: halfSpacing)
         }
     }
 

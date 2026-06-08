@@ -149,6 +149,8 @@ final class HomeViewModel: BaseViewModel {
     /// 필터 응답이 도착하기 전에 첫 카드 요청이 발사되면 dynamicParams 가 비어버리므로,
     /// 첫 fetch 호출만 위치 + 필터 응답 두 신호가 모두 준비될 때까지 게이팅한다.
     private let filterScreenLoaded = PassthroughSubject<Void, Never>()
+    private var loadTask: Task<Void, Never>?
+    private var loadMoreTask: Task<Void, Never>?
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -337,6 +339,7 @@ final class HomeViewModel: BaseViewModel {
         input.onTapResearch
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, _) in
+                owner.output.route.send(.dismissStorePreview)
                 owner.output.showLoading.send(true)
                 owner.state.mapMaxDistance = owner.state.newMapMaxDistance
                 owner.state.resultCameraPosition = owner.state.newCameraPosition
@@ -447,7 +450,9 @@ final class HomeViewModel: BaseViewModel {
     }
 
     private func fetchInitialCards() {
-        Task { [weak self] in
+        loadMoreTask?.cancel()
+        loadTask?.cancel()
+        loadTask = Task { @MainActor [weak self] in
             guard let self else { return }
             output.showLoading.send(true)
             state.isLoading = true
@@ -456,6 +461,8 @@ final class HomeViewModel: BaseViewModel {
 
             let request = createFetchInput(cursor: nil)
             let result = await dependency.screenRepository.fetchHomeSectionList(input: request)
+
+            guard !Task.isCancelled else { return }
 
             state.isLoading = false
             output.showLoading.send(false)
@@ -470,13 +477,12 @@ final class HomeViewModel: BaseViewModel {
                 output.route.send(.showErrorAlert(error))
             }
         }
-        .store(in: taskBag)
     }
 
     private func fetchMoreCards() {
-        guard !state.isLoading, state.hasMore else { return }
-        Task { [weak self] in
+        loadMoreTask = Task { @MainActor [weak self] in
             guard let self else { return }
+            guard !state.isLoading, state.hasMore else { return }
             state.isLoading = true
 
             let request = createFetchInput(cursor: state.nextCursor)
@@ -484,9 +490,11 @@ final class HomeViewModel: BaseViewModel {
 
             state.isLoading = false
 
+            guard !Task.isCancelled else { return }
+
             switch result {
             case .success(let response):
-                state.cards.append(contentsOf: response.cards)
+                appendUniqueCards(response.cards)
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
                 emitCards()
@@ -495,7 +503,15 @@ final class HomeViewModel: BaseViewModel {
                 break
             }
         }
-        .store(in: taskBag)
+    }
+
+    /// 이미 들어있는 cardId 는 제외하고 append 한다. 서버가 페이지 경계에서 카드를
+    /// 중복 반환하거나 경합으로 같은 페이지가 다시 들어오더라도 스냅샷 중복을 막는 안전망.
+    private func appendUniqueCards(_ cards: [any HomeListCardComponent]) {
+        var existingIds = Set(state.cards.map { $0.cardId })
+        for card in cards where existingIds.insert(card.cardId).inserted {
+            state.cards.append(card)
+        }
     }
 
     private func emitCards() {
