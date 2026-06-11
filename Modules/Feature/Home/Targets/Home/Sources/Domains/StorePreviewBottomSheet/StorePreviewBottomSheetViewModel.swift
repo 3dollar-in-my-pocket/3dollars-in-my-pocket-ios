@@ -13,6 +13,7 @@ extension StorePreviewBottomSheetViewModel {
         let didTapSave = PassthroughSubject<Void, Never>()
         let didTapClose = PassthroughSubject<Void, Never>()
         let didTapActionBar = PassthroughSubject<Int, Never>()
+        let didTapAddPhoto = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -30,6 +31,7 @@ extension StorePreviewBottomSheetViewModel {
         case share(storeId: Int, storeType: StoreType, storeName: String, latitude: Double, longitude: Double)
         case presentNavigation(latitude: Double, longitude: Double, storeName: String)
         case openLink(SDLink)
+        case presentUploadPhoto(storeId: Int)
         case close
     }
 
@@ -42,13 +44,16 @@ extension StorePreviewBottomSheetViewModel {
     struct Dependency {
         let storeRepository: StoreRepository
         let logManager: LogManagerProtocol
+        let preference: Preference
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            logManager: LogManagerProtocol = LogManager.shared,
+            preference: Preference = .shared
         ) {
             self.storeRepository = storeRepository
             self.logManager = logManager
+            self.preference = preference
         }
     }
 
@@ -117,6 +122,13 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                 owner.handleActionBar(bar)
             }
             .store(in: &cancellables)
+
+        input.didTapAddPhoto
+            .withUnretained(self)
+            .sink { (owner: StorePreviewBottomSheetViewModel, _) in
+                owner.output.route.send(.presentUploadPhoto(storeId: owner.config.storeId))
+            }
+            .store(in: &cancellables)
     }
 
     private func fetchPreview() async {
@@ -124,10 +136,11 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
         state.isLoading = true
         defer { state.isLoading = false }
 
+        let deviceLocation = dependency.preference.userCurrentLocation
         let input = FetchStoreScreenInput(
             storeId: String(config.storeId),
-            latitude: config.latitude,
-            longitude: config.longitude
+            latitude: deviceLocation.coordinate.latitude,
+            longitude: deviceLocation.coordinate.longitude
         )
         let result = await dependency.storeRepository.fetchStorePreview(input: input)
 

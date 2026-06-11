@@ -7,15 +7,19 @@ public struct UploadPhotoConfig {
     public let storeId: Int
     public let shouldDeferUpload: Bool
     public let onSelectedPhotos: ((([Data]) -> Void))?
+    /// 가게 사진 업로드가 서버에 정상 반영되어 완료되었을 때 호출된다. (shouldDeferUpload == false 인 직접 업로드 경로)
+    public let onSuccessUpload: (() -> Void)?
 
     public init(
         storeId: Int,
         shouldDeferUpload: Bool = false,
-        onSelectedPhotos: (([Data]) -> Void)? = nil
+        onSelectedPhotos: (([Data]) -> Void)? = nil,
+        onSuccessUpload: (() -> Void)? = nil
     ) {
         self.storeId = storeId
         self.shouldDeferUpload = shouldDeferUpload
         self.onSelectedPhotos = onSelectedPhotos
+        self.onSuccessUpload = onSuccessUpload
     }
 }
 

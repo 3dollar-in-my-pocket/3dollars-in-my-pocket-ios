@@ -79,6 +79,14 @@ public final class StoreInterfaceImpl: StoreInterface {
                 .store(in: &viewModel.cancellables)
         }
 
+        if let onSuccessUpload = config.onSuccessUpload {
+            viewModel.output.onSuccessUploadPhotos
+                .sink { _ in
+                    onSuccessUpload()
+                }
+                .store(in: &viewModel.cancellables)
+        }
+
         return UploadPhotoViewController.instance(viewModel: viewModel)
     }
 }

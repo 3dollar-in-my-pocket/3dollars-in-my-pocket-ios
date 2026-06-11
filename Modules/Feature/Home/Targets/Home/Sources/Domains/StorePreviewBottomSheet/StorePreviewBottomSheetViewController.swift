@@ -7,7 +7,6 @@ import Log
 import Model
 
 import CombineCocoa
-import Kingfisher
 import SnapKit
 
 final class StorePreviewBottomSheetViewController: UIViewController {
@@ -54,22 +53,17 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         icon: Icons.close.image
     )
 
-    private let imagesContainer = UIView()
-
-    private let imagesScrollView: UIScrollView = {
-        let scroll = UIScrollView()
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.bounces = false
-        return scroll
-    }()
-
-    private let imageRow: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.spacing = 6
-        stack.distribution = .fill
-        return stack
+    private let imagesCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 158, height: 158)
+        layout.minimumLineSpacing = 8
+        layout.minimumInteritemSpacing = 8
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.bounces = false
+        return collectionView
     }()
 
     private let bodiesScrollView: UIScrollView = {
@@ -105,17 +99,12 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }()
 
     private var imagesContainerHeight: Constraint?
-    /// 이미지 1·2개일 때만 켜서 스크롤뷰 frame 너비에 맞춰 꽉 채운다.
-    /// 3개 이상일 때는 꺼서 고정 폭(158pt) 이미지들이 frame 보다 넓어지도록 두어 가로 스크롤을 만든다.
-    private var imageRowFillWidth: Constraint?
+    private var imageItems: [SDImage] = []
+    /// "사진 추가" 셀 노출 여부. 사장님 가게는 사용자 사진 업로드를 지원하지 않아 false 로 둔다.
+    private var canAddPhoto: Bool = false
 
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
-
-    private let saveTapRelay = PassthroughSubject<Void, Never>()
-    private let closeTapRelay = PassthroughSubject<Void, Never>()
-    private let actionBarsRelay = PassthroughSubject<Int, Never>()
-    private let bodyTapRelay = PassthroughSubject<Void, Never>()
 
     var onRequestPushStoreDetail: ((Int, StoreType) -> Void)?
     var onRequestPresentVisit: ((Int) -> Void)?
@@ -123,6 +112,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     var onRequestShare: ((_ storeId: Int, _ storeType: StoreType, _ storeName: String, _ latitude: Double, _ longitude: Double) -> Void)?
     var onRequestPresentNavigation: ((Double, Double, String) -> Void)?
     var onRequestOpenLink: ((SDLink) -> Void)?
+    var onRequestAddPhoto: ((Int) -> Void)?
     var onRequestClose: (() -> Void)?
     /// 데이터(이미지/바디 유무)에 따라 컨텐츠 높이가 변할 때 호출. FloatingPanel anchor 갱신용.
     var onContentHeightChanged: ((CGFloat) -> Void)?
@@ -174,7 +164,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        [titleStack, topButtonStack, metadataView, imagesContainer, bodiesScrollView, actionBarScrollView]
+        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
             .forEach { view.addSubview($0) }
 
         titleStack.addArrangedSubview(titleLabel)
@@ -183,8 +173,10 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         topButtonStack.addArrangedSubview(saveButton)
         topButtonStack.addArrangedSubview(closeButton)
 
-        imagesContainer.addSubview(imagesScrollView)
-        imagesScrollView.addSubview(imageRow)
+        imagesCollectionView.register([StorePreviewImageCell.self, StorePreviewAddPhotoCell.self])
+        imagesCollectionView.dataSource = self
+        imagesCollectionView.delegate = self
+
         bodiesScrollView.addSubview(bodiesStack)
         actionBarScrollView.addSubview(actionBarStack)
     }
@@ -223,28 +215,15 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             $0.height.equalToSuperview()
         }
 
-        imagesContainer.snp.makeConstraints {
+        imagesCollectionView.snp.makeConstraints {
             $0.top.equalTo(actionBarScrollView.snp.bottom).offset(12)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
             self.imagesContainerHeight = $0.height.equalTo(0).constraint
         }
 
-        imagesScrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        imageRow.snp.makeConstraints {
-            // trailing 을 포함한 4변을 모두 스크롤뷰 content 에 연결해야 contentSize 가 계산된다.
-            $0.edges.equalToSuperview()
-            // 세로 방향만 frame 에 고정해 세로 스크롤은 막고, 가로 contentSize 는 자식들이 결정하게 둔다.
-            $0.height.equalTo(imagesScrollView.frameLayoutGuide)
-            self.imageRowFillWidth = $0.width.equalTo(imagesScrollView.frameLayoutGuide.snp.width).constraint
-        }
-        imageRowFillWidth?.deactivate()
-
         bodiesScrollView.snp.makeConstraints {
-            $0.top.equalTo(imagesContainer.snp.bottom).offset(8)
+            $0.top.equalTo(imagesCollectionView.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview()
             // FloatingPanel surface 의 .safeArea 기준 anchor 가 적용되므로 superview bottom 으로 안전하게 붙인다.
             $0.bottom.equalToSuperview().offset(-12)
@@ -267,7 +246,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     @objc private func didTapBodyArea() {
-        bodyTapRelay.send(())
+        viewModel.input.didTapBody.send(())
     }
 
     private func bind() {
@@ -324,23 +303,12 @@ final class StorePreviewBottomSheetViewController: UIViewController {
                     self.onRequestPresentNavigation?(lat, lng, name)
                 case .openLink(let link):
                     self.onRequestOpenLink?(link)
+                case .presentUploadPhoto(let storeId):
+                    self.onRequestAddPhoto?(storeId)
                 case .close:
                     self.onRequestClose?()
                 }
             }
-            .store(in: &cancellables)
-
-        saveTapRelay
-            .subscribe(viewModel.input.didTapSave)
-            .store(in: &cancellables)
-        closeTapRelay
-            .subscribe(viewModel.input.didTapClose)
-            .store(in: &cancellables)
-        actionBarsRelay
-            .subscribe(viewModel.input.didTapActionBar)
-            .store(in: &cancellables)
-        bodyTapRelay
-            .subscribe(viewModel.input.didTapBody)
             .store(in: &cancellables)
     }
 
@@ -350,11 +318,11 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     @objc private func didTapSaveButton() {
-        saveTapRelay.send(())
+        viewModel.input.didTapSave.send(())
     }
 
     @objc private func didTapCloseButton() {
-        closeTapRelay.send(())
+        viewModel.input.didTapClose.send(())
     }
 
     private func render(section: StorePreviewSection) {
@@ -364,10 +332,17 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         configureBadge(section.header.badge)
         metadataView.configure(section.metadata)
 
+        // 사장님 가게는 사용자 사진 업로드를 지원하지 않으므로 "사진 추가" 셀을 노출하지 않는다.
+        canAddPhoto = isBossStore(section).isNot
         configureImages(section.images)
         configureBodies(section.bodies)
 
         onContentHeightChanged?(calculateContentHeight(for: section))
+    }
+
+    private func isBossStore(_ section: StorePreviewSection) -> Bool {
+        guard let rawValue = section.additionalInfos?.storeType else { return false }
+        return StoreType(value: rawValue) == .bossStore
     }
 
     /// `bindConstraints()` 에 적용된 상수와 동일하게 각 영역 높이/간격을 합산한다.
@@ -414,59 +389,16 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     private func configureImages(_ images: [SDImage]) {
-        imageRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        imageItems = images
 
-        guard images.isEmpty.isNot else {
-            imagesContainerHeight?.update(offset: 0)
-            imagesContainer.isHidden = true
-            imageRowFillWidth?.deactivate()
-            return
+        // 이미지가 없으면 영역을 숨기고, 1개 이상이면 158pt 고정 셀 + 마지막 "사진 추가" 셀을 가로 스크롤로 노출한다.
+        let hasImages = images.isEmpty.isNot
+        imagesContainerHeight?.update(offset: hasImages ? 158 : 0)
+        imagesCollectionView.isHidden = hasImages.isNot
+        imagesCollectionView.reloadData()
+        if hasImages {
+            imagesCollectionView.setContentOffset(.zero, animated: false)
         }
-
-        imagesContainerHeight?.update(offset: 158)
-        imagesContainer.isHidden = false
-
-        switch images.count {
-        case 1:
-            imageRow.distribution = .fill
-            let imageView = makeImageView()
-            imageRow.addArrangedSubview(imageView)
-            imageView.snp.makeConstraints { $0.height.equalTo(158) }
-            loadImage(imageView, url: images[0].url)
-            imageRowFillWidth?.activate()
-        case 2:
-            imageRow.distribution = .fillEqually
-            for image in images {
-                let imageView = makeImageView()
-                imageRow.addArrangedSubview(imageView)
-                imageView.snp.makeConstraints { $0.height.equalTo(158) }
-                loadImage(imageView, url: image.url)
-            }
-            imageRowFillWidth?.activate()
-        default:
-            imageRow.distribution = .fill
-            for image in images {
-                let imageView = makeImageView()
-                imageRow.addArrangedSubview(imageView)
-                imageView.snp.makeConstraints { $0.size.equalTo(158) }
-                loadImage(imageView, url: image.url)
-            }
-            imageRowFillWidth?.deactivate()
-        }
-    }
-
-    private func makeImageView() -> UIImageView {
-        let view = UIImageView()
-        view.contentMode = .scaleAspectFill
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 10
-        view.backgroundColor = UIColor(hex: "D9D9D9")
-        return view
-    }
-
-    private func loadImage(_ imageView: UIImageView, url: String) {
-        guard let url = URL(string: url) else { return }
-        imageView.kf.setImage(with: url)
     }
 
     private func configureBodies(_ bodies: [StorePreviewBody]) {
@@ -496,7 +428,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             button.setSDButton(bar.button)
             button.controlPublisher(for: .touchUpInside)
                 .map { _ in index }
-                .subscribe(actionBarsRelay)
+                .subscribe(viewModel.input.didTapActionBar)
                 .store(in: &cancellables)
             actionBarStack.addArrangedSubview(button)
         }
@@ -551,12 +483,47 @@ extension StorePreviewBottomSheetViewController: UIGestureRecognizerDelegate {
         _ gestureRecognizer: UIGestureRecognizer,
         shouldReceive touch: UITouch
     ) -> Bool {
-        // 액션바 버튼 등 UIControl 위의 터치는 body 탭(가게 상세 이동)으로 처리하지 않는다.
+        // 액션바 버튼 등 UIControl, 그리고 이미지 컬렉션뷰(셀 탭을 직접 처리) 위의 터치는
+        // body 탭(가게 상세 이동)으로 처리하지 않는다.
         var hitView = touch.view
         while let current = hitView {
             if current is UIControl { return false }
+            if current === imagesCollectionView { return false }
             hitView = current.superview
         }
         return true
+    }
+}
+
+// MARK: UICollectionViewDataSource & Delegate
+extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard imageItems.isEmpty.isNot else { return 0 }
+        // 이미지가 1개 이상이고 사진 추가가 가능한 가게(일반 가게)일 때만 마지막에 "사진 추가" 셀(+1)을 노출한다.
+        return imageItems.count + (canAddPhoto ? 1 : 0)
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        if let image = imageItems[safe: indexPath.item] {
+            let cell: StorePreviewImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            cell.bind(image)
+            return cell
+        }
+
+        let cell: StorePreviewAddPhotoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if imageItems[safe: indexPath.item] != nil {
+            // 이미지 탭은 가게 상세로 이동(기존 body 탭과 동일 동작).
+            viewModel.input.didTapBody.send(())
+        } else {
+            // 마지막 "사진 추가" 셀 탭.
+            viewModel.input.didTapAddPhoto.send(())
+        }
     }
 }

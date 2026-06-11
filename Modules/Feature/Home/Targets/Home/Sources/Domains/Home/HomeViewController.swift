@@ -4,6 +4,7 @@ import Combine
 import Common
 import DesignSystem
 import Model
+import StoreInterface
 
 import NMapsMap
 import Then
@@ -606,6 +607,8 @@ extension HomeViewController {
         // → StorePreview 패널 mount. 거꾸로 하면 패널이 부착된 뒤 safeArea 가 바뀌면서 미끄러져 보인다.
         bottomSheetController?.removePanelFromParent(animated: true)
         tabBarController?.tabBar.isHidden = true
+        homeView.currentLocationButton.isHidden = true
+        homeView.feedButton.isHidden = true
         fpc.addPanel(toParent: self, animated: true)
         fpc.view.isHidden = false
     }
@@ -616,6 +619,8 @@ extension HomeViewController {
         unfocusSelectedMarker()
         // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.
         // 슬라이드 다운 도중 탭바가 먼저 나타나면 패널이 탭바를 가로지르는 어색한 프레임이 생긴다.
+        homeView.currentLocationButton.isHidden = false
+        homeView.feedButton.isHidden = false
         fpc.removePanelFromParent(animated: true) { [weak self] in
             guard let self else { return }
             self.tabBarController?.tabBar.isHidden = false
@@ -699,6 +704,9 @@ extension HomeViewController {
             // 방문 인증 등 서버가 내려준 딥링크/링크를 공용 핸들러로 위임한다. (예: /visit → 방문 인증 화면)
             Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
         }
+        viewController.onRequestAddPhoto = { [weak self] storeId in
+            self?.presentStorePreviewUploadPhoto(storeId: storeId)
+        }
         viewController.onRequestClose = { [weak self] in
             self?.dismissStorePreview()
         }
@@ -711,6 +719,14 @@ extension HomeViewController {
         guard let fpc = storePreviewBottomSheetController else { return }
         fpc.layout = StorePreviewLayout(visibleHeight: height)
         fpc.invalidateLayout()
+    }
+
+    private func presentStorePreviewUploadPhoto(storeId: Int) {
+        let config = UploadPhotoConfig(storeId: storeId, onSuccessUpload: { [weak self] in
+            self?.storePreviewBottomSheet?.reload()
+        })
+        let viewController = Environment.storeInterface.getUploadPhotoViewController(config: config)
+        present(viewController, animated: true)
     }
 
     /// 가게 상세 "리뷰쓰기"와 동일한 리뷰 작성 바텀시트(PanModal)를 띄운다.
