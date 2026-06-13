@@ -8,7 +8,6 @@ import Kingfisher
 
 final class HomeListStoreCell: BaseCollectionViewCell {
     enum Layout {
-        static let horizontalInset: CGFloat = 20
         static let imageRowHeight: CGFloat = 120
         static let imageSpacing: CGFloat = 4
         static func height(response: HomeListBasicCardResponse) -> CGFloat {
@@ -120,6 +119,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     private lazy var imagesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: Layout.imageRowHeight, height: Layout.imageRowHeight)
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing
         layout.sectionInset = .zero
@@ -128,7 +128,6 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.register([HomeListStoreImageCell.self])
         return collectionView
     }()
@@ -371,30 +370,5 @@ extension HomeListStoreCell: UICollectionViewDataSource {
         }
 
         return cell
-    }
-}
-
-extension HomeListStoreCell: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        return CGSize(width: getImageWidth(), height: Layout.imageRowHeight)
-    }
-    
-    private func getImageWidth() -> CGFloat {
-        let itemCount = images.count
-        let screenWidth = UIUtils.windowBounds.width
-        let availableWidth = screenWidth - (Layout.horizontalInset * 2)
-        
-        if itemCount == 1 {
-            return availableWidth
-        } else if itemCount == 2 {
-            let itemWidth = (availableWidth - Layout.imageSpacing) / 2
-            return itemWidth
-        } else {
-            return Layout.imageRowHeight
-        }
     }
 }
