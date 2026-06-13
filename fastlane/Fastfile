@@ -1,0 +1,32 @@
+default_platform(:ios)
+
+# 개발(development) 서명이 필요한 모든 Bundle ID — Xcode Debug/Release config가 사용
+DEV_APP_IDENTIFIERS = [
+  "com.macgongmon.-dollar-in-my-pocket-debug",
+  "com.macgongmon.-dollar-in-my-pocket-debug.service-extension",
+  "com.macgongmon.-dollar-in-my-pocket-debug.content-extension",
+  "com.macgongmon.-dollar-in-my-pocket",
+  "com.macgongmon.-dollar-in-my-pocket.service-extension",
+  "com.macgongmon.-dollar-in-my-pocket.content-extension"
+].freeze
+
+# 앱스토어(appstore) 배포 서명이 필요한 Bundle ID — 아카이브/업로드 시 사용
+APPSTORE_APP_IDENTIFIERS = [
+  "com.macgongmon.-dollar-in-my-pocket",
+  "com.macgongmon.-dollar-in-my-pocket.service-extension",
+  "com.macgongmon.-dollar-in-my-pocket.content-extension"
+].freeze
+
+platform :ios do
+  desc "[관리자 전용] 인증서/프로파일을 신규 생성하여 git에 암호화 저장 (Apple ID + 2FA 필요)"
+  lane :certificates_setup do
+    match(type: "development", app_identifier: DEV_APP_IDENTIFIERS, readonly: false)
+    match(type: "appstore", app_identifier: APPSTORE_APP_IDENTIFIERS, readonly: false)
+  end
+
+  desc "[팀원용] 인증서/프로파일 동기화 (읽기 전용, Apple ID/2FA 불필요 — repo 권한 + passphrase만 필요)"
+  lane :certificates_sync do
+    match(type: "development", app_identifier: DEV_APP_IDENTIFIERS, readonly: true)
+    match(type: "appstore", app_identifier: APPSTORE_APP_IDENTIFIERS, readonly: true)
+  end
+end

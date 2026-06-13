@@ -1,0 +1,7 @@
+# 인증서/프로파일을 암호화 저장할 "별도" private git repo URL
+git_url("https://github.com/3dollar-in-my-pocket/fastlane-match.git")
+
+storage_mode("git")
+git_branch("main")
+
+# type / app_identifier / readonly 는 Fastfile 레인에서 지정합니다.
