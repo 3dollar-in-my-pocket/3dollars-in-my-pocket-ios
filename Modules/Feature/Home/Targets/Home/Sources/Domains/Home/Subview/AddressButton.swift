@@ -32,6 +32,8 @@ public final class AddressButton: BaseView {
             make.edges.equalToSuperview()
             make.height.equalTo(48)
         }
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = DesignSystemAsset.Colors.gray30.color.withAlphaComponent(0).cgColor
         
         addressButton.snp.makeConstraints { make in
             make.left.equalTo(containerView).offset(12)
@@ -53,6 +55,15 @@ public final class AddressButton: BaseView {
     
     func bind(address: String) {
         addressButton.setTitle(address, for: .normal)
+    }
+
+    /// 바텀시트의 .tip → .full 진행도(0~1) 에 맞춰 gray30 테두리 alpha 를 보간한다.
+    /// .full 일 때만 1px 테두리가 보이도록 .tip 에서는 alpha 0 으로 둔다.
+    public func updateBorder(progress: CGFloat) {
+        let clamped = max(0, min(1, progress))
+        containerView.layer.borderColor = DesignSystemAsset.Colors.gray30.color
+            .withAlphaComponent(clamped)
+            .cgColor
     }
 }
 

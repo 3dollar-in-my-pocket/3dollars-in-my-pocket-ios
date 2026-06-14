@@ -14,7 +14,8 @@ import PackageDescription
             "PanModal": .framework,
             "Swinject": .framework,
             "CombineCocoa": .framework,
-            "ZMarkupParser": .framework
+            "ZMarkupParser": .framework,
+            "FloatingPanel": .framework
         ]
     )
 #endif
@@ -29,7 +30,8 @@ let package = Package(
         .package(url: "https://github.com/3dollar-in-my-pocket/PanModal.git", from: "1.0.0"),
         .package(url: "https://github.com/Swinject/Swinject.git", from: "2.8.0"),
         .package(url: "https://github.com/CombineCommunity/CombineCocoa.git", from: "0.4.1"),
-        .package(url: "https://github.com/ZhgChgLi/ZMarkupParser.git", from: "1.12.0")
+        .package(url: "https://github.com/ZhgChgLi/ZMarkupParser.git", from: "1.12.0"),
+        .package(url: "https://github.com/scenee/FloatingPanel.git", from: "2.8.0")
     ],
     targets: []
 )

@@ -10,7 +10,7 @@ public enum SDLinkType: String, Decodable {
     case appScheme = "APP_SCHEME"
     case store = "STORE"
     case unknown
-    
+
     public init(from decoder: Decoder) throws {
         self = try SDLinkType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }

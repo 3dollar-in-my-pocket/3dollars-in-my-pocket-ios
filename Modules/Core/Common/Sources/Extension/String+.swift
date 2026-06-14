@@ -67,28 +67,42 @@ public extension String {
         return dateFormatter.date(from: self)
     }
 
-    func height(font: UIFont, width: CGFloat) -> CGFloat {
+    func height(font: UIFont, width: CGFloat, lineHeight: CGFloat? = nil) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        var attributes: [NSAttributedString.Key: Any] = [.font: font]
+        if let lineHeight {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.minimumLineHeight = lineHeight
+            paragraphStyle.maximumLineHeight = lineHeight
+            attributes[.paragraphStyle] = paragraphStyle
+        }
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
 
         return ceil(boundingBox.size.height)
     }
-    
+
     func width(font: UIFont, height: CGFloat) -> CGFloat {
         return NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
             .width(height: height)
     }
-    
-    func height(font: UIFont?, width: CGFloat) -> CGFloat {
+
+    func height(font: UIFont?, width: CGFloat, lineHeight: CGFloat? = nil) -> CGFloat {
         guard let font = font else { return .zero }
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        var attributes: [NSAttributedString.Key: Any] = [.font: font as Any]
+        if let lineHeight {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.minimumLineHeight = lineHeight
+            paragraphStyle.maximumLineHeight = lineHeight
+            attributes[.paragraphStyle] = paragraphStyle
+        }
         let height = (self as NSString).boundingRect(
             with: constraintRect,
             options: [.usesLineFragmentOrigin, .usesFontLeading],
-            attributes: [.font: font as Any],
+            attributes: attributes,
             context: nil
         ).height
-        
+
         return height
     }
     
