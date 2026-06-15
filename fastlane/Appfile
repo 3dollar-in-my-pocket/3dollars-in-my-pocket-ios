@@ -1,0 +1,13 @@
+# match로 관리하는 모든 Bundle ID (앱 + service-extension + content-extension, debug/release)
+app_identifier([
+  "com.macgongmon.-dollar-in-my-pocket-debug",
+  "com.macgongmon.-dollar-in-my-pocket-debug.service-extension",
+  "com.macgongmon.-dollar-in-my-pocket-debug.content-extension",
+  "com.macgongmon.-dollar-in-my-pocket",
+  "com.macgongmon.-dollar-in-my-pocket.service-extension",
+  "com.macgongmon.-dollar-in-my-pocket.content-extension"
+])
+
+apple_id("dbgustlr92@naver.com")
+
+team_id("X975A2HM62")

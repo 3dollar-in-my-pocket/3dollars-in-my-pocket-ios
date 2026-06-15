@@ -118,7 +118,7 @@ struct BuildSetting {
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket-debug",
             "PRODUCT_MODULE_NAME": "dollar_in_my_pocket",
             "PRODUCT_NAME": "dollar-in-my-pocket-debug",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-dev",
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "match Development com.macgongmon.-dollar-in-my-pocket-debug",
             "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon-Dev"
         ]
         
@@ -143,7 +143,7 @@ struct BuildSetting {
             "ONLY_ACTIVE_ARCH": "YES",
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket",
             "PRODUCT_NAME": "dollar-in-my-pocket",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-prod",
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "match Development com.macgongmon.-dollar-in-my-pocket",
             "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon"
         ]
     }
@@ -194,12 +194,12 @@ struct BuildSetting {
         
         static let debug: SettingsDictionary = [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket-debug.service-extension",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-service-extension-dev"
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "match Development com.macgongmon.-dollar-in-my-pocket-debug.service-extension"
         ]
         
         static let release: SettingsDictionary = [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket.service-extension",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-service-extension-prod"
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "match Development com.macgongmon.-dollar-in-my-pocket.service-extension"
         ]
     }
     
@@ -223,12 +223,12 @@ struct BuildSetting {
         
         static let debug: SettingsDictionary = [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket-debug.content-extension",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-content-extension-dev"
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "match Development com.macgongmon.-dollar-in-my-pocket-debug.content-extension"
         ]
         
         static let release: SettingsDictionary = [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket.content-extension",
-            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "development-user-content-extension-prod"
+            "PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]": "match Development com.macgongmon.-dollar-in-my-pocket.content-extension"
         ]
     }
 }

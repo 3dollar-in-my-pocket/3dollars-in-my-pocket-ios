@@ -55,7 +55,13 @@ public extension UILabel {
         }
     }
     
-    func setSDText(_ sdText: SDText, customFont: UIFont? = nil) {
+    func setSDText(_ sdText: SDText?, customFont: UIFont? = nil, lineHeight: CGFloat? = nil) {
+        // 서버가 text 자체를 내려보내지 않으면 라벨을 비워두고 끝낸다.
+        guard let sdText else {
+            text = nil
+            attributedText = nil
+            return
+        }
         textColor = UIColor(hex: sdText.fontColor)
         if sdText.isHtml {
             var parser = ZHTMLParserBuilder.initWithDefault()
@@ -80,8 +86,12 @@ public extension UILabel {
                 self.font = font
             }
         }
+
+        if let lineHeight {
+            setLineHeight(lineHeight: lineHeight)
+        }
     }
-    
+
     func setSDChip(_ sdChip: SDChip) {
         if let style = sdChip.style {
             backgroundColor = UIColor(hex: style.backgroundColor)

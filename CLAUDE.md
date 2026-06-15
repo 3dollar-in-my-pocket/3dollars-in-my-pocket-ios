@@ -489,3 +489,16 @@ ViewModel의 유저 플로우를 기반으로 XCTest 테스트 코드를 자동 
 **참고 파일**: `.claude/skills/ios-viewmodel-test-generator/SKILL.md`
 
 **테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
+
+### server-schema
+서버 OpenAPI 스키마(`https://dev.threedollars.co.kr/api/v3/api-docs`)를 조회해 API 요청/응답 모델 구조를 확인합니다.
+
+**기능**:
+- 특정 엔드포인트의 응답/요청 모델 구조 확인 (allOf/oneOf/discriminator 펼치기)
+- 필드명으로 전체 스키마 검색 (예: `storeType` 있는 모델 찾기)
+- 두 엔드포인트/모델 비교 (마이그레이션 검토)
+- 스키마 업데이트 여부 확인 및 dev 실응답 교차 검증
+
+**사용 시점**: 서버 스키마가 궁금할 때, 응답 필드 유무 확인, 업데이트된 스키마 확인 등
+
+**참고 파일**: `.claude/skills/server-schema/SKILL.md`

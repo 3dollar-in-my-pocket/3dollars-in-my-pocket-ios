@@ -6,8 +6,9 @@ public enum SDComponentType: String, Decodable {
     case homeCard = "HOME_CARD"
     case relatedStores = "RELATED_STORES"
     case imagePreviewCard = "IMAGE_PREVIEW_CARD"
+    case preview = "PREVIEW"
     case unknown
-    
+
     public init(from decoder: Decoder) throws {
         self = try SDComponentType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }

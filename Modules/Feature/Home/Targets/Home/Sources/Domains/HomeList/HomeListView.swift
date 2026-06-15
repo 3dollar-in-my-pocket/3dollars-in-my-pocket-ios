@@ -1,86 +1,62 @@
 import UIKit
 
-import SnapKit
 import Common
 import DesignSystem
-import AppInterface
-import Model
 
+import SnapKit
+
+/// 바텀시트 컨텐츠 (인디케이터 + 타이틀 + 가게 리스트).
+/// 흰 배경 / 둥근 코너는 FloatingPanel 의 surfaceView 가 처리하므로 여기서는 transparent 로 둔다.
 final class HomeListView: BaseView {
-    private let homeFilterSelectable: HomeFilterSelectable
-    
-    private lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
-    
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
+    enum Layout {
+        static let dragIndicatorTopInset: CGFloat = 8
+        static let dragIndicatorSize = CGSize(width: 36, height: 4)
+        static let collectionTopInset: CGFloat = 12
     }
-    
-    let mapViewButton: UIButton = {
-        let button = UIButton()
-        button.setImage(DesignSystemAsset.Icons.map.image.resizeImage(scaledTo: 16).withTintColor(DesignSystemAsset.Colors.systemWhite.color), for: .normal)
-        button.setTitle(HomeStrings.categoryFileterMapView, for: .normal)
-        button.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        button.titleLabel?.font = DesignSystemFontFamily.Pretendard.medium.font(size: 12)
-        button.layer.cornerRadius = 20
-        button.backgroundColor = DesignSystemAsset.Colors.gray80.color
-        button.titleEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -4)
-        button.contentEdgeInsets = .init(top: 11, left: 12, bottom: 11, right: 16)
-        button.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
-        button.layer.shadowOffset = CGSize(width: 2, height: 2)
-        button.layer.shadowOpacity = 0.1
-        return button
+
+    private let dragIndicatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray30.color
+        view.layer.cornerRadius = Layout.dragIndicatorSize.height / 2
+        view.layer.masksToBounds = true
+        return view
     }()
-    
-    init(homeFilterSelectable: HomeFilterSelectable) {
-        self.homeFilterSelectable = homeFilterSelectable
-        super.init(frame: .zero)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
+    lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.alwaysBounceVertical = true
+        collectionView.contentInset = .init(top: Layout.collectionTopInset, left: 0, bottom: 24, right: 0)
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
+
     override func setup() {
-        setupUI()
-    }
-    
-    private func setupUI() {
-        backgroundColor = DesignSystemAsset.Colors.gray0.color
-        
+        backgroundColor = .clear
+
         addSubViews([
-            homeFilterCollectionView,
-            collectionView,
-            mapViewButton
+            dragIndicatorView,
+            collectionView
         ])
-        
-        homeFilterCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.top.equalTo(safeAreaLayoutGuide)
-            $0.right.equalToSuperview()
-            $0.height.equalTo(60)
+    }
+
+    override func bindConstraints() {
+        dragIndicatorView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(Layout.dragIndicatorTopInset)
+            $0.size.equalTo(Layout.dragIndicatorSize)
         }
-        
+
         collectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.top.equalTo(homeFilterCollectionView.snp.bottom)
-        }
-        
-        mapViewButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
-            $0.height.equalTo(40)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(dragIndicatorView.snp.bottom)
+            $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
     }
-    
-    private func generateLayout() -> UICollectionViewLayout {
+
+    private func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 8
-        layout.minimumInteritemSpacing = 8
-        layout.headerReferenceSize = HomeListHeaderCell.Layout.size
-        
         return layout
     }
 }

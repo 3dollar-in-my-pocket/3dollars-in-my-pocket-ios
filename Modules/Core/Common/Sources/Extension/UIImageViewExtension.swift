@@ -1,5 +1,7 @@
 import UIKit
 import Kingfisher
+import Model
+import SnapKit
 
 public extension UIImageView {
     func setImage(urlString: String?) {
@@ -14,5 +16,15 @@ public extension UIImageView {
     func clear() {
         image = nil
         kf.cancelDownloadTask()
+    }
+    
+    func setSDImage(_ sdImage: SDImage) {
+        setImage(urlString: sdImage.url)
+        
+        snp.removeConstraints()
+        snp.makeConstraints { make in
+            make.width.equalTo(sdImage.style.width)
+            make.height.equalTo(sdImage.style.height)
+        }
     }
 }

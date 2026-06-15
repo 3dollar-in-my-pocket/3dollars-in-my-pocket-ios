@@ -186,7 +186,7 @@ final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
         
         if let reviewMetric = item.metricLabel[safe: 1] {
             let divider = UIView()
-            divider.backgroundColor = UIColor(hex: reviewMetric.text.fontColor)
+            divider.backgroundColor = reviewMetric.text.flatMap { UIColor(hex: $0.fontColor) }
             divider.snp.makeConstraints {
                 $0.width.equalTo(1)
                 $0.height.equalTo(8)

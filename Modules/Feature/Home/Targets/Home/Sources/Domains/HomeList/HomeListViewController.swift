@@ -1,104 +1,70 @@
 import UIKit
+import Combine
 
 import Common
-import Model
 import DesignSystem
-import DependencyInjection
-import StoreInterface
+import Model
 import Log
 
-import CombineCocoa
+import SnapKit
 
-protocol HomeListDelegate: AnyObject {
-    func didTapUserStore(storeId: Int)
-    
-    func didTapBossStore(storeId: String)
-}
-
+/// 홈 바텀시트의 컨텐츠 VC. 시트 동작(드래그/스냅/스크롤 동기화) 은
+/// FloatingPanelController 가 담당하고, 이 VC 는 컨텐츠와 viewModel 바인딩만 관리한다.
 final class HomeListViewController: BaseViewController {
     override var screenName: ScreenName {
-        return .homeList
+        return viewModel.output.screenName
     }
-    
-    weak var delegate: HomeListDelegate?
-    private lazy var homeListView = HomeListView(homeFilterSelectable: viewModel)
+
+    let homeListView = HomeListView()
     private let viewModel: HomeListViewModel
     private lazy var dataSource = HomeListDataSource(
         collectionView: homeListView.collectionView,
         viewModel: viewModel,
         rootViewController: self
     )
-    
+
+    /// FloatingPanelController.track(scrollView:) 에 넘길 스크롤 뷰.
+    var trackingScrollView: UIScrollView {
+        return homeListView.collectionView
+    }
+
     init(viewModel: HomeListViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func loadView() {
         view = homeListView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        bind()
-        viewModel.input.viewDidLoad.send(())
+        _ = dataSource
     }
-    
-    private func bind() {
-        homeListView.mapViewButton
-            .tapPublisher
-            .throttleClick()
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeListViewController, _) in
-                owner.dismiss(animated: true)
-            }
-            .store(in: &cancellables)
-        
-        // Output
+
+    override func bindViewModelOutput() {
         viewModel.output.dataSource
             .main
             .withUnretained(self)
-            .sink { owner, sections in
+            .sink { (owner: HomeListViewController, sections: [HomeListSection]) in
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
-                
-        viewModel.output.route
-            .main
-            .withUnretained(self)
-            .sink { owner, route in
-                owner.handleRoute(route)
-            }
-            .store(in: &cancellables)
     }
-    
-    private func handleRoute(_ route: HomeListViewModel.Route) {
-        switch route {
-        case .presentCategoryFilter(let viewModel):
-            let categoryFilterViewController = CategoryFilterViewController(viewModel: viewModel)
-            presentPanModal(categoryFilterViewController)
-        case .pushStoreDetail(let storeId):
-            delegate?.didTapUserStore(storeId: Int(storeId) ?? 0)
-        case .pushBossStoreDetail(let storeId):
-            delegate?.didTapBossStore(storeId: storeId)
-        case .showErrorAlert(let error):
-            showErrorAlert(error: error)
-        case .openUrl(let url):
-            openUrl(with: url)
-        }
-    }
-    
-    private func openUrl(with urlString: String?) {
-        guard let urlString, 
-                let url = URL(string: urlString), 
-                UIApplication.shared.canOpenURL(url) else { return }
 
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    func updateCards(_ cards: [any HomeListCardComponent]) {
+        viewModel.input.updateCards.send(cards)
+    }
+
+    func scrollToCard(at index: Int) {
+        guard homeListView.collectionView.numberOfSections > 0 else { return }
+        let itemCount = homeListView.collectionView.numberOfItems(inSection: 0)
+        guard itemCount > index, index >= 0 else { return }
+        let indexPath = IndexPath(item: index, section: 0)
+        homeListView.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
     }
 }

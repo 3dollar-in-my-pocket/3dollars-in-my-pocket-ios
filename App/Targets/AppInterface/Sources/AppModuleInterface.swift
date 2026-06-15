@@ -18,7 +18,7 @@ public protocol AppModuleInterface {
     func goToMain()
     func goToSignin()
     func createWebViewController(webviewType: WebViewType) -> UIViewController
-    func shareKakao(storeId: Int, storeType: StoreType, storeDetailOverview: StoreDetailOverview)
+    func shareKakao(storeId: Int, storeType: StoreType, storeName: String, latitude: Double, longitude: Double)
     func requestATTIfNeeded()
     func createBookmarkURL(folderId: String) -> String
     
