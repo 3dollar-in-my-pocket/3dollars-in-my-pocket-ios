@@ -1,0 +1,40 @@
+name: Discord Release Notify
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to Discord
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          TAG: ${{ github.event.release.tag_name }}
+          BODY: ${{ github.event.release.body }}
+          URL: ${{ github.event.release.html_url }}
+        run: |
+          # Discord embed description 제한(4096자)을 넘지 않도록 안전하게 자른다
+          DESC="$(printf '%s' "$BODY" | head -c 3900)"
+
+          # jq로 페이로드를 만들어 shell/JSON 이스케이프(따옴표·백틱·줄바꿈)를 모두 처리한다
+          payload="$(jq -n \
+            --arg tag "$TAG" \
+            --arg desc "$DESC" \
+            --arg url "$URL" \
+            '{
+              content: "@everyone 새 버전 나왔어요! 🎉",
+              allowed_mentions: { parse: ["everyone"] },
+              embeds: [{
+                title: ("🚀 [iOS] " + $tag + " 출시!"),
+                description: $desc,
+                url: $url,
+                color: 5814783
+              }]
+            }')"
+
+          # -f: HTTP 4xx/5xx면 step도 실패시켜 알림 누락을 감지한다
+          curl -sf -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "$payload"
