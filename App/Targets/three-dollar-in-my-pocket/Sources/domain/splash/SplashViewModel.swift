@@ -200,6 +200,9 @@ final class SplashViewModel: BaseViewModel {
             switch result {
             case .success(let user):
                 dependency.preference.userId = user.userId
+                // 토큰 검증이 끝나면 즉시 메인으로 진입시킨다.
+                // 푸시 토큰 갱신은 앱 진입과 무관하므로 진입을 막지 않도록 비차단으로 처리한다.
+                output.route.send(.goToMain)
                 refreshPushToken()
 
             case .failure(let error):
@@ -208,25 +211,21 @@ final class SplashViewModel: BaseViewModel {
         }.store(in: taskBag)
     }
 
+    // 푸시 토큰 갱신은 앱 진입을 막지 않는 fire-and-forget 작업이다.
+    // 실패하더라도 라우팅에는 영향을 주지 않고 관측용으로만 기록한다.
     private func refreshPushToken() {
+        guard let pushToken = dependency.preference.fcmToken else { return }
+
         Task { [weak self] in
             guard let self else { return }
 
-            if let pushToken = dependency.preference.fcmToken {
-                let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: pushToken)
-                let result = await dependency.deviceRepository.updateDevice(input: input)
+            let input = UserDeviceUpsertRequest(pushPlatformType: "FCM", pushToken: pushToken)
+            let result = await dependency.deviceRepository.updateDevice(input: input)
 
-                switch result {
-                case .success:
-                    output.route.send(.goToMain)
-                case .failure(let error):
-                    handleValidationError(error: error, context: .refreshPushTokenFailed(error))
-                }
-            } else {
-                output.route.send(.goToMain)
+            if case .failure(let error) = result {
+                logErrorToCrashlytics(splashError: .refreshPushTokenFailed(error))
             }
-        }
-
+        }.store(in: taskBag)
     }
 
     private func handleValidationError(error: Error, context: SplashError) {

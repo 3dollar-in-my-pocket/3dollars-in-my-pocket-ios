@@ -23,6 +23,11 @@ final class SplashViewController: BaseViewController {
 
     private let viewModel = SplashViewModel()
 
+    // 백그라운드에서 복귀했을 때만 재로드하기 위한 플래그.
+    // 콜드런치 시점엔 willEnterForeground 발생이 보장되지 않으므로 viewDidLoad에서 직접 로드를 트리거하고,
+    // 이 플래그로 콜드런치 직후의 willEnterForeground 중복 호출만 걸러낸다.
+    private var wasInBackground = false
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -32,6 +37,7 @@ final class SplashViewController: BaseViewController {
 
         setupUI()
         setupNotification()
+        viewModel.input.load.send(())
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -90,6 +96,13 @@ final class SplashViewController: BaseViewController {
     }
 
     private func setupNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleWillEnterForeground),
@@ -185,7 +198,15 @@ final class SplashViewController: BaseViewController {
         }
     }
 
+    @objc private func handleDidEnterBackground() {
+        wasInBackground = true
+    }
+
     @objc private func handleWillEnterForeground() {
+        // 콜드런치 직후의 willEnterForeground(초기 로드와 중복)는 무시하고,
+        // 실제로 백그라운드에 다녀온 경우에만 재로드한다.
+        guard wasInBackground else { return }
+        wasInBackground = false
         viewModel.input.load.send(())
     }
 
