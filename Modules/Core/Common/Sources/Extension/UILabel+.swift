@@ -19,7 +19,7 @@ public extension UILabel {
     func setLineHeight(lineHeight: CGFloat) {
         let style: NSMutableParagraphStyle
 
-        if let existingAttributedText = attributedText {
+        if let existingAttributedText = attributedText, existingAttributedText.length > 0 {
             let mutableAttributedString = NSMutableAttributedString(attributedString: existingAttributedText)
             let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
 
@@ -39,7 +39,7 @@ public extension UILabel {
                 range: fullRange
             )
             attributedText = mutableAttributedString
-        } else if let text = text {
+        } else if let text, text.isNotEmpty {
             style = NSMutableParagraphStyle()
             style.maximumLineHeight = lineHeight
             style.minimumLineHeight = lineHeight
