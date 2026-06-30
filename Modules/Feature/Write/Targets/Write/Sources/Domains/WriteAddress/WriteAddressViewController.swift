@@ -92,7 +92,9 @@ public final class WriteAddressViewController: BaseViewController {
     }
     
     private let viewModel: WriteAddressViewModel
-    
+
+    private var lastCameraChangeReason: Int = NMFMapChangedByDeveloper
+
     public init(viewModel: WriteAddressViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -143,7 +145,8 @@ public final class WriteAddressViewController: BaseViewController {
         }
         
         marker.snp.makeConstraints {
-            $0.center.equalTo(mapView)
+            $0.centerX.equalTo(mapView)
+            $0.bottom.equalTo(mapView.snp.centerY)
         }
         
         currentLocationButton.snp.makeConstraints {
@@ -290,15 +293,19 @@ extension WriteAddressViewController {
 }
 
 extension WriteAddressViewController: NMFMapViewCameraDelegate {
-    public func mapView(_ mapView: NMFMapView, cameraDidChangeByReason reason: Int, animated: Bool) {
-        if animated && reason == NMFMapChangedByGesture {
-            let location = CLLocation(
-                latitude: mapView.cameraPosition.target.lat,
-                longitude: mapView.cameraPosition.target.lng
-            )
-            
-            viewModel.input.moveMapCenter.send(location)
-        }
+    public func mapView(_ mapView: NMFMapView, cameraWillChangeByReason reason: Int, animated: Bool) {
+        lastCameraChangeReason = reason
+    }
+
+    public func mapViewCameraIdle(_ mapView: NMFMapView) {
+        guard lastCameraChangeReason == NMFMapChangedByGesture else { return }
+
+        let location = CLLocation(
+            latitude: mapView.cameraPosition.target.lat,
+            longitude: mapView.cameraPosition.target.lng
+        )
+
+        viewModel.input.moveMapCenter.send(location)
     }
 }
 
