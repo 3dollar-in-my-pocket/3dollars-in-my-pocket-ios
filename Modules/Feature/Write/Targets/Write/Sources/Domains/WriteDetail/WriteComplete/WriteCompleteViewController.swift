@@ -53,8 +53,7 @@ final class WriteCompleteViewController: BaseViewController {
     
     private let storeCategoryStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.distribution = .equalSpacing
+        stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 4
         return stackView
@@ -154,25 +153,23 @@ final class WriteCompleteViewController: BaseViewController {
         stackView.addArrangedSubview(titleLabel, previousSpace: 4)
         stackView.addArrangedSubview(overviewContainer, previousSpace: 12)
         
-        overviewContainer.snp.makeConstraints {
-            $0.height.equalTo(80)
-        }
-        
         overviewContainer.addSubViews([
             storeNameLabel,
             storeCategoryStackView
         ])
-        
+
         storeNameLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(16)
             $0.leading.equalToSuperview().offset(16)
             $0.trailing.equalToSuperview().offset(-16)
         }
-        
+
         storeCategoryStackView.snp.makeConstraints {
+            $0.top.equalTo(storeNameLabel.snp.bottom).offset(10)
             $0.centerX.equalToSuperview()
+            $0.leading.greaterThanOrEqualToSuperview().offset(16)
+            $0.trailing.lessThanOrEqualToSuperview().offset(-16)
             $0.bottom.equalToSuperview().offset(-16)
-            $0.height.equalTo(20)
         }
         
         stackView.addArrangedSubview(descriptionLabel, previousSpace: 28)
@@ -251,10 +248,40 @@ final class WriteCompleteViewController: BaseViewController {
     
     private func updateStoreCategory(_ categories: [StoreFoodCategoryResponse]) {
         storeCategoryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        // 컨테이너 폭을 넘어가면 태그를 다음 행으로 줄바꿈한다
+        let maxRowWidth = view.frame.width
+            - stackView.layoutMargins.left - stackView.layoutMargins.right
+            - 32
+        var currentRow = createCategoryRowStackView()
+        var currentRowWidth: CGFloat = 0
+
         for category in categories {
             let tagView = CategoryTagView(category: category)
-            storeCategoryStackView.addArrangedSubview(tagView)
+            let tagWidth = tagView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
+            let spacing: CGFloat = currentRow.arrangedSubviews.isEmpty ? 0 : 4
+
+            if currentRowWidth + spacing + tagWidth > maxRowWidth, currentRow.arrangedSubviews.isNotEmpty {
+                storeCategoryStackView.addArrangedSubview(currentRow)
+                currentRow = createCategoryRowStackView()
+                currentRowWidth = tagWidth
+            } else {
+                currentRowWidth += spacing + tagWidth
+            }
+            currentRow.addArrangedSubview(tagView)
         }
+
+        if currentRow.arrangedSubviews.isNotEmpty {
+            storeCategoryStackView.addArrangedSubview(currentRow)
+        }
+    }
+
+    private func createCategoryRowStackView() -> UIStackView {
+        let rowStackView = UIStackView()
+        rowStackView.axis = .horizontal
+        rowStackView.alignment = .center
+        rowStackView.spacing = 4
+        return rowStackView
     }
     
     private func updateAddAdditionalInfoButton(store: UserStoreResponse) {
