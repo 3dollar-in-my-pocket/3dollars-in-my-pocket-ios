@@ -38,6 +38,7 @@ final class WebView: BaseView {
             topLineView,
             webView
         ])
+        webView.uiDelegate = self
     }
     
     override func bindConstraints() {
@@ -74,10 +75,25 @@ final class WebView: BaseView {
     
     func bind(webviewType: WebViewType) {
         titleLabel.text = webviewType.title
-        
+
         guard let url = URL(string: webviewType.url) else { return }
         let request = URLRequest(url: url)
-        
+
         webView.load(request)
+    }
+}
+
+extension WebView: WKUIDelegate {
+    // target="_blank" 링크는 새 창을 열 수 없어 무시되므로 현재 웹뷰에서 로드한다
+    func webView(
+        _ webView: WKWebView,
+        createWebViewWith _: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures _: WKWindowFeatures
+    ) -> WKWebView? {
+        if navigationAction.targetFrame.isNil {
+            webView.load(navigationAction.request)
+        }
+        return nil
     }
 }

@@ -64,6 +64,9 @@ final class ReportPollViewController: BaseViewController {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
+
+        // 하단 고정 containerView 방식의 시트라서 기본 pageSheet로 뜨면 상단에 빈 영역이 생긴다
+        modalPresentationStyle = .overCurrentContext
     }
 
     required init?(coder: NSCoder) {
@@ -73,9 +76,19 @@ final class ReportPollViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if let parentView = presentingViewController?.view {
+            DimManager.shared.showDim(targetView: parentView)
+        }
+
         setupUI()
 
         viewModel.input.firstLoad.send()
+    }
+
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        super.dismiss(animated: flag, completion: completion)
+
+        DimManager.shared.hideDim()
     }
 
     private func setupUI() {
