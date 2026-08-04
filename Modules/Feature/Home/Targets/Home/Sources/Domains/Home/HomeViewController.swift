@@ -174,8 +174,11 @@ public final class HomeViewController: BaseViewController {
         viewModel.output.cameraPosition
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
-            .sink { owner, location in
-                owner.homeView.moveCamera(location: location)
+            .sink { owner, cameraPosition in
+                owner.homeView.moveCamera(
+                    location: cameraPosition.0,
+                    zoomLevel: cameraPosition.1
+                )
             }
             .store(in: &cancellables)
 
