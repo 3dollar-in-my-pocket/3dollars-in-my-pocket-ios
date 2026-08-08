@@ -24,8 +24,6 @@ public protocol StoreRepository {
 
     func deletePhoto(photoId: Int) async -> Result<String?, Error>
 
-    func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error>
-
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error>
 
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error>
@@ -39,8 +37,6 @@ public protocol StoreRepository {
     func fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error>
 
     func recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<String?, Error>
-
-    func fetchStoreScreen(input: FetchStoreScreenInput) async -> Result<StoreScreenResponse, Error>
 
     func fetchStoreScreenV2(input: FetchStoreScreenInput) async -> Result<StoreScreenV2Response, Error>
 
@@ -112,12 +108,6 @@ public struct StoreRepositoryImpl: StoreRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error> {
-        let request = StoreApi.fetchBossStoreDetail(input)
-
-        return await NetworkManager.shared.request(requestType: request)
-    }
-
     public func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> {
         let request = StoreApi.fetchStoreNewPosts(storeId: storeId, cursorInput: cursor)
 
@@ -162,12 +152,6 @@ public struct StoreRepositoryImpl: StoreRepository {
 
     public func fetchStoreContributorHistories(storeId: Int, cursor: String?) async -> Result<StoreContributorHistoriesSection, Error> {
         let request = StoreApi.fetchStoreContributorHistories(storeId: storeId, cursor: cursor)
-
-        return await NetworkManager.shared.request(requestType: request)
-    }
-
-    public func fetchStoreScreen(input: FetchStoreScreenInput) async -> Result<StoreScreenResponse, Error> {
-        let request = StoreApi.fetchStoreScreen(input)
 
         return await NetworkManager.shared.request(requestType: request)
     }

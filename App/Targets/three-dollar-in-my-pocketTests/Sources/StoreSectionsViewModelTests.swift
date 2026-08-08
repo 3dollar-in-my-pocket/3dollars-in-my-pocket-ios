@@ -205,7 +205,6 @@ private final class MockStoreSectionsRepository: StoreRepository {
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { fatalError() }
     func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> { fatalError() }
     func deletePhoto(photoId: Int) async -> Result<String?, Error> { fatalError() }
-    func fetchBossStoreDetail(input: FetchBossStoreDetailInput) async -> Result<BossStoreDetailResponse, Error> { fatalError() }
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> { fatalError() }
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> { fatalError() }
     func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error> { fatalError() }
@@ -213,7 +212,6 @@ private final class MockStoreSectionsRepository: StoreRepository {
     func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> { fatalError() }
     func fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error> { fatalError() }
     func recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<String?, Error> { fatalError() }
-    func fetchStoreScreen(input: FetchStoreScreenInput) async -> Result<StoreScreenResponse, Error> { fatalError() }
     func fetchStorePreview(input: FetchStoreScreenInput) async -> Result<StorePreviewScreenResponse, Error> { fatalError() }
     func fetchStoreContributorHistories(storeId: Int, cursor: String?) async -> Result<StoreContributorHistoriesSection, Error> { fatalError() }
 }

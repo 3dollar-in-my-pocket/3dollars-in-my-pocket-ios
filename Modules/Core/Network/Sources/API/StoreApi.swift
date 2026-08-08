@@ -4,7 +4,6 @@ import CoreLocation
 import Model
 
 enum StoreApi {
-    case fetchBossStoreDetail(FetchBossStoreDetailInput)
     case fetchStoreNewPosts(storeId: String, cursorInput: CursorRequestInput)
     case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
     case fetchAroundStores(input: FetchAroundStoreInput)
@@ -21,7 +20,6 @@ enum StoreApi {
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
     case recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType])
-    case fetchStoreScreen(FetchStoreScreenInput)
     case fetchStoreScreenV2(FetchStoreScreenInput)
     case fetchStorePreview(FetchStoreScreenInput)
     case fetchStoreContributorHistories(storeId: Int, cursor: String?)
@@ -30,8 +28,6 @@ enum StoreApi {
 extension StoreApi: RequestType {
     var param: Encodable? {
         switch self {
-        case .fetchBossStoreDetail:
-            return nil
         case .fetchStoreNewPosts(_, let cursorInput):
             return cursorInput
         case .togglePostSticker(_, _, let input):
@@ -70,8 +66,6 @@ extension StoreApi: RequestType {
             return ["itemTypes": itemTypes.map { $0.rawValue }]
         case .recordDisplayItemImpression(_, let itemTypes):
             return ["itemTypes": itemTypes.map { $0.rawValue }]
-        case .fetchStoreScreen:
-            return nil
         case .fetchStoreScreenV2:
             return nil
         case .fetchStorePreview:
@@ -87,8 +81,6 @@ extension StoreApi: RequestType {
 
     var method: RequestMethod {
         switch self {
-        case .fetchBossStoreDetail:
-            return .get
         case .fetchStoreNewPosts:
             return .get
         case .togglePostSticker:
@@ -121,8 +113,6 @@ extension StoreApi: RequestType {
             return .get
         case .recordDisplayItemImpression:
             return .post
-        case .fetchStoreScreen:
-            return .get
         case .fetchStoreScreenV2:
             return .get
         case .fetchStorePreview:
@@ -134,11 +124,6 @@ extension StoreApi: RequestType {
 
     var header: HTTPHeaderType {
         switch self {
-        case .fetchBossStoreDetail(let input):
-            return .custom([
-                "X-Device-Latitude": String(input.latitude),
-                "X-Device-Longitude": String(input.longitude)
-            ])
         case .fetchStoreNewPosts:
             return .json
         case .togglePostSticker:
@@ -171,11 +156,6 @@ extension StoreApi: RequestType {
             return .location
         case .recordDisplayItemImpression:
             return .json
-        case .fetchStoreScreen(let input):
-            return .custom([
-                "X-Device-Latitude": String(input.latitude),
-                "X-Device-Longitude": String(input.longitude)
-            ])
         case .fetchStoreScreenV2(let input):
             return .custom([
                 "X-Device-Latitude": String(input.latitude),
@@ -193,8 +173,6 @@ extension StoreApi: RequestType {
 
     var path: String {
         switch self {
-        case .fetchBossStoreDetail(let input):
-            return "/api/v4/boss-store/\(input.storeId)"
         case .fetchStoreNewPosts(let storeId, _):
             return "/api/v1/store/\(storeId)/news-posts"
         case .togglePostSticker(let storeId, let postId, _):
@@ -227,8 +205,6 @@ extension StoreApi: RequestType {
             return "/api/v1/store/\(storeId)/display-items"
         case .recordDisplayItemImpression(let storeId, _):
             return "/api/v1/store/\(storeId)/display-items/impression"
-        case .fetchStoreScreen(let input):
-            return "/api/v1/screen/store/\(input.storeId)"
         case .fetchStoreScreenV2(let input):
             return "/api/v2/screen/store/\(input.storeId)"
         case .fetchStorePreview(let input):

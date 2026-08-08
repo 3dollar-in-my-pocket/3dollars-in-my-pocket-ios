@@ -32,7 +32,7 @@ public final class ReviewListViewModel: BaseViewModel {
         let showErrorAlert = PassthroughSubject<Error, Never>()
         let route = PassthroughSubject<Route, Never>()
         
-        // StoreDetailViewModel 전달용 이벤트
+        // 리뷰 변경 사항을 호출한 화면에 전달하는 이벤트
         let onSuccessWriteReview = PassthroughSubject<StoreDetailReview, Never>()
         let onSuccessEditReview = PassthroughSubject<StoreReviewResponse, Never>()
         let onSuccessReportReview = PassthroughSubject<Int, Never>()
