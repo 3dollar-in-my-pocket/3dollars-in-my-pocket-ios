@@ -2,7 +2,7 @@ import UIKit
 
 import DesignSystem
 import Common
-import StoreInterface
+import PanModal
 
 final class CouponListViewController: BaseViewController {
 
@@ -79,13 +79,19 @@ final class CouponListViewController: BaseViewController {
         viewModel.output.route
             .main
             .withUnretained(self)
-            .sink { owner, route in
+            .sink { (owner: CouponListViewController, route) in
                 switch route {
                 case .presentUseCoupon(let viewModel):
                     let viewController = BossStoreCouponBottomSheetViewController(viewModel: viewModel)
                     owner.presentPanModal(viewController)
                 case .bossStoreDetail(let storeId):
-                    let viewController = BossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
+                    guard let storeId = Int(storeId) else { return }
+                    let location = Preference.shared.userCurrentLocation.coordinate
+                    let viewController = StoreDetailFullScreenViewController(
+                        storeId: storeId,
+                        latitude: location.latitude,
+                        longitude: location.longitude
+                    )
                     owner.navigationController?.pushViewController(viewController, animated: true)
                 }
             }

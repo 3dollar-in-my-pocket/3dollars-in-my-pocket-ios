@@ -155,7 +155,7 @@ public final class RegisteredStoreListViewController: BaseViewController {
     }
     
     private func pushStoreDetail(storeId: Int) {
-        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+        let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
 
         navigationController?.pushViewController(viewController, animated: true)
     }

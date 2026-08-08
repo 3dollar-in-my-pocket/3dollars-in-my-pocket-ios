@@ -12,10 +12,10 @@ import PanModal
 
 final class DeepLinkHandler: DeepLinkHandlerProtocol {
     static let shared = DeepLinkHandler()
-    
+
     private var canHandleDeepLink: Bool {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
-        
+
         if let navigationViewController = rootViewController as? UINavigationController {
             if navigationViewController.topViewController is MainTabBarViewController {
                 return true
@@ -28,13 +28,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             return false
         }
     }
-    
+
     private var reservedDeepLink: String?
-    
+
     func reservedDeepLinkExisted() -> Bool {
         return reservedDeepLink.isNotNil
     }
-    
+
     func handleAdvertisementLink(_ advertisementLink: AdvertisementLinkResponse) {
         switch advertisementLink.type {
         case .appScheme:
@@ -47,7 +47,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             return
         }
     }
-    
+
     func handleLinkResponse(_ linkResponse: SDLink) {
         switch linkResponse.type {
         case .appScheme:
@@ -63,27 +63,27 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             return
         }
     }
-    
+
     func handle(_ urlString: String) {
         guard canHandleDeepLink else {
             reservedDeepLink = urlString
             return
         }
-        
+
         guard let url = URL(string: urlString) else { return }
-        var path: String? = nil
-        
+        var path: String?
+
         if isUniversalLinkHost(url: url) {
             path = url.relativePath.replacingOccurrences(of: "/", with: "")
         }
-        
+
         if isAppScheme(url: url) {
             path = (url.host ?? "") + url.path
         }
-        
+
         guard let path else { return }
         let deepLinkPath = DeeplinkPath(value: path)
-        
+
         switch deepLinkPath {
         case .bookmark:
             guard let params = url.params(),
@@ -95,19 +95,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(navigationController)
         case .store:
             guard let params = url.params(),
-                  let storeTypeString = params["storeType"] as? String,
-                  let storeId = params["storeId"] as? String else { return }
-            
-            var viewController: UIViewController
-            switch StoreType(value: storeTypeString) {
-            case .userStore:
-                viewController = Environment.storeInterface.getStoreDetailViewController(storeId: Int(storeId) ?? 0)
-            case .bossStore:
-                viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
-            case .unknown:
-                return
-            }
-            route(viewController)
+                  let storeId = params["storeId"] as? Int else { return }
+
+            route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
         case .home:
             moveTab(.home)
         case .medal:
@@ -118,17 +108,17 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .pollDetail:
             guard let params = url.params(),
                   let pollId = params["pollId"] as? String else { return }
-            
+
             let viewController = Environment.communityInterface.getPollDetailViewController(pollId: pollId)
             route(viewController)
         case .postList:
             guard let params = url.params(),
-                  let storeId = params["storeId"] as? String else { return }
-            
-            let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
+                  let storeId = params["storeId"] as? Int else { return }
+
+            let storeDetailViewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
             route(storeDetailViewController)
-            
-            let config = BossStorePostListViewModel.Config(storeId: storeId)
+
+            let config = BossStorePostListViewModel.Config(storeId: String(storeId))
             let viewModel = BossStorePostListViewModel(config: config)
             let viewController = BossStorePostListViewController(viewModel: viewModel)
             route(viewController)
@@ -143,36 +133,22 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             let config = AccountInfoViewModelConfig(shouldPush: false)
             let viewModel = Environment.membershipInterface.createAccountInfoViewModel(config: config)
             let viewController = Environment.membershipInterface.createAccountInfoViewController(viewModel: viewModel)
-            
+
             guard let viewController else { return }
             route(viewController)
         case .reviewList:
             guard let params = url.params(),
-                  let storeId = params["storeId"] as? String,
-                  let storeTypeString = params["storeType"] as? String else { return }
-            let storeType = StoreType(value: storeTypeString)
-            
-            switch storeType {
-            case .userStore:
-                if let intStoreId = Int(storeId) {
-                    let storeDetailViewController = Environment.storeInterface.getStoreDetailViewController(storeId: intStoreId)
-                    route(storeDetailViewController)
-                }
-                
-                let config = ReviewListViewModel.Config(storeId: Int(storeId) ?? 0, isBossStore: storeType == .bossStore)
-                let viewModel = ReviewListViewModel(config: config)
-                let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
-                route(viewController)
-            case .bossStore:
-                let storeDetailViewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: true)
-                route(storeDetailViewController)
-            case .unknown:
-                break
-            }
+                  let storeId = params["storeId"] as? Int else { return }
+
+            route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
+            let config = ReviewListViewModel.Config(storeId: storeId, isBossStore: false)
+            let viewModel = ReviewListViewModel(config: config)
+            let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
+            route(viewController)
         case .visit:
             guard let params = url.params(),
                   let storeId = params["storeId"] as? String else { return }
-            
+
             let config = VisitViewModel.Config(storeId: storeId)
             let viewModel = VisitViewModel(config: config)
             let viewController = VisitViewController(viewModel: viewModel)
@@ -182,41 +158,40 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(storeDetailViewController)
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
-            break
         }
     }
-    
+
     func handleReservedDeepLink() {
         guard let reservedDeepLink, canHandleDeepLink else { return }
-        
+
         handle(reservedDeepLink)
         self.reservedDeepLink = nil
     }
-    
+
     private func moveTab(_ tab: TabBarTag) {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
-        
+
         if let rootViewController {
             let topViewController = UIUtils.getTopViewController(rootViewController)
             if topViewController.isPanModalPresented == true {
                 topViewController.dismiss(animated: true)
             }
         }
-        
+
         if let navigationViewController = rootViewController as? UINavigationController,
            let tabBarViewController = navigationViewController.topViewController as? MainTabBarViewController {
             tabBarViewController.selectTab(tab: tab)
         }
     }
-    
+
     private func isAppScheme(url: URL) -> Bool {
         return url.scheme == Bundle.deeplinkScheme && url.host.isNotNil
     }
-    
+
     private func route(_ viewController: UIViewController, forcePresent: Bool = false) {
         guard let rootViewController = SceneDelegate.shared?.window?.rootViewController else { return }
         let topViewController = UIUtils.getTopViewController(rootViewController)
-        
+
         if forcePresent {
             if topViewController is PanModalPresentable {
                 topViewController.dismiss(animated: true) { [weak self] in
@@ -226,7 +201,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
                 topViewController.present(viewController, animated: true)
             }
         }
-        
+
         if viewController is UINavigationController {
             topViewController.present(viewController, animated: true)
         } else if let navigationController = topViewController as? UINavigationController {
@@ -245,7 +220,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             topViewController.present(navigationController, animated: true)
         }
     }
-    
+
     private func isUniversalLinkHost(url: URL) -> Bool {
         return url.host == URL(string: Bundle.universialLinkHost)?.host
     }

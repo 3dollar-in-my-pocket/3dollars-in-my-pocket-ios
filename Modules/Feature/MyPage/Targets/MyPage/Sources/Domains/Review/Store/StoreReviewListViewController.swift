@@ -84,7 +84,7 @@ final class StoreReviewListViewController: BaseViewController {
                 case .storeDetail(let storeId): 
                     owner.pushStoreDetail(storeId: storeId)
                 case .bossStoreDetail(let storeId):
-                    owner.pushBossStoreDetail(storeId: storeId)
+                    owner.pushStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -121,15 +121,14 @@ final class StoreReviewListViewController: BaseViewController {
     }
     
     private func pushStoreDetail(storeId: Int) {
-        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+        let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
 
         navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func pushBossStoreDetail(storeId: String) {
-        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
-
-        navigationController?.pushViewController(viewController, animated: true)
+    private func pushStoreDetail(storeId: String) {
+        guard let storeId = Int(storeId) else { return }
+        pushStoreDetail(storeId: storeId)
     }
 }
 

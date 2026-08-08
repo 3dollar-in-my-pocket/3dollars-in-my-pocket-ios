@@ -81,8 +81,8 @@ final class BossStoreReviewListViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
-                case .bossStoreDetail(let storeId): 
-                    owner.pushBossStoreDetail(storeId: storeId)
+                case .bossStoreDetail(let storeId):
+                    owner.pushStoreDetail(storeId: storeId)
                 }
             }
             .store(in: &cancellables)
@@ -118,8 +118,9 @@ final class BossStoreReviewListViewController: BaseViewController {
         return layout
     }
     
-    private func pushBossStoreDetail(storeId: String) {
-        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
+    private func pushStoreDetail(storeId: String) {
+        guard let storeId = Int(storeId) else { return }
+        let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
 
         navigationController?.pushViewController(viewController, animated: true)
     }

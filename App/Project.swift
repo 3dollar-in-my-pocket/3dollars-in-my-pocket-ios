@@ -357,6 +357,7 @@ let project = Project(
             resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
+                .Feature.store,
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,

@@ -22,6 +22,7 @@ enum StoreApi {
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
     case recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType])
     case fetchStoreScreen(FetchStoreScreenInput)
+    case fetchStoreScreenV2(FetchStoreScreenInput)
     case fetchStorePreview(FetchStoreScreenInput)
     case fetchStoreContributorHistories(storeId: Int, cursor: String?)
 }
@@ -49,11 +50,11 @@ extension StoreApi: RequestType {
             return input
         case .fetchStorePhotos(let storeId, let cursor):
             var params = ["storeId": "\(storeId)"]
-            
+
             if let cursor {
                 params["cursor"] = cursor
             }
-            
+
             return params
         case .editReview(_, let input):
             return input
@@ -71,17 +72,19 @@ extension StoreApi: RequestType {
             return ["itemTypes": itemTypes.map { $0.rawValue }]
         case .fetchStoreScreen:
             return nil
+        case .fetchStoreScreenV2:
+            return nil
         case .fetchStorePreview:
             return nil
         case .fetchStoreContributorHistories(_, let cursor):
             if let cursor {
-                return ["cursor": cursor] 
+                return ["cursor": cursor]
             } else {
                 return nil
             }
         }
     }
-    
+
     var method: RequestMethod {
         switch self {
         case .fetchBossStoreDetail:
@@ -120,13 +123,15 @@ extension StoreApi: RequestType {
             return .post
         case .fetchStoreScreen:
             return .get
+        case .fetchStoreScreenV2:
+            return .get
         case .fetchStorePreview:
             return .get
         case .fetchStoreContributorHistories:
             return .get
         }
     }
-    
+
     var header: HTTPHeaderType {
         switch self {
         case .fetchBossStoreDetail(let input):
@@ -171,6 +176,11 @@ extension StoreApi: RequestType {
                 "X-Device-Latitude": String(input.latitude),
                 "X-Device-Longitude": String(input.longitude)
             ])
+        case .fetchStoreScreenV2(let input):
+            return .custom([
+                "X-Device-Latitude": String(input.latitude),
+                "X-Device-Longitude": String(input.longitude)
+            ])
         case .fetchStorePreview(let input):
             return .custom([
                 "X-Device-Latitude": String(input.latitude),
@@ -180,7 +190,7 @@ extension StoreApi: RequestType {
             return .json
         }
     }
-    
+
     var path: String {
         switch self {
         case .fetchBossStoreDetail(let input):
@@ -219,6 +229,8 @@ extension StoreApi: RequestType {
             return "/api/v1/store/\(storeId)/display-items/impression"
         case .fetchStoreScreen(let input):
             return "/api/v1/screen/store/\(input.storeId)"
+        case .fetchStoreScreenV2(let input):
+            return "/api/v2/screen/store/\(input.storeId)"
         case .fetchStorePreview(let input):
             return "/api/v1/screen/store/\(input.storeId)/preview"
         case .fetchStoreContributorHistories(let storeId, _):

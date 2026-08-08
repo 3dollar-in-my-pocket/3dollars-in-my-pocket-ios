@@ -53,27 +53,15 @@ final class StoreDetailConfigurationViewController: UIViewController {
     @objc private func didTapMove() {
         guard let storeId = idField.text else { return }
         
-        switch storeViewType {
-        case .storeDetail:
-            pushStoreDetail(id: storeId)
-            
-        case .bossStoreDetail:
-            pushBossStoreDetail(id: storeId)
-        }
+        pushStoreDetail(id: storeId)
     }
     
     private func pushStoreDetail(id: String) {
         guard let storeId = Int(id) else { return }
-        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+        let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
         
         navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func pushBossStoreDetail(id: String) {
-        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id, shouldPushReviewList: false)
-        
-        navigationController?.isNavigationBarHidden = true
-        navigationController?.pushViewController(viewController, animated: true)
-    }
 }
