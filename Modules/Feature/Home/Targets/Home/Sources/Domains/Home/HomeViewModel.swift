@@ -50,7 +50,7 @@ extension HomeViewModel {
         let address = PassthroughSubject<String, Never>()
         let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
-        let cameraPosition = PassthroughSubject<CLLocation, Never>()
+        let cameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
@@ -74,6 +74,7 @@ extension HomeViewModel {
         var filterSections: [any HomeScreenSection] = []
         var radioSelection: [String: Int] = [:]
         var hasLoadedFilterScreen = false
+        var initialMapZoomLevel: Double?
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
         var newMapMaxDistance: Double?
@@ -190,22 +191,16 @@ final class HomeViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
 
-        getCurrentLocation
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, location: CLLocation) in
-                owner.state.resultCameraPosition = location
-                owner.state.currentLocation = owner.state.resultCameraPosition
-                owner.state.newCameraPosition = location
-                owner.output.cameraPosition.send(location)
-                owner.dependency.preference.userCurrentLocation = location
-            })
-            .store(in: &cancellables)
-
-        // 첫 카드 요청은 위치 + 필터 응답이 모두 준비된 뒤에만 발사한다.
+        // 최초 카메라는 위치와 필터 설정 응답이 모두 준비된 뒤 한 번만 이동한다.
         Publishers.CombineLatest(getCurrentLocation, filterScreenLoaded)
             .first()
             .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, _) in
+            .sink(receiveValue: { (owner: HomeViewModel, values) in
+                let location = values.0
+                owner.state.resultCameraPosition = location
+                owner.state.currentLocation = location
+                owner.state.newCameraPosition = location
+                owner.output.cameraPosition.send((location, owner.state.initialMapZoomLevel))
                 owner.fetchInitialCards()
             })
             .store(in: &cancellables)
@@ -330,7 +325,7 @@ final class HomeViewModel: BaseViewModel {
                 let location = CLLocation(latitude: latitude, longitude: longitude)
                 owner.state.newCameraPosition = location
                 owner.state.resultCameraPosition = location
-                owner.output.cameraPosition.send(location)
+                owner.output.cameraPosition.send((location, nil))
                 owner.fetchInitialCards()
                 owner.output.isHiddenResearchButton.send(true)
             })
@@ -386,7 +381,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.sendClickCurrentLocationLog()
                 owner.dependency.preference.userCurrentLocation = location
                 owner.state.currentLocation = location
-                owner.output.cameraPosition.send(location)
+                owner.output.cameraPosition.send((location, nil))
             }
             .store(in: &cancellables)
 
@@ -564,7 +559,7 @@ final class HomeViewModel: BaseViewModel {
                     latitude: marker.location.latitude,
                     longitude: marker.location.longitude
                 )
-                output.cameraPosition.send(cameraPosition)
+                output.cameraPosition.send((cameraPosition, nil))
             }
         } else if let admob = card as? HomeListAdmobCardResponse {
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))
@@ -709,6 +704,7 @@ extension HomeViewModel {
             case .success(let response):
                 state.filterSections = response.sections
                 state.hasLoadedFilterScreen = true
+                state.initialMapZoomLevel = response.configuration?.initialMapZoomLevel
                 initializeRadioSelectionDefaults()
                 syncRadioSelectionFromLegacy()
                 output.filterDatasource.send(flattenFilterDatasource())

@@ -2,9 +2,15 @@ import Foundation
 
 public struct HomeFilterScreenResponse: Decodable {
     public let sections: [any HomeScreenSection]
+    public let configuration: Configuration?
+
+    public struct Configuration: Decodable {
+        public let initialMapZoomLevel: Double
+    }
 
     public enum CodingKeys: String, CodingKey {
         case sections
+        case configuration
     }
 
     public init(from decoder: any Decoder) throws {
@@ -26,6 +32,7 @@ public struct HomeFilterScreenResponse: Decodable {
             }
         }
         self.sections = sections
+        self.configuration = try container.decodeIfPresent(Configuration.self, forKey: .configuration)
     }
 }
 

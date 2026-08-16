@@ -149,15 +149,21 @@ final class HomeView: BaseView {
         }
     }
     
-    func moveCamera(location: CLLocation) {
+    func moveCamera(location: CLLocation, zoomLevel: Double? = nil) {
+        let currentCameraPosition = mapView.cameraPosition
         let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-        let cameraPosition = NMFCameraPosition(target, zoom: mapView.zoomLevel)
+        let cameraPosition = NMFCameraPosition(
+            target,
+            zoom: zoomLevel ?? currentCameraPosition.zoom,
+            tilt: currentCameraPosition.tilt,
+            heading: currentCameraPosition.heading
+        )
         let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
         
         cameraUpdate.animation = .easeIn
         mapView.moveCamera(cameraUpdate)
     }
-    
+
     func setAdvertisementMarker(_ advertisement: AdvertisementResponse) {
         guard let urlString = advertisement.image?.url,
               let url = URL(string: urlString) else { return }
