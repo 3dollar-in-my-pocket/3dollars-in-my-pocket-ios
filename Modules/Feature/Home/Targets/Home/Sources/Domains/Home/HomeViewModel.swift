@@ -51,6 +51,7 @@ extension HomeViewModel {
         let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
+        let focusBounds = PassthroughSubject<LocationBoundsResponse, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
@@ -468,6 +469,10 @@ final class HomeViewModel: BaseViewModel {
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
                 emitCards()
+
+                if let focusBounds = response.focusBounds {
+                    output.focusBounds.send(focusBounds)
+                }
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }

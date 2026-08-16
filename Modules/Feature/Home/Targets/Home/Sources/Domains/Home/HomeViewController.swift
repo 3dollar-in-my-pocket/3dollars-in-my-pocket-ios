@@ -182,6 +182,14 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.output.focusBounds
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, bounds: LocationBoundsResponse) in
+                owner.homeView.moveCamera(bounds: bounds)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.advertisementMarker
             .main
             .withUnretained(self)
