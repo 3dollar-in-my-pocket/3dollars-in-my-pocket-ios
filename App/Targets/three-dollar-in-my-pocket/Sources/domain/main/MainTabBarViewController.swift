@@ -109,6 +109,10 @@ final class MainTabBarViewController: UITabBarController {
         self.setTabBarColor(tab: tab)
     }
     
+    func applyHomePreset(_ preset: String) {
+        homeViewController.applyPreset(preset)
+    }
+
     func showLoading(isShow: Bool) {
         LoadingManager.shared.showLoading(isShow: isShow)
     }
