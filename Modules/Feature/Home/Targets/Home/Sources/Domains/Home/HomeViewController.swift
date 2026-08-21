@@ -106,6 +106,10 @@ public final class HomeViewController: BaseViewController {
         storePreviewBottomSheetController?.view.isHidden = true
     }
 
+    public func applyPreset(_ preset: String) {
+        viewModel.input.applyPreset.send(preset)
+    }
+
     public override func sendPageView() {
         super.sendPageView()
 
