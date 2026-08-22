@@ -155,6 +155,12 @@ final class HomeViewModel: BaseViewModel {
     private let filterScreenLoaded = PassthroughSubject<Void, Never>()
     private var loadTask: Task<Void, Never>?
     private var loadMoreTask: Task<Void, Never>?
+    
+    private var allBars: [any HomeFilterBar] {
+        state.filterSections
+            .compactMap { $0 as? HomeFilterSection }
+            .flatMap(\.bars)
+    }
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -734,12 +740,6 @@ extension HomeViewModel {
             filterScreenLoaded.send()
         }
         .store(in: taskBag)
-    }
-
-    private var allBars: [any HomeFilterBar] {
-        state.filterSections
-            .compactMap { $0 as? HomeFilterSection }
-            .flatMap(\.bars)
     }
 
     private func applyServerSelectionDefaults() {
