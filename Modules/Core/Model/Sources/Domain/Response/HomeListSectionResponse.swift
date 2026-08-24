@@ -3,20 +3,28 @@ import Foundation
 public struct HomeListSectionResponse: Decodable {
     public let cards: [any HomeListCardComponent]
     public let cursor: CursorString?
+    public let focusBounds: LocationBoundsResponse?
 
     public enum CodingKeys: String, CodingKey {
         case cards
         case cursor
+        case focusBounds
     }
 
-    public init(cards: [any HomeListCardComponent], cursor: CursorString?) {
+    public init(
+        cards: [any HomeListCardComponent],
+        cursor: CursorString?,
+        focusBounds: LocationBoundsResponse? = nil
+    ) {
         self.cards = cards
         self.cursor = cursor
+        self.focusBounds = focusBounds
     }
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.cursor = try container.decodeIfPresent(CursorString.self, forKey: .cursor)
+        self.focusBounds = try container.decodeIfPresent(LocationBoundsResponse.self, forKey: .focusBounds)
 
         var cardsArray = try container.nestedUnkeyedContainer(forKey: .cards)
         var typeProbe = cardsArray

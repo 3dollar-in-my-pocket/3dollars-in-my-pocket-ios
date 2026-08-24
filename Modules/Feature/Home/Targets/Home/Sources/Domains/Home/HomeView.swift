@@ -9,6 +9,10 @@ import SnapKit
 import Then
 
 final class HomeView: BaseView {
+    enum Layout {
+        static let focusBoundsPadding: CGFloat = 24
+    }
+
     /// 바텀시트 short form 의 가시 영역 높이. HomeListLayout.Layout.tipVisibleHeight 와 동일.
     private let bottomSheetShortFormHeight: CGFloat = HomeListLayout.Layout.tipVisibleHeight
 
@@ -160,6 +164,22 @@ final class HomeView: BaseView {
         )
         let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
         
+        cameraUpdate.animation = .easeIn
+        mapView.moveCamera(cameraUpdate)
+    }
+
+    func moveCamera(bounds: LocationBoundsResponse) {
+        let southWest = NMGLatLng(lat: bounds.southWest.latitude, lng: bounds.southWest.longitude)
+        let northEast = NMGLatLng(lat: bounds.northEast.latitude, lng: bounds.northEast.longitude)
+        let latLngBounds = NMGLatLngBounds(southWest: southWest, northEast: northEast)
+        let paddingInsets = UIEdgeInsets(
+            top: homeFilterCollectionView.frame.maxY + Layout.focusBoundsPadding,
+            left: Layout.focusBoundsPadding,
+            bottom: safeAreaInsets.bottom + bottomSheetShortFormHeight + Layout.focusBoundsPadding,
+            right: Layout.focusBoundsPadding
+        )
+        let cameraUpdate = NMFCameraUpdate(fit: latLngBounds, paddingInsets: paddingInsets)
+
         cameraUpdate.animation = .easeIn
         mapView.moveCamera(cameraUpdate)
     }

@@ -3,15 +3,15 @@ import Foundation
 import Model
 
 enum ScreenApi {
-    case fetchHomeFilterScreen
+    case fetchHomeFilterScreen(input: FetchHomeFilterScreenInput)
     case fetchHomeSectionList(input: FetchHomeSectionListInput)
 }
 
 extension ScreenApi: RequestType {
     var param: (any Encodable)? {
         switch self {
-        case .fetchHomeFilterScreen:
-            return nil
+        case .fetchHomeFilterScreen(let input):
+            return input
         case .fetchHomeSectionList(let input):
             return input
         }

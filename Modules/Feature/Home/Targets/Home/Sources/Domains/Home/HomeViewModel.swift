@@ -39,6 +39,7 @@ extension HomeViewModel {
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         let didTapFeedButton = PassthroughSubject<Void, Never>()
+        let applyPreset = PassthroughSubject<String, Never>()
 
         // From bottom sheet
         let bottomSheetWillLoadMore = PassthroughSubject<Void, Never>()
@@ -51,6 +52,7 @@ extension HomeViewModel {
         let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
+        let focusBounds = PassthroughSubject<LocationBoundsResponse, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
@@ -74,6 +76,7 @@ extension HomeViewModel {
         var filterSections: [any HomeScreenSection] = []
         var radioSelection: [String: Int] = [:]
         var hasLoadedFilterScreen = false
+        var preset: String?
         var initialMapZoomLevel: Double?
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
@@ -152,6 +155,12 @@ final class HomeViewModel: BaseViewModel {
     private let filterScreenLoaded = PassthroughSubject<Void, Never>()
     private var loadTask: Task<Void, Never>?
     private var loadMoreTask: Task<Void, Never>?
+    
+    private var allBars: [any HomeFilterBar] {
+        state.filterSections
+            .compactMap { $0 as? HomeFilterSection }
+            .flatMap(\.bars)
+    }
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -209,6 +218,14 @@ final class HomeViewModel: BaseViewModel {
             .sink(receiveValue: { [weak self] in
                 self?.presentPolicyIfNeeded()
                 self?.fetchFilterScreen()
+            })
+            .store(in: &cancellables)
+
+        input.applyPreset
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, preset: String) in
+                owner.state.preset = preset
+                owner.fetchFilterScreen(shouldRefreshCards: true)
             })
             .store(in: &cancellables)
 
@@ -468,6 +485,10 @@ final class HomeViewModel: BaseViewModel {
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
                 emitCards()
+
+                if let focusBounds = response.focusBounds {
+                    output.focusBounds.send(focusBounds)
+                }
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
@@ -697,17 +718,21 @@ extension HomeViewModel {
         output.filterDatasource.send(datasource)
     }
 
-    private func fetchFilterScreen() {
+    private func fetchFilterScreen(shouldRefreshCards: Bool = false) {
         Task { @MainActor in
-            let result = await dependency.screenRepository.fetchHomeFilterScreen()
+            let input = FetchHomeFilterScreenInput(preset: state.preset)
+            let result = await dependency.screenRepository.fetchHomeFilterScreen(input: input)
             switch result {
             case .success(let response):
                 state.filterSections = response.sections
                 state.hasLoadedFilterScreen = true
                 state.initialMapZoomLevel = response.configuration?.initialMapZoomLevel
-                initializeRadioSelectionDefaults()
-                syncRadioSelectionFromLegacy()
+                applyServerSelectionDefaults()
                 output.filterDatasource.send(flattenFilterDatasource())
+
+                if shouldRefreshCards && state.resultCameraPosition.isNotNil {
+                    fetchInitialCards()
+                }
             case .failure:
                 output.filterDatasource.send(makeFallbackFilterDatasource())
             }
@@ -717,18 +742,11 @@ extension HomeViewModel {
         .store(in: taskBag)
     }
 
-    private var allBars: [any HomeFilterBar] {
-        state.filterSections
-            .compactMap { $0 as? HomeFilterSection }
-            .flatMap(\.bars)
-    }
-
-    private func initializeRadioSelectionDefaults() {
-        for case let radioBar as HomeFilterRadioBar in allBars where state.radioSelection[radioBar.paramKey] == nil {
+    private func applyServerSelectionDefaults() {
+        state.radioSelection = [:]
+        for case let radioBar as HomeFilterRadioBar in allBars {
             state.radioSelection[radioBar.paramKey] = 0
-            if let firstOption = radioBar.options.first {
-                applyParamValueToLegacyState(paramKey: radioBar.paramKey, paramValue: firstOption.paramValue)
-            }
+            applyParamValueToLegacyState(paramKey: radioBar.paramKey, paramValue: radioBar.options.first?.paramValue)
         }
     }
 
