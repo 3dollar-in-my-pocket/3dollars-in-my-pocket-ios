@@ -31,6 +31,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     
     private var reservedDeepLink: String?
     
+    private var mainTabBarViewController: MainTabBarViewController? {
+        let rootViewController = SceneDelegate.shared?.window?.rootViewController
+        let navigationViewController = rootViewController as? UINavigationController
+
+        return navigationViewController?.topViewController as? MainTabBarViewController
+    }
+    
     func reservedDeepLinkExisted() -> Bool {
         return reservedDeepLink.isNotNil
     }
@@ -110,6 +117,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(viewController)
         case .home:
             moveTab(.home)
+
+            if let params = url.params(),
+               let preset = params["preset"] as? String {
+                mainTabBarViewController?.applyHomePreset(preset)
+            }
         case .medal:
             let targetViewController = Environment.myPageInterface.getMyMedalViewController()
             route(targetViewController)
@@ -192,21 +204,18 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         handle(reservedDeepLink)
         self.reservedDeepLink = nil
     }
-    
+
     private func moveTab(_ tab: TabBarTag) {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
-        
+
         if let rootViewController {
             let topViewController = UIUtils.getTopViewController(rootViewController)
             if topViewController.isPanModalPresented == true {
                 topViewController.dismiss(animated: true)
             }
         }
-        
-        if let navigationViewController = rootViewController as? UINavigationController,
-           let tabBarViewController = navigationViewController.topViewController as? MainTabBarViewController {
-            tabBarViewController.selectTab(tab: tab)
-        }
+
+        mainTabBarViewController?.selectTab(tab: tab)
     }
     
     private func isAppScheme(url: URL) -> Bool {
