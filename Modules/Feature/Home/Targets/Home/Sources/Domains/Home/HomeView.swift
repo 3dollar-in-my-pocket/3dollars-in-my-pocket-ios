@@ -87,7 +87,13 @@ final class HomeView: BaseView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        updateMapContentInset()
+    }
+
     override func setup() {
         addSubViews([
             mapView,
@@ -153,6 +159,19 @@ final class HomeView: BaseView {
         }
     }
     
+    private func updateMapContentInset() {
+        let contentInset = UIEdgeInsets(
+            top: addressButton.frame.maxY,
+            left: 0,
+            bottom: safeAreaInsets.bottom + bottomSheetShortFormHeight,
+            right: 0
+        )
+
+        if mapView.contentInset != contentInset {
+            mapView.contentInset = contentInset
+        }
+    }
+
     func moveCamera(location: CLLocation, zoomLevel: Double? = nil) {
         let currentCameraPosition = mapView.cameraPosition
         let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
@@ -173,9 +192,9 @@ final class HomeView: BaseView {
         let northEast = NMGLatLng(lat: bounds.northEast.latitude, lng: bounds.northEast.longitude)
         let latLngBounds = NMGLatLngBounds(southWest: southWest, northEast: northEast)
         let paddingInsets = UIEdgeInsets(
-            top: homeFilterCollectionView.frame.maxY + Layout.focusBoundsPadding,
+            top: homeFilterCollectionView.frame.maxY - mapView.contentInset.top + Layout.focusBoundsPadding,
             left: Layout.focusBoundsPadding,
-            bottom: safeAreaInsets.bottom + bottomSheetShortFormHeight + Layout.focusBoundsPadding,
+            bottom: Layout.focusBoundsPadding,
             right: Layout.focusBoundsPadding
         )
         let cameraUpdate = NMFCameraUpdate(fit: latLngBounds, paddingInsets: paddingInsets)
