@@ -87,7 +87,13 @@ final class HomeView: BaseView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        updateMapContentInset()
+    }
+
     override func setup() {
         addSubViews([
             mapView,
@@ -153,6 +159,21 @@ final class HomeView: BaseView {
         }
     }
     
+    /// 지도는 화면 전체를 덮고 하단은 바텀시트에 가려지므로, 가려진 만큼 contentInset 을 주어
+    /// 카메라 이동/위치 추적의 기준점을 실제로 보이는 지도 영역의 중앙으로 보정한다.
+    private func updateMapContentInset() {
+        let contentInset = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: safeAreaInsets.bottom + bottomSheetShortFormHeight,
+            right: 0
+        )
+
+        if mapView.contentInset != contentInset {
+            mapView.contentInset = contentInset
+        }
+    }
+
     func moveCamera(location: CLLocation, zoomLevel: Double? = nil) {
         let currentCameraPosition = mapView.cameraPosition
         let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
@@ -172,10 +193,11 @@ final class HomeView: BaseView {
         let southWest = NMGLatLng(lat: bounds.southWest.latitude, lng: bounds.southWest.longitude)
         let northEast = NMGLatLng(lat: bounds.northEast.latitude, lng: bounds.northEast.longitude)
         let latLngBounds = NMGLatLngBounds(southWest: southWest, northEast: northEast)
+        // 바텀시트 영역은 contentInset 이 이미 제외하므로 여기서는 상단 필터 영역과 여백만 반영한다.
         let paddingInsets = UIEdgeInsets(
             top: homeFilterCollectionView.frame.maxY + Layout.focusBoundsPadding,
             left: Layout.focusBoundsPadding,
-            bottom: safeAreaInsets.bottom + bottomSheetShortFormHeight + Layout.focusBoundsPadding,
+            bottom: Layout.focusBoundsPadding,
             right: Layout.focusBoundsPadding
         )
         let cameraUpdate = NMFCameraUpdate(fit: latLngBounds, paddingInsets: paddingInsets)

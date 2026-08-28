@@ -102,7 +102,7 @@ final class FeedCell: BaseCollectionViewCell {
             bodyView.bind(body: body)
             stackView.addArrangedSubview(bodyView, previousSpace: 12)
             bodyView.snp.makeConstraints {
-                $0.height.equalTo(FeedCellContentOnlyBodyView.Layout.height)
+                $0.height.equalTo(FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body))
             }
         default:
             return
@@ -153,8 +153,8 @@ extension FeedResponse {
             bodyHeight = FeedCellContentWithTitleAndImagesBodyView.Layout.calculateHeight(body: body)
         case let body as ContentWithImagesFeedBodyResponse:
             bodyHeight = FeedCellContentWithImagesBodyView.Layout.calculateHeight(body: body)
-        case let _ as ContentOnlyFeedBodyResponse:
-            bodyHeight = FeedCellContentOnlyBodyView.Layout.height
+        case let body as ContentOnlyFeedBodyResponse:
+            bodyHeight = FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body)
         default:
             bodyHeight = 0
         }

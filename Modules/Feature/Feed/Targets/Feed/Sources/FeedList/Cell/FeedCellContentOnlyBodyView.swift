@@ -3,10 +3,28 @@ import UIKit
 import Common
 import DesignSystem
 import Model
+import ZMarkupParser
 
 final class FeedCellContentOnlyBodyView: BaseView {
     enum Layout {
-        static let height: CGFloat = 36
+        static let verticalPadding: CGFloat = 10
+        static let contentLeadingImageWidth: CGFloat = 20
+
+        static func calculateHeight(body: ContentOnlyFeedBodyResponse) -> CGFloat {
+            // 셀(-32) + FeedCell 스택 마진(-32) + 좌우 패딩(-24) 을 제외한 실제 텍스트 폭
+            var width = UIUtils.windowBounds.width - 88
+            if body.contentLeadingImage != nil {
+                width -= contentLeadingImageWidth
+            }
+            let contentHeight: CGFloat
+            if body.content.isHtml {
+                contentHeight = ZHTMLParserBuilder.initWithDefault().build().render(body.content.text).height(width: width)
+            } else {
+                contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
+            }
+
+            return contentHeight + verticalPadding * 2
+        }
     }
     
     private let stackView: UIStackView = {
@@ -27,7 +45,7 @@ final class FeedCellContentOnlyBodyView: BaseView {
         let label = UILabel()
         label.font = Fonts.regular.font(size: 14)
         label.textColor = Colors.gray80.color
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         label.textAlignment = .left
         return label
     }()
@@ -39,7 +57,8 @@ final class FeedCellContentOnlyBodyView: BaseView {
         
         stackView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(12)
-            $0.centerY.equalToSuperview()
+            $0.top.equalToSuperview().offset(Layout.verticalPadding)
+            $0.bottom.equalToSuperview().offset(-Layout.verticalPadding)
             $0.trailing.lessThanOrEqualToSuperview().offset(-12)
         }
     }
