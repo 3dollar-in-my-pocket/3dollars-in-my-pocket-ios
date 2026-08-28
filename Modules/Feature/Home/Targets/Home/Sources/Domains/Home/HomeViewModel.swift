@@ -11,6 +11,8 @@ import MembershipInterface
 import Feed
 import FeedInterface
 
+import Kingfisher
+
 extension HomeViewModel {
     enum Constant {
         static let defaultLocation = CLLocation(latitude: 37.497941, longitude: 127.027616) // 강남역
@@ -484,6 +486,7 @@ final class HomeViewModel: BaseViewModel {
                 state.cards = response.cards
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
+                prefetchCardImages(response.cards)
                 emitCards()
 
                 if let focusBounds = response.focusBounds {
@@ -513,6 +516,7 @@ final class HomeViewModel: BaseViewModel {
                 appendUniqueCards(response.cards)
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
+                prefetchCardImages(response.cards)
                 emitCards()
             case .failure:
                 // 페이지네이션 실패는 silent — 사용자 흐름을 끊지 않는다.
@@ -533,6 +537,19 @@ final class HomeViewModel: BaseViewModel {
     private func emitCards() {
         output.bottomSheetCards.send(state.cards)
         output.markerCards.send(state_markerCards)
+    }
+
+    /// 바텀시트 리스트가 스크롤될 때 이미지가 늦게 뜨지 않도록, 카드 fetch 시점에 이미지를 미리 캐시에 받아둔다.
+    private func prefetchCardImages(_ cards: [any HomeListCardComponent]) {
+        let urls = cards
+            .compactMap { $0 as? HomeListBasicCardResponse }
+            .flatMap { card in
+                card.images.map { $0.url } + [card.header.badge?.url].compactMap { $0 }
+            }
+            .compactMap { URL(string: $0) }
+
+        guard urls.isNotEmpty else { return }
+        ImagePrefetcher(urls: urls).start()
     }
 
     private func handleMarkerTap(at index: Int) {
