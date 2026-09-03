@@ -44,8 +44,8 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
         if let card = section.informationCard {
             contentStack.addArrangedSubview(StoreInfoInformationCardView(card: card))
         }
-        section.menuGroupCards.forEach {
-            contentStack.addArrangedSubview(StoreInfoMenuGroupCardView(card: $0))
+        if let menuCard = section.menuCard {
+            contentStack.addArrangedSubview(StoreInfoMenuCardView(card: menuCard))
         }
     }
 }
@@ -90,7 +90,8 @@ final class StoreInfoChipView: UIView {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }
 
-/// 가게 정보 카드 (형태·결제방식·출몰시기 등 label + chips 행 목록).
+/// 가게 정보 카드 (가게형태·출몰시기·결제방식 등 label + 값 행 목록).
+/// 행은 서버가 `type` 으로 구분해 내려주며 값 영역의 표현만 타입별로 달라진다.
 private final class StoreInfoInformationCardView: UIView {
     init(card: InformationCard) {
         super.init(frame: .zero)
@@ -102,53 +103,96 @@ private final class StoreInfoInformationCardView: UIView {
         rowsStack.spacing = 10
         addSubViews([rowsStack])
         rowsStack.snp.makeConstraints { $0.edges.equalToSuperview().inset(14) }
-        card.rows.forEach { rowsStack.addArrangedSubview(makeRow($0)) }
+        card.rows.forEach { row in
+            guard let rowView = makeRow(row) else { return }
+            rowsStack.addArrangedSubview(rowView)
+        }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-    private func makeRow(_ row: LabelChipRow) -> UIView {
+    private func makeRow(_ row: InformationRow) -> UIView? {
+        switch row {
+        case .trailingText(let row):
+            let valueLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+            valueLabel.setSDText(row.value)
+            valueLabel.textAlignment = .right
+            return makeRow(label: row.label, value: valueLabel, alignsTrailing: true)
+        case .chipGroup(let row):
+            let chipsStack = makeValueStack()
+            row.chips.forEach { chipsStack.addArrangedSubview(StoreInfoChipView(chip: $0)) }
+            return makeRow(label: row.label, value: chipsStack, alignsTrailing: false)
+        case .inlineOption(let row):
+            // 선택 여부는 서버가 텍스트 색으로 내려주므로 클라이언트는 순서대로 나열만 한다.
+            let itemsStack = makeValueStack()
+            row.items.forEach { item in
+                let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+                label.setSDText(item.text)
+                itemsStack.addArrangedSubview(label)
+            }
+            return makeRow(label: row.label, value: itemsStack, alignsTrailing: false)
+        case .unknown:
+            return nil
+        }
+    }
+
+    private func makeValueStack() -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
+        return stackView
+    }
+
+    private func makeRow(label: SDText, value: UIView, alignsTrailing: Bool) -> UIView {
         let view = UIView()
-        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
-        label.setSDText(row.label)
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        let labelView = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+        labelView.setSDText(label)
+        labelView.setContentHuggingPriority(.required, for: .horizontal)
+        labelView.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        let chipsStack = UIStackView()
-        chipsStack.axis = .horizontal
-        chipsStack.alignment = .center
-        chipsStack.spacing = 8
-        row.chips.forEach { chipsStack.addArrangedSubview(StoreInfoChipView(chip: $0)) }
-
-        view.addSubViews([label, chipsStack])
-        label.snp.makeConstraints {
+        view.addSubViews([labelView, value])
+        labelView.snp.makeConstraints {
             $0.top.bottom.leading.equalToSuperview()
             $0.width.greaterThanOrEqualTo(56)
         }
-        chipsStack.snp.makeConstraints {
-            $0.centerY.equalTo(label)
-            $0.leading.equalTo(label.snp.trailing).offset(12)
-            $0.trailing.lessThanOrEqualToSuperview()
+        value.snp.makeConstraints {
+            $0.centerY.equalTo(labelView)
+            $0.leading.equalTo(labelView.snp.trailing).offset(12)
+
+            if alignsTrailing {
+                $0.trailing.equalToSuperview()
+            } else {
+                $0.trailing.lessThanOrEqualToSuperview()
+            }
         }
         return view
     }
 }
 
-/// 메뉴 그룹 카드 (카테고리 chip 헤더 + 메뉴명/가격 목록).
-private final class StoreInfoMenuGroupCardView: UIView {
-    init(card: MenuGroupCard) {
+/// 메뉴 카드 (카테고리 chip 헤더 + 메뉴명/가격 목록의 그룹 묶음).
+private final class StoreInfoMenuCardView: UIView {
+    init(card: MenuCard) {
         super.init(frame: .zero)
         layer.cornerRadius = 12
         setSDSurfaceStyle(card.style)
 
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 8
+        stack.spacing = 16
         addSubViews([stack])
         stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(14) }
 
-        stack.addArrangedSubview(StoreInfoChipView(chip: card.header, font: Fonts.semiBold.font(size: 14)))
-        card.items.forEach { stack.addArrangedSubview(makeItemRow($0)) }
+        card.groups.forEach { group in
+            let groupStack = UIStackView()
+            groupStack.axis = .vertical
+            groupStack.spacing = 8
+            groupStack.addArrangedSubview(
+                StoreInfoChipView(chip: group.header, font: Fonts.semiBold.font(size: 14))
+            )
+            group.items.forEach { groupStack.addArrangedSubview(makeItemRow($0)) }
+            stack.addArrangedSubview(groupStack)
+        }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }

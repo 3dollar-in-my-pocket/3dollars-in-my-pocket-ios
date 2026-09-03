@@ -296,8 +296,11 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             $0.trailing.lessThanOrEqualToSuperview().offset(-20)
         }
 
+        // 상세는 네비 아래에서 시작한다. 네비와 겹치면 가게명이 가려지고,
+        // 스크롤 시 상태바 영역(safe area 위)까지 컨텐츠가 비쳐 보인다.
         detailContainerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(detailNavigationBar.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
 
         detailNavigationBar.snp.makeConstraints {

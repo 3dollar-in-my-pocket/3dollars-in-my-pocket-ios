@@ -81,7 +81,9 @@ final class StoreSectionsViewModelTests: XCTestCase {
         )
     }
 
-    func test_INFO섹션이_디코딩된다() throws {
+    /// INFO_V1 의 informationCard.rows 는 서버가 `type` 으로 구분하는 3종 행이다.
+    /// 픽스처는 dev `/api/v2/screen/store/{storeId}` 실응답 구조를 그대로 따른다.
+    func test_INFO_V1섹션이_디코딩된다() throws {
         // Given
         let json = """
         {
@@ -91,25 +93,80 @@ final class StoreSectionsViewModelTests: XCTestCase {
               "type": "INFO_V1",
               "header": { "title": { "text": "가게 정보 & 메뉴", "isHtml": false, "fontColor": "#000000" } },
               "informationCard": {
-                "rows": [{
-                  "label": { "text": "결제방식", "isHtml": false, "fontColor": "#666666" },
-                  "chips": [{ "text": { "text": "카드", "isHtml": false, "fontColor": "#000000" } }]
-                }],
+                "rows": [
+                  {
+                    "type": "TRAILING_TEXT",
+                    "label": { "text": "가게형태", "isHtml": false, "fontColor": "#666666" },
+                    "value": { "text": "길거리", "isHtml": false, "fontColor": "#000000" }
+                  },
+                  {
+                    "type": "CHIP_GROUP",
+                    "label": { "text": "출몰 시기", "isHtml": false, "fontColor": "#666666" },
+                    "chips": [{
+                      "text": { "text": "월", "isHtml": false, "fontColor": "#000000" },
+                      "style": { "backgroundColor": "#F4F4F4" }
+                    }]
+                  },
+                  {
+                    "type": "INLINE_OPTION",
+                    "label": { "text": "결제 방식", "isHtml": false, "fontColor": "#666666" },
+                    "items": [
+                      { "isSelected": true, "text": { "text": "현금", "isHtml": false, "fontColor": "#000000" } },
+                      { "isSelected": false, "text": { "text": "카드", "isHtml": false, "fontColor": "#B7B7B7" } }
+                    ]
+                  }
+                ],
                 "style": { "backgroundColor": "#F8F8F8" }
               },
-              "menuGroupCards": [{
-                "header": { "text": { "text": "붕어빵", "isHtml": false, "fontColor": "#000000" } },
-                "items": [{
-                  "primaryText": { "text": "팥붕어빵", "isHtml": false, "fontColor": "#000000" },
-                  "secondaryText": { "text": "3개 2000원", "isHtml": false, "fontColor": "#666666" }
+              "menuCard": {
+                "groups": [{
+                  "header": { "text": { "text": "붕어빵", "isHtml": false, "fontColor": "#000000" } },
+                  "items": [{
+                    "primaryText": { "text": "팥붕어빵", "isHtml": false, "fontColor": "#000000" },
+                    "secondaryText": { "text": "3개 2000원", "isHtml": false, "fontColor": "#666666" }
+                  }]
                 }],
                 "style": { "backgroundColor": "#F8F8F8" }
-              }]
-            },
+              }
+            }
+          ]
+        }
+        """
+
+        // When
+        let response = try JSONDecoder().decode(StoreScreenV2Response.self, from: Data(json.utf8))
+
+        // Then
+        XCTAssertEqual(response.sections.count, 1)
+        let infoV1 = try XCTUnwrap(response.sections[0] as? StoreInfoV1Section)
+        XCTAssertEqual(infoV1.informationCard?.rows.count, 3)
+        guard case .trailingText(let trailingTextRow) = infoV1.informationCard?.rows[0] else {
+            return XCTFail("TRAILING_TEXT 행이 아님")
+        }
+        XCTAssertEqual(trailingTextRow.value.text, "길거리")
+        guard case .chipGroup(let chipGroupRow) = infoV1.informationCard?.rows[1] else {
+            return XCTFail("CHIP_GROUP 행이 아님")
+        }
+        XCTAssertEqual(chipGroupRow.chips.first?.text?.text, "월")
+        guard case .inlineOption(let inlineOptionRow) = infoV1.informationCard?.rows[2] else {
+            return XCTFail("INLINE_OPTION 행이 아님")
+        }
+        XCTAssertEqual(inlineOptionRow.items.first?.isSelected, true)
+        XCTAssertEqual(infoV1.menuCard?.groups.first?.items.first?.primaryText.text, "팥붕어빵")
+    }
+
+    func test_INFO_V2섹션이_디코딩된다() throws {
+        // Given
+        let json = """
+        {
+          "viewLog": { "screenName": "store_detail", "extraParameters": {} },
+          "sections": [
             {
               "type": "INFO_V2",
               "header": { "title": { "text": "가게 정보 & 메뉴", "isHtml": false, "fontColor": "#000000" } },
-              "imageGallery": { "images": [{ "url": "https://example.com/1.jpg", "style": { "width": 96, "height": 96 } }] },
+              "imageGallery": {
+                "images": [{ "url": "https://example.com/1.jpg", "style": { "width": 96, "height": 96 } }]
+              },
               "detailCard": {
                 "rows": [
                   {
@@ -154,11 +211,8 @@ final class StoreSectionsViewModelTests: XCTestCase {
         let response = try JSONDecoder().decode(StoreScreenV2Response.self, from: Data(json.utf8))
 
         // Then
-        XCTAssertEqual(response.sections.count, 2)
-        let infoV1 = try XCTUnwrap(response.sections[0] as? StoreInfoV1Section)
-        XCTAssertEqual(infoV1.informationCard?.rows.first?.chips.first?.text?.text, "카드")
-        XCTAssertEqual(infoV1.menuGroupCards.first?.items.first?.primaryText.text, "팥붕어빵")
-        let infoV2 = try XCTUnwrap(response.sections[1] as? StoreInfoV2Section)
+        XCTAssertEqual(response.sections.count, 1)
+        let infoV2 = try XCTUnwrap(response.sections[0] as? StoreInfoV2Section)
         XCTAssertEqual(infoV2.accountCards.first?.account.additionalText?.text, "123-456-789")
         XCTAssertEqual(infoV2.detailCard?.rows.count, 2)
         guard case .link = infoV2.detailCard?.rows[0] else { return XCTFail("LINK 행이 아님") }

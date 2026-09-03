@@ -109,7 +109,9 @@ public final class StoreSectionsViewController: BaseViewController {
         )
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 16
-        section.contentInsets = NSDirectionalEdgeInsets(top: 68, leading: 20, bottom: 24, trailing: 20)
+        // 네비게이션 바 높이는 호스트(바텀시트/전체화면)가 컨테이너 제약으로 확보한다.
+        // 여기서는 네비 아래 여백만 준다.
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0)
         return UICollectionViewCompositionalLayout(section: section)
     }
 

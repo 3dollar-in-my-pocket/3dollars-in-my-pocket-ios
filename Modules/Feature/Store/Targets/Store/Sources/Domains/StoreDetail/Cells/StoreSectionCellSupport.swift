@@ -21,9 +21,8 @@ final class StoreSectionTextLabel: UILabel {
 final class StoreSectionFlowStackView: UIStackView {
     init(spacing: CGFloat) {
         super.init(frame: .zero)
-        axis = .vertical
+        axis = .horizontal
         alignment = .leading
-        distribution = .fill
         self.spacing = spacing
     }
 
@@ -43,6 +42,7 @@ final class StoreSectionFlowStackView: UIStackView {
             }
             addArrangedSubview(label)
         }
+        addArrangedSubview(UIView())
     }
 
     func removeAll() {

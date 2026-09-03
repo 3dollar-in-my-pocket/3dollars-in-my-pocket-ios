@@ -57,7 +57,6 @@ final class StoreDetailFullScreenViewController: BaseViewController {
 
         addChild(sectionsViewController)
         view.addSubview(sectionsViewController.view)
-        sectionsViewController.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         sectionsViewController.didMove(toParent: self)
 
         view.addSubview(detailNavigationBar)
@@ -66,6 +65,13 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         detailNavigationBar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(56)
+        }
+
+        // 상세는 네비 아래에서 시작한다. 네비와 겹치면 가게명이 가려지고,
+        // 스크롤 시 상태바 영역까지 컨텐츠가 비쳐 보인다.
+        sectionsViewController.view.snp.makeConstraints {
+            $0.top.equalTo(detailNavigationBar.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
 
         backButton.snp.makeConstraints {

@@ -169,7 +169,8 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
         case .success(let response):
             guard let preview = response.sections.compactMap({ $0 as? StorePreviewSection }).first else { return }
             state.section = preview
-            state.storeName = preview.header.title?.text ?? ""
+            // header.title 은 스타일이 담긴 HTML 이라 그대로 쓰면 네비 타이틀·공유 문구에 태그가 노출된다.
+            state.storeName = preview.header.title.map { $0.isHtml ? $0.text.htmlStripped : $0.text } ?? ""
             // 서버의 isSubscriber 값으로 저장 버튼 초기 선택 상태를 동기화한다.
             state.isFavorited = preview.additionalInfos?.isSubscriber ?? false
             output.section.send(preview)
