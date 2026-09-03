@@ -6,7 +6,6 @@ public struct StoreScreenPreviewSection: Decodable, Equatable, Hashable, StoreSe
     public let metadata: StorePreviewMetadata
     public let actionBars: [SDActionBar]
     public let images: [SDImage]
-    public let bodies: [StorePreviewBody]
     public let style: SDSurfaceStyle
     public let additionalInfos: StoreScreenPreviewAdditionalInfos
     public let contributorActionBar: SDActionBar?

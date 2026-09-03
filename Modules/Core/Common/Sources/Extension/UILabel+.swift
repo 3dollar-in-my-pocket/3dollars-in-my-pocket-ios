@@ -94,7 +94,7 @@ public extension UILabel {
 
     func setSDChip(_ sdChip: SDChip) {
         if let style = sdChip.style {
-            backgroundColor = UIColor(hex: style.backgroundColor)
+            setSDChipStyle(style)
         }
         setSDText(sdChip.text)
     }
