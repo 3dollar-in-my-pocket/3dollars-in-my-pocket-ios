@@ -17,6 +17,7 @@ public final class StoreSectionsViewController: BaseViewController {
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
     private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
+    private var editSection: StoreEditSection?
     private var displayedImpressionIdentifiers = Set<String>()
     private lazy var dataSource = makeDataSource()
 
@@ -56,7 +57,6 @@ public final class StoreSectionsViewController: BaseViewController {
             StoreRelatedStoresV2Cell.self,
             StoreAdmobCell.self,
             StoreTabCell.self,
-            StoreEditCell.self,
             StoreCouponCell.self,
             StoreVisitCell.self,
             StorePostCell.self,
@@ -126,8 +126,12 @@ public final class StoreSectionsViewController: BaseViewController {
             .map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         onStoreInformationChanged?(title, location)
 
-        let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
-        sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
+        // 서버가 MAP/EDIT 를 한 섹션으로 합치기 전까지, EDIT 는 별도 셀 없이 MAP 셀 하단에 함께 그린다.
+        editSection = sections.compactMap { $0 as? StoreEditSection }.first
+        let visibleSections = sections.filter { ($0 is StoreEditSection).isNot }
+
+        let identifiers = visibleSections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
+        sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, visibleSections))
         displayedImpressionIdentifiers.removeAll()
 
         (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
@@ -157,7 +161,7 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreMapSection:
                 let cell: StoreMapCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section, editSection: self.editSection); cell.onAction = actionHandler; return cell
             case let section as StoreRelatedStoresSectionV2:
                 let cell: StoreRelatedStoresV2Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
@@ -166,9 +170,6 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section, rootViewController: self); return cell
             case let section as StoreTabSection:
                 let cell: StoreTabCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreEditSection:
-                let cell: StoreEditCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreCouponSection:
                 let cell: StoreCouponCell = collectionView.dequeueReusableCell(indexPath: indexPath)

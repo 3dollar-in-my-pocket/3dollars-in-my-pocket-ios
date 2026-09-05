@@ -102,6 +102,10 @@ public final class HomeViewController: BaseViewController {
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        if let presented = presentedViewController,
+           [.custom, .overFullScreen, .overCurrentContext].contains(presented.modalPresentationStyle) {
+            return
+        }
         // 다른 탭/모달/푸시로 가려질 때 미리보기 패널이 위에 떠 있지 않도록 가린다.
         storePreviewBottomSheetController?.view.isHidden = true
     }

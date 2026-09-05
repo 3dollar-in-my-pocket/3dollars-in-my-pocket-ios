@@ -55,6 +55,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private let detailContainerView: UIView = {
         let view = UIView()
+        view.backgroundColor = Colors.systemWhite.color
         view.isHidden = true
         return view
     }()
