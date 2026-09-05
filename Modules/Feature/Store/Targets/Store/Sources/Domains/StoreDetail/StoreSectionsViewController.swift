@@ -160,7 +160,7 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreAdmobSection:
                 let cell: StoreAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section, rootViewController: self); return cell
             case let section as StoreTabSection:
                 let cell: StoreTabCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
