@@ -5,6 +5,7 @@ import Common
 import AppInterface
 import Model
 import Store
+import StoreInterface
 import MembershipInterface
 import MyPage
 
@@ -82,6 +83,9 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
 
         guard let path else { return }
+
+        if handleStoreSectionLinkIfNeeded(path: path, url: url) { return }
+
         let deepLinkPath = DeeplinkPath(value: path)
 
         switch deepLinkPath {
@@ -166,6 +170,48 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
         handle(reservedDeepLink)
         self.reservedDeepLink = nil
+    }
+
+    /// "stores/{storeId}#section" 형태 링크. 같은 가게 상세가 이미 떠 있으면 해당 섹션으로 스크롤만 하고,
+    /// 아니면 전체 화면 상세를 연 뒤 섹션 데이터 로드가 끝나면 스크롤되도록 요청을 걸어둔다.
+    private func handleStoreSectionLinkIfNeeded(path: String, url: URL) -> Bool {
+        let pathComponents = path.split(separator: "/").map(String.init)
+        guard pathComponents.count == 2,
+              pathComponents[0] == "stores",
+              let storeId = Int(pathComponents[1]) else { return false }
+
+        if let scrollable = findStoreSectionScrollable(storeId: storeId) {
+            if let fragment = url.fragment {
+                scrollable.scrollToSection(fragment: fragment)
+            }
+            return true
+        }
+
+        let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
+        route(viewController)
+        if let fragment = url.fragment {
+            (viewController as? StoreSectionScrollable)?.scrollToSection(fragment: fragment)
+        }
+        return true
+    }
+
+    private func findStoreSectionScrollable(storeId: Int) -> StoreSectionScrollable? {
+        guard let rootViewController = SceneDelegate.shared?.window?.rootViewController else { return nil }
+        let topViewController = UIUtils.getTopViewController(rootViewController)
+
+        return findStoreSectionScrollable(in: topViewController, storeId: storeId)
+    }
+
+    private func findStoreSectionScrollable(in viewController: UIViewController, storeId: Int) -> StoreSectionScrollable? {
+        if let scrollable = viewController as? StoreSectionScrollable, scrollable.scrollableStoreId == storeId {
+            return scrollable
+        }
+        for child in viewController.children {
+            if let scrollable = findStoreSectionScrollable(in: child, storeId: storeId) {
+                return scrollable
+            }
+        }
+        return nil
     }
 
     private func moveTab(_ tab: TabBarTag) {

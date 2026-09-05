@@ -12,6 +12,7 @@ extension StoreSectionsViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
         let didSelectAction = PassthroughSubject<StoreSectionAction, Never>()
+        let scrollToSectionFragment = PassthroughSubject<String, Never>()
     }
 
     struct Output {
@@ -32,6 +33,7 @@ extension StoreSectionsViewModel {
         case presentStoreReport(ReportBottomSheetViewModel)
         case presentReviewReport(ReportReviewBottomSheetViewModel)
         case pushEditStore(EditStoreViewModelInterface)
+        case scrollToSection(StoreSectionType)
     }
 
     struct Config {
@@ -65,6 +67,7 @@ extension StoreSectionsViewModel {
     struct State {
         var sections: [any StoreSectionComponent] = []
         var isLoading = false
+        var pendingSectionFragment: String?
     }
 }
 
@@ -75,6 +78,10 @@ final class StoreSectionsViewModel: BaseViewModel {
     private var state = State()
     private let config: Config
     private let dependency: Dependency
+
+    var storeId: Int {
+        config.storeId
+    }
 
     init(config: Config, dependency: Dependency = Dependency()) {
         self.config = config
@@ -98,6 +105,13 @@ final class StoreSectionsViewModel: BaseViewModel {
                 owner.handle(action)
             }
             .store(in: &cancellables)
+
+        input.scrollToSectionFragment
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, fragment: String) in
+                owner.scrollToSectionIfPossible(fragment: fragment)
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor
@@ -117,6 +131,11 @@ final class StoreSectionsViewModel: BaseViewModel {
             state.sections = response.sections
             output.sections.send(response.sections)
             sendPageView(response.viewLog)
+
+            if let fragment = state.pendingSectionFragment {
+                state.pendingSectionFragment = nil
+                scrollToSectionIfPossible(fragment: fragment)
+            }
         case .failure(let error):
             output.error.send(error)
         }
@@ -131,6 +150,37 @@ final class StoreSectionsViewModel: BaseViewModel {
             sendClickLog(clickLog)
             Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
         }
+    }
+
+    /// 탭 링크의 fragment(#info 등)를 화면에 존재하는 섹션 타입으로 해석해 스크롤한다.
+    /// 아직 섹션 로드 전이면 보류해 두었다가 로드 완료 후 스크롤한다.
+    private func scrollToSectionIfPossible(fragment: String) {
+        guard state.sections.isEmpty.isNot else {
+            state.pendingSectionFragment = fragment
+            return
+        }
+        guard let sectionType = sectionType(fragment: fragment) else { return }
+
+        output.route.send(.scrollToSection(sectionType))
+    }
+
+    private func sectionType(fragment: String) -> StoreSectionType? {
+        let candidates: [StoreSectionType]
+        switch fragment.lowercased() {
+        case "home":
+            candidates = [.preview]
+        case "info":
+            candidates = [.infoV1, .infoV2]
+        case "images":
+            candidates = [.image]
+        case "reviews":
+            candidates = [.review]
+        default:
+            candidates = []
+        }
+
+        let loadedTypes = Set(state.sections.map(\.type))
+        return candidates.first { loadedTypes.contains($0) }
     }
 
     private func handle(_ action: SDCustomAction, cardId: String?) {

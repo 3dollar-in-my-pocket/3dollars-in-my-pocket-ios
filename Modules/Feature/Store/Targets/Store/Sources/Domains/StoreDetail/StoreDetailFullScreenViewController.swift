@@ -4,6 +4,7 @@ import CoreLocation
 import AppInterface
 import Common
 import DesignSystem
+import StoreInterface
 
 import SnapKit
 
@@ -143,5 +144,16 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         let button = UIButton()
         button.setImage(icon.resizeImage(scaledTo: 20).withTintColor(Colors.gray100.color), for: .normal)
         return button
+    }
+}
+
+// MARK: StoreSectionScrollable
+extension StoreDetailFullScreenViewController: StoreSectionScrollable {
+    var scrollableStoreId: Int {
+        storeId
+    }
+
+    func scrollToSection(fragment: String) {
+        sectionsViewController.scrollToSection(fragment: fragment)
     }
 }

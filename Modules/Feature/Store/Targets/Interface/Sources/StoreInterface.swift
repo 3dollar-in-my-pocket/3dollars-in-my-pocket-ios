@@ -23,6 +23,12 @@ public struct UploadPhotoConfig {
     }
 }
 
+/// 가게 상세 섹션 화면. 딥링크 fragment(#info 등)로 특정 섹션 스크롤 요청을 받을 수 있다.
+public protocol StoreSectionScrollable: AnyObject {
+    var scrollableStoreId: Int { get }
+    func scrollToSection(fragment: String)
+}
+
 public protocol StoreInterface {
     /// 딥링크·공유 링크 등 지도 컨텍스트가 없는 진입점용 V2 전체 화면 가게 상세다.
     func getStoreDetailFullScreenViewController(storeId: Int) -> UIViewController

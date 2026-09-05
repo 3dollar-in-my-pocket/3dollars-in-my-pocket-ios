@@ -4,6 +4,7 @@ import CoreLocation
 import Common
 import DesignSystem
 import Model
+import StoreInterface
 import WriteInterface
 
 /// Store v2 SDUI 응답을 순서대로 전용 셀에 렌더링하는, Home에 임베드 가능한 상세 컨테이너.
@@ -112,7 +113,7 @@ public final class StoreSectionsViewController: BaseViewController {
         // 네비게이션 바 높이는 호스트(바텀시트/전체화면)가 컨테이너 제약으로 확보한다.
         // 여기서는 네비 아래 여백만 준다.
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0)
-        return UICollectionViewCompositionalLayout(section: section)
+        return StickySectionLayout(section: section)
     }
 
     private func apply(_ sections: [any StoreSectionComponent]) {
@@ -128,6 +129,8 @@ public final class StoreSectionsViewController: BaseViewController {
         let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
+
+        (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
 
         var snapshot = NSDiffableDataSourceSnapshot<Int, String>()
         snapshot.appendSections([0])
@@ -207,6 +210,8 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        (collectionView.collectionViewLayout as? StickySectionLayout)?.registerIfNeeded(cell: cell, indexPath: indexPath)
+
         guard let identifier = dataSource.itemIdentifier(for: indexPath),
               displayedImpressionIdentifiers.insert(identifier).inserted,
               let component = sectionsByIdentifier[identifier] else { return }
@@ -255,6 +260,37 @@ private extension StoreSectionsViewController {
             let navigationController = UINavigationController(rootViewController: viewController)
             navigationController.modalPresentationStyle = .fullScreen
             present(navigationController, animated: true)
+        case .scrollToSection(let sectionType):
+            scrollToSection(sectionType)
         }
+    }
+
+    func scrollToSection(_ sectionType: StoreSectionType) {
+        let identifiers = dataSource.snapshot().itemIdentifiers
+        guard let index = identifiers.firstIndex(where: { sectionsByIdentifier[$0]?.type == sectionType }),
+              let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: IndexPath(item: index, section: 0))
+        else { return }
+
+        // 상단에 고정된 탭 높이만큼 내려서 목표 섹션이 탭에 가려지지 않게 한다.
+        let topInset = collectionView.adjustedContentInset.top
+        let minY = -topInset
+        let maxY = max(
+            collectionView.contentSize.height + collectionView.adjustedContentInset.bottom - collectionView.bounds.height,
+            minY
+        )
+        let targetY = attributes.frame.minY - topInset - StoreTabCell.Layout.height
+        let offsetY = min(max(targetY, minY), maxY)
+        collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: true)
+    }
+}
+
+// MARK: StoreSectionScrollable
+extension StoreSectionsViewController: StoreSectionScrollable {
+    public var scrollableStoreId: Int {
+        viewModel.storeId
+    }
+
+    public func scrollToSection(fragment: String) {
+        viewModel.input.scrollToSectionFragment.send(fragment)
     }
 }
