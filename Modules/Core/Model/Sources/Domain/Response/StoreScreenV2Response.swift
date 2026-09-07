@@ -26,8 +26,6 @@ public struct StoreScreenV2Response: Decodable {
                 component = try StoreCalloutSection(from: sectionDecoder)
             case .preview:
                 component = try StoreScreenPreviewSection(from: sectionDecoder)
-            case .map:
-                component = try StoreMapSection(from: sectionDecoder)
             case .relatedStores:
                 component = try StoreRelatedStoresSectionV2(from: sectionDecoder)
             case .admob:

@@ -5,7 +5,6 @@ public enum StoreSectionType: String, Decodable {
     case preview = "PREVIEW"
     case admob = "AD_MOB"
     case tab = "TAB"
-    case map = "MAP"
     case edit = "EDIT"
     case coupon = "COUPON"
     case visit = "VISIT"

@@ -38,8 +38,8 @@ public enum SDCustomActionType: String, Decodable, Equatable, Hashable {
     case storeReviewDelete = "STORE_REVIEW_SECTION_DELETE"
     case storeReviewAddLike = "STORE_REVIEW_SECTION_ADD_LIKE"
     case storeReviewCancelLike = "STORE_REVIEW_SECTION_CANCEL_LIKE"
-    case storeMapCopyAddress = "STORE_MAP_SECTION_COPY_ADDRESS"
-    case storeMapEnlarge = "STORE_MAP_SECTION_MAP_ENLARGE"
+    case storeEditCopyAddress = "STORE_EDIT_SECTION_COPY_ADDRESS"
+    case storeEditMapEnlarge = "STORE_EDIT_SECTION_MAP_ENLARGE"
     case unknown
 
     public init(from decoder: Decoder) throws {

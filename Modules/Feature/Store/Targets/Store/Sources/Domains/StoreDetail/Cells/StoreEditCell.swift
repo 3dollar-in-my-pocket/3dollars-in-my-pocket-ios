@@ -7,7 +7,7 @@ import SnapKit
 
 import NMapsMap
 
-final class StoreMapCell: BaseCollectionViewCell {
+final class StoreEditCell: BaseCollectionViewCell {
     enum Layout {
         static let horizontalMargin: CGFloat = 20
         static let mapHeight: CGFloat = 140
@@ -31,7 +31,7 @@ final class StoreMapCell: BaseCollectionViewCell {
         return stack
     }()
 
-    private let mapContainerView = UIView()
+    private let mapContainerView = MapContainerView()
 
     private let mapView: NMFMapView = {
         let mapView = NMFMapView()
@@ -62,7 +62,9 @@ final class StoreMapCell: BaseCollectionViewCell {
     }()
 
     private let enlargeButton: UIButton = {
-        let button = UIButton()
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = .zero
+        let button = UIButton(configuration: config)
         button.layer.cornerRadius = Layout.enlargeButtonSize / 2
         button.layer.shadowColor = Colors.systemBlack.color.cgColor
         button.layer.shadowOpacity = 0.1
@@ -81,7 +83,8 @@ final class StoreMapCell: BaseCollectionViewCell {
         return stack
     }()
 
-    private var pendingLocation: StoreMapLocation?
+    private var location: StoreMapLocation?
+    private var lastAppliedMapSize: CGSize = .zero
 
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -89,19 +92,18 @@ final class StoreMapCell: BaseCollectionViewCell {
         enlargeButton.clear()
         editStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         editStack.isHidden = true
-        pendingLocation = nil
+        mapContainerView.isHidden = false
+        location = nil
+        lastAppliedMapSize = .zero
         onAction = nil
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        guard let location = pendingLocation, mapView.bounds.width > 0 else { return }
-        pendingLocation = nil
-        moveCamera(to: location)
-    }
-
     override func setup() {
+        mapContainerView.onLayout = { [weak self] in
+            DispatchQueue.main.async {
+                self?.applyLocationIfNeeded()
+            }
+        }
         mapContainerView.addSubViews([mapView, addressButton, enlargeButton])
         contentStack.addArrangedSubview(mapContainerView)
         contentStack.addArrangedSubview(editStack)
@@ -134,36 +136,46 @@ final class StoreMapCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(_ section: StoreMapSection, editSection: StoreEditSection?) {
-        pendingLocation = section.location
-        setNeedsLayout()
+    func bind(_ section: StoreEditSection) {
+        bindMap(section.map)
+        bindEditBars(section.actionBars)
+    }
 
-        addressButton.setOptionalSDButton(section.footerLeft?.button)
-        enlargeButton.setSDButton(section.footerRight.button)
+    private func bindMap(_ map: StoreEditMap?) {
+        guard let map else {
+            mapContainerView.isHidden = true
+            location = nil
+            return
+        }
+        mapContainerView.isHidden = false
+        location = map.location
+        lastAppliedMapSize = .zero
+        mapContainerView.setNeedsLayout()
+
+        addressButton.setOptionalSDButton(map.footerLeft?.button)
+        enlargeButton.setSDButton(map.footerRight.button)
 
         addressButton.removeTarget(nil, action: nil, for: .touchUpInside)
         enlargeButton.removeTarget(nil, action: nil, for: .touchUpInside)
-        if let action = section.footerLeft?.storeSectionAction {
+        if let action = map.footerLeft?.storeSectionAction {
             addressButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
-        if let action = section.footerRight.storeSectionAction {
+        if let action = map.footerRight.storeSectionAction {
             enlargeButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
-
-        bindEditBars(editSection)
     }
 
-    private func bindEditBars(_ editSection: StoreEditSection?) {
+    private func bindEditBars(_ actionBars: [SDActionBar]) {
         editStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        guard let editSection, editSection.actionBars.isEmpty.isNot else {
+        guard actionBars.isEmpty.isNot else {
             editStack.isHidden = true
             return
         }
         editStack.isHidden = false
 
-        editSection.actionBars.forEach { actionBar in
-            let button = UIButton(type: .system)
+        actionBars.forEach { actionBar in
+            let button = UIButton(type: .custom)
             button.titleLabel?.font = Fonts.medium.font(size: 13)
             button.layer.cornerRadius = 12
             button.clipsToBounds = true
@@ -175,10 +187,25 @@ final class StoreMapCell: BaseCollectionViewCell {
         }
     }
 
+    private func applyLocationIfNeeded() {
+        guard let location, mapView.bounds.width > 0, mapView.bounds.size != lastAppliedMapSize else { return }
+        lastAppliedMapSize = mapView.bounds.size
+        moveCamera(to: location)
+    }
+
     private func moveCamera(to location: StoreMapLocation) {
         let position = NMGLatLng(lat: location.latitude, lng: location.longitude)
         marker.position = position
         marker.mapView = mapView
         mapView.moveCamera(NMFCameraUpdate(position: NMFCameraPosition(position, zoom: mapView.zoomLevel)))
+    }
+}
+
+private final class MapContainerView: UIView {
+    var onLayout: (() -> Void)?
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        onLayout?()
     }
 }

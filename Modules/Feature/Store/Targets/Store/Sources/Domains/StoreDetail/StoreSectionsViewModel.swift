@@ -185,11 +185,11 @@ final class StoreSectionsViewModel: BaseViewModel {
 
     private func handle(_ action: SDCustomAction, cardId: String?) {
         switch action.actionType {
-        case .storeMapCopyAddress:
+        case .storeEditCopyAddress:
             guard let address = action.extraParams["ADDRESS"]?.stringValue else { return }
             UIPasteboard.general.string = address
             output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
-        case .storeMapEnlarge:
+        case .storeEditMapEnlarge:
             output.route.send(.presentMapDetail(makeMapDetailViewModel()))
         case .storeReviewWrite, .storePreviewReviewWrite:
             output.route.send(.presentWriteReview(makeReviewBottomSheetViewModel()))
