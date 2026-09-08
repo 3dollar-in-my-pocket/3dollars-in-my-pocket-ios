@@ -4,22 +4,32 @@
 // swiftformat:disable all
 // Generated using tuist — https://github.com/tuist/tuist
 
+
+
 #if os(macOS)
-  import AppKit
-#elseif os(iOS)
-  import UIKit
-#elseif os(tvOS) || os(watchOS)
-  import UIKit
+#if hasFeature(InternalImportsByDefault)
+public import AppKit
+#else
+import AppKit
 #endif
-#if canImport(SwiftUI)
-  import SwiftUI
+#else
+#if hasFeature(InternalImportsByDefault)
+public import UIKit
+#else
+import UIKit
+#endif
 #endif
 
-// swiftlint:disable superfluous_disable_command file_length implicit_return
+#if canImport(SwiftUI)
+#if hasFeature(InternalImportsByDefault)
+public import SwiftUI
+#else
+import SwiftUI
+#endif
+#endif
 
 // MARK: - Asset Catalogs
 
-// swiftlint:disable identifier_name line_length nesting type_body_length type_name
 public enum DesignSystemAsset: Sendable {
   public enum Colors {
   public static let gray0 = DesignSystemColors(name: "gray0")
@@ -114,7 +124,6 @@ public enum DesignSystemAsset: Sendable {
     public static let zoom = DesignSystemImages(name: "zoom")
   }
 }
-// swiftlint:enable identifier_name line_length nesting type_body_length type_name
 
 // MARK: - Implementation Details
 
@@ -223,5 +232,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all
