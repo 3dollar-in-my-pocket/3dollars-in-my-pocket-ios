@@ -53,6 +53,7 @@ public final class StoreSectionsViewController: BaseViewController {
             StoreCalloutCell.self,
             StoreScreenPreviewCell.self,
             StoreEditCell.self,
+            StoreMarginCell.self,
             StoreRelatedStoresV2Cell.self,
             StoreAdmobCell.self,
             StoreTabCell.self,
@@ -108,7 +109,7 @@ public final class StoreSectionsViewController: BaseViewController {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 16
+        // 섹션 간 간격은 서버가 MARGIN 섹션으로 내려준다.
         // 네비게이션 바 높이는 호스트(바텀시트/전체화면)가 컨테이너 제약으로 확보한다.
         // 여기서는 네비 아래 여백만 준다.
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0)
@@ -157,6 +158,9 @@ public final class StoreSectionsViewController: BaseViewController {
             case let section as StoreEditSection:
                 let cell: StoreEditCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
+            case let section as StoreMarginSection:
+                let cell: StoreMarginCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(section); return cell
             case let section as StoreRelatedStoresSectionV2:
                 let cell: StoreRelatedStoresV2Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell

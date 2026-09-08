@@ -24,6 +24,8 @@ public struct StoreScreenV2Response: Decodable {
             switch preview.type {
             case .callout:
                 component = try StoreCalloutSection(from: sectionDecoder)
+            case .margin:
+                component = try StoreMarginSection(from: sectionDecoder)
             case .preview:
                 component = try StoreScreenPreviewSection(from: sectionDecoder)
             case .relatedStores:
