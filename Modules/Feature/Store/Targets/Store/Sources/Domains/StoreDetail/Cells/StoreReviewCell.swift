@@ -6,6 +6,12 @@ import Model
 import SnapKit
 
 final class StoreReviewCell: BaseCollectionViewCell {
+    enum Layout {
+        static let horizontalMargin: CGFloat = 20
+        static let cardCornerRadius: CGFloat = 20
+        static let cardInset: CGFloat = 16
+    }
+
     var onAction: ((StoreSectionAction) -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private let actionButton = UIButton(type: .system)
@@ -21,16 +27,33 @@ final class StoreReviewCell: BaseCollectionViewCell {
 
     override func setup() {
         cardsStack.axis = .vertical
-        cardsStack.spacing = 10
+        cardsStack.spacing = 8
         contentView.addSubViews([titleLabel, actionButton, summaryView, cardsStack, moreButton])
     }
 
     override func bindConstraints() {
-        titleLabel.snp.makeConstraints { $0.top.leading.equalToSuperview() }
-        actionButton.snp.makeConstraints { $0.top.trailing.equalToSuperview() }
-        summaryView.snp.makeConstraints { $0.top.equalTo(titleLabel.snp.bottom).offset(12); $0.leading.trailing.equalToSuperview() }
-        cardsStack.snp.makeConstraints { $0.top.equalTo(summaryView.snp.bottom).offset(10); $0.leading.trailing.equalToSuperview() }
-        moreButton.snp.makeConstraints { $0.top.equalTo(cardsStack.snp.bottom).offset(10); $0.leading.trailing.bottom.equalToSuperview() }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+        }
+        actionButton.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
+        summaryView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
+        cardsStack.snp.makeConstraints {
+            $0.top.equalTo(summaryView.snp.bottom).offset(8)
+            $0.leading.trailing.equalTo(summaryView)
+        }
+        moreButton.snp.makeConstraints {
+            $0.top.equalTo(cardsStack.snp.bottom).offset(8)
+            $0.leading.trailing.equalTo(summaryView)
+            $0.bottom.equalToSuperview()
+        }
     }
 
     func bind(_ section: StoreReviewSection) {
@@ -62,7 +85,7 @@ private final class StoreReviewSummaryView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreReviewCell.Layout.cardCornerRadius
         starsStack.axis = .horizontal
         starsStack.spacing = 2
         addSubViews([titleLabel, starsStack, ratingLabel])
@@ -101,10 +124,13 @@ private final class StoreReviewSummaryView: UIView {
 
 private final class StoreReviewCardView: UIView {
     private let headerLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+    private let headerSubTitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
     private let headerActionButton = UIButton(type: .system)
     private let metadataStack = StoreSectionFlowStackView(spacing: 2)
     private let starsStack = UIStackView()
     private let imageStack = UIStackView()
+    private var imageStackHeightConstraint: Constraint?
+    private var bodyTopConstraint: Constraint?
     private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
     private let replyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 13))
     private let likeButton = UIButton(type: .system)
@@ -119,7 +145,7 @@ private final class StoreReviewCardView: UIView {
         self.likeAction = card.like?.storeSectionAction(isSelected: card.like?.isSelected ?? false).map { $0.withCardId(card.cardId) }
         self.onAction = onAction
         super.init(frame: .zero)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreReviewCell.Layout.cardCornerRadius
         starsStack.axis = .horizontal
         starsStack.spacing = 2
         imageStack.axis = .horizontal
@@ -127,6 +153,7 @@ private final class StoreReviewCardView: UIView {
         imageStack.distribution = .fillEqually
         addSubViews([
             headerLabel,
+            headerSubTitleLabel,
             headerActionButton,
             metadataStack,
             starsStack,
@@ -135,17 +162,29 @@ private final class StoreReviewCardView: UIView {
             replyLabel,
             likeButton
         ])
+        let inset = StoreReviewCell.Layout.cardInset
         headerLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview().inset(14)
-            $0.trailing.lessThanOrEqualTo(headerActionButton.snp.leading).offset(-8)
+            $0.top.leading.equalToSuperview().inset(inset)
+            $0.trailing.lessThanOrEqualTo(headerSubTitleLabel.snp.leading).offset(-8)
         }
-        headerActionButton.snp.makeConstraints { $0.top.trailing.equalToSuperview().inset(14) }
-        metadataStack.snp.makeConstraints { $0.top.equalTo(headerLabel.snp.bottom).offset(6); $0.leading.trailing.equalToSuperview().inset(14) }
-        starsStack.snp.makeConstraints { $0.top.equalTo(metadataStack.snp.bottom).offset(6); $0.leading.equalToSuperview().inset(14) }
-        imageStack.snp.makeConstraints { $0.top.equalTo(starsStack.snp.bottom).offset(8); $0.leading.trailing.equalToSuperview().inset(14); $0.height.equalTo(88) }
-        bodyLabel.snp.makeConstraints { $0.top.equalTo(imageStack.snp.bottom).offset(8); $0.leading.trailing.equalToSuperview().inset(14) }
-        replyLabel.snp.makeConstraints { $0.top.equalTo(bodyLabel.snp.bottom).offset(8); $0.leading.trailing.equalToSuperview().inset(14) }
-        likeButton.snp.makeConstraints { $0.top.equalTo(replyLabel.snp.bottom).offset(8); $0.leading.equalToSuperview().inset(14); $0.bottom.equalToSuperview().inset(14) }
+        headerActionButton.snp.makeConstraints { $0.centerY.equalTo(headerLabel); $0.trailing.equalToSuperview().inset(inset) }
+        headerSubTitleLabel.snp.makeConstraints {
+            $0.centerY.equalTo(headerLabel)
+            $0.trailing.equalTo(headerActionButton.snp.leading).offset(-6)
+        }
+        metadataStack.snp.makeConstraints { $0.top.equalTo(headerLabel.snp.bottom).offset(6); $0.leading.trailing.equalToSuperview().inset(inset) }
+        starsStack.snp.makeConstraints { $0.top.equalTo(metadataStack.snp.bottom).offset(6); $0.leading.equalToSuperview().inset(inset) }
+        imageStack.snp.makeConstraints {
+            $0.top.equalTo(starsStack.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(inset)
+            imageStackHeightConstraint = $0.height.equalTo(88).constraint
+        }
+        bodyLabel.snp.makeConstraints {
+            bodyTopConstraint = $0.top.equalTo(imageStack.snp.bottom).offset(8).constraint
+            $0.leading.trailing.equalToSuperview().inset(inset)
+        }
+        replyLabel.snp.makeConstraints { $0.top.equalTo(bodyLabel.snp.bottom).offset(8); $0.leading.trailing.equalToSuperview().inset(inset) }
+        likeButton.snp.makeConstraints { $0.top.equalTo(replyLabel.snp.bottom).offset(8); $0.leading.equalToSuperview().inset(inset); $0.bottom.equalToSuperview().inset(inset) }
         bind(card)
         if action != nil {
             addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapCard)))
@@ -163,6 +202,8 @@ private final class StoreReviewCardView: UIView {
     private func bind(_ card: StoreReviewCard) {
         setSDSurfaceStyle(card.style)
         headerLabel.setSDText(card.header.title)
+        headerSubTitleLabel.setSDText(card.header.subTitle)
+        headerSubTitleLabel.isHidden = card.header.subTitle == nil
         headerActionButton.setOptionalSDButton(card.header.trailingAction)
         metadataStack.bind(card.metadata)
         starsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
@@ -174,7 +215,10 @@ private final class StoreReviewCardView: UIView {
             starsStack.addArrangedSubview(imageView)
         }
         imageStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        // 이미지가 없으면 높이와 간격을 접어 빈 공백이 남지 않게 한다.
         imageStack.isHidden = card.images.isEmpty
+        imageStackHeightConstraint?.update(offset: card.images.isEmpty ? 0 : 88)
+        bodyTopConstraint?.update(offset: card.images.isEmpty ? 0 : 8)
         card.images.forEach { image in
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFill
