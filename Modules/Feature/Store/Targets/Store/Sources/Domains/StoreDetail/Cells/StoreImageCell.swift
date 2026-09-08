@@ -6,6 +6,10 @@ import Model
 import SnapKit
 
 final class StoreImageCell: BaseCollectionViewCell {
+    enum Layout {
+        static let horizontalMargin: CGFloat = 20
+    }
+
     var onAction: ((StoreSectionAction) -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private let actionButton = UIButton(type: .system)
@@ -19,15 +23,26 @@ final class StoreImageCell: BaseCollectionViewCell {
 
     override func setup() {
         imageStack.axis = .horizontal
+        imageStack.alignment = .center
         imageStack.spacing = 8
-        imageStack.distribution = .fillEqually
         contentView.addSubViews([titleLabel, actionButton, imageStack])
     }
 
     override func bindConstraints() {
-        titleLabel.snp.makeConstraints { $0.top.leading.equalToSuperview() }
-        actionButton.snp.makeConstraints { $0.top.trailing.equalToSuperview() }
-        imageStack.snp.makeConstraints { $0.top.equalTo(titleLabel.snp.bottom).offset(12); $0.leading.trailing.bottom.equalToSuperview(); $0.height.equalTo(92) }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+        }
+        actionButton.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
+        imageStack.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.lessThanOrEqualToSuperview().offset(-Layout.horizontalMargin)
+            $0.bottom.equalToSuperview()
+        }
     }
 
     func bind(_ section: StoreImageSection) {
@@ -39,9 +54,15 @@ final class StoreImageCell: BaseCollectionViewCell {
         }
         imageStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         section.cards.forEach { card in
-            imageStack.addArrangedSubview(StoreImageCardView(card: card) { [weak self] action in
+            let cardView = StoreImageCardView(card: card) { [weak self] action in
                 self?.onAction?(action)
-            })
+            }
+            // 카드 크기는 서버가 내려준 image.style 을 따른다.
+            cardView.snp.makeConstraints {
+                $0.width.equalTo(card.image.style.width)
+                $0.height.equalTo(card.image.style.height)
+            }
+            imageStack.addArrangedSubview(cardView)
         }
     }
 }
