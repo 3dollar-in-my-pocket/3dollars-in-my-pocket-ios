@@ -6,42 +6,59 @@ import Model
 import SnapKit
 
 final class StoreCTACell: BaseCollectionViewCell {
+    enum Layout {
+        static let horizontalMargin: CGFloat = 20
+        static let verticalMargin: CGFloat = 16
+    }
+
     var onAction: ((StoreSectionAction) -> Void)?
-    private let containerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.pink100.color
-        view.layer.cornerRadius = 12
-        return view
+    private let titleLabel = StoreSectionTextLabel(font: Fonts.semiBold.font(size: 14))
+    private let subtitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+
+    private let footerLeftButton: UIButton = {
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = .zero
+        config.imagePadding = 4
+        let button = UIButton(configuration: config)
+        button.titleLabel?.font = Fonts.medium.font(size: 12)
+        return button
     }()
-    private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
-    private let subtitleLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 13))
-    private let button = UIButton(type: .system)
 
     override func prepareForReuse() {
         super.prepareForReuse()
+        footerLeftButton.clear()
         onAction = nil
     }
 
     override func setup() {
-        containerView.addSubViews([titleLabel, subtitleLabel, button])
-        contentView.addSubview(containerView)
+        contentView.addSubViews([titleLabel, subtitleLabel, footerLeftButton])
     }
 
     override func bindConstraints() {
-        containerView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        titleLabel.snp.makeConstraints { $0.top.leading.equalToSuperview().inset(16); $0.trailing.lessThanOrEqualTo(button.snp.leading).offset(-8) }
-        subtitleLabel.snp.makeConstraints { $0.top.equalTo(titleLabel.snp.bottom).offset(4); $0.leading.equalToSuperview().inset(16); $0.bottom.equalToSuperview().inset(16) }
-        button.snp.makeConstraints { $0.trailing.equalToSuperview().inset(16); $0.centerY.equalToSuperview() }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.lessThanOrEqualToSuperview().offset(-Layout.horizontalMargin)
+        }
+        subtitleLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(2)
+            $0.leading.trailing.equalTo(titleLabel)
+        }
+        footerLeftButton.snp.makeConstraints {
+            $0.top.equalTo(subtitleLabel.snp.bottom).offset(8)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
+        }
     }
 
     func bind(_ section: StoreCTASection) {
         titleLabel.setSDText(section.content.title)
         subtitleLabel.setSDText(section.content.subTitle)
         subtitleLabel.isHidden = section.content.subTitle == nil
-        button.setOptionalSDButton(section.content.footerLeftButton)
-        button.removeTarget(nil, action: nil, for: .touchUpInside)
+        footerLeftButton.setOptionalSDButton(section.content.footerLeftButton)
+        footerLeftButton.removeTarget(nil, action: nil, for: .touchUpInside)
         if let action = section.content.footerLeftButton?.storeSectionAction {
-            button.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
+            footerLeftButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
     }
 }
