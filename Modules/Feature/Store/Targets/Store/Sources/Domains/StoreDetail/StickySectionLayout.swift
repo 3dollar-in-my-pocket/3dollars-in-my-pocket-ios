@@ -36,7 +36,7 @@ final class StickySectionLayout: UICollectionViewCompositionalLayout {
                 $0.indexPath == indexPath && $0.representedElementCategory == .cell
             }) {
                 pinIfNeeded(attributes[index], to: pinnedY)
-            } else if let stickyAttributes = layoutAttributesForItem(at: indexPath)?.copy() as? UICollectionViewLayoutAttributes,
+            } else if let stickyAttributes = super.layoutAttributesForItem(at: indexPath)?.copy() as? UICollectionViewLayoutAttributes,
                       stickyAttributes.frame.minY < pinnedY {
                 // 원래 위치가 조회 rect 밖으로 스크롤되어도 고정 상태를 유지해야 하므로 직접 추가한다.
                 pinIfNeeded(stickyAttributes, to: pinnedY)
@@ -46,11 +46,35 @@ final class StickySectionLayout: UICollectionViewCompositionalLayout {
         return attributes
     }
 
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        guard let attributes = super.layoutAttributesForItem(at: indexPath)?.copy() as? UICollectionViewLayoutAttributes else {
+            return nil
+        }
+
+        if let collectionView, stickyIndexPaths.contains(indexPath) {
+            let pinnedY = collectionView.contentOffset.y + collectionView.adjustedContentInset.top
+            pinIfNeeded(attributes, to: pinnedY)
+        }
+        return attributes
+    }
+
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         if stickyIndexPaths.isEmpty.isNot {
             return true
         }
         return super.shouldInvalidateLayout(forBoundsChange: newBounds)
+    }
+
+    override func invalidationContext(forBoundsChange newBounds: CGRect) -> UICollectionViewLayoutInvalidationContext {
+        let context = super.invalidationContext(forBoundsChange: newBounds)
+        guard let collectionView,
+              collectionView.bounds.size == newBounds.size,
+              stickyIndexPaths.isEmpty.isNot else { return context }
+
+        // 스크롤로 인한 bounds 변화에는 고정 셀만 무효화한다.
+        // 전체 무효화 시 estimated 높이가 다시 계산되며 다른 셀들이 순간적으로 흔들리는 문제가 있다.
+        context.invalidateItems(at: Array(stickyIndexPaths))
+        return context
     }
 
     private func pinIfNeeded(_ attributes: UICollectionViewLayoutAttributes, to pinnedY: CGFloat) {
