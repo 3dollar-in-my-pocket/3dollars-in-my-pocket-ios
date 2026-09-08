@@ -7,8 +7,15 @@ import SnapKit
 
 /// INFO_V1 (유저 제보 가게의 가게 정보 및 메뉴) 섹션 셀.
 final class StoreInfoV1Cell: BaseCollectionViewCell {
+    enum Layout {
+        static let horizontalMargin: CGFloat = 20
+        static let cardCornerRadius: CGFloat = 20
+        static let cardInset: CGFloat = 16
+    }
+
     var onAction: ((StoreSectionAction) -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
+    private let subTitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
     private let actionButton = UIButton(type: .system)
     private let contentStack = UIStackView()
 
@@ -21,20 +28,34 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
     override func setup() {
         contentStack.axis = .vertical
         contentStack.spacing = 12
-        contentView.addSubViews([titleLabel, actionButton, contentStack])
+        contentView.addSubViews([titleLabel, subTitleLabel, actionButton, contentStack])
     }
 
     override func bindConstraints() {
-        titleLabel.snp.makeConstraints { $0.top.leading.equalToSuperview() }
-        actionButton.snp.makeConstraints { $0.top.trailing.equalToSuperview() }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+        }
+        subTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(2)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+        }
+        actionButton.snp.makeConstraints {
+            $0.centerY.equalTo(subTitleLabel)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
         contentStack.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(subTitleLabel.snp.bottom).offset(12)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+            $0.bottom.equalToSuperview()
         }
     }
 
     func bind(_ section: StoreInfoV1Section) {
         titleLabel.setSDText(section.header.title)
+        subTitleLabel.setSDText(section.header.subTitle)
+        subTitleLabel.isHidden = section.header.subTitle == nil
         actionButton.setOptionalSDButton(section.header.trailingAction)
         actionButton.removeTarget(nil, action: nil, for: .touchUpInside)
         if let action = section.header.trailingAction?.storeSectionAction {
@@ -57,7 +78,7 @@ final class StoreInfoChipView: UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.alignment = .center
-        stack.spacing = 4
+        stack.spacing = chip.contentSpacing.map { CGFloat($0) } ?? 4
         addSubViews([stack])
         stack.snp.makeConstraints { $0.edges.equalToSuperview() }
 
@@ -95,14 +116,14 @@ final class StoreInfoChipView: UIView {
 private final class StoreInfoInformationCardView: UIView {
     init(card: InformationCard) {
         super.init(frame: .zero)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreInfoV1Cell.Layout.cardCornerRadius
         setSDSurfaceStyle(card.style)
 
         let rowsStack = UIStackView()
         rowsStack.axis = .vertical
-        rowsStack.spacing = 10
+        rowsStack.spacing = 8
         addSubViews([rowsStack])
-        rowsStack.snp.makeConstraints { $0.edges.equalToSuperview().inset(14) }
+        rowsStack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV1Cell.Layout.cardInset) }
         card.rows.forEach { row in
             guard let rowView = makeRow(row) else { return }
             rowsStack.addArrangedSubview(rowView)
@@ -114,74 +135,115 @@ private final class StoreInfoInformationCardView: UIView {
     private func makeRow(_ row: InformationRow) -> UIView? {
         switch row {
         case .trailingText(let row):
-            let valueLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+            let valueLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
             valueLabel.setSDText(row.value)
             valueLabel.textAlignment = .right
-            return makeRow(label: row.label, value: valueLabel, alignsTrailing: true)
+            return makeRow(label: row.label, value: valueLabel)
         case .chipGroup(let row):
-            let chipsStack = makeValueStack()
-            row.chips.forEach { chipsStack.addArrangedSubview(StoreInfoChipView(chip: $0)) }
-            return makeRow(label: row.label, value: chipsStack, alignsTrailing: false)
+            let chipsStack = makeValueStack(spacing: 2)
+            row.chips.forEach { chipsStack.addArrangedSubview(StoreInfoCircleChipView(chip: $0)) }
+            return makeRow(label: row.label, value: chipsStack)
         case .inlineOption(let row):
-            // 선택 여부는 서버가 텍스트 색으로 내려주므로 클라이언트는 순서대로 나열만 한다.
-            let itemsStack = makeValueStack()
-            row.items.forEach { item in
-                let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
-                label.setSDText(item.text)
-                itemsStack.addArrangedSubview(label)
-            }
-            return makeRow(label: row.label, value: itemsStack, alignsTrailing: false)
+            // 선택 여부는 서버가 텍스트 색으로 내려주므로 클라이언트는 불릿 색만 텍스트 색에 맞춘다.
+            let itemsStack = makeValueStack(spacing: 4)
+            row.items.forEach { itemsStack.addArrangedSubview(StoreInfoBulletTextView(text: $0.text)) }
+            return makeRow(label: row.label, value: itemsStack)
         case .unknown:
             return nil
         }
     }
 
-    private func makeValueStack() -> UIStackView {
+    private func makeValueStack(spacing: CGFloat) -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 8
+        stackView.spacing = spacing
         return stackView
     }
 
-    private func makeRow(label: SDText, value: UIView, alignsTrailing: Bool) -> UIView {
+    private func makeRow(label: SDText, value: UIView) -> UIView {
         let view = UIView()
-        let labelView = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+        let labelView = StoreSectionTextLabel(font: Fonts.bold.font(size: 12))
         labelView.setSDText(label)
         labelView.setContentHuggingPriority(.required, for: .horizontal)
         labelView.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         view.addSubViews([labelView, value])
+        view.snp.makeConstraints {
+            $0.height.equalTo(24)
+        }
         labelView.snp.makeConstraints {
-            $0.top.bottom.leading.equalToSuperview()
-            $0.width.greaterThanOrEqualTo(56)
+            $0.centerY.leading.equalToSuperview()
+            $0.width.greaterThanOrEqualTo(72)
         }
         value.snp.makeConstraints {
-            $0.centerY.equalTo(labelView)
-            $0.leading.equalTo(labelView.snp.trailing).offset(12)
-
-            if alignsTrailing {
-                $0.trailing.equalToSuperview()
-            } else {
-                $0.trailing.lessThanOrEqualToSuperview()
-            }
+            $0.centerY.equalToSuperview()
+            $0.leading.greaterThanOrEqualTo(labelView.snp.trailing).offset(12)
+            $0.trailing.equalToSuperview()
         }
         return view
     }
 }
 
-/// 메뉴 카드 (카테고리 chip 헤더 + 메뉴명/가격 목록의 그룹 묶음).
+/// 출몰 시기 요일처럼 원형 배경 위에 글자 하나를 얹는 칩.
+private final class StoreInfoCircleChipView: UIView {
+    init(chip: SDChip) {
+        super.init(frame: .zero)
+        layer.cornerRadius = 12
+        clipsToBounds = true
+        if let style = chip.style {
+            setSDChipStyle(style)
+        }
+
+        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        label.setSDText(chip.text)
+        label.textAlignment = .center
+        addSubViews([label])
+        snp.makeConstraints { $0.size.equalTo(24) }
+        label.snp.makeConstraints { $0.center.equalToSuperview() }
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+}
+
+/// 결제 방식처럼 불릿(4pt) + 텍스트로 표시되는 항목. 불릿 색은 텍스트 색을 따른다.
+private final class StoreInfoBulletTextView: UIView {
+    init(text: SDText?) {
+        super.init(frame: .zero)
+        let bulletView = UIView()
+        bulletView.layer.cornerRadius = 2
+        bulletView.backgroundColor = UIColor(hex: text?.fontColor ?? "") ?? Colors.gray40.color
+
+        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        label.setSDText(text)
+
+        addSubViews([bulletView, label])
+        bulletView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(4)
+            $0.centerY.equalToSuperview()
+            $0.size.equalTo(4)
+        }
+        label.snp.makeConstraints {
+            $0.leading.equalTo(bulletView.snp.trailing).offset(4)
+            $0.top.bottom.trailing.equalToSuperview()
+        }
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+}
+
+/// 메뉴 카드 (카테고리 chip 헤더 + 메뉴명/점선 리더/가격 목록의 그룹 묶음).
 private final class StoreInfoMenuCardView: UIView {
     init(card: MenuCard) {
         super.init(frame: .zero)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreInfoV1Cell.Layout.cardCornerRadius
         setSDSurfaceStyle(card.style)
 
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 16
+        stack.spacing = 12
         addSubViews([stack])
-        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(14) }
+        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV1Cell.Layout.cardInset) }
 
         card.groups.forEach { group in
             let groupStack = UIStackView()
@@ -199,23 +261,58 @@ private final class StoreInfoMenuCardView: UIView {
 
     private func makeItemRow(_ item: TextMenuItem) -> UIView {
         let view = UIView()
-        let primaryLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 14))
+        let primaryLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
         primaryLabel.setSDText(item.primaryText)
-        let secondaryLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
+        let secondaryLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
         secondaryLabel.setSDText(item.secondaryText)
         secondaryLabel.textAlignment = .right
+        let leaderLineView = DashedLineView()
 
-        view.addSubViews([primaryLabel, secondaryLabel])
+        view.addSubViews([primaryLabel, leaderLineView, secondaryLabel])
         primaryLabel.snp.makeConstraints {
-            $0.top.bottom.leading.equalToSuperview()
-            $0.trailing.lessThanOrEqualTo(secondaryLabel.snp.leading).offset(-8)
+            // 그룹 헤더 아이콘(28) + 간격(8) 뒤 텍스트 시작점과 정렬한다.
+            $0.top.bottom.equalToSuperview()
+            $0.leading.equalToSuperview().offset(36)
+        }
+        leaderLineView.snp.makeConstraints {
+            $0.leading.equalTo(primaryLabel.snp.trailing).offset(8)
+            $0.trailing.equalTo(secondaryLabel.snp.leading).offset(-8)
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(1)
         }
         secondaryLabel.snp.makeConstraints {
             $0.centerY.equalTo(primaryLabel)
             $0.trailing.equalToSuperview()
         }
+        primaryLabel.setContentHuggingPriority(.required, for: .horizontal)
+        primaryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         secondaryLabel.setContentHuggingPriority(.required, for: .horizontal)
         secondaryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         return view
+    }
+}
+
+/// 메뉴명과 가격 사이를 잇는 점선 리더.
+private final class DashedLineView: UIView {
+    private let dashLayer = CAShapeLayer()
+
+    init() {
+        super.init(frame: .zero)
+        backgroundColor = .clear
+        dashLayer.strokeColor = Colors.gray30.color.cgColor
+        dashLayer.lineWidth = 1
+        dashLayer.lineDashPattern = [2, 2]
+        layer.addSublayer(dashLayer)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: 0, y: bounds.midY))
+        path.addLine(to: CGPoint(x: bounds.width, y: bounds.midY))
+        dashLayer.path = path.cgPath
+        dashLayer.frame = bounds
     }
 }
