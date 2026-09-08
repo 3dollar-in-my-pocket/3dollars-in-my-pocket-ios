@@ -29,8 +29,10 @@ public final class SDChipView: BaseView {
 
     private var imageWidthConstraint: Constraint?
     private var imageHeightConstraint: Constraint?
+    private let defaultSpacing: CGFloat
 
     public init(spacing: CGFloat = 0) {
+        self.defaultSpacing = spacing
         super.init(frame: .zero)
 
         stackView.spacing = spacing
@@ -42,6 +44,8 @@ public final class SDChipView: BaseView {
     }
 
     public func bind(_ chip: SDChip) {
+        // 서버가 칩별 아이콘-텍스트 간격을 지정하면 우선 적용한다.
+        stackView.spacing = chip.contentSpacing.map { CGFloat($0) } ?? defaultSpacing
         setImage(chip.image)
         titleLabel.setSDText(chip.text)
         additionalLabel.isHidden = chip.additionalText == nil
