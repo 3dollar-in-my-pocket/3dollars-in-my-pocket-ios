@@ -32,6 +32,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
     private var reservedDeepLink: String?
 
+    private var mainTabBarViewController: MainTabBarViewController? {
+        let rootViewController = SceneDelegate.shared?.window?.rootViewController
+        let navigationViewController = rootViewController as? UINavigationController
+
+        return navigationViewController?.topViewController as? MainTabBarViewController
+    }
+
     func reservedDeepLinkExisted() -> Bool {
         return reservedDeepLink.isNotNil
     }
@@ -104,6 +111,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
         case .home:
             moveTab(.home)
+
+            if let params = url.params(),
+               let preset = params["preset"] as? String {
+                mainTabBarViewController?.applyHomePreset(preset)
+            }
         case .medal:
             let targetViewController = Environment.myPageInterface.getMyMedalViewController()
             route(targetViewController)
@@ -224,10 +236,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             }
         }
 
-        if let navigationViewController = rootViewController as? UINavigationController,
-           let tabBarViewController = navigationViewController.topViewController as? MainTabBarViewController {
-            tabBarViewController.selectTab(tab: tab)
-        }
+        mainTabBarViewController?.selectTab(tab: tab)
     }
 
     private func isAppScheme(url: URL) -> Bool {
