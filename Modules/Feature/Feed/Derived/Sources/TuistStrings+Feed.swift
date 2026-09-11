@@ -15,11 +15,11 @@ import Foundation
 public enum FeedStrings: Sendable {
 
   public enum FeedList: Sendable {
-  /// 우리 동네 소식
+    /// 우리 동네 소식
     public static let title = FeedStrings.tr("Localization", "feed_list.title")
 
     public enum Empty: Sendable {
-    /// 가게 등록, 리뷰 작성으로 가게 소식을 직접 등록해보세요!
+      /// 가게 등록, 리뷰 작성으로 가게 소식을 직접 등록해보세요!
       public static let description = FeedStrings.tr("Localization", "feed_list.empty.description")
       /// 아직 동네 가게 소식이 없어요.
       public static let title = FeedStrings.tr("Localization", "feed_list.empty.title")
@@ -39,5 +39,5 @@ extension FeedStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

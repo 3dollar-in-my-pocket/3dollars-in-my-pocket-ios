@@ -47,7 +47,7 @@ public enum MembershipStrings: Sendable {
   public static let signinWithKakao = MembershipStrings.tr("Localization", "signin_with_kakao")
 
   public enum AccountInfo: Sendable {
-  /// 🌱%@년
+    /// 🌱%@년
     public static func birthdayYearFormat(_ p1: Any) -> String {
       return MembershipStrings.tr("Localization", "account_info.birthday_year_format",String(describing: p1))
     }
@@ -69,7 +69,7 @@ public enum MembershipStrings: Sendable {
     public static let unknownGender = MembershipStrings.tr("Localization", "account_info.unknown_gender")
 
     public enum Main: Sendable {
-    /// 나이와 성별을 알려주시면\n맞춤 광고 및 간식 데이터 통계에 도움이 됩니다!
+      /// 나이와 성별을 알려주시면\n맞춤 광고 및 간식 데이터 통계에 도움이 됩니다!
       public static let description = MembershipStrings.tr("Localization", "account_info.main.description")
       /// 에 태어난
       public static let second = MembershipStrings.tr("Localization", "account_info.main.second")
@@ -80,18 +80,18 @@ public enum MembershipStrings: Sendable {
     }
 
     public enum SuccessToast: Sendable {
-    /// 회원정보가 저장되었습니다!
+      /// 회원정보가 저장되었습니다!
       public static let message = MembershipStrings.tr("Localization", "account_info.success_toast.message")
     }
   }
 
   public enum CodeAlert: Sendable {
-  /// 코드를 입력하세요.
+    /// 코드를 입력하세요.
     public static let title = MembershipStrings.tr("Localization", "code_alert.title")
   }
 
   public enum Common: Sendable {
-  /// 취소
+    /// 취소
     public static let cancel = MembershipStrings.tr("Localization", "common.cancel")
     /// 확인
     public static let ok = MembershipStrings.tr("Localization", "common.ok")
@@ -110,5 +110,5 @@ extension MembershipStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

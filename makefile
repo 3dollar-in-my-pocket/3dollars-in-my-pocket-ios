@@ -2,16 +2,17 @@ install:
 	bundle install
 
 project:
-	tuist install
-	tuist generate
+	mise install
+	mise exec -- tuist install
+	mise exec -- tuist generate
 	open 3dollar-in-my-pocket.xcworkspace
 
 edit:
-	tuist edit
+	mise exec -- tuist edit
 
 clean:
-	tuist clean
-	tuist clean dependencies
+	mise exec -- tuist clean
+	mise exec -- tuist clean dependencies
 	rm -rf **/*.xcodeproj
 	rm -rf *.xcworkspace
 	rm -rf *.xcodeproj
