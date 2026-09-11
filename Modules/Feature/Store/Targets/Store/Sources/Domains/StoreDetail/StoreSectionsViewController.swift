@@ -129,17 +129,30 @@ public final class StoreSectionsViewController: BaseViewController {
         onStoreInformationChanged?(title, location)
 
         let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
+        let previousSectionsByIdentifier = sectionsByIdentifier
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
-        expandedMenuIdentifiers.removeAll()
+        // 리뷰 작성 등으로 재조회해도 같은 섹션이면 메뉴 펼침 상태를 유지한다.
+        expandedMenuIdentifiers.formIntersection(identifiers)
 
-        (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
+        // 섹션 구성이 그대로면 고정 탭 등록을 유지한다. 재조회마다 비우면 업데이트 중 탭이 원위치로
+        // 돌아가고 컬렉션뷰가 그 셀을 기준으로 앵커링해 스크롤이 탭 위치로 튄다.
+        if dataSource.snapshot().itemIdentifiers != identifiers {
+            (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
+        }
 
         var snapshot = NSDiffableDataSourceSnapshot<Int, String>()
         snapshot.appendSections([0])
         snapshot.appendItems(identifiers)
-        if #available(iOS 15.0, *) {
-            snapshot.reconfigureItems(identifiers)
+        // 재조회 시 내용이 바뀐 섹션만 다시 그린다.
+        // 전부 reconfigure 하면 estimated 높이가 초기화되어 스크롤 위치가 위로 튄다.
+        let changedIdentifiers = identifiers.filter { identifier in
+            guard let previous = previousSectionsByIdentifier[identifier],
+                  let current = sectionsByIdentifier[identifier] else { return false }
+            return AnyHashable(previous) != AnyHashable(current)
+        }
+        if changedIdentifiers.isEmpty.isNot {
+            snapshot.reconfigureItems(changedIdentifiers)
         }
         dataSource.apply(snapshot, animatingDifferences: false)
     }
@@ -282,20 +295,26 @@ private extension StoreSectionsViewController {
 
     func scrollToSection(_ sectionType: StoreSectionType) {
         let identifiers = dataSource.snapshot().itemIdentifiers
-        guard let index = identifiers.firstIndex(where: { sectionsByIdentifier[$0]?.type == sectionType }),
-              let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: IndexPath(item: index, section: 0))
-        else { return }
+        guard let index = identifiers.firstIndex(where: { sectionsByIdentifier[$0]?.type == sectionType }) else { return }
+        let indexPath = IndexPath(item: index, section: 0)
 
-        // 상단에 고정된 탭 높이만큼 내려서 목표 섹션이 탭에 가려지지 않게 한다.
-        let topInset = collectionView.adjustedContentInset.top
-        let minY = -topInset
-        let maxY = max(
-            collectionView.contentSize.height + collectionView.adjustedContentInset.bottom - collectionView.bounds.height,
-            minY
-        )
-        let targetY = attributes.frame.minY - topInset - StoreTabCell.Layout.height
-        let offsetY = min(max(targetY, minY), maxY)
-        collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: true)
+        // 아직 표시되지 않은 셀은 estimated 높이라 목표 좌표가 부정확하다.
+        // 한 번 이동해 주변 셀을 실측한 뒤 같은 계산을 반복하면 정확한 위치에 멈춘다.
+        for _ in 0..<2 {
+            guard let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath) else { return }
+
+            // 상단에 고정된 탭 높이만큼 내려서 목표 섹션이 탭에 가려지지 않게 한다.
+            let topInset = collectionView.adjustedContentInset.top
+            let minY = -topInset
+            let maxY = max(
+                collectionView.contentSize.height + collectionView.adjustedContentInset.bottom - collectionView.bounds.height,
+                minY
+            )
+            let targetY = attributes.frame.minY - topInset - StoreTabCell.Layout.height
+            let offsetY = min(max(targetY, minY), maxY)
+            collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
+            collectionView.layoutIfNeeded()
+        }
     }
 }
 
