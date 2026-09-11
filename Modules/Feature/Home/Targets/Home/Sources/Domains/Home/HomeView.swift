@@ -9,6 +9,10 @@ import SnapKit
 import Then
 
 final class HomeView: BaseView {
+    enum Layout {
+        static let focusBoundsPadding: CGFloat = 24
+    }
+
     /// 바텀시트 short form 의 가시 영역 높이. HomeListLayout.Layout.tipVisibleHeight 와 동일.
     private let bottomSheetShortFormHeight: CGFloat = HomeListLayout.Layout.tipVisibleHeight
 
@@ -149,15 +153,37 @@ final class HomeView: BaseView {
         }
     }
     
-    func moveCamera(location: CLLocation) {
+    func moveCamera(location: CLLocation, zoomLevel: Double? = nil) {
+        let currentCameraPosition = mapView.cameraPosition
         let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-        let cameraPosition = NMFCameraPosition(target, zoom: mapView.zoomLevel)
+        let cameraPosition = NMFCameraPosition(
+            target,
+            zoom: zoomLevel ?? currentCameraPosition.zoom,
+            tilt: currentCameraPosition.tilt,
+            heading: currentCameraPosition.heading
+        )
         let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
         
         cameraUpdate.animation = .easeIn
         mapView.moveCamera(cameraUpdate)
     }
-    
+
+    func moveCamera(bounds: LocationBoundsResponse) {
+        let southWest = NMGLatLng(lat: bounds.southWest.latitude, lng: bounds.southWest.longitude)
+        let northEast = NMGLatLng(lat: bounds.northEast.latitude, lng: bounds.northEast.longitude)
+        let latLngBounds = NMGLatLngBounds(southWest: southWest, northEast: northEast)
+        let paddingInsets = UIEdgeInsets(
+            top: homeFilterCollectionView.frame.maxY + Layout.focusBoundsPadding,
+            left: Layout.focusBoundsPadding,
+            bottom: safeAreaInsets.bottom + bottomSheetShortFormHeight + Layout.focusBoundsPadding,
+            right: Layout.focusBoundsPadding
+        )
+        let cameraUpdate = NMFCameraUpdate(fit: latLngBounds, paddingInsets: paddingInsets)
+
+        cameraUpdate.animation = .easeIn
+        mapView.moveCamera(cameraUpdate)
+    }
+
     func setAdvertisementMarker(_ advertisement: AdvertisementResponse) {
         guard let urlString = advertisement.image?.url,
               let url = URL(string: urlString) else { return }

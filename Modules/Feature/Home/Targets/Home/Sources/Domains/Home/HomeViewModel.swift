@@ -39,6 +39,7 @@ extension HomeViewModel {
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         let didTapFeedButton = PassthroughSubject<Void, Never>()
+        let applyPreset = PassthroughSubject<String, Never>()
 
         // From bottom sheet
         let bottomSheetWillLoadMore = PassthroughSubject<Void, Never>()
@@ -50,7 +51,8 @@ extension HomeViewModel {
         let address = PassthroughSubject<String, Never>()
         let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
-        let cameraPosition = PassthroughSubject<CLLocation, Never>()
+        let cameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
+        let focusBounds = PassthroughSubject<LocationBoundsResponse, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
@@ -74,6 +76,8 @@ extension HomeViewModel {
         var filterSections: [any HomeScreenSection] = []
         var radioSelection: [String: Int] = [:]
         var hasLoadedFilterScreen = false
+        var preset: String?
+        var initialMapZoomLevel: Double?
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
         var newMapMaxDistance: Double?
@@ -151,6 +155,12 @@ final class HomeViewModel: BaseViewModel {
     private let filterScreenLoaded = PassthroughSubject<Void, Never>()
     private var loadTask: Task<Void, Never>?
     private var loadMoreTask: Task<Void, Never>?
+    
+    private var allBars: [any HomeFilterBar] {
+        state.filterSections
+            .compactMap { $0 as? HomeFilterSection }
+            .flatMap(\.bars)
+    }
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -190,22 +200,16 @@ final class HomeViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
 
-        getCurrentLocation
-            .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, location: CLLocation) in
-                owner.state.resultCameraPosition = location
-                owner.state.currentLocation = owner.state.resultCameraPosition
-                owner.state.newCameraPosition = location
-                owner.output.cameraPosition.send(location)
-                owner.dependency.preference.userCurrentLocation = location
-            })
-            .store(in: &cancellables)
-
-        // 첫 카드 요청은 위치 + 필터 응답이 모두 준비된 뒤에만 발사한다.
+        // 최초 카메라는 위치와 필터 설정 응답이 모두 준비된 뒤 한 번만 이동한다.
         Publishers.CombineLatest(getCurrentLocation, filterScreenLoaded)
             .first()
             .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, _) in
+            .sink(receiveValue: { (owner: HomeViewModel, values) in
+                let location = values.0
+                owner.state.resultCameraPosition = location
+                owner.state.currentLocation = location
+                owner.state.newCameraPosition = location
+                owner.output.cameraPosition.send((location, owner.state.initialMapZoomLevel))
                 owner.fetchInitialCards()
             })
             .store(in: &cancellables)
@@ -214,6 +218,14 @@ final class HomeViewModel: BaseViewModel {
             .sink(receiveValue: { [weak self] in
                 self?.presentPolicyIfNeeded()
                 self?.fetchFilterScreen()
+            })
+            .store(in: &cancellables)
+
+        input.applyPreset
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, preset: String) in
+                owner.state.preset = preset
+                owner.fetchFilterScreen(shouldRefreshCards: true)
             })
             .store(in: &cancellables)
 
@@ -330,7 +342,7 @@ final class HomeViewModel: BaseViewModel {
                 let location = CLLocation(latitude: latitude, longitude: longitude)
                 owner.state.newCameraPosition = location
                 owner.state.resultCameraPosition = location
-                owner.output.cameraPosition.send(location)
+                owner.output.cameraPosition.send((location, nil))
                 owner.fetchInitialCards()
                 owner.output.isHiddenResearchButton.send(true)
             })
@@ -386,7 +398,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.sendClickCurrentLocationLog()
                 owner.dependency.preference.userCurrentLocation = location
                 owner.state.currentLocation = location
-                owner.output.cameraPosition.send(location)
+                owner.output.cameraPosition.send((location, nil))
             }
             .store(in: &cancellables)
 
@@ -473,6 +485,10 @@ final class HomeViewModel: BaseViewModel {
                 state.nextCursor = response.cursor?.nextCursor
                 state.hasMore = response.cursor?.hasMore ?? false
                 emitCards()
+
+                if let focusBounds = response.focusBounds {
+                    output.focusBounds.send(focusBounds)
+                }
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))
             }
@@ -564,7 +580,7 @@ final class HomeViewModel: BaseViewModel {
                     latitude: marker.location.latitude,
                     longitude: marker.location.longitude
                 )
-                output.cameraPosition.send(cameraPosition)
+                output.cameraPosition.send((cameraPosition, nil))
             }
         } else if let admob = card as? HomeListAdmobCardResponse {
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))
@@ -702,16 +718,21 @@ extension HomeViewModel {
         output.filterDatasource.send(datasource)
     }
 
-    private func fetchFilterScreen() {
+    private func fetchFilterScreen(shouldRefreshCards: Bool = false) {
         Task { @MainActor in
-            let result = await dependency.screenRepository.fetchHomeFilterScreen()
+            let input = FetchHomeFilterScreenInput(preset: state.preset)
+            let result = await dependency.screenRepository.fetchHomeFilterScreen(input: input)
             switch result {
             case .success(let response):
                 state.filterSections = response.sections
                 state.hasLoadedFilterScreen = true
-                initializeRadioSelectionDefaults()
-                syncRadioSelectionFromLegacy()
+                state.initialMapZoomLevel = response.configuration?.initialMapZoomLevel
+                applyServerSelectionDefaults()
                 output.filterDatasource.send(flattenFilterDatasource())
+
+                if shouldRefreshCards && state.resultCameraPosition.isNotNil {
+                    fetchInitialCards()
+                }
             case .failure:
                 output.filterDatasource.send(makeFallbackFilterDatasource())
             }
@@ -721,18 +742,11 @@ extension HomeViewModel {
         .store(in: taskBag)
     }
 
-    private var allBars: [any HomeFilterBar] {
-        state.filterSections
-            .compactMap { $0 as? HomeFilterSection }
-            .flatMap(\.bars)
-    }
-
-    private func initializeRadioSelectionDefaults() {
-        for case let radioBar as HomeFilterRadioBar in allBars where state.radioSelection[radioBar.paramKey] == nil {
+    private func applyServerSelectionDefaults() {
+        state.radioSelection = [:]
+        for case let radioBar as HomeFilterRadioBar in allBars {
             state.radioSelection[radioBar.paramKey] = 0
-            if let firstOption = radioBar.options.first {
-                applyParamValueToLegacyState(paramKey: radioBar.paramKey, paramValue: firstOption.paramValue)
-            }
+            applyParamValueToLegacyState(paramKey: radioBar.paramKey, paramValue: radioBar.options.first?.paramValue)
         }
     }
 

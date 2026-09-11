@@ -603,14 +603,14 @@ public enum ThreeDollarInMyPocketStrings: Sendable {
   public static let writeStoreWednesday = ThreeDollarInMyPocketStrings.tr("Localization", "write_store_wednesday")
 
   public enum MainBannerPopup: Sendable {
-  /// 닫기
+    /// 닫기
     public static let close = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.close")
     /// 오늘 하루 보지않기
     public static let disableToday = ThreeDollarInMyPocketStrings.tr("Localization", "main_banner_popup.disable_today")
   }
 
   public enum Splash: Sendable {
-  /// 일시적인 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.
+    /// 일시적인 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.
     public static let defaultError = ThreeDollarInMyPocketStrings.tr("Localization", "splash.default_error")
   }
 }
@@ -627,5 +627,5 @@ extension ThreeDollarInMyPocketStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

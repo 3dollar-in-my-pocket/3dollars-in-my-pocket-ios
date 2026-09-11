@@ -278,8 +278,10 @@ let project = Project(
             bundleId: "$(PRODUCT_BUNDLE_IDENTIFIER)",
             deploymentTargets: .iOS("18.0"),
             infoPlist: "Targets/three-dollar-in-my-pocket/Info.plist",
-            sources: ["Targets/three-dollar-in-my-pocket/Sources/**"],
-            resources: ["Targets/three-dollar-in-my-pocket/Resources/**"],
+            buildableFolders: [
+                "Targets/three-dollar-in-my-pocket/Sources",
+                "Targets/three-dollar-in-my-pocket/Resources"
+            ],
             entitlements: .file(path: .relativeToManifest("Targets/three-dollar-in-my-pocket/three-dollar-in-my-pocket.entitlements")),
             scripts: [
                 .pre(script: Script.googleService, name: "GoogleService Info"),
@@ -353,8 +355,10 @@ let project = Project(
             bundleId: "com.macgongmon.-dollar-in-my-pocketTests",
             deploymentTargets: .iOS("18.0"),
             infoPlist: "Targets/three-dollar-in-my-pocketTests/Info.plist",
-            sources: ["Targets/three-dollar-in-my-pocketTests/Sources/**"],
-            resources: ["Targets/three-dollar-in-my-pocketTests/Resources/**"],
+            buildableFolders: [
+                "Targets/three-dollar-in-my-pocketTests/Sources",
+                "Targets/three-dollar-in-my-pocketTests/Resources"
+            ],
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
                 .Feature.store,
@@ -373,7 +377,9 @@ let project = Project(
             bundleId: "$(PRODUCT_BUNDLE_IDENTIFIER)",
             deploymentTargets: .iOS("18.0"),
             infoPlist: "Targets/service-extension/Info.plist",
-            sources: ["Targets/service-extension/Sources/**"],
+            buildableFolders: [
+                "Targets/service-extension/Sources"
+            ],
             dependencies: [],
             settings: .settings(
                 base: BuildSetting.ServiceExtension.base,
@@ -388,8 +394,10 @@ let project = Project(
             product: .appExtension,
             bundleId: "$(PRODUCT_BUNDLE_IDENTIFIER)",
             infoPlist: "Targets/content-extension/Info.plist",
-            sources: ["Targets/content-extension/Sources/**"],
-            resources: ["Targets/content-extension/Resources/**"],
+            buildableFolders: [
+                "Targets/content-extension/Sources",
+                "Targets/content-extension/Resources"
+            ],
             dependencies: [
                 .sdk(name: "UserNotifications", type: .framework, status: .optional),
                 .sdk(name: "UserNotificationsUI", type: .framework, status: .optional)
@@ -408,7 +416,9 @@ let project = Project(
             bundleId: "com.macgongmon.-dollar-in-my-pocket.app-interface",
             deploymentTargets: .iOS("18.0"),
             infoPlist: .default,
-            sources: ["Targets/AppInterface/Sources/**"],
+            buildableFolders: [
+                "Targets/AppInterface/Sources"
+            ],
             dependencies: [
                 .Core.dependencyInjection,
                 .Core.model

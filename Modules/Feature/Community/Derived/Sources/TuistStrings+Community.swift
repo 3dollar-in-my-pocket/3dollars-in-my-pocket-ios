@@ -15,15 +15,15 @@ import Foundation
 public enum CommunityStrings: Sendable {
 
   public enum CommunityPopularStore: Sendable {
-
+  
     public enum Tab: Sendable {
-    /// 이번 주 동네 인기 가게
+      /// 이번 주 동네 인기 가게
       public static let title = CommunityStrings.tr("Localization", "community_popular_store.tab.title")
     }
   }
 
   public enum CommunityPopularStoreNeighborhoodsHeader: Sendable {
-  /// 어디 인기 가게를 볼까요?
+    /// 어디 인기 가게를 볼까요?
     public static let title = CommunityStrings.tr("Localization", "community_popular_store_neighborhoods_header.title")
   }
 }
@@ -40,5 +40,5 @@ extension CommunityStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

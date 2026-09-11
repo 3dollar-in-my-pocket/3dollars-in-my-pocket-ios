@@ -3,15 +3,15 @@ import Foundation
 import Model
 
 public protocol ScreenRepository {
-    func fetchHomeFilterScreen() async -> Result<HomeFilterScreenResponse, Error>
+    func fetchHomeFilterScreen(input: FetchHomeFilterScreenInput) async -> Result<HomeFilterScreenResponse, Error>
     func fetchHomeSectionList(input: FetchHomeSectionListInput) async -> Result<HomeListSectionResponse, Error>
 }
 
 public final class ScreenRepositoryImpl: ScreenRepository {
     public init() { }
 
-    public func fetchHomeFilterScreen() async -> Result<HomeFilterScreenResponse, Error> {
-        let request = ScreenApi.fetchHomeFilterScreen
+    public func fetchHomeFilterScreen(input: FetchHomeFilterScreenInput) async -> Result<HomeFilterScreenResponse, Error> {
+        let request = ScreenApi.fetchHomeFilterScreen(input: input)
         return await NetworkManager.shared.request(requestType: request)
     }
 

@@ -110,6 +110,10 @@ public final class HomeViewController: BaseViewController {
         storePreviewBottomSheetController?.view.isHidden = true
     }
 
+    public func applyPreset(_ preset: String) {
+        viewModel.input.applyPreset.send(preset)
+    }
+
     public override func sendPageView() {
         super.sendPageView()
 
@@ -178,8 +182,19 @@ public final class HomeViewController: BaseViewController {
         viewModel.output.cameraPosition
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
-            .sink { owner, location in
-                owner.homeView.moveCamera(location: location)
+            .sink { owner, cameraPosition in
+                owner.homeView.moveCamera(
+                    location: cameraPosition.0,
+                    zoomLevel: cameraPosition.1
+                )
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.focusBounds
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, bounds: LocationBoundsResponse) in
+                owner.homeView.moveCamera(bounds: bounds)
             }
             .store(in: &cancellables)
 

@@ -14,6 +14,14 @@ extension Project {
         includeResource: Bool = false,
         dependencies: [ProjectDescription.TargetDependency]
     ) -> Project {
+        var buildableFolders: [BuildableFolder] = []
+        if includeSource {
+            buildableFolders.append("Sources")
+        }
+        if includeResource {
+            buildableFolders.append("Resources")
+        }
+
         return Project(
             name: name,
             organizationName: DefaultSetting.organizationName,
@@ -32,8 +40,7 @@ extension Project {
                     product: product,
                     bundleId: DefaultSetting.bundleId(moduleName: name),
                     deploymentTargets: .iOS(DefaultSetting.targetVersion.stringValue),
-                    sources: includeSource ? ["Sources/**"] : nil,
-                    resources: includeResource ? ["Resources/**"] : nil,
+                    buildableFolders: buildableFolders,
                     dependencies: dependencies
                 )
             ],
@@ -62,8 +69,10 @@ extension Project {
             product: .framework,
             bundleId: DefaultSetting.bundleId(moduleName: name),
             infoPlist: "Targets/\(name)/Info.plist",
-            sources: ["Targets/\(name)/Sources/**"],
-            resources: ["Targets/\(name)/Resources/**"],
+            buildableFolders: [
+                .folder("Targets/\(name)/Sources"),
+                .folder("Targets/\(name)/Resources")
+            ],
             dependencies: dependencies
         )
         targets.append(mainTarget)
@@ -81,7 +90,9 @@ extension Project {
                 product: .framework,
                 bundleId: DefaultSetting.bundleId(moduleName: name) + "-interface",
                 infoPlist: .default,
-                sources: ["Targets/Interface/Sources/**"],
+                buildableFolders: [
+                    "Targets/Interface/Sources"
+                ],
                 dependencies: [
                     .Core.dependencyInjection,
                     .Core.model,
@@ -100,7 +111,9 @@ extension Project {
                 product: .app,
                 bundleId: DefaultSetting.bundleId(moduleName: name.lowercased()) + "-demo",
                 infoPlist: "Targets/Demo/Info.plist",
-                sources: ["Targets/Demo/Sources/**"],
+                buildableFolders: [
+                    "Targets/Demo/Sources"
+                ],
                 dependencies: [
                     .project(target: "\(name)", path: "./"),
                     .mock,
