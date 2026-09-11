@@ -106,7 +106,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(navigationController)
         case .store:
             guard let params = url.params(),
-                  let storeId = params["storeId"] as? Int else { return }
+                  let storeId = intParam(params, key: "storeId") else { return }
 
             route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
         case .home:
@@ -129,7 +129,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(viewController)
         case .postList:
             guard let params = url.params(),
-                  let storeId = params["storeId"] as? Int else { return }
+                  let storeId = intParam(params, key: "storeId") else { return }
 
             let storeDetailViewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
             route(storeDetailViewController)
@@ -154,7 +154,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             route(viewController)
         case .reviewList:
             guard let params = url.params(),
-                  let storeId = params["storeId"] as? Int else { return }
+                  let storeId = intParam(params, key: "storeId") else { return }
 
             route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
             let config = ReviewListViewModel.Config(storeId: storeId, isBossStore: false)
@@ -172,6 +172,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .myCoupons:
             let storeDetailViewController = Environment.storeInterface.getCouponListViewController(onReload: {})
             route(storeDetailViewController)
+        case .storeImages:
+            guard let params = url.params(),
+                  let storeId = intParam(params, key: "storeId") else { return }
+
+            route(Environment.storeInterface.getPhotoListViewController(storeId: storeId))
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
         }
@@ -237,6 +242,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
 
         mainTabBarViewController?.selectTab(tab: tab)
+    }
+
+    /// 쿼리 파라미터는 문자열로 파싱되므로 숫자 id 는 여기서 변환한다.
+    private func intParam(_ params: [String: Any], key: String) -> Int? {
+        if let value = params[key] as? Int { return value }
+        if let value = params[key] as? String { return Int(value) }
+        return nil
     }
 
     private func isAppScheme(url: URL) -> Bool {

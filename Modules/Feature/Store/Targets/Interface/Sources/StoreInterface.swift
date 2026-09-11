@@ -55,6 +55,9 @@ public protocol StoreInterface {
 
     func getUploadPhotoViewController(config: UploadPhotoConfig) -> UIViewController
 
+    /// 가게 사진 전체 목록. 상세 IMAGE 섹션 "더보기" 카드의 `/store/images` 딥링크가 진입한다.
+    func getPhotoListViewController(storeId: Int) -> UIViewController
+
     /// Home 등 Store 모듈 밖의 화면에서 가게 활동 유도 모달을 레거시 상세와 같은 시점에 표시한다.
     func presentStoreDisplayItemModal(
         from viewController: UIViewController,

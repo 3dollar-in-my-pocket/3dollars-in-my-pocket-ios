@@ -107,6 +107,11 @@ public final class StoreInterfaceImpl: StoreInterface {
         return UploadPhotoViewController.instance(viewModel: viewModel)
     }
 
+    public func getPhotoListViewController(storeId: Int) -> UIViewController {
+        let viewModel = PhotoListViewModel(config: .init(storeId: storeId))
+        return PhotoListViewController.instance(viewModel: viewModel)
+    }
+
     public func presentStoreDisplayItemModal(
         from viewController: UIViewController,
         storeId: Int,
