@@ -12,9 +12,14 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
         static let horizontalMargin: CGFloat = 20
         static let cardCornerRadius: CGFloat = 20
         static let cardInset: CGFloat = 16
+        /// 카테고리 헤더 + 메뉴 행이 이 개수를 넘으면 접고 "메뉴 N개 더보기"를 노출한다.
+        static let collapsedMenuRowCount = 6
+        static let moreButtonHeight: CGFloat = 50
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
+    /// 더보기 탭. 펼침 상태는 셀 재사용과 무관하게 유지돼야 하므로 호스트가 보관하고 다시 bind 한다.
+    var onToggleMenuExpansion: (() -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private let subTitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
     private let actionButton = UIButton(type: .system)
@@ -24,6 +29,7 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
         super.prepareForReuse()
         contentStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         onAction = nil
+        onToggleMenuExpansion = nil
     }
 
     override func setup() {
@@ -53,7 +59,7 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
         }
     }
 
-    func bind(_ section: StoreInfoV1Section) {
+    func bind(_ section: StoreInfoV1Section, isMenuExpanded: Bool = false) {
         titleLabel.setSDText(section.header.title)
         subTitleLabel.setSDText(section.header.subTitle)
         subTitleLabel.isHidden = section.header.subTitle == nil
@@ -67,7 +73,9 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
             contentStack.addArrangedSubview(StoreInfoInformationCardView(card: card))
         }
         if let menuCard = section.menuCard {
-            contentStack.addArrangedSubview(StoreInfoMenuCardView(card: menuCard))
+            let menuCardView = StoreInfoMenuCardView(card: menuCard, isExpanded: isMenuExpanded)
+            menuCardView.onTapMore = { [weak self] in self?.onToggleMenuExpansion?() }
+            contentStack.addArrangedSubview(menuCardView)
         }
     }
 }
@@ -234,8 +242,18 @@ private final class StoreInfoBulletTextView: UIView {
 }
 
 /// 메뉴 카드 (카테고리 chip 헤더 + 메뉴명/점선 리더/가격 목록의 그룹 묶음).
+/// 서버는 메뉴를 전부 내려주므로, 행(헤더+메뉴)이 `collapsedMenuRowCount`를 넘으면 클라이언트가 접는다.
 private final class StoreInfoMenuCardView: UIView {
-    init(card: MenuCard) {
+    var onTapMore: (() -> Void)?
+
+    private let moreButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitleColor(Colors.gray60.color, for: .normal)
+        button.titleLabel?.font = Fonts.medium.font(size: 12)
+        return button
+    }()
+
+    init(card: MenuCard, isExpanded: Bool) {
         super.init(frame: .zero)
         layer.cornerRadius = StoreInfoV1Cell.Layout.cardCornerRadius
         setSDSurfaceStyle(card.style)
@@ -244,17 +262,53 @@ private final class StoreInfoMenuCardView: UIView {
         stack.axis = .vertical
         stack.spacing = 12
         addSubViews([stack])
-        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV1Cell.Layout.cardInset) }
 
-        card.groups.forEach { group in
+        let totalRowCount = card.groups.reduce(0) { $0 + 1 + $1.items.count }
+        let totalItemCount = card.groups.reduce(0) { $0 + $1.items.count }
+        let isCollapsed = isExpanded.isNot && totalRowCount > StoreInfoV1Cell.Layout.collapsedMenuRowCount
+        var remainingRowCount = isCollapsed ? StoreInfoV1Cell.Layout.collapsedMenuRowCount : totalRowCount
+        var shownItemCount = 0
+
+        // 접힌 상태에서 카테고리 헤더만 남고 메뉴가 잘리면 어색하므로, 헤더+메뉴 1개가 들어갈 때만 그룹을 연다.
+        for group in card.groups where remainingRowCount >= 2 {
             let groupStack = UIStackView()
             groupStack.axis = .vertical
             groupStack.spacing = 8
             groupStack.addArrangedSubview(
                 StoreInfoChipView(chip: group.header, font: Fonts.semiBold.font(size: 14))
             )
-            group.items.forEach { groupStack.addArrangedSubview(makeItemRow($0)) }
+            remainingRowCount -= 1
+            for item in group.items where remainingRowCount > 0 {
+                groupStack.addArrangedSubview(makeItemRow(item))
+                remainingRowCount -= 1
+                shownItemCount += 1
+            }
             stack.addArrangedSubview(groupStack)
+        }
+
+        guard isCollapsed else {
+            stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV1Cell.Layout.cardInset) }
+            return
+        }
+
+        let divider = UIView()
+        divider.backgroundColor = Colors.gray20.color
+        moreButton.setTitle(Strings.StoreDetail.Menu.moreFormat(totalItemCount - shownItemCount), for: .normal)
+        moreButton.addAction(UIAction { [weak self] _ in self?.onTapMore?() }, for: .touchUpInside)
+        addSubViews([divider, moreButton])
+
+        stack.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview().inset(StoreInfoV1Cell.Layout.cardInset)
+        }
+        divider.snp.makeConstraints {
+            $0.top.equalTo(stack.snp.bottom).offset(StoreInfoV1Cell.Layout.cardInset)
+            $0.leading.trailing.equalToSuperview().inset(StoreInfoV1Cell.Layout.cardInset)
+            $0.height.equalTo(1)
+        }
+        moreButton.snp.makeConstraints {
+            $0.top.equalTo(divider.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(StoreInfoV1Cell.Layout.moreButtonHeight)
         }
     }
 

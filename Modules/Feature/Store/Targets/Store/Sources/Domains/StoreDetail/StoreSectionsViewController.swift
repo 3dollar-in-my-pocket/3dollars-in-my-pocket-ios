@@ -18,6 +18,8 @@ public final class StoreSectionsViewController: BaseViewController {
     private let collectionView: UICollectionView
     private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
     private var displayedImpressionIdentifiers = Set<String>()
+    /// 메뉴 더보기를 누른 INFO_V1 섹션. 셀 재사용 후에도 펼침을 유지하기 위해 컨트롤러가 보관한다.
+    private var expandedMenuIdentifiers = Set<String>()
     private lazy var dataSource = makeDataSource()
 
     init(viewModel: StoreSectionsViewModel) {
@@ -129,6 +131,7 @@ public final class StoreSectionsViewController: BaseViewController {
         let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
+        expandedMenuIdentifiers.removeAll()
 
         (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
 
@@ -138,6 +141,15 @@ public final class StoreSectionsViewController: BaseViewController {
         if #available(iOS 15.0, *) {
             snapshot.reconfigureItems(identifiers)
         }
+        dataSource.apply(snapshot, animatingDifferences: false)
+    }
+
+    /// 접힌 메뉴를 펼친다. reconfigure 로 같은 셀을 다시 bind 해 셀프사이징 높이가 갱신되게 한다.
+    private func expandMenu(identifier: String) {
+        guard expandedMenuIdentifiers.insert(identifier).inserted else { return }
+
+        var snapshot = dataSource.snapshot()
+        snapshot.reconfigureItems([identifier])
         dataSource.apply(snapshot, animatingDifferences: false)
     }
 
@@ -187,7 +199,10 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreInfoV1Section:
                 let cell: StoreInfoV1Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section, isMenuExpanded: self.expandedMenuIdentifiers.contains(identifier))
+                cell.onAction = actionHandler
+                cell.onToggleMenuExpansion = { [weak self] in self?.expandMenu(identifier: identifier) }
+                return cell
             case let section as StoreInfoV2Section:
                 let cell: StoreInfoV2Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
