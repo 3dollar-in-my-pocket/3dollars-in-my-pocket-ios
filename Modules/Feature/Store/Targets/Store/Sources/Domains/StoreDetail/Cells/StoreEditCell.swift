@@ -28,6 +28,7 @@ final class StoreEditCell: BaseCollectionViewCell {
         stack.spacing = Layout.editSpacing
         stack.isLayoutMarginsRelativeArrangement = true
         stack.layoutMargins = .init(top: 0, left: Layout.horizontalMargin, bottom: 0, right: Layout.horizontalMargin)
+        stack.insetsLayoutMarginsFromSafeArea = false
         return stack
     }()
 

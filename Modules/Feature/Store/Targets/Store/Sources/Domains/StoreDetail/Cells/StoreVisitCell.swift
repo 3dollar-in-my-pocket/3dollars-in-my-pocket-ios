@@ -7,6 +7,7 @@ import SnapKit
 
 final class StoreVisitCell: BaseCollectionViewCell {
     enum Layout {
+        static let verticalMargin: CGFloat = 16
         static let horizontalMargin: CGFloat = 20
         static let summaryChipHeight: CGFloat = 48
         static let historyCornerRadius: CGFloat = 20
@@ -20,7 +21,8 @@ final class StoreVisitCell: BaseCollectionViewCell {
         stack.axis = .vertical
         stack.alignment = .fill
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = .init(top: 0, left: Layout.horizontalMargin, bottom: 0, right: Layout.horizontalMargin)
+        stack.layoutMargins = .init(top: Layout.verticalMargin, left: Layout.horizontalMargin, bottom: Layout.verticalMargin, right: Layout.horizontalMargin)
+        stack.insetsLayoutMarginsFromSafeArea = false
         return stack
     }()
 

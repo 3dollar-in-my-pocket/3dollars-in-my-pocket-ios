@@ -27,6 +27,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         stack.spacing = 10
         stack.isLayoutMarginsRelativeArrangement = true
         stack.layoutMargins = .init(top: 16, left: 0, bottom: 16, right: 0)
+        stack.insetsLayoutMarginsFromSafeArea = false
         return stack
     }()
     private let topContentStack: UIStackView = {
@@ -36,6 +37,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         stack.spacing = 10
         stack.isLayoutMarginsRelativeArrangement = true
         stack.layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
+        stack.insetsLayoutMarginsFromSafeArea = false
         return stack
     }()
     private let titleStack: UIStackView = {
