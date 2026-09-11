@@ -8,6 +8,7 @@ import SnapKit
 /// INFO_V1 (유저 제보 가게의 가게 정보 및 메뉴) 섹션 셀.
 final class StoreInfoV1Cell: BaseCollectionViewCell {
     enum Layout {
+        static let verticalMargin: CGFloat = 16
         static let horizontalMargin: CGFloat = 20
         static let cardCornerRadius: CGFloat = 20
         static let cardInset: CGFloat = 16
@@ -33,7 +34,7 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
 
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
             $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
         }
         subTitleLabel.snp.makeConstraints {
@@ -48,7 +49,7 @@ final class StoreInfoV1Cell: BaseCollectionViewCell {
             $0.top.equalTo(subTitleLabel.snp.bottom).offset(12)
             $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
             $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
         }
     }
 

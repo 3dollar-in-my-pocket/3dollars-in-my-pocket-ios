@@ -7,6 +7,7 @@ import SnapKit
 
 final class StoreReviewCell: BaseCollectionViewCell {
     enum Layout {
+        static let verticalMargin: CGFloat = 16
         static let horizontalMargin: CGFloat = 20
         static let cardCornerRadius: CGFloat = 20
         static let cardInset: CGFloat = 16
@@ -33,7 +34,7 @@ final class StoreReviewCell: BaseCollectionViewCell {
 
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
             $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
         }
         actionButton.snp.makeConstraints {
@@ -52,7 +53,7 @@ final class StoreReviewCell: BaseCollectionViewCell {
         moreButton.snp.makeConstraints {
             $0.top.equalTo(cardsStack.snp.bottom).offset(8)
             $0.leading.trailing.equalTo(summaryView)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
         }
     }
 

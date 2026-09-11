@@ -7,6 +7,7 @@ import SnapKit
 
 final class StoreImageCell: BaseCollectionViewCell {
     enum Layout {
+        static let verticalMargin: CGFloat = 16
         static let horizontalMargin: CGFloat = 20
     }
 
@@ -30,7 +31,7 @@ final class StoreImageCell: BaseCollectionViewCell {
 
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
             $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
         }
         actionButton.snp.makeConstraints {
@@ -41,7 +42,7 @@ final class StoreImageCell: BaseCollectionViewCell {
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
             $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
             $0.trailing.lessThanOrEqualToSuperview().offset(-Layout.horizontalMargin)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
         }
     }
 

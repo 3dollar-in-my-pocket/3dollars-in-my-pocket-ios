@@ -9,6 +9,7 @@ import NMapsMap
 
 final class StoreEditCell: BaseCollectionViewCell {
     enum Layout {
+        static let verticalMargin: CGFloat = 16
         static let horizontalMargin: CGFloat = 20
         static let mapHeight: CGFloat = 140
         static let mapCornerRadius: CGFloat = 20
@@ -27,7 +28,7 @@ final class StoreEditCell: BaseCollectionViewCell {
         stack.alignment = .fill
         stack.spacing = Layout.editSpacing
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = .init(top: 0, left: Layout.horizontalMargin, bottom: 0, right: Layout.horizontalMargin)
+        stack.layoutMargins = .init(top: Layout.verticalMargin, left: Layout.horizontalMargin, bottom: Layout.verticalMargin, right: Layout.horizontalMargin)
         stack.insetsLayoutMarginsFromSafeArea = false
         return stack
     }()
