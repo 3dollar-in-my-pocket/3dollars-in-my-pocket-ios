@@ -590,16 +590,6 @@ swiftlint lint
 
 ### Step 8: 빌드 및 테스트 (자동 승인)
 
-#### Tuist 프로젝트 생성
-
-워크트리 디렉토리에서 실행:
-
-```bash
-make project
-```
-
-프로젝트 생성이 완료될 때까지 대기합니다.
-
 #### 빌드 실행
 
 ```bash
@@ -981,7 +971,7 @@ rm -rf ../worktree-{브랜치명} 2>/dev/null || true
 - ✅ 코드 생성 (Write, Edit)
 - ✅ Task 도구 사용 (TaskCreate, TaskUpdate)
 - ✅ Skill 실행 (code-cleanup)
-- ✅ 빌드/테스트 실행 (make project, xcodebuild)
+- ✅ 빌드/테스트 실행 (xcodebuild)
 - ✅ SwiftLint 검증 및 자동 수정
 - ✅ 컴파일 에러/테스트 실패 자동 수정 (최대 5회)
 - ✅ Git 작업 (add, commit, push)
