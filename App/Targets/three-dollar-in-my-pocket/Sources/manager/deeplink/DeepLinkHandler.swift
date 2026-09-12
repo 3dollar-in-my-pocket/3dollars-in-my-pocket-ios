@@ -156,8 +156,12 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             guard let params = url.params(),
                   let storeId = intParam(params, key: "storeId") else { return }
 
-            route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
-            let config = ReviewListViewModel.Config(storeId: storeId, isBossStore: false)
+            // 같은 가게 상세가 이미 떠 있으면(상세의 "리뷰 더보기" 등) 상세를 다시 열지 않고 바로 리뷰 목록으로 간다.
+            if findStoreSectionScrollable(storeId: storeId) == nil {
+                route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
+            }
+            let storeType = (params["storeType"] as? String).map { StoreType(value: $0) } ?? .userStore
+            let config = ReviewListViewModel.Config(storeId: storeId, isBossStore: storeType == .bossStore)
             let viewModel = ReviewListViewModel(config: config)
             let viewController = ReviewListViewControlelr.instance(viewModel: viewModel)
             route(viewController)
