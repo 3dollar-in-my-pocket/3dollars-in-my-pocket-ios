@@ -16,6 +16,11 @@ import CombineCocoa
 import FloatingPanel
 
 public final class HomeViewController: BaseViewController {
+    private enum Layout {
+        /// 미리보기 시트를 이만큼 끌어올리면 상세를 미리 요청한다.
+        static let storeDetailPrefetchProgress: CGFloat = 0.1
+    }
+
     public override var screenName: ScreenName {
         return viewModel.output.screenName
     }
@@ -529,16 +534,23 @@ extension HomeViewController: NMFMapViewCameraDelegate {
 // MARK: FloatingPanelControllerDelegate
 extension HomeViewController: FloatingPanelControllerDelegate {
     public func floatingPanelDidMove(_ fpc: FloatingPanelController) {
-        if fpc === storePreviewBottomSheetController {
-            return
-        }
-        // .tip → .full 사이 surface y 좌표로 진행도를 계산해 상단 배경 alpha 를 보간한다.
+        // .tip → .full 사이 surface y 좌표로 진행도를 계산한다.
         let tipY = fpc.surfaceLocation(for: .tip).y
         let fullY = fpc.surfaceLocation(for: .full).y
         let range = tipY - fullY
         guard range > 0 else { return }
 
         let progress = (tipY - fpc.surfaceLocation.y) / range
+
+        if fpc === storePreviewBottomSheetController {
+            // 사용자가 미리보기를 끌어올리기 시작하면 full 도달 전에 상세 요청을 먼저 시작한다.
+            // 미리보기만 보고 닫는 사용자에겐 요청이 나가지 않는다.
+            if progress > Layout.storeDetailPrefetchProgress {
+                storePreviewBottomSheet?.prepareDetailIfNeeded()
+            }
+            return
+        }
+        // 상단 배경 alpha 를 보간한다.
         homeView.updateTopBackground(progress: progress)
     }
 

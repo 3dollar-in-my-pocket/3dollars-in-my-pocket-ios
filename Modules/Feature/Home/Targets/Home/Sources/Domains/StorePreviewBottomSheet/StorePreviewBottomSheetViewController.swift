@@ -137,6 +137,14 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
+    /// full 상태에서 상세 응답을 기다리는 동안 미리보기 아래에 표시한다.
+    private let detailLoadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = Colors.gray50.color
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+
     private var detailViewController: UIViewController?
     /// 상세 섹션이 한 번이라도 도착했는지. 도착 전에 full 로 올라가면 미리보기를 유지하다가 도착 시 전환한다.
     private var hasLoadedDetail = false
@@ -178,8 +186,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 상세 push 중에는 패널이 isHidden 으로 가려질 뿐 부착 상태가 유지되어,
         // pop 으로 Home 이 다시 나타날 때 자식인 이 VC 의 viewWillAppear 도 함께 호출된다.
         viewModel.input.load.send(())
-        // full 로 올라갈 때 빈 화면이 보이지 않도록 미리보기 단계에서 상세를 미리 만들어 로드해 둔다.
-        embedStoreSectionsIfNeeded()
     }
 
     /// 미리보기 위에 모달로 띄운 방문 인증·리뷰 작성이 성공한 뒤 호출해 최신 데이터로 갱신한다.
@@ -200,7 +206,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // detached 상태에서 재사용되는 경우엔 곧 addPanel → viewWillAppear 에서 로드되므로 중복 호출하지 않는다.
         if viewIfLoaded?.window != nil {
             viewModel.input.load.send(())
-            embedStoreSectionsIfNeeded()
         }
         if wasShowingDetail {
             showDetail()
@@ -217,6 +222,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         hasLoadedDetail = false
         isWaitingForDetail = false
         isTrackingDetailScroll = false
+        detailLoadingIndicator.stopAnimating()
         detailNavigationTitleLabel.text = nil
         detailNavigationTitleLabel.alpha = 0
         detailContainerView.isHidden = true
@@ -229,7 +235,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView, detailContainerView, detailNavigationBar]
+        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView, detailLoadingIndicator, detailContainerView, detailNavigationBar]
             .forEach { view.addSubview($0) }
 
         titleStack.addArrangedSubview(titleLabel)
@@ -279,6 +285,11 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             $0.top.equalTo(metadataView.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(36)
+        }
+
+        detailLoadingIndicator.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(actionBarScrollView.snp.bottom).offset(40)
         }
 
         actionBarStack.snp.makeConstraints {
@@ -407,6 +418,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
                 guard let self else { return }
                 switch route {
                 case .expandPanel:
+                    self.prepareDetailIfNeeded()
                     self.onRequestExpandPanel?()
                 case .presentVisit(let storeId):
                     self.onRequestPresentVisit?(storeId)
@@ -461,6 +473,12 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         viewModel.input.didTapDetailShare.send(())
     }
 
+    /// 사용자가 시트를 끌어올리기 시작했거나 확장을 요청한 시점에 호출해 상세 요청을 먼저 시작한다.
+    /// 미리보기만 보고 닫는 경우엔 상세 요청이 나가지 않도록 선로드 대신 의도 시점에 로드한다.
+    func prepareDetailIfNeeded() {
+        embedStoreSectionsIfNeeded()
+    }
+
     /// Home 의 FloatingPanel delegate 에서 호출한다. 드래그와 프로그램적 full 이동 모두 이 경로를 지난다.
     func didReachFullState() {
         showDetail()
@@ -468,6 +486,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     func didReachTipState() {
         isWaitingForDetail = false
+        detailLoadingIndicator.stopAnimating()
         guard !detailContainerView.isHidden else { return }
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
@@ -482,12 +501,14 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 첫 진입처럼 상세 응답이 아직 없으면 빈 컬렉션뷰 대신 미리보기를 그대로 두고, 도착 시 전환한다.
         guard hasLoadedDetail else {
             isWaitingForDetail = true
+            detailLoadingIndicator.startAnimating()
             return
         }
         presentDetail(animated: false)
     }
 
     private func presentDetail(animated: Bool) {
+        detailLoadingIndicator.stopAnimating()
         let swapContents = { [weak self] in
             guard let self else { return }
             [self.titleStack, self.topButtonStack, self.metadataView, self.imagesCollectionView, self.bodiesScrollView, self.actionBarScrollView]
