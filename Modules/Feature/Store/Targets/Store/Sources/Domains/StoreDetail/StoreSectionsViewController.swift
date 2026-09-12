@@ -15,6 +15,15 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
     /// 섹션 응답이 화면에 반영된 직후 호출된다. 호스트(바텀시트)가 로딩 전엔 미리보기를 유지하고 도착 시 전환하는 데 쓴다.
     public var onSectionsLoaded: (() -> Void)?
+    /// true 인 동안 도착한 섹션은 보류했다가 false 로 바뀔 때 한 번에 반영한다.
+    public var isRenderingSuspended = false {
+        didSet {
+            guard isRenderingSuspended.isNot, let pendingSections else { return }
+            self.pendingSections = nil
+            apply(pendingSections)
+        }
+    }
+    private var pendingSections: [any StoreSectionComponent]?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
@@ -80,7 +89,12 @@ public final class StoreSectionsViewController: BaseViewController {
         viewModel.output.sections
             .receive(on: DispatchQueue.main)
             .sink { [weak self] sections in
-                self?.apply(sections)
+                guard let self else { return }
+                if self.isRenderingSuspended {
+                    self.pendingSections = sections
+                } else {
+                    self.apply(sections)
+                }
             }
             .store(in: &cancellables)
 
@@ -320,6 +334,9 @@ private extension StoreSectionsViewController {
         }
     }
 }
+
+// MARK: StoreDetailSectionsRendering
+extension StoreSectionsViewController: StoreDetailSectionsRendering { }
 
 // MARK: StoreSectionScrollable
 extension StoreSectionsViewController: StoreSectionScrollable {

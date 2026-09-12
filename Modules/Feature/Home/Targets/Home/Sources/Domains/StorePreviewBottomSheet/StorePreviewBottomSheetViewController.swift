@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Log
 import Model
+import StoreInterface
 
 import CombineCocoa
 import SnapKit
@@ -477,11 +478,15 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     /// 미리보기만 보고 닫는 경우엔 상세 요청이 나가지 않도록 선로드 대신 의도 시점에 로드한다.
     func prepareDetailIfNeeded() {
         embedStoreSectionsIfNeeded()
+        // 시트가 움직이는 동안 응답이 오면 첫 렌더가 애니메이션과 겹쳐 끊긴다. 안착할 때까지 렌더를 보류한다.
+        (detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = true
     }
 
     /// Home 의 FloatingPanel delegate 에서 호출한다. 드래그와 프로그램적 full 이동 모두 이 경로를 지난다.
     func didReachFullState() {
         showDetail()
+        // 보류한 섹션이 있으면 여기서 반영되고 onSectionsLoaded → 크로스디졸브로 이어진다.
+        (detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = false
     }
 
     func didReachTipState() {
