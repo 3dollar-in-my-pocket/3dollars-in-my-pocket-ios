@@ -13,6 +13,9 @@ final class StoreReviewCell: BaseCollectionViewCell {
         static let cardInset: CGFloat = 16
         static let badgeHorizontalInset: CGFloat = 6
         static let badgeVerticalInset: CGFloat = 2
+        /// 더보기 버튼은 텍스트 위아래 14pt 패딩을 포함해 46pt 고정.
+        static let moreButtonHeight: CGFloat = 46
+        static let moreButtonSpacing: CGFloat = 8
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -21,6 +24,8 @@ final class StoreReviewCell: BaseCollectionViewCell {
     private let summaryView = StoreReviewSummaryView()
     private let cardsStack = UIStackView()
     private let moreButton = UIButton(type: .system)
+    private var moreButtonTopConstraint: Constraint?
+    private var moreButtonHeightConstraint: Constraint?
 
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -53,8 +58,9 @@ final class StoreReviewCell: BaseCollectionViewCell {
             $0.leading.trailing.equalTo(summaryView)
         }
         moreButton.snp.makeConstraints {
-            $0.top.equalTo(cardsStack.snp.bottom).offset(8)
+            moreButtonTopConstraint = $0.top.equalTo(cardsStack.snp.bottom).offset(Layout.moreButtonSpacing).constraint
             $0.leading.trailing.equalTo(summaryView)
+            moreButtonHeightConstraint = $0.height.equalTo(Layout.moreButtonHeight).constraint
             $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
         }
     }
@@ -75,6 +81,10 @@ final class StoreReviewCell: BaseCollectionViewCell {
             })
         }
         moreButton.setOptionalSDButton(section.more?.button)
+        // 더보기가 없으면 높이와 간격을 접어 빈 공간이 남지 않게 한다.
+        let hasMore = section.more != nil
+        moreButtonHeightConstraint?.update(offset: hasMore ? Layout.moreButtonHeight : 0)
+        moreButtonTopConstraint?.update(offset: hasMore ? Layout.moreButtonSpacing : 0)
         if let action = section.more?.storeSectionAction {
             moreButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
