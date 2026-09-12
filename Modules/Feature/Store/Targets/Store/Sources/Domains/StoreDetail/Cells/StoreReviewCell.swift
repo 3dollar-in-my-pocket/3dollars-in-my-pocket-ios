@@ -16,6 +16,7 @@ final class StoreReviewCell: BaseCollectionViewCell {
         /// 더보기 버튼은 텍스트 위아래 14pt 패딩을 포함해 46pt 고정.
         static let moreButtonHeight: CGFloat = 46
         static let moreButtonSpacing: CGFloat = 8
+        static let likeButtonHeight: CGFloat = 16
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -92,9 +93,18 @@ final class StoreReviewCell: BaseCollectionViewCell {
 }
 
 private final class StoreReviewSummaryView: UIView {
-    private let titleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+    /// 요약 텍스트는 항상 한 줄이다. 여러 줄 라벨로 두면 재바인딩 시 빈 줄 높이가 더해져 카드가 커진다.
+    private let titleLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        label.numberOfLines = 1
+        return label
+    }()
     private let starsStack = UIStackView()
-    private let ratingLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 18))
+    private let ratingLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.bold.font(size: 18))
+        label.numberOfLines = 1
+        return label
+    }()
     /// 별 이미지와 평점 텍스트를 한 묶음으로 가운데 정렬한다.
     private let ratingStack: UIStackView = {
         let stack = UIStackView()
@@ -154,11 +164,17 @@ private final class StoreReviewCardView: UIView {
         stack.spacing = 4
         return stack
     }()
-    private let starsBadgeView = StoreReviewPillView()
+    private let starsBadgeView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 4
+        view.clipsToBounds = true
+        return view
+    }()
     private let starsStack = UIStackView()
     private let imageStack = UIStackView()
     private var imageStackHeightConstraint: Constraint?
     private var bodyTopConstraint: Constraint?
+    private var likeButtonHeightConstraint: Constraint?
     private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
     private let replyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 13))
     private let likeButton = UIButton(type: .system)
@@ -223,7 +239,14 @@ private final class StoreReviewCardView: UIView {
             $0.leading.trailing.equalToSuperview().inset(inset)
         }
         replyLabel.snp.makeConstraints { $0.top.equalTo(bodyLabel.snp.bottom).offset(8); $0.leading.trailing.equalToSuperview().inset(inset) }
-        likeButton.snp.makeConstraints { $0.top.equalTo(replyLabel.snp.bottom).offset(8); $0.leading.equalToSuperview().inset(inset); $0.bottom.equalToSuperview().inset(inset) }
+        likeButton.snp.makeConstraints {
+            $0.top.equalTo(replyLabel.snp.bottom).offset(8)
+            $0.leading.equalToSuperview().inset(inset)
+            $0.bottom.equalToSuperview().inset(inset)
+            // 하트 이미지는 비동기로 로드된다. 높이를 이미지 크기로 고정하지 않으면 로드 전(24)과 후(16)의
+            // 버튼 높이가 달라 셀 높이가 어긋나고, 남는 공간이 요약 카드로 흘러가 카드가 커진다.
+            likeButtonHeightConstraint = $0.height.equalTo(StoreReviewCell.Layout.likeButtonHeight).constraint
+        }
         bind(card)
         if action != nil {
             addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapCard)))
@@ -276,12 +299,15 @@ private final class StoreReviewCardView: UIView {
         replyLabel.isHidden = card.reply == nil
         let likeButtonModel = card.like.map { $0.isSelected ? $0.selected : $0.unselected }
         likeButton.setOptionalSDButton(likeButtonModel)
+        likeButtonHeightConstraint?.update(offset: likeButtonModel?.image.map { CGFloat($0.style.height) } ?? StoreReviewCell.Layout.likeButtonHeight)
         // system 타입 버튼은 이미지를 tintColor 로 칠하므로, 서버 텍스트 색을 하트에도 맞춘다.
         likeButton.tintColor = likeButtonModel?.text.flatMap { UIColor(hex: $0.fontColor) } ?? Colors.gray100.color
     }
 
     private func makeBadgeView(chip: SDChip) -> UIView {
-        let badgeView = StoreReviewPillView()
+        let badgeView = UIView()
+        badgeView.layer.cornerRadius = 4
+        badgeView.clipsToBounds = true
         if let style = chip.style {
             badgeView.setSDChipStyle(style)
         }
@@ -312,15 +338,6 @@ private final class StoreReviewCardView: UIView {
     private func didTapHeaderAction() {
         guard let headerAction else { return }
         onAction?(headerAction)
-    }
-}
-
-/// 높이에 맞춰 양끝이 둥근 배지 배경.
-private final class StoreReviewPillView: UIView {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        layer.cornerRadius = bounds.height / 2
-        clipsToBounds = true
     }
 }
 
