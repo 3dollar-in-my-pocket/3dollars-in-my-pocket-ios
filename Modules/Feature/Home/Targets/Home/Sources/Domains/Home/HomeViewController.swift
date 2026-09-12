@@ -585,9 +585,27 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         }
     }
 
+    public func floatingPanelWillEndDragging(
+        _ fpc: FloatingPanelController,
+        withVelocity velocity: CGPoint,
+        targetState: UnsafeMutablePointer<FloatingPanelState>
+    ) {
+        guard fpc === storePreviewBottomSheetController, targetState.pointee == .tip else { return }
+        // 살짝 끌다 놓아 tip 으로 되돌아가는 경우 state 가 tip→tip 이라 didChangeState 가 오지 않는다.
+        // 여기서 바로 미리보기로 되돌려 상세 레이아웃이 tip 에 남지 않게 한다.
+        storePreviewBottomSheet?.didReachTipState()
+    }
+
     public func floatingPanelDidEndAttracting(_ fpc: FloatingPanelController) {
-        guard fpc === storePreviewBottomSheetController, fpc.state == .full else { return }
-        storePreviewBottomSheet?.didReachFullState()
+        guard fpc === storePreviewBottomSheetController else { return }
+        switch fpc.state {
+        case .full:
+            storePreviewBottomSheet?.didReachFullState()
+        case .tip:
+            storePreviewBottomSheet?.didReachTipState()
+        default:
+            break
+        }
     }
 }
 
@@ -661,6 +679,8 @@ extension HomeViewController {
 
     private func dismissStorePreview() {
         guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        // full 에서 닫으면 상세 레이아웃이 켜진 채 남는다. 다음에 tip 으로 다시 붙을 때를 위해 미리보기로 되돌린다.
+        storePreviewBottomSheet?.didReachTipState()
         // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
         unfocusSelectedMarker()
         // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.

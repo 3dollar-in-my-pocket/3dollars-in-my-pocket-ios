@@ -142,6 +142,9 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     /// 마지막으로 렌더한 미리보기. 상세를 붙일 때 응답 전 헤더(PREVIEW 셀)를 이 데이터로 만든다.
     private var previewSection: StorePreviewSection?
     private var isTrackingDetailScroll = false
+    /// 패널이 full 에 안착해 있는지. Home 이 didReachFullState/didReachTipState 로 갱신한다.
+    /// (컨테이너 노출 여부로 추정하면 닫기·되돌아감 경로에서 어긋나 tip 인데도 상세를 조회하게 된다)
+    private var isPanelAtFull = false
 
     /// tip 상태에서 보이는 미리보기 구성요소. full 에서는 스켈레톤/상세로 대체된다.
     private var previewViews: [UIView] {
@@ -194,7 +197,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     func update(viewModel: StorePreviewBottomSheetViewModel) {
         cancellables.removeAll()
         self.viewModel = viewModel
-        let wasShowingDetail = detailContainerView.isHidden.isNot
+        let wasShowingDetail = isPanelAtFull
         resetDetail()
         // 새 가게로 교체되면 찜 상태도 초기화한다. (preview 응답엔 찜 여부가 없어 기본 미저장으로 시작)
         setSaveButton(isFavorited: false)
@@ -475,12 +478,15 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     /// Home 의 FloatingPanel delegate 에서 시트가 full 에 완전히 안착한 뒤 호출한다. 여기서 상세 조회를 시작한다.
     /// 응답이 오면 스켈레톤 자리가 실제 섹션으로 바뀌고, 헤더는 같은 identifier 라 제자리에서 갱신된다.
     func didReachFullState() {
+        isPanelAtFull = true
         beginExpandingToFull()
         trackDetailScrollIfNeeded()
         (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 
+    /// tip 으로 돌아가거나(끌어내림·살짝 끌다 놓음) 패널이 닫힐 때 호출한다. 미리보기 레이아웃으로 되돌린다.
     func didReachTipState() {
+        isPanelAtFull = false
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
         previewViews.forEach { $0.isHidden = false }
