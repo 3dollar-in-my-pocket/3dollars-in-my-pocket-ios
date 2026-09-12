@@ -16,11 +16,6 @@ import CombineCocoa
 import FloatingPanel
 
 public final class HomeViewController: BaseViewController {
-    private enum Layout {
-        /// 미리보기 시트를 이만큼 끌어올리면 상세를 미리 요청한다.
-        static let storeDetailPrefetchProgress: CGFloat = 0.1
-    }
-
     public override var screenName: ScreenName {
         return viewModel.output.screenName
     }
@@ -43,6 +38,8 @@ public final class HomeViewController: BaseViewController {
     private var bottomSheetController: FloatingPanelController?
     private var storePreviewBottomSheet: StorePreviewBottomSheetViewController?
     private var storePreviewBottomSheetController: FloatingPanelController?
+    /// 미리보기 시트를 코드로 full 이동시키는 중인지. 이 경로는 didEndAttracting 이 오지 않아 move 완료 콜백에서 안착을 알린다.
+    private var isMovingStorePreviewToFull = false
 
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
@@ -542,14 +539,8 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
         let progress = (tipY - fpc.surfaceLocation.y) / range
 
-        if fpc === storePreviewBottomSheetController {
-            // 사용자가 미리보기를 끌어올리기 시작하면 full 도달 전에 상세 요청을 먼저 시작한다.
-            // 미리보기만 보고 닫는 사용자에겐 요청이 나가지 않는다.
-            if progress > Layout.storeDetailPrefetchProgress {
-                storePreviewBottomSheet?.prepareDetailIfNeeded()
-            }
-            return
-        }
+        // 미리보기 시트는 상단 배경 보간 대상이 아니다. 상세 요청은 full 에 완전히 안착한 뒤 시작한다.
+        if fpc === storePreviewBottomSheetController { return }
         // 상단 배경 alpha 를 보간한다.
         homeView.updateTopBackground(progress: progress)
     }
@@ -558,7 +549,12 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         if fpc === storePreviewBottomSheetController {
             if fpc.state == .full {
                 updateStorePreviewSurfaceAppearance(fpc, isFullScreen: true)
-                storePreviewBottomSheet?.didReachFullState()
+                // state 는 스프링 애니메이션이 "시작"될 때 바뀐다. 애니메이션 중에 상세 요청·첫 렌더가 겹치면 끊기므로
+                // 끌어올린 경우는 didEndAttracting, 코드 이동은 move 완료 콜백에서 안착을 알린다.
+                // 손을 뗀 위치가 정확히 full 이라 애니메이션이 없는 경우만 여기서 바로 알린다.
+                if fpc.isAttracting.isNot, isMovingStorePreviewToFull.isNot {
+                    storePreviewBottomSheet?.didReachFullState()
+                }
             } else if fpc.state == .tip {
                 updateStorePreviewSurfaceAppearance(fpc, isFullScreen: false)
                 storePreviewBottomSheet?.didReachTipState()
@@ -574,6 +570,11 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         default:
             break
         }
+    }
+
+    public func floatingPanelDidEndAttracting(_ fpc: FloatingPanelController) {
+        guard fpc === storePreviewBottomSheetController, fpc.state == .full else { return }
+        storePreviewBottomSheet?.didReachFullState()
     }
 }
 
@@ -720,7 +721,12 @@ extension HomeViewController {
 
     private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
         viewController.onRequestExpandPanel = { [weak self] in
-            self?.storePreviewBottomSheetController?.move(to: .full, animated: true)
+            guard let self, let fpc = self.storePreviewBottomSheetController else { return }
+            self.isMovingStorePreviewToFull = true
+            fpc.move(to: .full, animated: true) { [weak self] in
+                self?.isMovingStorePreviewToFull = false
+                self?.storePreviewBottomSheet?.didReachFullState()
+            }
         }
         viewController.onRequestCollapsePanel = { [weak self] in
             self?.storePreviewBottomSheetController?.move(to: .tip, animated: true)

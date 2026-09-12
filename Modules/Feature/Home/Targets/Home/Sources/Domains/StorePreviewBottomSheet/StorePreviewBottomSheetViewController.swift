@@ -5,7 +5,6 @@ import Common
 import DesignSystem
 import Log
 import Model
-import StoreInterface
 
 import CombineCocoa
 import SnapKit
@@ -421,7 +420,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
                 guard let self else { return }
                 switch route {
                 case .expandPanel:
-                    self.prepareDetailIfNeeded()
                     self.onRequestExpandPanel?()
                 case .presentVisit(let storeId):
                     self.onRequestPresentVisit?(storeId)
@@ -476,25 +474,10 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         viewModel.input.didTapDetailShare.send(())
     }
 
-    /// 사용자가 시트를 끌어올리기 시작했거나 확장을 요청한 시점에 호출해 상세 요청을 먼저 시작한다.
-    /// 미리보기만 보고 닫는 경우엔 상세 요청이 나가지 않도록 선로드 대신 의도 시점에 로드한다.
-    func prepareDetailIfNeeded() {
-        embedStoreSectionsIfNeeded()
-        // 시트가 움직이는 동안 응답이 오면 첫 렌더가 애니메이션과 겹쳐 끊긴다. 안착할 때까지 렌더를 보류한다.
-        // full 에 안착한 뒤에도 스프링 정착으로 didMove 가 이어지므로, 이미 스켈레톤/상세가 떠 있으면 다시 보류하지 않는다.
-        // (여기서 다시 보류하면 그 뒤 도착한 응답이 영영 반영되지 않는다)
-        guard isWaitingForDetail.isNot, detailContainerView.isHidden else { return }
-        (detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = true
-    }
-
     /// Home 의 FloatingPanel delegate 에서 호출한다. 드래그와 프로그램적 full 이동 모두 이 경로를 지난다.
+    /// 상세 요청·첫 렌더는 모두 시트가 안착한 뒤에 일어나므로 확장 애니메이션과 겹치지 않는다.
     func didReachFullState() {
         showDetail()
-        // 스켈레톤이 한 프레임 먼저 그려진 뒤 보류한 섹션을 반영한다. 첫 렌더 비용은 스켈레톤 뒤에서 치르고,
-        // 반영이 끝나면 onSectionsLoaded → 크로스디졸브로 이어진다.
-        DispatchQueue.main.async { [weak self] in
-            (self?.detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = false
-        }
     }
 
     func didReachTipState() {
@@ -506,13 +489,14 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     private func showDetail() {
-        guard detailContainerView.isHidden else { return }
-        embedStoreSectionsIfNeeded()
+        guard detailContainerView.isHidden, isWaitingForDetail.isNot else { return }
 
-        // 첫 진입처럼 상세가 아직 없으면 빈 컬렉션뷰 대신 스켈레톤을 두고, 도착 시 전환한다.
+        // 첫 진입이면 스켈레톤을 먼저 띄우고, 그 다음 상세를 붙여 요청을 시작한다. (붙이는 순간 viewDidLoad 에서 조회)
+        // 미리보기만 보고 닫는 사용자에겐 상세 요청이 나가지 않는다.
         guard hasLoadedDetail else {
             isWaitingForDetail = true
             showSkeleton()
+            embedStoreSectionsIfNeeded()
             return
         }
         presentDetail(animated: false)

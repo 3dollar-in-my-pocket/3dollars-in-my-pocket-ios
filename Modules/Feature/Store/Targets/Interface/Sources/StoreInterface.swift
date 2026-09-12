@@ -29,13 +29,6 @@ public protocol StoreSectionScrollable: AnyObject {
     func scrollToSection(fragment: String)
 }
 
-/// 가게 상세 섹션 화면의 렌더링을 잠시 보류할 수 있게 한다.
-/// 바텀시트가 움직이는 동안 응답이 오면 첫 렌더(셀·지도·광고 생성)가 애니메이션과 겹쳐 끊기므로,
-/// 시트가 안착한 뒤 렌더하도록 호스트가 제어한다.
-public protocol StoreDetailSectionsRendering: AnyObject {
-    var isRenderingSuspended: Bool { get set }
-}
-
 public protocol StoreInterface {
     /// 딥링크·공유 링크 등 지도 컨텍스트가 없는 진입점용 V2 전체 화면 가게 상세다.
     func getStoreDetailFullScreenViewController(storeId: Int) -> UIViewController
