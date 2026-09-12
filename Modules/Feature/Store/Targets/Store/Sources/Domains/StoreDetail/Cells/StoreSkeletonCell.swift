@@ -4,7 +4,6 @@ import Common
 import DesignSystem
 import SnapKit
 
-/// PREVIEW 셀 아래 영역(탭·지도·수정 버튼·본문 줄)의 실루엣을 회색 블록으로 그리고 shimmer 를 흘린다.
 final class StoreSkeletonCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 520
@@ -24,8 +23,6 @@ final class StoreSkeletonCell: BaseCollectionViewCell {
     }
 }
 
-/// shimmer 는 CoreAnimation 이 돌리므로 응답 도착 후 셀 생성으로 메인 스레드가 바쁜 동안에도 멈추지 않는다.
-/// 마스크 프레임은 이 뷰 자신의 layoutSubviews 에서 잡는다. (셀 layoutSubviews 시점엔 서브뷰 제약이 아직 안 풀려 bounds 가 0)
 private final class StoreSkeletonShimmerView: UIView {
     private enum Layout {
         static let horizontalMargin: CGFloat = 20
@@ -55,7 +52,6 @@ private final class StoreSkeletonShimmerView: UIView {
         return layer
     }()
 
-    /// 블록 실루엣. gradient 를 이 뷰로 마스킹해 블록 모양으로만 비치게 한다.
     private let blocksView = UIView()
     private let tabBlocks = (0..<3).map { _ in StoreSkeletonShimmerView.makeBlock(cornerRadius: 4) }
     private let mapBlock = StoreSkeletonShimmerView.makeBlock(cornerRadius: Layout.mapCornerRadius)
@@ -82,7 +78,6 @@ private final class StoreSkeletonShimmerView: UIView {
 
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        // 화면에서 빠졌다 돌아오면 CA 애니메이션이 제거되므로 다시 건다.
         if window != nil {
             startShimmer()
         }
@@ -98,7 +93,6 @@ private final class StoreSkeletonShimmerView: UIView {
         gradientLayer.add(animation, forKey: Layout.shimmerAnimationKey)
     }
 
-    /// 실제 상세의 TAB → EDIT(지도 + 수정 버튼) → 본문 순서를 따른다.
     private func layoutBlocks() {
         let contentWidth = bounds.width - Layout.horizontalMargin * 2
         var originY: CGFloat = (Layout.tabHeight - Layout.lineHeight) / 2
@@ -130,7 +124,6 @@ private final class StoreSkeletonShimmerView: UIView {
 
     private static func makeBlock(cornerRadius: CGFloat) -> UIView {
         let view = UIView()
-        // mask 는 알파만 쓰므로 색은 불투명이기만 하면 된다.
         view.backgroundColor = .black
         view.layer.cornerRadius = cornerRadius
         view.clipsToBounds = true

@@ -13,18 +13,15 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onScrollOffsetChanged: ((CGFloat) -> Void)?
     /// 전체 화면 컨테이너가 상단 네비게이션 타이틀과 공유 정보를 구성하는 데 사용한다.
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
-    /// 서버 섹션 응답이 화면에 반영된 직후 호출된다. (플레이스홀더 반영 시에는 호출하지 않는다)
     public var onSectionsLoaded: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
-    /// 응답 전까지 보여줄 미리보기 데이터 기반 PREVIEW 섹션. 실제 응답의 PREVIEW 와 같은 identifier 라 제자리에서 갱신된다.
     private let placeholderPreview: StoreScreenPreviewSection?
     private let loadsOnViewDidLoad: Bool
     private var hasRequestedLoad = false
     private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
     private var displayedImpressionIdentifiers = Set<String>()
-    /// 메뉴 더보기를 누른 INFO_V1 섹션. 셀 재사용 후에도 펼침을 유지하기 위해 컨트롤러가 보관한다.
     private var expandedMenuIdentifiers = Set<String>()
     private lazy var dataSource = makeDataSource()
 
@@ -89,7 +86,6 @@ public final class StoreSectionsViewController: BaseViewController {
         }
     }
 
-    /// 호스트가 조회 시점을 정하는 경우(바텀시트) 호출한다. 두 번 불려도 한 번만 조회한다.
     public func loadSectionsIfNeeded() {
         guard hasRequestedLoad.isNot else { return }
         hasRequestedLoad = true
@@ -165,11 +161,8 @@ public final class StoreSectionsViewController: BaseViewController {
         let previousSectionsByIdentifier = sectionsByIdentifier
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
-        // 리뷰 작성 등으로 재조회해도 같은 섹션이면 메뉴 펼침 상태를 유지한다.
         expandedMenuIdentifiers.formIntersection(identifiers)
 
-        // 섹션 구성이 그대로면 고정 탭 등록을 유지한다. 재조회마다 비우면 업데이트 중 탭이 원위치로
-        // 돌아가고 컬렉션뷰가 그 셀을 기준으로 앵커링해 스크롤이 탭 위치로 튄다.
         if dataSource.snapshot().itemIdentifiers != identifiers {
             (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
         }
@@ -177,8 +170,6 @@ public final class StoreSectionsViewController: BaseViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Int, String>()
         snapshot.appendSections([0])
         snapshot.appendItems(identifiers)
-        // 재조회 시 내용이 바뀐 섹션만 다시 그린다.
-        // 전부 reconfigure 하면 estimated 높이가 초기화되어 스크롤 위치가 위로 튄다.
         let changedIdentifiers = identifiers.filter { identifier in
             guard let previous = previousSectionsByIdentifier[identifier],
                   let current = sectionsByIdentifier[identifier] else { return false }
@@ -193,7 +184,6 @@ public final class StoreSectionsViewController: BaseViewController {
         }
     }
 
-    /// 접힌 메뉴를 펼친다. reconfigure 로 같은 셀을 다시 bind 해 셀프사이징 높이가 갱신되게 한다.
     private func expandMenu(identifier: String) {
         guard expandedMenuIdentifiers.insert(identifier).inserted else { return }
 
@@ -337,12 +327,9 @@ private extension StoreSectionsViewController {
         guard let index = identifiers.firstIndex(where: { sectionsByIdentifier[$0]?.type == sectionType }) else { return }
         let indexPath = IndexPath(item: index, section: 0)
 
-        // 아직 표시되지 않은 셀은 estimated 높이라 목표 좌표가 부정확하다.
-        // 한 번 이동해 주변 셀을 실측한 뒤 같은 계산을 반복하면 정확한 위치에 멈춘다.
         for _ in 0..<2 {
             guard let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath) else { return }
 
-            // 상단에 고정된 탭 높이만큼 내려서 목표 섹션이 탭에 가려지지 않게 한다.
             let topInset = collectionView.adjustedContentInset.top
             let minY = -topInset
             let maxY = max(

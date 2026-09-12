@@ -235,7 +235,6 @@ final class StoreSectionsViewModel: BaseViewModel {
 
     private func makeReviewBottomSheetViewModel() -> ReviewBottomSheetViewModel {
         let viewModel = ReviewBottomSheetViewModel(config: .init(storeId: config.storeId, review: nil))
-        // 리뷰 작성 성공 시 섹션을 다시 조회해 리뷰 목록·평균 별점을 갱신한다.
         viewModel.output.onSuccessWriteReview
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, _) in

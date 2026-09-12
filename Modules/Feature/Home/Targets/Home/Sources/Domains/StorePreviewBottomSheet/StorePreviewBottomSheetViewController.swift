@@ -139,14 +139,10 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
     private var detailViewController: UIViewController?
-    /// 마지막으로 렌더한 미리보기. 상세를 붙일 때 응답 전 헤더(PREVIEW 셀)를 이 데이터로 만든다.
     private var previewSection: StorePreviewSection?
     private var isTrackingDetailScroll = false
-    /// 패널이 full 에 안착해 있는지. Home 이 didReachFullState/didReachTipState 로 갱신한다.
-    /// (컨테이너 노출 여부로 추정하면 닫기·되돌아감 경로에서 어긋나 tip 인데도 상세를 조회하게 된다)
     private var isPanelAtFull = false
 
-    /// tip 상태에서 보이는 미리보기 구성요소. full 에서는 스켈레톤/상세로 대체된다.
     private var previewViews: [UIView] {
         [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
     }
@@ -465,8 +461,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         viewModel.input.didTapDetailShare.send(())
     }
 
-    /// tip 에서 full 로 움직이기 시작하자마자(드래그·본문 탭 모두) 호출한다.
-    /// 미리보기 레이아웃을 걷고, 미리보기 데이터로 만든 상세 헤더 + 스켈레톤을 바로 보여준다. 요청은 아직 보내지 않는다.
     func beginExpandingToFull() {
         guard detailContainerView.isHidden else { return }
         embedStoreSectionsIfNeeded()
@@ -475,8 +469,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         showDetailNavigationBar()
     }
 
-    /// Home 의 FloatingPanel delegate 에서 시트가 full 에 완전히 안착한 뒤 호출한다. 여기서 상세 조회를 시작한다.
-    /// 응답이 오면 스켈레톤 자리가 실제 섹션으로 바뀌고, 헤더는 같은 identifier 라 제자리에서 갱신된다.
     func didReachFullState() {
         isPanelAtFull = true
         beginExpandingToFull()
@@ -484,7 +476,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 
-    /// tip 으로 돌아가거나(끌어내림·살짝 끌다 놓음) 패널이 닫힐 때 호출한다. 미리보기 레이아웃으로 되돌린다.
     func didReachTipState() {
         isPanelAtFull = false
         detailContainerView.isHidden = true
@@ -499,8 +490,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         }
     }
 
-    /// Store의 root view는 UICollectionView다. Home은 구체 Store 타입을 import하지 않은 채 FloatingPanel에만 연결한다.
-    /// 미리보기 단계에서 미리 연결하면 패널 드래그 판단에 숨겨진 스크롤뷰가 끼어들므로 상세를 실제로 보여줄 때 연결한다.
     private func trackDetailScrollIfNeeded() {
         guard isTrackingDetailScroll.isNot, let scrollView = detailViewController?.view as? UIScrollView else { return }
         isTrackingDetailScroll = true

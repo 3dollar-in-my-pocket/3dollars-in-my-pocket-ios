@@ -156,7 +156,6 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             guard let params = url.params(),
                   let storeId = intParam(params, key: "storeId") else { return }
 
-            // 같은 가게 상세가 이미 떠 있으면(상세의 "리뷰 더보기" 등) 상세를 다시 열지 않고 바로 리뷰 목록으로 간다.
             if findStoreSectionScrollable(storeId: storeId) == nil {
                 route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
             }
@@ -248,7 +247,6 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         mainTabBarViewController?.selectTab(tab: tab)
     }
 
-    /// 쿼리 파라미터는 문자열로 파싱되므로 숫자 id 는 여기서 변환한다.
     private func intParam(_ params: [String: Any], key: String) -> Int? {
         if let value = params[key] as? Int { return value }
         if let value = params[key] as? String { return Int(value) }
