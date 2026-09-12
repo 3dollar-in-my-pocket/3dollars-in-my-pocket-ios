@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Log
 import Model
+import StoreInterface
 
 import CombineCocoa
 import SnapKit
@@ -50,6 +51,38 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     )
 
     private let closeButton = StorePreviewBottomSheetViewController.makeIconButton(
+        icon: Icons.close.image
+    )
+
+    private let detailContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.systemWhite.color
+        view.isHidden = true
+        return view
+    }()
+
+    /// full 상태에서만 표시되는 상단 chrome. 버튼은 즉시 보이고, 타이틀은 상세 스크롤에 맞춰 fade-in 된다.
+    private let detailNavigationBar = UIView()
+
+    private let detailNavigationTitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.semiBold.font(size: 16)
+        label.textColor = Colors.gray100.color
+        label.textAlignment = .center
+        label.alpha = 0
+        label.lineBreakMode = .byTruncatingTail
+        return label
+    }()
+
+    private let collapseButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
+        icon: Icons.arrowLeft.image
+    )
+
+    private let detailShareButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
+        icon: Icons.share.image
+    )
+
+    private let detailCloseButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
         icon: Icons.close.image
     )
 
@@ -105,11 +138,21 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
+    private var detailViewController: UIViewController?
+    private var previewSection: StorePreviewSection?
+    private var isTrackingDetailScroll = false
+    private var isPanelAtFull = false
 
-    var onRequestPushStoreDetail: ((Int, StoreType) -> Void)?
+    private var previewViews: [UIView] {
+        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
+    }
+
+    var onRequestExpandPanel: (() -> Void)?
+    var onRequestCollapsePanel: (() -> Void)?
+    var onRequestTrackDetailScroll: ((UIScrollView) -> Void)?
     var onRequestPresentVisit: ((Int) -> Void)?
     var onRequestPresentReviewWrite: ((Int) -> Void)?
-    var onRequestShare: ((_ storeId: Int, _ storeType: StoreType, _ storeName: String, _ latitude: Double, _ longitude: Double) -> Void)?
+    var onRequestShare: ((_ storeId: Int, _ storeName: String, _ latitude: Double, _ longitude: Double) -> Void)?
     var onRequestPresentNavigation: ((Double, Double, String) -> Void)?
     var onRequestOpenLink: ((SDLink) -> Void)?
     var onRequestAddPhoto: ((Int) -> Void)?
@@ -150,6 +193,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     func update(viewModel: StorePreviewBottomSheetViewModel) {
         cancellables.removeAll()
         self.viewModel = viewModel
+        let wasShowingDetail = isPanelAtFull
+        resetDetail()
         // 새 가게로 교체되면 찜 상태도 초기화한다. (preview 응답엔 찜 여부가 없어 기본 미저장으로 시작)
         setSaveButton(isFavorited: false)
         bind()
@@ -158,13 +203,32 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         if viewIfLoaded?.window != nil {
             viewModel.input.load.send(())
         }
+        if wasShowingDetail {
+            didReachFullState()
+        }
+    }
+
+    private func resetDetail() {
+        if let detailViewController {
+            detailViewController.willMove(toParent: nil)
+            detailViewController.view.removeFromSuperview()
+            detailViewController.removeFromParent()
+            self.detailViewController = nil
+        }
+        previewSection = nil
+        isTrackingDetailScroll = false
+        detailNavigationTitleLabel.text = nil
+        detailNavigationTitleLabel.alpha = 0
+        detailContainerView.isHidden = true
+        detailNavigationBar.alpha = 0
+        previewViews.forEach { $0.isHidden = false }
     }
 
     private func setupViews() {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
+        (previewViews + [detailContainerView, detailNavigationBar])
             .forEach { view.addSubview($0) }
 
         titleStack.addArrangedSubview(titleLabel)
@@ -179,6 +243,12 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
         bodiesScrollView.addSubview(bodiesStack)
         actionBarScrollView.addSubview(actionBarStack)
+
+        detailNavigationBar.backgroundColor = Colors.systemWhite.color
+        detailNavigationBar.alpha = 0
+        [collapseButton, detailNavigationTitleLabel, detailShareButton, detailCloseButton].forEach {
+            detailNavigationBar.addSubview($0)
+        }
     }
 
     private func bindConstraints() {
@@ -235,6 +305,43 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.lessThanOrEqualToSuperview().offset(-20)
         }
+
+        // 상세는 네비 아래에서 시작한다. 네비와 겹치면 가게명이 가려지고,
+        // 스크롤 시 상태바 영역(safe area 위)까지 컨텐츠가 비쳐 보인다.
+        detailContainerView.snp.makeConstraints {
+            $0.top.equalTo(detailNavigationBar.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+
+        detailNavigationBar.snp.makeConstraints {
+            // full anchor 는 superview 최상단까지 올라가므로 상태바 영역은 safe area 로 비워 둔다.
+            $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(56)
+        }
+
+        collapseButton.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(12)
+            $0.centerY.equalToSuperview()
+            $0.size.equalTo(32)
+        }
+
+        detailShareButton.snp.makeConstraints {
+            $0.trailing.equalTo(detailCloseButton.snp.leading).offset(-4)
+            $0.centerY.equalToSuperview()
+            $0.size.equalTo(32)
+        }
+
+        detailCloseButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.centerY.equalTo(detailNavigationBar)
+            $0.size.equalTo(32)
+        }
+
+        detailNavigationTitleLabel.snp.makeConstraints {
+            $0.leading.equalTo(collapseButton.snp.trailing).offset(12)
+            $0.trailing.equalTo(detailShareButton.snp.leading).offset(-12)
+            $0.centerY.equalToSuperview()
+        }
     }
 
     private func bindBodyTapGesture() {
@@ -266,6 +373,13 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.output.detailTitle
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] title in
+                self?.detailNavigationTitleLabel.text = title
+            }
+            .store(in: &cancellables)
+
         viewModel.output.pageViewLog
             .receive(on: DispatchQueue.main)
             .sink { log in
@@ -291,20 +405,31 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             .sink { [weak self] route in
                 guard let self else { return }
                 switch route {
-                case .pushStoreDetail(let storeId, let storeType):
-                    self.onRequestPushStoreDetail?(storeId, storeType)
+                case .expandPanel:
+                    self.beginExpandingToFull()
+                    self.onRequestExpandPanel?()
                 case .presentVisit(let storeId):
                     self.onRequestPresentVisit?(storeId)
                 case .presentReviewWrite(let storeId):
                     self.onRequestPresentReviewWrite?(storeId)
-                case .share(let storeId, let storeType, let storeName, let lat, let lng):
-                    self.onRequestShare?(storeId, storeType, storeName, lat, lng)
+                case .share(let storeId, let storeName, let lat, let lng):
+                    self.onRequestShare?(storeId, storeName, lat, lng)
                 case .presentNavigation(let lat, let lng, let name):
                     self.onRequestPresentNavigation?(lat, lng, name)
                 case .openLink(let link):
                     self.onRequestOpenLink?(link)
                 case .presentUploadPhoto(let storeId):
                     self.onRequestAddPhoto?(storeId)
+                case .presentDisplayItemModal(let itemType, let trigger):
+                    Environment.storeInterface.presentStoreDisplayItemModal(
+                        from: self,
+                        storeId: self.viewModel.storeId,
+                        itemType: itemType,
+                        trigger: trigger,
+                        onDisplayed: { [weak self] in
+                            self?.viewModel.recordDisplayItemImpression(itemType: itemType)
+                        }
+                    )
                 case .close:
                     self.onRequestClose?()
                 }
@@ -315,6 +440,9 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private func setupActions() {
         saveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
         closeButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
+        detailCloseButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
+        collapseButton.addTarget(self, action: #selector(didTapCollapseButton), for: .touchUpInside)
+        detailShareButton.addTarget(self, action: #selector(didTapDetailShareButton), for: .touchUpInside)
     }
 
     @objc private func didTapSaveButton() {
@@ -325,7 +453,76 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         viewModel.input.didTapClose.send(())
     }
 
+    @objc private func didTapCollapseButton() {
+        onRequestCollapsePanel?()
+    }
+
+    @objc private func didTapDetailShareButton() {
+        viewModel.input.didTapDetailShare.send(())
+    }
+
+    func beginExpandingToFull() {
+        guard detailContainerView.isHidden else { return }
+        embedStoreSectionsIfNeeded()
+        previewViews.forEach { $0.isHidden = true }
+        detailContainerView.isHidden = false
+        showDetailNavigationBar()
+    }
+
+    func didReachFullState() {
+        isPanelAtFull = true
+        beginExpandingToFull()
+        trackDetailScrollIfNeeded()
+        (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
+    }
+
+    func didReachTipState() {
+        isPanelAtFull = false
+        detailContainerView.isHidden = true
+        detailNavigationBar.alpha = 0
+        previewViews.forEach { $0.isHidden = false }
+    }
+
+    private func showDetailNavigationBar() {
+        guard detailNavigationBar.alpha < 1 else { return }
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.detailNavigationBar.alpha = 1
+        }
+    }
+
+    private func trackDetailScrollIfNeeded() {
+        guard isTrackingDetailScroll.isNot, let scrollView = detailViewController?.view as? UIScrollView else { return }
+        isTrackingDetailScroll = true
+        onRequestTrackDetailScroll?(scrollView)
+    }
+
+    private func updateDetailNavigationTitle(for contentOffset: CGFloat) {
+        // 상세 최상단의 preview 섹션이 nav 아래를 지나갈수록 가게명이 자연스럽게 드러난다.
+        detailNavigationTitleLabel.alpha = min(max(contentOffset / 48, 0), 1)
+    }
+
+    private func embedStoreSectionsIfNeeded() {
+        guard detailViewController == nil else { return }
+        let storeId = viewModel.storeId
+        let detailViewController = Environment.storeInterface.getStoreDetailSectionsViewController(
+            storeId: storeId,
+            latitude: viewModel.latitude,
+            longitude: viewModel.longitude,
+            placeholderPreview: previewSection.map { StoreScreenPreviewSection(preview: $0, storeId: storeId) },
+            onScrollOffsetChanged: { [weak self] contentOffset in
+                self?.updateDetailNavigationTitle(for: contentOffset)
+            },
+            onSectionsLoaded: { }
+        )
+        addChild(detailViewController)
+        detailContainerView.addSubview(detailViewController.view)
+        detailViewController.view.snp.makeConstraints { $0.edges.equalToSuperview() }
+        detailViewController.didMove(toParent: self)
+        self.detailViewController = detailViewController
+    }
+
     private func render(section: StorePreviewSection) {
+        previewSection = section
         if let title = section.header.title {
             titleLabel.setSDText(title)
         }
@@ -449,6 +646,16 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         return button
     }
 
+    /// full 상태의 고정 네비게이션은 전체 화면 상세와 동일하게 배경 없는 아이콘을 사용한다.
+    private static func makeDetailNavigationButton(icon: UIImage) -> UIButton {
+        let button = UIButton()
+        button.setImage(
+            icon.resizeImage(scaledTo: 20).withTintColor(Colors.gray100.color),
+            for: .normal
+        )
+        return button
+    }
+
     /// 찜 상태에 따라 저장 버튼 아이콘/색을 갱신한다. (StoreDetail 저장 버튼과 동일 규칙)
     private func setSaveButton(isFavorited: Bool) {
         let icon = isFavorited ? Icons.bookmarkSolid.image : Icons.bookmarkLine.image
@@ -489,6 +696,7 @@ extension StorePreviewBottomSheetViewController: UIGestureRecognizerDelegate {
         while let current = hitView {
             if current is UIControl { return false }
             if current === imagesCollectionView { return false }
+            if current === detailContainerView { return false }
             hitView = current.superview
         }
         return true
@@ -518,12 +726,14 @@ extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UIC
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard collectionView === imagesCollectionView else { return }
         if imageItems[safe: indexPath.item] != nil {
-            // 이미지 탭은 가게 상세로 이동(기존 body 탭과 동일 동작).
+            // 이미지 탭은 같은 FloatingPanel을 full 상태로 확장한다.
             viewModel.input.didTapBody.send(())
         } else {
             // 마지막 "사진 추가" 셀 탭.
             viewModel.input.didTapAddPhoto.send(())
         }
     }
+
 }

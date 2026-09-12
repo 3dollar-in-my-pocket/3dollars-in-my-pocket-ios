@@ -6,76 +6,75 @@ import Model
 import DependencyInjection
 import DesignSystem
 
-
 public final class MockAppModuleInterfaceImpl: AppModuleInterface {
     public var kakaoSigninManager: SigninManagerProtocol = MockSigninManager()
-    
+
     public var appleSigninManager: SigninManagerProtocol = MockSigninManager()
-    
+
     public var deepLinkHandler: DeepLinkHandlerProtocol = MockDeepLinkHandler()
-    
+
     public var photoManager: PhotoManagerProtocol = MockPhotoManager()
-    
-    public var onClearSession: (() -> Void) = { 
+
+    public var onClearSession: (() -> Void) = {
         ToastManager.shared.show(message: "onClearSession")
     }
-    
+
     public var globalEventBus: GlobalEventBusProtocol = MockGlobalEventBus.shared
-    
+
     public var kakaoChannelUrl: String {
         return "kakaoChannelUrl"
     }
-    
+
     public func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return MockAdBannerView()
     }
-    
-    public func getFCMToken(completion: @escaping ((String) -> ())) { 
+
+    public func getFCMToken(completion: @escaping ((String) -> Void)) {
         ToastManager.shared.show(message: "getFCMToken")
     }
-    
+
     public func goToMain() {
         ToastManager.shared.show(message: "goToMain")
     }
-    
+
     public func goToSignin() {
         ToastManager.shared.show(message: "goToSignin")
     }
-    
+
     public func createBookmarkViewerViewController(folderId: String) -> UIViewController {
         return EmptyViewController()
     }
-    
+
     public func createWebViewController(webviewType: Model.WebViewType) -> UIViewController {
         return EmptyViewController()
     }
-    
-    public func shareKakao(storeId: Int, storeType: Model.StoreType, storeName: String, latitude: Double, longitude: Double) {
+
+    public func shareKakao(storeId: Int, storeName: String, latitude: Double, longitude: Double) {
         ToastManager.shared.show(message: "shareKakao")
     }
 
     public func requestATTIfNeeded() {
         ToastManager.shared.show(message: "requestATTIfNeeded")
     }
-    
+
     public func sendPageView(screenName: String, type: AnyObject.Type) { }
-    
-    public func sendPageView(screenName: String, type: any AnyObject.Type, parameters: [String : Any]?) { }
-    
-    public func sendEvent(name: String, parameters: [String : Any]?) { }
-    
-    public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) { 
+
+    public func sendPageView(screenName: String, type: any AnyObject.Type, parameters: [String: Any]?) { }
+
+    public func sendEvent(name: String, parameters: [String: Any]?) { }
+
+    public func presentMailComposeViewController(nickname: String, targetViewController: UIViewController) {
         ToastManager.shared.show(message: "presentMailComposeViewController")
     }
-    
+
     public func createWebViewController(title: String, url: String) -> UIViewController {
         return EmptyViewController()
     }
-    
+
     public func showFrontAdmob(adType: Model.AdType, viewController: UIViewController) {
         ToastManager.shared.show(message: "showFrontAdmob")
     }
-    
+
     public func createBookmarkURL(folderId: String) -> String {
         return ""
     }

@@ -5,6 +5,20 @@ import ZMarkupParser
 import Kingfisher
 
 public extension UIButton {
+    func clear() {
+        kf.cancelImageDownloadTask()
+        setImage(nil, for: .normal)
+        setAttributedTitle(nil, for: .normal)
+        setTitle(nil, for: .normal)
+
+        if var config = configuration {
+            config.image = nil
+            config.title = nil
+            config.attributedTitle = nil
+            configuration = config
+        }
+    }
+
     func setSDButton(_ sdButton: SDButton) {
         if let sdText = sdButton.text {
             setTitleColor(UIColor(hex: sdText.fontColor), for: .normal)

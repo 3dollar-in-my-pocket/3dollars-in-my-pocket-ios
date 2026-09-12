@@ -16,6 +16,10 @@ import CombineCocoa
 import FloatingPanel
 
 public final class HomeViewController: BaseViewController {
+    private enum Layout {
+        static let storeDetailExpandStartProgress: CGFloat = 0.02
+    }
+
     public override var screenName: ScreenName {
         return viewModel.output.screenName
     }
@@ -38,6 +42,7 @@ public final class HomeViewController: BaseViewController {
     private var bottomSheetController: FloatingPanelController?
     private var storePreviewBottomSheet: StorePreviewBottomSheetViewController?
     private var storePreviewBottomSheetController: FloatingPanelController?
+    private var isMovingStorePreviewToFull = false
 
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
@@ -102,6 +107,10 @@ public final class HomeViewController: BaseViewController {
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        if let presented = presentedViewController,
+           [.custom, .overFullScreen, .overCurrentContext].contains(presented.modalPresentationStyle) {
+            return
+        }
         // 다른 탭/모달/푸시로 가려질 때 미리보기 패널이 위에 떠 있지 않도록 가린다.
         storePreviewBottomSheetController?.view.isHidden = true
     }
@@ -441,18 +450,6 @@ public final class HomeViewController: BaseViewController {
         }
     }
 
-    private func pushStoreDetail(storeId: Int) {
-        let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
-
-        tabBarController?.navigationController?.pushViewController(viewController, animated: true)
-    }
-
-    private func pushBossStoreDetail(storeId: String) {
-        let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
-
-        tabBarController?.navigationController?.pushViewController(viewController, animated: true)
-    }
-
     private func presentVisit(storeId: Int) {
         let viewController = Environment.storeInterface.getVisitViewController(storeId: storeId) { [weak self] in
             // 방문 인증 성공 시 미리보기 시트를 최신 데이터로 갱신한다. (없으면 nil-safe 하게 무시)
@@ -537,23 +534,63 @@ extension HomeViewController: NMFMapViewCameraDelegate {
 // MARK: FloatingPanelControllerDelegate
 extension HomeViewController: FloatingPanelControllerDelegate {
     public func floatingPanelDidMove(_ fpc: FloatingPanelController) {
-        // .tip → .full 사이 surface y 좌표로 진행도를 계산해 상단 배경 alpha 를 보간한다.
         let tipY = fpc.surfaceLocation(for: .tip).y
         let fullY = fpc.surfaceLocation(for: .full).y
         let range = tipY - fullY
         guard range > 0 else { return }
 
         let progress = (tipY - fpc.surfaceLocation.y) / range
+
+        if fpc === storePreviewBottomSheetController {
+            let isUserDragging = fpc.panGestureRecognizer.state == .changed
+            if isUserDragging, progress > Layout.storeDetailExpandStartProgress {
+                storePreviewBottomSheet?.beginExpandingToFull()
+            }
+            return
+        }
         homeView.updateTopBackground(progress: progress)
     }
 
     public func floatingPanelDidChangeState(_ fpc: FloatingPanelController) {
+        if fpc === storePreviewBottomSheetController {
+            if fpc.state == .full {
+                updateStorePreviewSurfaceAppearance(fpc, isFullScreen: true)
+                if fpc.isAttracting.isNot, isMovingStorePreviewToFull.isNot {
+                    storePreviewBottomSheet?.didReachFullState()
+                }
+            } else if fpc.state == .tip {
+                updateStorePreviewSurfaceAppearance(fpc, isFullScreen: false)
+                storePreviewBottomSheet?.didReachTipState()
+            }
+            return
+        }
         // 끌어당기는 애니메이션 종료 시점에 진행도가 0/1 로 정확히 안착하도록 보정.
         switch fpc.state {
         case .full:
             homeView.updateTopBackground(progress: 1)
         case .tip:
             homeView.updateTopBackground(progress: 0)
+        default:
+            break
+        }
+    }
+
+    public func floatingPanelWillEndDragging(
+        _ fpc: FloatingPanelController,
+        withVelocity velocity: CGPoint,
+        targetState: UnsafeMutablePointer<FloatingPanelState>
+    ) {
+        guard fpc === storePreviewBottomSheetController, targetState.pointee == .tip else { return }
+        storePreviewBottomSheet?.didReachTipState()
+    }
+
+    public func floatingPanelDidEndAttracting(_ fpc: FloatingPanelController) {
+        guard fpc === storePreviewBottomSheetController else { return }
+        switch fpc.state {
+        case .full:
+            storePreviewBottomSheet?.didReachFullState()
+        case .tip:
+            storePreviewBottomSheet?.didReachTipState()
         default:
             break
         }
@@ -630,6 +667,7 @@ extension HomeViewController {
 
     private func dismissStorePreview() {
         guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        storePreviewBottomSheet?.didReachTipState()
         // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
         unfocusSelectedMarker()
         // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.
@@ -660,6 +698,7 @@ extension HomeViewController {
     ) -> FloatingPanelController {
         let fpc = FloatingPanelController()
         fpc.layout = StorePreviewLayout()
+        fpc.delegate = self
         fpc.set(contentViewController: content)
         fpc.isRemovalInteractionEnabled = false
 
@@ -682,17 +721,38 @@ extension HomeViewController {
         return fpc
     }
 
+    private func updateStorePreviewSurfaceAppearance(
+        _ fpc: FloatingPanelController,
+        isFullScreen: Bool
+    ) {
+        let appearance = SurfaceAppearance()
+        appearance.cornerRadius = isFullScreen ? 0 : 16
+        appearance.backgroundColor = Colors.systemWhite.color
+        if isFullScreen.isNot {
+            let shadow = SurfaceAppearance.Shadow()
+            shadow.color = .black
+            shadow.opacity = 0.2
+            shadow.offset = .zero
+            shadow.radius = 10
+            appearance.shadows = [shadow]
+        }
+        fpc.surfaceView.appearance = appearance
+    }
+
     private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
-        viewController.onRequestPushStoreDetail = { [weak self] storeId, storeType in
-            // 미리보기 패널은 닫지 않고 유지한다. 상세 push 중에는 Home 의
-            // viewWillDisappear 가 패널을 가렸다가, pop 으로 돌아오면 다시 보여준다.
-            // 가게 종류(일반/사장님)에 따라 상세 화면을 분기한다.
-            switch storeType {
-            case .bossStore:
-                self?.pushBossStoreDetail(storeId: String(storeId))
-            case .userStore, .unknown:
-                self?.pushStoreDetail(storeId: storeId)
+        viewController.onRequestExpandPanel = { [weak self] in
+            guard let self, let fpc = self.storePreviewBottomSheetController else { return }
+            self.isMovingStorePreviewToFull = true
+            fpc.move(to: .full, animated: true) { [weak self] in
+                self?.isMovingStorePreviewToFull = false
+                self?.storePreviewBottomSheet?.didReachFullState()
             }
+        }
+        viewController.onRequestCollapsePanel = { [weak self] in
+            self?.storePreviewBottomSheetController?.move(to: .tip, animated: true)
+        }
+        viewController.onRequestTrackDetailScroll = { [weak self] scrollView in
+            self?.storePreviewBottomSheetController?.track(scrollView: scrollView)
         }
         viewController.onRequestPresentVisit = { [weak self] storeId in
             self?.presentVisit(storeId: storeId)
@@ -700,12 +760,10 @@ extension HomeViewController {
         viewController.onRequestPresentReviewWrite = { [weak self] storeId in
             self?.presentStorePreviewReviewWrite(storeId: storeId)
         }
-        viewController.onRequestShare = { storeId, storeType, storeName, latitude, longitude in
+        viewController.onRequestShare = { storeId, storeName, latitude, longitude in
             // 가게 상세 "공유하기"와 동일한 카카오 공유. 미리보기엔 overview 가 없어 이름/좌표만 받는 오버로드를 사용한다.
-            // storeType 은 서버 extraParams 값(일반/사장님 가게)을 그대로 전달한다.
             Environment.appModuleInterface.shareKakao(
                 storeId: storeId,
-                storeType: storeType,
                 storeName: storeName,
                 latitude: latitude,
                 longitude: longitude

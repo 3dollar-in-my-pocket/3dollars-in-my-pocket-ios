@@ -4,7 +4,6 @@ import CoreLocation
 import Model
 
 enum StoreApi {
-    case fetchBossStoreDetail(FetchBossStoreDetailInput)
     case fetchStoreNewPosts(storeId: String, cursorInput: CursorRequestInput)
     case togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest)
     case fetchAroundStores(input: FetchAroundStoreInput)
@@ -21,7 +20,7 @@ enum StoreApi {
     case patchStore(storeId: String, input: UserStorePatchRequestV3)
     case fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType])
     case recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType])
-    case fetchStoreScreen(FetchStoreScreenInput)
+    case fetchStoreScreenV2(FetchStoreScreenInput)
     case fetchStorePreview(FetchStoreScreenInput)
     case fetchStoreContributorHistories(storeId: Int, cursor: String?)
 }
@@ -29,8 +28,6 @@ enum StoreApi {
 extension StoreApi: RequestType {
     var param: Encodable? {
         switch self {
-        case .fetchBossStoreDetail:
-            return nil
         case .fetchStoreNewPosts(_, let cursorInput):
             return cursorInput
         case .togglePostSticker(_, _, let input):
@@ -49,11 +46,11 @@ extension StoreApi: RequestType {
             return input
         case .fetchStorePhotos(let storeId, let cursor):
             var params = ["storeId": "\(storeId)"]
-            
+
             if let cursor {
                 params["cursor"] = cursor
             }
-            
+
             return params
         case .editReview(_, let input):
             return input
@@ -69,23 +66,21 @@ extension StoreApi: RequestType {
             return ["itemTypes": itemTypes.map { $0.rawValue }]
         case .recordDisplayItemImpression(_, let itemTypes):
             return ["itemTypes": itemTypes.map { $0.rawValue }]
-        case .fetchStoreScreen:
+        case .fetchStoreScreenV2:
             return nil
         case .fetchStorePreview:
             return nil
         case .fetchStoreContributorHistories(_, let cursor):
             if let cursor {
-                return ["cursor": cursor] 
+                return ["cursor": cursor]
             } else {
                 return nil
             }
         }
     }
-    
+
     var method: RequestMethod {
         switch self {
-        case .fetchBossStoreDetail:
-            return .get
         case .fetchStoreNewPosts:
             return .get
         case .togglePostSticker:
@@ -118,7 +113,7 @@ extension StoreApi: RequestType {
             return .get
         case .recordDisplayItemImpression:
             return .post
-        case .fetchStoreScreen:
+        case .fetchStoreScreenV2:
             return .get
         case .fetchStorePreview:
             return .get
@@ -126,14 +121,9 @@ extension StoreApi: RequestType {
             return .get
         }
     }
-    
+
     var header: HTTPHeaderType {
         switch self {
-        case .fetchBossStoreDetail(let input):
-            return .custom([
-                "X-Device-Latitude": String(input.latitude),
-                "X-Device-Longitude": String(input.longitude)
-            ])
         case .fetchStoreNewPosts:
             return .json
         case .togglePostSticker:
@@ -166,7 +156,7 @@ extension StoreApi: RequestType {
             return .location
         case .recordDisplayItemImpression:
             return .json
-        case .fetchStoreScreen(let input):
+        case .fetchStoreScreenV2(let input):
             return .custom([
                 "X-Device-Latitude": String(input.latitude),
                 "X-Device-Longitude": String(input.longitude)
@@ -180,11 +170,9 @@ extension StoreApi: RequestType {
             return .json
         }
     }
-    
+
     var path: String {
         switch self {
-        case .fetchBossStoreDetail(let input):
-            return "/api/v4/boss-store/\(input.storeId)"
         case .fetchStoreNewPosts(let storeId, _):
             return "/api/v1/store/\(storeId)/news-posts"
         case .togglePostSticker(let storeId, let postId, _):
@@ -217,8 +205,8 @@ extension StoreApi: RequestType {
             return "/api/v1/store/\(storeId)/display-items"
         case .recordDisplayItemImpression(let storeId, _):
             return "/api/v1/store/\(storeId)/display-items/impression"
-        case .fetchStoreScreen(let input):
-            return "/api/v1/screen/store/\(input.storeId)"
+        case .fetchStoreScreenV2(let input):
+            return "/api/v2/screen/store/\(input.storeId)"
         case .fetchStorePreview(let input):
             return "/api/v1/screen/store/\(input.storeId)/preview"
         case .fetchStoreContributorHistories(let storeId, _):

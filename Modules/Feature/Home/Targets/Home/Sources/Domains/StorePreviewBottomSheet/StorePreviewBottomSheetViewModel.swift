@@ -12,12 +12,14 @@ extension StorePreviewBottomSheetViewModel {
         let didTapBody = PassthroughSubject<Void, Never>()
         let didTapSave = PassthroughSubject<Void, Never>()
         let didTapClose = PassthroughSubject<Void, Never>()
+        let didTapDetailShare = PassthroughSubject<Void, Never>()
         let didTapActionBar = PassthroughSubject<Int, Never>()
         let didTapAddPhoto = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
         let section = PassthroughSubject<StorePreviewSection, Never>()
+        let detailTitle = PassthroughSubject<String, Never>()
         let pageViewLog = PassthroughSubject<SDPageViewLog, Never>()
         let toast = PassthroughSubject<String, Never>()
         let isFavoriteOverride = PassthroughSubject<Bool, Never>()
@@ -25,13 +27,14 @@ extension StorePreviewBottomSheetViewModel {
     }
 
     enum Route {
-        case pushStoreDetail(storeId: Int, storeType: StoreType)
+        case expandPanel
         case presentVisit(storeId: Int)
         case presentReviewWrite(storeId: Int)
-        case share(storeId: Int, storeType: StoreType, storeName: String, latitude: Double, longitude: Double)
+        case share(storeId: Int, storeName: String, latitude: Double, longitude: Double)
         case presentNavigation(latitude: Double, longitude: Double, storeName: String)
         case openLink(SDLink)
         case presentUploadPhoto(storeId: Int)
+        case presentDisplayItemModal(StoreDisplayItemType, StoreDisplayTrigger?)
         case close
     }
 
@@ -60,9 +63,10 @@ extension StorePreviewBottomSheetViewModel {
     struct State {
         var section: StorePreviewSection?
         var storeName: String = ""
-        var storeType: StoreType = .userStore
         var isFavorited: Bool = false
-        var isLoading: Bool = false
+        var isLoadingPreview: Bool = false
+        var isLoadingDisplayItems: Bool = false
+        var emittedDisplayItemTypes: Set<StoreDisplayItemType> = []
     }
 }
 
@@ -81,6 +85,8 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
     }
 
     var storeId: Int { config.storeId }
+    var latitude: Double { config.latitude }
+    var longitude: Double { config.longitude }
 
     override func bind() {
         input.load
@@ -89,13 +95,16 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                 Task { [weak owner] in
                     await owner?.fetchPreview()
                 }
+                Task { [weak owner] in
+                    await owner?.fetchDisplayItems()
+                }
             }
             .store(in: &cancellables)
 
         input.didTapBody
             .withUnretained(self)
             .sink { (owner: StorePreviewBottomSheetViewModel, _) in
-                owner.output.route.send(.pushStoreDetail(storeId: owner.config.storeId, storeType: owner.state.storeType))
+                owner.output.route.send(.expandPanel)
             }
             .store(in: &cancellables)
 
@@ -112,6 +121,18 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StorePreviewBottomSheetViewModel, _) in
                 owner.output.route.send(.close)
+            }
+            .store(in: &cancellables)
+
+        input.didTapDetailShare
+            .withUnretained(self)
+            .sink { (owner: StorePreviewBottomSheetViewModel, _) in
+                owner.output.route.send(.share(
+                    storeId: owner.config.storeId,
+                    storeName: owner.state.storeName,
+                    latitude: owner.config.latitude,
+                    longitude: owner.config.longitude
+                ))
             }
             .store(in: &cancellables)
 
@@ -132,9 +153,9 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
     }
 
     private func fetchPreview() async {
-        guard !state.isLoading else { return }
-        state.isLoading = true
-        defer { state.isLoading = false }
+        guard !state.isLoadingPreview else { return }
+        state.isLoadingPreview = true
+        defer { state.isLoadingPreview = false }
 
         let deviceLocation = dependency.preference.userCurrentLocation
         let input = FetchStoreScreenInput(
@@ -148,16 +169,61 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
         case .success(let response):
             guard let preview = response.sections.compactMap({ $0 as? StorePreviewSection }).first else { return }
             state.section = preview
-            state.storeName = preview.header.title?.text ?? ""
-            // 가게 종류(일반/사장님)는 additionalInfos.storeType 으로 판별해 상세 진입 분기에 사용한다.
-            state.storeType = Self.resolveStoreType(from: preview)
+            // header.title 은 스타일이 담긴 HTML 이라 그대로 쓰면 네비 타이틀·공유 문구에 태그가 노출된다.
+            state.storeName = preview.header.title.map { $0.isHtml ? $0.text.htmlStripped : $0.text } ?? ""
             // 서버의 isSubscriber 값으로 저장 버튼 초기 선택 상태를 동기화한다.
             state.isFavorited = preview.additionalInfos?.isSubscriber ?? false
             output.section.send(preview)
+            output.detailTitle.send(state.storeName)
             output.isFavoriteOverride.send(state.isFavorited)
             output.pageViewLog.send(response.viewLog)
         case .failure:
             break
+        }
+    }
+
+    /// 바텀시트 랜딩 시 활동 유도 항목을 조회한다. 레거시 가게 상세와 동일하게
+    /// 세션 내 같은 가게 조회 횟수 조건을 만족하는 visible 항목만 처리한다.
+    private func fetchDisplayItems() async {
+        guard !state.isLoadingDisplayItems else { return }
+        state.isLoadingDisplayItems = true
+        defer { state.isLoadingDisplayItems = false }
+
+        let viewCount = StoreViewSessionCounter.shared.increment(storeId: config.storeId)
+        let itemTypes: [StoreDisplayItemType] = [
+            .disappearanceInquiryModal,
+            .visitCertificationInducementModal
+        ]
+        let result = await dependency.storeRepository.fetchDisplayItems(
+            storeId: config.storeId,
+            itemTypes: itemTypes
+        )
+
+        guard case let .success(response) = result else { return }
+
+        for item in response.contents where item.isVisible {
+            guard meetsSessionViewCountCondition(trigger: item.trigger, viewCount: viewCount),
+                  state.emittedDisplayItemTypes.insert(item.itemType).inserted else {
+                continue
+            }
+
+            output.route.send(.presentDisplayItemModal(item.itemType, item.trigger))
+        }
+    }
+
+    private func meetsSessionViewCountCondition(trigger: StoreDisplayTrigger?, viewCount: Int) -> Bool {
+        guard let range = trigger?.conditions?.sessionViewCountRange else { return true }
+        return range.contains(viewCount)
+    }
+
+    /// 레거시 상세처럼 모달 슬라이드인 애니메이션이 완료된 뒤에만 impression 을 기록한다.
+    func recordDisplayItemImpression(itemType: StoreDisplayItemType) {
+        Task { [weak self] in
+            guard let self else { return }
+            _ = await dependency.storeRepository.recordDisplayItemImpression(
+                storeId: config.storeId,
+                itemTypes: [itemType]
+            )
         }
     }
 
@@ -174,24 +240,17 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                     storeName: extraParams["STORE_NAME"]?.stringValue ?? state.storeName
                 ))
             case .storePreviewShare:
-                // 공유는 공유 액션 자체의 extraParams["STORE_TYPE"] 값을 사용한다. (가게 상세 분기와 독립)
-                let shareStoreType: StoreType
-                if let rawValue = customAction.extraParams["STORE_TYPE"]?.anyValue as? String {
-                    shareStoreType = StoreType(value: rawValue)
-                } else {
-                    shareStoreType = .userStore
-                }
                 output.route.send(.share(
                     storeId: config.storeId,
-                    storeType: shareStoreType,
                     storeName: state.storeName,
                     latitude: config.latitude,
                     longitude: config.longitude
                 ))
             case .storePreviewReviewWrite:
                 output.route.send(.presentReviewWrite(storeId: config.storeId))
-            case .unknown:
-                output.route.send(.pushStoreDetail(storeId: config.storeId, storeType: state.storeType))
+            default:
+                // 미리보기 섹션과 무관한 액션(상세 전용 섹션의 커스텀 액션 등)은 상세 확장으로 처리한다.
+                output.route.send(.expandPanel)
             }
             return
         }
@@ -208,14 +267,7 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             return
         }
 
-        output.route.send(.pushStoreDetail(storeId: config.storeId, storeType: state.storeType))
-    }
-
-    /// 가게 종류(일반/사장님)를 additionalInfos.storeType(USER_STORE/BOSS_STORE) 으로 판별한다.
-    /// 값이 없으면 일반 가게로 간주한다.
-    private static func resolveStoreType(from section: StorePreviewSection) -> StoreType {
-        guard let rawValue = section.additionalInfos?.storeType else { return .userStore }
-        return StoreType(value: rawValue)
+        output.route.send(.expandPanel)
     }
 
     /// 우상단 찜 버튼 토글. 현재 찜 상태(state.isFavorited)를 기준으로 추가/삭제를 결정한다.

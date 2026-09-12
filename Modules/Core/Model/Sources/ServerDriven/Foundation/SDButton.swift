@@ -7,6 +7,7 @@ public struct SDButton: Decodable, Equatable, Hashable {
     public let link: SDLink?
     public let customAction: SDCustomAction?
     public let style: SDButtonStyle
+    public let clickLog: SDClickLog?
 }
 
 public enum SDButtonImageAlignment: String, Decodable, Equatable, Hashable {

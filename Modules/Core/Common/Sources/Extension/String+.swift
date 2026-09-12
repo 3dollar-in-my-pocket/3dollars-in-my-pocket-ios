@@ -106,6 +106,22 @@ public extension String {
         return height
     }
     
+    /// 서버가 HTML(SDText.isHtml)로 내려준 문자열에서 태그를 걷어내고 순수 텍스트만 남긴다.
+    /// 라벨 렌더링은 파서를 쓰지만, 네비게이션 타이틀·공유 문구처럼 문자열 자체가 필요한 곳에 쓴다.
+    var htmlStripped: String {
+        let withoutTags = replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+
+        // `&amp;` 를 마지막에 치환해야 `&amp;lt;` 같은 이중 이스케이프가 깨지지 않는다.
+        return withoutTags
+            .replacingOccurrences(of: "&nbsp;", with: " ")
+            .replacingOccurrences(of: "&lt;", with: "<")
+            .replacingOccurrences(of: "&gt;", with: ">")
+            .replacingOccurrences(of: "&quot;", with: "\"")
+            .replacingOccurrences(of: "&#39;", with: "'")
+            .replacingOccurrences(of: "&amp;", with: "&")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     var decimal: Int? {
         let trimmed = replacingOccurrences(of: ",", with: "")
         let formatter = NumberFormatter()
