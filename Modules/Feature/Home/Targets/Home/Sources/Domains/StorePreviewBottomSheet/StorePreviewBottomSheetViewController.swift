@@ -138,12 +138,11 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
-    /// full 상태에서 상세 응답을 기다리는 동안 미리보기 아래에 표시한다.
-    private let detailLoadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = Colors.gray50.color
-        indicator.hidesWhenStopped = true
-        return indicator
+    /// full 도달 후 상세 응답(또는 보류한 첫 렌더)을 기다리는 동안 상세 자리에 표시한다.
+    private let detailSkeletonView: StoreDetailSkeletonView = {
+        let view = StoreDetailSkeletonView()
+        view.isHidden = true
+        return view
     }()
 
     private var detailViewController: UIViewController?
@@ -151,6 +150,11 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private var hasLoadedDetail = false
     private var isWaitingForDetail = false
     private var isTrackingDetailScroll = false
+
+    /// tip 상태에서 보이는 미리보기 구성요소. full 에서는 스켈레톤/상세로 대체된다.
+    private var previewViews: [UIView] {
+        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
+    }
 
     var onRequestExpandPanel: (() -> Void)?
     var onRequestCollapsePanel: (() -> Void)?
@@ -223,20 +227,19 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         hasLoadedDetail = false
         isWaitingForDetail = false
         isTrackingDetailScroll = false
-        detailLoadingIndicator.stopAnimating()
+        hideSkeleton()
         detailNavigationTitleLabel.text = nil
         detailNavigationTitleLabel.alpha = 0
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
-            .forEach { $0.isHidden = false }
+        previewViews.forEach { $0.isHidden = false }
     }
 
     private func setupViews() {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView, detailLoadingIndicator, detailContainerView, detailNavigationBar]
+        (previewViews + [detailSkeletonView, detailContainerView, detailNavigationBar])
             .forEach { view.addSubview($0) }
 
         titleStack.addArrangedSubview(titleLabel)
@@ -288,11 +291,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             $0.height.equalTo(36)
         }
 
-        detailLoadingIndicator.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(actionBarScrollView.snp.bottom).offset(40)
-        }
-
         actionBarStack.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.height.equalToSuperview()
@@ -324,6 +322,10 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         detailContainerView.snp.makeConstraints {
             $0.top.equalTo(detailNavigationBar.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
+        }
+
+        detailSkeletonView.snp.makeConstraints {
+            $0.edges.equalTo(detailContainerView)
         }
 
         detailNavigationBar.snp.makeConstraints {
@@ -479,54 +481,81 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     func prepareDetailIfNeeded() {
         embedStoreSectionsIfNeeded()
         // 시트가 움직이는 동안 응답이 오면 첫 렌더가 애니메이션과 겹쳐 끊긴다. 안착할 때까지 렌더를 보류한다.
+        // full 에 안착한 뒤에도 스프링 정착으로 didMove 가 이어지므로, 이미 스켈레톤/상세가 떠 있으면 다시 보류하지 않는다.
+        // (여기서 다시 보류하면 그 뒤 도착한 응답이 영영 반영되지 않는다)
+        guard isWaitingForDetail.isNot, detailContainerView.isHidden else { return }
         (detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = true
     }
 
     /// Home 의 FloatingPanel delegate 에서 호출한다. 드래그와 프로그램적 full 이동 모두 이 경로를 지난다.
     func didReachFullState() {
         showDetail()
-        // 보류한 섹션이 있으면 여기서 반영되고 onSectionsLoaded → 크로스디졸브로 이어진다.
-        (detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = false
+        // 스켈레톤이 한 프레임 먼저 그려진 뒤 보류한 섹션을 반영한다. 첫 렌더 비용은 스켈레톤 뒤에서 치르고,
+        // 반영이 끝나면 onSectionsLoaded → 크로스디졸브로 이어진다.
+        DispatchQueue.main.async { [weak self] in
+            (self?.detailViewController as? StoreDetailSectionsRendering)?.isRenderingSuspended = false
+        }
     }
 
     func didReachTipState() {
         isWaitingForDetail = false
-        detailLoadingIndicator.stopAnimating()
-        guard !detailContainerView.isHidden else { return }
+        hideSkeleton()
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
-            .forEach { $0.isHidden = false }
+        previewViews.forEach { $0.isHidden = false }
     }
 
     private func showDetail() {
         guard detailContainerView.isHidden else { return }
         embedStoreSectionsIfNeeded()
 
-        // 첫 진입처럼 상세 응답이 아직 없으면 빈 컬렉션뷰 대신 미리보기를 그대로 두고, 도착 시 전환한다.
+        // 첫 진입처럼 상세가 아직 없으면 빈 컬렉션뷰 대신 스켈레톤을 두고, 도착 시 전환한다.
         guard hasLoadedDetail else {
             isWaitingForDetail = true
-            detailLoadingIndicator.startAnimating()
+            showSkeleton()
             return
         }
         presentDetail(animated: false)
     }
 
+    private func showSkeleton() {
+        previewViews.forEach { $0.isHidden = true }
+        detailSkeletonView.isHidden = false
+        detailSkeletonView.startAnimating()
+        showDetailNavigationBar()
+    }
+
+    private func hideSkeleton() {
+        detailSkeletonView.stopAnimating()
+        detailSkeletonView.isHidden = true
+    }
+
     private func presentDetail(animated: Bool) {
-        detailLoadingIndicator.stopAnimating()
         let swapContents = { [weak self] in
             guard let self else { return }
-            [self.titleStack, self.topButtonStack, self.metadataView, self.imagesCollectionView, self.bodiesScrollView, self.actionBarScrollView]
-                .forEach { $0.isHidden = true }
+            self.previewViews.forEach { $0.isHidden = true }
+            self.detailSkeletonView.isHidden = true
             self.detailContainerView.isHidden = false
         }
         if animated {
-            UIView.transition(with: view, duration: 0.25, options: [.transitionCrossDissolve], animations: swapContents)
+            UIView.transition(
+                with: view,
+                duration: 0.25,
+                options: [.transitionCrossDissolve],
+                animations: swapContents
+            ) { [weak self] _ in
+                self?.detailSkeletonView.stopAnimating()
+            }
         } else {
             swapContents()
+            detailSkeletonView.stopAnimating()
         }
         trackDetailScrollIfNeeded()
+        showDetailNavigationBar()
+    }
 
+    private func showDetailNavigationBar() {
+        guard detailNavigationBar.alpha < 1 else { return }
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.detailNavigationBar.alpha = 1
         }
