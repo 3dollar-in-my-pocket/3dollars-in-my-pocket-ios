@@ -17,3 +17,25 @@ public struct StoreScreenPreviewAdditionalInfos: Decodable, Equatable, Hashable 
     public let storeId: String?
     public let storeType: String?
 }
+
+extension StoreScreenPreviewSection {
+    public init(preview: StorePreviewSection, storeId: Int) {
+        self.init(
+            type: .preview,
+            header: preview.header,
+            metadata: preview.metadata,
+            actionBars: preview.actionBars.map {
+                SDActionBar(type: .actionBar, button: $0.button, clickLog: $0.clickLog)
+            },
+            images: preview.images,
+            style: preview.style ?? SDSurfaceStyle(backgroundColor: "#FFFFFF"),
+            additionalInfos: StoreScreenPreviewAdditionalInfos(
+                type: preview.additionalInfos?.type ?? "STORE",
+                isSubscriber: preview.additionalInfos?.isSubscriber,
+                storeId: String(storeId),
+                storeType: preview.additionalInfos?.storeType
+            ),
+            contributorActionBar: nil
+        )
+    }
+}

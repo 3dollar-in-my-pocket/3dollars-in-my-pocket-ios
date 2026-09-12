@@ -14,6 +14,7 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         storeId: Int,
         latitude: Double,
         longitude: Double,
+        placeholderPreview: StoreScreenPreviewSection?,
         onScrollOffsetChanged: @escaping (CGFloat) -> Void,
         onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController {

@@ -29,16 +29,25 @@ public protocol StoreSectionScrollable: AnyObject {
     func scrollToSection(fragment: String)
 }
 
+/// 호스트가 원하는 시점에 가게 상세 섹션 조회를 시작할 수 있게 한다.
+/// 바텀시트는 미리보기 데이터로 만든 헤더 + 스켈레톤을 먼저 보여주고, full 에 안착한 뒤 조회한다.
+public protocol StoreDetailSectionsLoadable: AnyObject {
+    func loadSectionsIfNeeded()
+}
+
 public protocol StoreInterface {
     /// 딥링크·공유 링크 등 지도 컨텍스트가 없는 진입점용 V2 전체 화면 가게 상세다.
     func getStoreDetailFullScreenViewController(storeId: Int) -> UIViewController
 
     /// Home 바텀시트가 Store 모듈의 v2 SDUI 상세를 자식 화면으로 임베드할 때 사용한다.
     /// `onSectionsLoaded` 는 상세 섹션 응답이 반영될 때마다 호출된다. 호스트가 로딩 전엔 미리보기를 유지하는 데 쓴다.
+    /// 바텀시트 임베드용 상세. 응답 전까지 `placeholderPreview`(미리보기 데이터) 헤더와 스켈레톤을 보여주며,
+    /// 조회는 반환된 VC 의 `StoreDetailSectionsLoadable.loadSectionsIfNeeded()` 를 호출해야 시작된다.
     func getStoreDetailSectionsViewController(
         storeId: Int,
         latitude: Double,
         longitude: Double,
+        placeholderPreview: StoreScreenPreviewSection?,
         onScrollOffsetChanged: @escaping (CGFloat) -> Void,
         onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController

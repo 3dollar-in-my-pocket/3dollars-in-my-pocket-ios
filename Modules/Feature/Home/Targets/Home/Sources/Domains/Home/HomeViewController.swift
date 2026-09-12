@@ -16,6 +16,11 @@ import CombineCocoa
 import FloatingPanel
 
 public final class HomeViewController: BaseViewController {
+    private enum Layout {
+        /// 미리보기 시트가 tip 에서 이만큼 올라오면 상세 레이아웃(미리보기 데이터 헤더 + 스켈레톤)으로 바꾼다.
+        static let storeDetailExpandStartProgress: CGFloat = 0.02
+    }
+
     public override var screenName: ScreenName {
         return viewModel.output.screenName
     }
@@ -539,8 +544,13 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
         let progress = (tipY - fpc.surfaceLocation.y) / range
 
-        // 미리보기 시트는 상단 배경 보간 대상이 아니다. 상세 요청은 full 에 완전히 안착한 뒤 시작한다.
-        if fpc === storePreviewBottomSheetController { return }
+        if fpc === storePreviewBottomSheetController {
+            // 위로 움직이기 시작하자마자 상세 레이아웃으로 바꾼다. 상세 요청 자체는 full 에 완전히 안착한 뒤 시작한다.
+            if progress > Layout.storeDetailExpandStartProgress {
+                storePreviewBottomSheet?.beginExpandingToFull()
+            }
+            return
+        }
         // 상단 배경 alpha 를 보간한다.
         homeView.updateTopBackground(progress: progress)
     }

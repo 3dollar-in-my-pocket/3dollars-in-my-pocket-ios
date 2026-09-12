@@ -5,6 +5,7 @@ import Common
 import DesignSystem
 import Log
 import Model
+import StoreInterface
 
 import CombineCocoa
 import SnapKit
@@ -137,17 +138,9 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
-    /// full 도달 후 상세 응답(또는 보류한 첫 렌더)을 기다리는 동안 상세 자리에 표시한다.
-    private let detailSkeletonView: StoreDetailSkeletonView = {
-        let view = StoreDetailSkeletonView()
-        view.isHidden = true
-        return view
-    }()
-
     private var detailViewController: UIViewController?
-    /// 상세 섹션이 한 번이라도 도착했는지. 도착 전에 full 로 올라가면 미리보기를 유지하다가 도착 시 전환한다.
-    private var hasLoadedDetail = false
-    private var isWaitingForDetail = false
+    /// 마지막으로 렌더한 미리보기. 상세를 붙일 때 응답 전 헤더(PREVIEW 셀)를 이 데이터로 만든다.
+    private var previewSection: StorePreviewSection?
     private var isTrackingDetailScroll = false
 
     /// tip 상태에서 보이는 미리보기 구성요소. full 에서는 스켈레톤/상세로 대체된다.
@@ -212,7 +205,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             viewModel.input.load.send(())
         }
         if wasShowingDetail {
-            showDetail()
+            didReachFullState()
         }
     }
 
@@ -223,10 +216,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             detailViewController.removeFromParent()
             self.detailViewController = nil
         }
-        hasLoadedDetail = false
-        isWaitingForDetail = false
+        previewSection = nil
         isTrackingDetailScroll = false
-        hideSkeleton()
         detailNavigationTitleLabel.text = nil
         detailNavigationTitleLabel.alpha = 0
         detailContainerView.isHidden = true
@@ -238,7 +229,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        (previewViews + [detailSkeletonView, detailContainerView, detailNavigationBar])
+        (previewViews + [detailContainerView, detailNavigationBar])
             .forEach { view.addSubview($0) }
 
         titleStack.addArrangedSubview(titleLabel)
@@ -321,10 +312,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         detailContainerView.snp.makeConstraints {
             $0.top.equalTo(detailNavigationBar.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
-        }
-
-        detailSkeletonView.snp.makeConstraints {
-            $0.edges.equalTo(detailContainerView)
         }
 
         detailNavigationBar.snp.makeConstraints {
@@ -420,6 +407,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
                 guard let self else { return }
                 switch route {
                 case .expandPanel:
+                    self.beginExpandingToFull()
                     self.onRequestExpandPanel?()
                 case .presentVisit(let storeId):
                     self.onRequestPresentVisit?(storeId)
@@ -474,68 +462,28 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         viewModel.input.didTapDetailShare.send(())
     }
 
-    /// Home 의 FloatingPanel delegate 에서 호출한다. 드래그와 프로그램적 full 이동 모두 이 경로를 지난다.
-    /// 상세 요청·첫 렌더는 모두 시트가 안착한 뒤에 일어나므로 확장 애니메이션과 겹치지 않는다.
+    /// tip 에서 full 로 움직이기 시작하자마자(드래그·본문 탭 모두) 호출한다.
+    /// 미리보기 레이아웃을 걷고, 미리보기 데이터로 만든 상세 헤더 + 스켈레톤을 바로 보여준다. 요청은 아직 보내지 않는다.
+    func beginExpandingToFull() {
+        guard detailContainerView.isHidden else { return }
+        embedStoreSectionsIfNeeded()
+        previewViews.forEach { $0.isHidden = true }
+        detailContainerView.isHidden = false
+        showDetailNavigationBar()
+    }
+
+    /// Home 의 FloatingPanel delegate 에서 시트가 full 에 완전히 안착한 뒤 호출한다. 여기서 상세 조회를 시작한다.
+    /// 응답이 오면 스켈레톤 자리가 실제 섹션으로 바뀌고, 헤더는 같은 identifier 라 제자리에서 갱신된다.
     func didReachFullState() {
-        showDetail()
+        beginExpandingToFull()
+        trackDetailScrollIfNeeded()
+        (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 
     func didReachTipState() {
-        isWaitingForDetail = false
-        hideSkeleton()
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
         previewViews.forEach { $0.isHidden = false }
-    }
-
-    private func showDetail() {
-        guard detailContainerView.isHidden, isWaitingForDetail.isNot else { return }
-
-        // 첫 진입이면 스켈레톤을 먼저 띄우고, 그 다음 상세를 붙여 요청을 시작한다. (붙이는 순간 viewDidLoad 에서 조회)
-        // 미리보기만 보고 닫는 사용자에겐 상세 요청이 나가지 않는다.
-        guard hasLoadedDetail else {
-            isWaitingForDetail = true
-            showSkeleton()
-            embedStoreSectionsIfNeeded()
-            return
-        }
-        presentDetail(animated: false)
-    }
-
-    private func showSkeleton() {
-        previewViews.forEach { $0.isHidden = true }
-        detailSkeletonView.isHidden = false
-        detailSkeletonView.startAnimating()
-        showDetailNavigationBar()
-    }
-
-    private func hideSkeleton() {
-        detailSkeletonView.stopAnimating()
-        detailSkeletonView.isHidden = true
-    }
-
-    private func presentDetail(animated: Bool) {
-        let swapContents = { [weak self] in
-            guard let self else { return }
-            self.previewViews.forEach { $0.isHidden = true }
-            self.detailSkeletonView.isHidden = true
-            self.detailContainerView.isHidden = false
-        }
-        if animated {
-            UIView.transition(
-                with: view,
-                duration: 0.25,
-                options: [.transitionCrossDissolve],
-                animations: swapContents
-            ) { [weak self] _ in
-                self?.detailSkeletonView.stopAnimating()
-            }
-        } else {
-            swapContents()
-            detailSkeletonView.stopAnimating()
-        }
-        trackDetailScrollIfNeeded()
-        showDetailNavigationBar()
     }
 
     private func showDetailNavigationBar() {
@@ -543,13 +491,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.detailNavigationBar.alpha = 1
         }
-    }
-
-    private func handleDetailSectionsLoaded() {
-        hasLoadedDetail = true
-        guard isWaitingForDetail else { return }
-        isWaitingForDetail = false
-        presentDetail(animated: true)
     }
 
     /// Store의 root view는 UICollectionView다. Home은 구체 Store 타입을 import하지 않은 채 FloatingPanel에만 연결한다.
@@ -567,16 +508,16 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private func embedStoreSectionsIfNeeded() {
         guard detailViewController == nil else { return }
+        let storeId = viewModel.storeId
         let detailViewController = Environment.storeInterface.getStoreDetailSectionsViewController(
-            storeId: viewModel.storeId,
+            storeId: storeId,
             latitude: viewModel.latitude,
             longitude: viewModel.longitude,
+            placeholderPreview: previewSection.map { StoreScreenPreviewSection(preview: $0, storeId: storeId) },
             onScrollOffsetChanged: { [weak self] contentOffset in
                 self?.updateDetailNavigationTitle(for: contentOffset)
             },
-            onSectionsLoaded: { [weak self] in
-                self?.handleDetailSectionsLoaded()
-            }
+            onSectionsLoaded: { }
         )
         addChild(detailViewController)
         detailContainerView.addSubview(detailViewController.view)
@@ -586,6 +527,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     private func render(section: StorePreviewSection) {
+        previewSection = section
         if let title = section.header.title {
             titleLabel.setSDText(title)
         }

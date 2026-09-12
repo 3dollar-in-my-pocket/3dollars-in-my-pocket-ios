@@ -23,13 +23,18 @@ public final class StoreInterfaceImpl: StoreInterface {
         storeId: Int,
         latitude: Double,
         longitude: Double,
+        placeholderPreview: StoreScreenPreviewSection?,
         onScrollOffsetChanged: @escaping (CGFloat) -> Void,
         onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController {
         let viewController = StoreSectionsViewController(
-            storeId: storeId,
-            latitude: latitude,
-            longitude: longitude
+            viewModel: StoreSectionsViewModel(config: .init(
+                storeId: storeId,
+                latitude: latitude,
+                longitude: longitude
+            )),
+            placeholderPreview: placeholderPreview,
+            loadsOnViewDidLoad: false
         )
         viewController.onScrollOffsetChanged = onScrollOffsetChanged
         viewController.onSectionsLoaded = onSectionsLoaded

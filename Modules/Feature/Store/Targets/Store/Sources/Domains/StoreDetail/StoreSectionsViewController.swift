@@ -13,19 +13,29 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onScrollOffsetChanged: ((CGFloat) -> Void)?
     /// 전체 화면 컨테이너가 상단 네비게이션 타이틀과 공유 정보를 구성하는 데 사용한다.
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
-    /// 섹션 응답이 화면에 반영된 직후 호출된다. 호스트(바텀시트)가 로딩 전엔 미리보기를 유지하고 도착 시 전환하는 데 쓴다.
+    /// 서버 섹션 응답이 화면에 반영된 직후 호출된다. (플레이스홀더 반영 시에는 호출하지 않는다)
     public var onSectionsLoaded: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
+    /// 응답 전까지 보여줄 미리보기 데이터 기반 PREVIEW 섹션. 실제 응답의 PREVIEW 와 같은 identifier 라 제자리에서 갱신된다.
+    private let placeholderPreview: StoreScreenPreviewSection?
+    private let loadsOnViewDidLoad: Bool
+    private var hasRequestedLoad = false
     private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
     private var displayedImpressionIdentifiers = Set<String>()
     /// 메뉴 더보기를 누른 INFO_V1 섹션. 셀 재사용 후에도 펼침을 유지하기 위해 컨트롤러가 보관한다.
     private var expandedMenuIdentifiers = Set<String>()
     private lazy var dataSource = makeDataSource()
 
-    init(viewModel: StoreSectionsViewModel) {
+    init(
+        viewModel: StoreSectionsViewModel,
+        placeholderPreview: StoreScreenPreviewSection? = nil,
+        loadsOnViewDidLoad: Bool = true
+    ) {
         self.viewModel = viewModel
+        self.placeholderPreview = placeholderPreview
+        self.loadsOnViewDidLoad = loadsOnViewDidLoad
         self.collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: Self.makeLayout()
@@ -69,9 +79,30 @@ public final class StoreSectionsViewController: BaseViewController {
             StoreInfoV1Cell.self,
             StoreInfoV2Cell.self,
             StoreCTACell.self,
-            StoreReviewCell.self
+            StoreReviewCell.self,
+            StoreSkeletonCell.self
         ])
+        if loadsOnViewDidLoad {
+            loadSectionsIfNeeded()
+        } else {
+            applyPlaceholder()
+        }
+    }
+
+    /// 호스트가 조회 시점을 정하는 경우(바텀시트) 호출한다. 두 번 불려도 한 번만 조회한다.
+    public func loadSectionsIfNeeded() {
+        guard hasRequestedLoad.isNot else { return }
+        hasRequestedLoad = true
         viewModel.input.load.send(())
+    }
+
+    private func applyPlaceholder() {
+        var sections: [any StoreSectionComponent] = []
+        if let placeholderPreview {
+            sections.append(placeholderPreview)
+        }
+        sections.append(StoreSkeletonSection())
+        apply(sections, isPlaceholder: true)
     }
 
     public override func bindViewModelInput() { }
@@ -120,7 +151,7 @@ public final class StoreSectionsViewController: BaseViewController {
         return StickySectionLayout(section: section)
     }
 
-    private func apply(_ sections: [any StoreSectionComponent]) {
+    private func apply(_ sections: [any StoreSectionComponent], isPlaceholder: Bool = false) {
         let title = sections
             .compactMap { ($0 as? StoreScreenPreviewSection)?.header.title }
             .first
@@ -157,7 +188,9 @@ public final class StoreSectionsViewController: BaseViewController {
             snapshot.reconfigureItems(changedIdentifiers)
         }
         dataSource.apply(snapshot, animatingDifferences: false)
-        onSectionsLoaded?()
+        if isPlaceholder.isNot {
+            onSectionsLoaded?()
+        }
     }
 
     /// 접힌 메뉴를 펼친다. reconfigure 로 같은 셀을 다시 bind 해 셀프사이징 높이가 갱신되게 한다.
@@ -228,6 +261,9 @@ public final class StoreSectionsViewController: BaseViewController {
             case let section as StoreReviewSection:
                 let cell: StoreReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
+            case is StoreSkeletonSection:
+                let cell: StoreSkeletonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                return cell
             default:
                 return nil
             }
@@ -320,6 +356,9 @@ private extension StoreSectionsViewController {
         }
     }
 }
+
+// MARK: StoreDetailSectionsLoadable
+extension StoreSectionsViewController: StoreDetailSectionsLoadable { }
 
 // MARK: StoreSectionScrollable
 extension StoreSectionsViewController: StoreSectionScrollable {
