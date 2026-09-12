@@ -545,8 +545,11 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         let progress = (tipY - fpc.surfaceLocation.y) / range
 
         if fpc === storePreviewBottomSheetController {
-            // 위로 움직이기 시작하자마자 상세 레이아웃으로 바꾼다. 상세 요청 자체는 full 에 완전히 안착한 뒤 시작한다.
-            if progress > Layout.storeDetailExpandStartProgress {
+            // 사용자가 직접 끌어올리기 시작하자마자 상세 레이아웃으로 바꾼다. 상세 요청 자체는 full 에 완전히 안착한 뒤 시작한다.
+            // 가게 교체로 tip 높이가 바뀌어 surface 가 움직일 때나 tip 으로 되돌아가는 애니메이션에서도 didMove 가 오므로,
+            // pan 제스처가 진행 중일 때만 반응한다. (그렇지 않으면 tip 에서 상세가 켜지고 다음 마커 탭에 조회까지 나간다)
+            let isUserDragging = fpc.panGestureRecognizer.state == .changed
+            if isUserDragging, progress > Layout.storeDetailExpandStartProgress {
                 storePreviewBottomSheet?.beginExpandingToFull()
             }
             return
