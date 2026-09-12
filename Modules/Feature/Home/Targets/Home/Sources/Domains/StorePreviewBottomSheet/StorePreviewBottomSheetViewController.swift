@@ -138,6 +138,10 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private var viewModel: StorePreviewBottomSheetViewModel
     private var cancellables = Set<AnyCancellable>()
     private var detailViewController: UIViewController?
+    /// 상세 섹션이 한 번이라도 도착했는지. 도착 전에 full 로 올라가면 미리보기를 유지하다가 도착 시 전환한다.
+    private var hasLoadedDetail = false
+    private var isWaitingForDetail = false
+    private var isTrackingDetailScroll = false
 
     var onRequestExpandPanel: (() -> Void)?
     var onRequestCollapsePanel: (() -> Void)?
@@ -174,6 +178,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 상세 push 중에는 패널이 isHidden 으로 가려질 뿐 부착 상태가 유지되어,
         // pop 으로 Home 이 다시 나타날 때 자식인 이 VC 의 viewWillAppear 도 함께 호출된다.
         viewModel.input.load.send(())
+        // full 로 올라갈 때 빈 화면이 보이지 않도록 미리보기 단계에서 상세를 미리 만들어 로드해 둔다.
+        embedStoreSectionsIfNeeded()
     }
 
     /// 미리보기 위에 모달로 띄운 방문 인증·리뷰 작성이 성공한 뒤 호출해 최신 데이터로 갱신한다.
@@ -194,6 +200,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // detached 상태에서 재사용되는 경우엔 곧 addPanel → viewWillAppear 에서 로드되므로 중복 호출하지 않는다.
         if viewIfLoaded?.window != nil {
             viewModel.input.load.send(())
+            embedStoreSectionsIfNeeded()
         }
         if wasShowingDetail {
             showDetail()
@@ -207,6 +214,9 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             detailViewController.removeFromParent()
             self.detailViewController = nil
         }
+        hasLoadedDetail = false
+        isWaitingForDetail = false
+        isTrackingDetailScroll = false
         detailNavigationTitleLabel.text = nil
         detailNavigationTitleLabel.alpha = 0
         detailContainerView.isHidden = true
@@ -457,6 +467,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     func didReachTipState() {
+        isWaitingForDetail = false
         guard !detailContainerView.isHidden else { return }
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
@@ -466,15 +477,48 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
     private func showDetail() {
         guard detailContainerView.isHidden else { return }
-
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
-            .forEach { $0.isHidden = true }
-        detailContainerView.isHidden = false
         embedStoreSectionsIfNeeded()
+
+        // 첫 진입처럼 상세 응답이 아직 없으면 빈 컬렉션뷰 대신 미리보기를 그대로 두고, 도착 시 전환한다.
+        guard hasLoadedDetail else {
+            isWaitingForDetail = true
+            return
+        }
+        presentDetail(animated: false)
+    }
+
+    private func presentDetail(animated: Bool) {
+        let swapContents = { [weak self] in
+            guard let self else { return }
+            [self.titleStack, self.topButtonStack, self.metadataView, self.imagesCollectionView, self.bodiesScrollView, self.actionBarScrollView]
+                .forEach { $0.isHidden = true }
+            self.detailContainerView.isHidden = false
+        }
+        if animated {
+            UIView.transition(with: view, duration: 0.25, options: [.transitionCrossDissolve], animations: swapContents)
+        } else {
+            swapContents()
+        }
+        trackDetailScrollIfNeeded()
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.detailNavigationBar.alpha = 1
         }
+    }
+
+    private func handleDetailSectionsLoaded() {
+        hasLoadedDetail = true
+        guard isWaitingForDetail else { return }
+        isWaitingForDetail = false
+        presentDetail(animated: true)
+    }
+
+    /// Store의 root view는 UICollectionView다. Home은 구체 Store 타입을 import하지 않은 채 FloatingPanel에만 연결한다.
+    /// 미리보기 단계에서 미리 연결하면 패널 드래그 판단에 숨겨진 스크롤뷰가 끼어들므로 상세를 실제로 보여줄 때 연결한다.
+    private func trackDetailScrollIfNeeded() {
+        guard isTrackingDetailScroll.isNot, let scrollView = detailViewController?.view as? UIScrollView else { return }
+        isTrackingDetailScroll = true
+        onRequestTrackDetailScroll?(scrollView)
     }
 
     private func updateDetailNavigationTitle(for contentOffset: CGFloat) {
@@ -490,6 +534,9 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             longitude: viewModel.longitude,
             onScrollOffsetChanged: { [weak self] contentOffset in
                 self?.updateDetailNavigationTitle(for: contentOffset)
+            },
+            onSectionsLoaded: { [weak self] in
+                self?.handleDetailSectionsLoaded()
             }
         )
         addChild(detailViewController)
@@ -497,11 +544,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         detailViewController.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         detailViewController.didMove(toParent: self)
         self.detailViewController = detailViewController
-
-        // Store의 root view는 UICollectionView다. Home은 구체 Store 타입을 import하지 않은 채 FloatingPanel에만 연결한다.
-        if let scrollView = detailViewController.view as? UIScrollView {
-            onRequestTrackDetailScroll?(scrollView)
-        }
     }
 
     private func render(section: StorePreviewSection) {

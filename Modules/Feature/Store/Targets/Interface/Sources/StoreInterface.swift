@@ -34,11 +34,13 @@ public protocol StoreInterface {
     func getStoreDetailFullScreenViewController(storeId: Int) -> UIViewController
 
     /// Home 바텀시트가 Store 모듈의 v2 SDUI 상세를 자식 화면으로 임베드할 때 사용한다.
+    /// `onSectionsLoaded` 는 상세 섹션 응답이 반영될 때마다 호출된다. 호스트가 로딩 전엔 미리보기를 유지하는 데 쓴다.
     func getStoreDetailSectionsViewController(
         storeId: Int,
         latitude: Double,
         longitude: Double,
-        onScrollOffsetChanged: @escaping (CGFloat) -> Void
+        onScrollOffsetChanged: @escaping (CGFloat) -> Void,
+        onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController
 
     func getVisitViewController(storeId: Int, onSuccessVisit: @escaping (() -> Void)) -> UIViewController

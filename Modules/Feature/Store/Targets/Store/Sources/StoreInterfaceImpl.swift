@@ -23,7 +23,8 @@ public final class StoreInterfaceImpl: StoreInterface {
         storeId: Int,
         latitude: Double,
         longitude: Double,
-        onScrollOffsetChanged: @escaping (CGFloat) -> Void
+        onScrollOffsetChanged: @escaping (CGFloat) -> Void,
+        onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController {
         let viewController = StoreSectionsViewController(
             storeId: storeId,
@@ -31,6 +32,7 @@ public final class StoreInterfaceImpl: StoreInterface {
             longitude: longitude
         )
         viewController.onScrollOffsetChanged = onScrollOffsetChanged
+        viewController.onSectionsLoaded = onSectionsLoaded
         return viewController
     }
 

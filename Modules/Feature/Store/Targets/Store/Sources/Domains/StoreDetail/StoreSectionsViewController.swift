@@ -13,6 +13,8 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onScrollOffsetChanged: ((CGFloat) -> Void)?
     /// 전체 화면 컨테이너가 상단 네비게이션 타이틀과 공유 정보를 구성하는 데 사용한다.
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
+    /// 섹션 응답이 화면에 반영된 직후 호출된다. 호스트(바텀시트)가 로딩 전엔 미리보기를 유지하고 도착 시 전환하는 데 쓴다.
+    public var onSectionsLoaded: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
@@ -155,6 +157,7 @@ public final class StoreSectionsViewController: BaseViewController {
             snapshot.reconfigureItems(changedIdentifiers)
         }
         dataSource.apply(snapshot, animatingDifferences: false)
+        onSectionsLoaded?()
     }
 
     /// 접힌 메뉴를 펼친다. reconfigure 로 같은 셀을 다시 bind 해 셀프사이징 높이가 갱신되게 한다.
