@@ -7,15 +7,25 @@ import SnapKit
 
 /// v1 캐러셀의 `StoreBridgeCarouselItemCell`을 그대로 재사용하는 v2 추천 가게 섹션.
 final class StoreRelatedStoresV2Cell: BaseCollectionViewCell {
+    enum Layout {
+        static let verticalMargin: CGFloat = 16
+        static let horizontalMargin: CGFloat = 20
+        static let titleSpacing: CGFloat = 12
+        static let itemSpacing: CGFloat = 12
+    }
+
     var onAction: ((StoreSectionAction) -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 12
+        layout.minimumLineSpacing = Layout.itemSpacing
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = .clear
         view.showsHorizontalScrollIndicator = false
+        view.contentInset = UIEdgeInsets(
+            top: 0, left: Layout.horizontalMargin, bottom: 0, right: Layout.horizontalMargin
+        )
         view.register([StoreBridgeCarouselItemCell.self])
         view.dataSource = self
         view.delegate = self
@@ -34,10 +44,15 @@ final class StoreRelatedStoresV2Cell: BaseCollectionViewCell {
     }
 
     override func bindConstraints() {
-        titleLabel.snp.makeConstraints { $0.top.leading.trailing.equalToSuperview() }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(Layout.titleSpacing)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
             $0.height.equalTo(StoreBridgeCarouselItemCell.Layout.size().height)
         }
     }
@@ -46,6 +61,7 @@ final class StoreRelatedStoresV2Cell: BaseCollectionViewCell {
         titleLabel.setSDText(section.header.title)
         cards = section.cards
         collectionView.reloadData()
+        collectionView.setContentOffset(CGPoint(x: -Layout.horizontalMargin, y: 0), animated: false)
     }
 }
 

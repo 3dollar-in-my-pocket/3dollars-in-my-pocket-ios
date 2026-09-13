@@ -156,7 +156,10 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
             make.height.equalTo(20)
         }
         contentStack.snp.makeConstraints { $0.edges.equalToSuperview() }
-        badgeImageView.snp.makeConstraints { $0.size.lessThanOrEqualTo(24) }
+        badgeImageView.snp.makeConstraints {
+            $0.width.equalTo(24)
+            $0.height.equalTo(24)
+        }
         contributorButton.snp.makeConstraints {
             $0.top.bottom.leading.equalToSuperview()
             $0.trailing.lessThanOrEqualToSuperview()

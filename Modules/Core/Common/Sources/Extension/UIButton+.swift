@@ -34,17 +34,20 @@ public extension UIButton {
             setTitle(nil, for: .normal)
         }
 
+        kf.cancelImageDownloadTask()
         if let image = sdButton.image,
            let imageUrl = URL(string: image.url),
            isValidImageSize(width: image.style.width, height: image.style.height) {
-            let resizeProcessor = ResizingImageProcessor(
-                referenceSize: CGSize(width: image.style.width, height: image.style.height),
-                mode: .aspectFit
+            let downsamplingProcessor = DownsamplingImageProcessor(
+                size: CGSize(width: image.style.width, height: image.style.height)
             )
-
-            DispatchQueue.main.async { [weak self] in
-                self?.kf.setImage(with: imageUrl, for: .normal, options: [.processor(resizeProcessor)])
-            }
+            kf.setImage(
+                with: imageUrl,
+                for: .normal,
+                options: [.processor(downsamplingProcessor), .scaleFactor(UIScreen.main.scale)]
+            )
+        } else {
+            setImage(nil, for: .normal)
         }
 
         if let backgroundColor = UIColor(hex: sdButton.style.backgroundColor) {

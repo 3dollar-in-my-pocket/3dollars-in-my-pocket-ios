@@ -15,6 +15,9 @@ final class StoreImageCell: BaseCollectionViewCell {
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private let actionButton = UIButton(type: .system)
     private let imageStack = UIStackView()
+    private let emptyView = StoreSectionEmptyView(text: Strings.StoreDetail.Photo.empty)
+    private var imageStackBottomConstraint: Constraint?
+    private var emptyViewBottomConstraint: Constraint?
 
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -26,7 +29,7 @@ final class StoreImageCell: BaseCollectionViewCell {
         imageStack.axis = .horizontal
         imageStack.alignment = .center
         imageStack.spacing = 8
-        contentView.addSubViews([titleLabel, actionButton, imageStack])
+        contentView.addSubViews([titleLabel, actionButton, imageStack, emptyView])
     }
 
     override func bindConstraints() {
@@ -42,8 +45,15 @@ final class StoreImageCell: BaseCollectionViewCell {
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
             $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
             $0.trailing.lessThanOrEqualToSuperview().offset(-Layout.horizontalMargin)
-            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
+            imageStackBottomConstraint = $0.bottom.equalToSuperview().offset(-Layout.verticalMargin).constraint
         }
+        emptyView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+            emptyViewBottomConstraint = $0.bottom.equalToSuperview().offset(-Layout.verticalMargin).constraint
+        }
+        emptyViewBottomConstraint?.deactivate()
     }
 
     func bind(_ section: StoreImageSection) {
@@ -53,6 +63,7 @@ final class StoreImageCell: BaseCollectionViewCell {
         if let action = section.header.trailingAction?.storeSectionAction {
             actionButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
+        setEmptyViewVisible(section.cards.isEmpty)
         imageStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         section.cards.forEach { card in
             let cardView = StoreImageCardView(card: card) { [weak self] action in
@@ -66,10 +77,32 @@ final class StoreImageCell: BaseCollectionViewCell {
             imageStack.addArrangedSubview(cardView)
         }
     }
+
+    private func setEmptyViewVisible(_ isVisible: Bool) {
+        emptyView.isHidden = isVisible.isNot
+        imageStack.isHidden = isVisible
+        if isVisible {
+            imageStackBottomConstraint?.deactivate()
+            emptyViewBottomConstraint?.activate()
+        } else {
+            emptyViewBottomConstraint?.deactivate()
+            imageStackBottomConstraint?.activate()
+        }
+    }
 }
 
 private final class StoreImageCardView: UIView {
+    private enum Layout {
+        static let dimmedAlpha: CGFloat = 0.5
+    }
+
     private let imageView = UIImageView()
+    private let dimmedView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.systemBlack.color.withAlphaComponent(Layout.dimmedAlpha)
+        view.isHidden = true
+        return view
+    }()
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 13))
     private let subtitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 11))
 
@@ -84,8 +117,9 @@ private final class StoreImageCardView: UIView {
         layer.cornerRadius = 10
         clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        addSubViews([imageView, titleLabel, subtitleLabel])
+        addSubViews([imageView, dimmedView, titleLabel, subtitleLabel])
         imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        dimmedView.snp.makeConstraints { $0.edges.equalToSuperview() }
         titleLabel.snp.makeConstraints { $0.centerX.equalToSuperview(); $0.centerY.equalToSuperview().offset(-8) }
         subtitleLabel.snp.makeConstraints { $0.centerX.equalToSuperview(); $0.top.equalTo(titleLabel.snp.bottom).offset(2) }
         bind(card)
@@ -99,6 +133,7 @@ private final class StoreImageCardView: UIView {
     private func bind(_ card: StoreImageSectionCard) {
         setSDSurfaceStyle(card.style)
         imageView.setImage(urlString: card.image.url)
+        dimmedView.isHidden = card.image.style.dimmed.isNot
         titleLabel.setSDText(card.title)
         subtitleLabel.setSDText(card.subTitle)
     }

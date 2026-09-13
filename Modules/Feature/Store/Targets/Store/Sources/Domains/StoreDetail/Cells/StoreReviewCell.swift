@@ -75,6 +75,9 @@ final class StoreReviewCell: BaseCollectionViewCell {
         }
         summaryView.bind(section.summary)
         cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        if section.cards.isEmpty {
+            cardsStack.addArrangedSubview(StoreSectionEmptyView(text: Strings.StoreDetail.Review.empty))
+        }
         section.cards.forEach { card in
             cardsStack.addArrangedSubview(StoreReviewCardView(card: card) { [weak self] action in
                 self?.onAction?(action)
