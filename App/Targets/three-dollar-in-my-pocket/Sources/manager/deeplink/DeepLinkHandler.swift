@@ -180,6 +180,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
                   let storeId = intParam(params, key: "storeId") else { return }
 
             route(Environment.storeInterface.getPhotoListViewController(storeId: storeId))
+        case .storeContributors:
+            guard let params = url.params(),
+                  let storeId = intParam(params, key: "storeId") else { return }
+
+            presentModally(Environment.storeInterface.getContributorsViewController(storeId: storeId))
         case .unknown:
             os_log(.debug, "🔴알 수 없는 형태의 딥링크입니다. %{PUBLIC}@", urlString)
         }
@@ -255,6 +260,19 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
     private func isAppScheme(url: URL) -> Bool {
         return url.scheme == Bundle.deeplinkScheme && url.host.isNotNil
+    }
+
+    private func presentModally(_ viewController: UIViewController) {
+        guard let rootViewController = SceneDelegate.shared?.window?.rootViewController else { return }
+        let topViewController = UIUtils.getTopViewController(rootViewController)
+
+        if topViewController is PanModalPresentable {
+            topViewController.dismiss(animated: true) { [weak self] in
+                self?.presentModally(viewController)
+            }
+        } else {
+            topViewController.present(viewController, animated: true)
+        }
     }
 
     private func route(_ viewController: UIViewController, forcePresent: Bool = false) {

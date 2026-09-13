@@ -13,6 +13,7 @@ enum DeeplinkPath: String {
     case myCoupons
     case visit
     case storeImages = "store/images"
+    case storeContributors = "store-contributors"
     
     init(value: String) {
         self = DeeplinkPath(rawValue: value) ?? .unknown
