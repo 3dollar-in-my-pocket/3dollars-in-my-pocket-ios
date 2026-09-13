@@ -2,6 +2,7 @@ import Foundation
 
 public struct StoreScreenPreviewSection: Decodable, Equatable, Hashable, StoreSectionComponent {
     public let type: StoreSectionType
+    public let sectionId: String?
     public let header: StorePreviewHeader
     public let metadata: StorePreviewMetadata
     public let actionBars: [SDActionBar]
@@ -22,6 +23,7 @@ extension StoreScreenPreviewSection {
     public init(preview: StorePreviewSection, storeId: Int) {
         self.init(
             type: .preview,
+            sectionId: nil,
             header: preview.header,
             metadata: preview.metadata,
             actionBars: preview.actionBars.map {

@@ -31,6 +31,9 @@ public protocol StoreSectionScrollable: AnyObject {
 
 public protocol StoreDetailSectionsLoadable: AnyObject {
     func loadSectionsIfNeeded()
+    func reloadSections()
+    func updatePlaceholderPreview(_ preview: StoreScreenPreviewSection)
+    func markSectionsDisplayed()
 }
 
 public protocol StoreInterface {
@@ -46,6 +49,8 @@ public protocol StoreInterface {
         onScrollOffsetChanged: @escaping (CGFloat) -> Void,
         onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController
+
+    func getContributorsViewController(storeId: Int) -> UIViewController
 
     func getVisitViewController(storeId: Int, onSuccessVisit: @escaping (() -> Void)) -> UIViewController
 

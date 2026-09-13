@@ -12,6 +12,7 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
+    var onSelectTab: ((Int) -> Void)?
 
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -35,6 +36,7 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
         tabs = []
         selectedIndex = 0
         onAction = nil
+        onSelectTab = nil
     }
 
     override func setup() {
@@ -56,11 +58,9 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
         }
     }
 
-    func bind(_ section: StoreTabSection) {
+    func bind(_ section: StoreTabSection, selectedIndex: Int) {
         tabs = section.tabs
-        if selectedIndex >= tabs.count {
-            selectedIndex = 0
-        }
+        self.selectedIndex = selectedIndex < tabs.count ? selectedIndex : 0
 
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for (index, tab) in tabs.enumerated() {
@@ -73,15 +73,19 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
         }
     }
 
+    func setSelectedIndex(_ index: Int) {
+        guard selectedIndex != index, index < tabs.count else { return }
+        selectedIndex = index
+        for (itemIndex, itemView) in stackView.arrangedSubviews.enumerated() {
+            (itemView as? StoreTabItemView)?.setSelected(itemIndex == index)
+        }
+    }
+
     private func didTapTab(_ index: Int) {
         guard let tab = tabs[safe: index] else { return }
 
-        if selectedIndex != index {
-            selectedIndex = index
-            for (itemIndex, itemView) in stackView.arrangedSubviews.enumerated() {
-                (itemView as? StoreTabItemView)?.setSelected(itemIndex == index)
-            }
-        }
+        setSelectedIndex(index)
+        onSelectTab?(index)
 
         if let action = tab.storeSectionAction {
             onAction?(action)

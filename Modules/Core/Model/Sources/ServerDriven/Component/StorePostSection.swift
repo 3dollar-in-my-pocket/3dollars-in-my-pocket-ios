@@ -2,6 +2,7 @@ import Foundation
 
 public struct StorePostSection: Decodable, Equatable, Hashable, StoreSectionComponent {
     public let type: StoreSectionType
+    public let sectionId: String?
     public let header: SDHeader
     public let cards: [StorePostContentCard]
 }

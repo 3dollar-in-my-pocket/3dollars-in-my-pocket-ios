@@ -1,5 +1,6 @@
 import UIKit
 import CoreLocation
+import MapKit
 
 import Common
 import DesignSystem
@@ -14,15 +15,21 @@ public final class StoreSectionsViewController: BaseViewController {
     /// 전체 화면 컨테이너가 상단 네비게이션 타이틀과 공유 정보를 구성하는 데 사용한다.
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
     public var onSectionsLoaded: (() -> Void)?
+    public var onFavoriteChanged: ((Bool) -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
-    private let placeholderPreview: StoreScreenPreviewSection?
+    private var placeholderPreview: StoreScreenPreviewSection?
     private let loadsOnViewDidLoad: Bool
     private var hasRequestedLoad = false
+    private var hasLoadedSections = false
+    private var isDisplayed = false
     private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
     private var displayedImpressionIdentifiers = Set<String>()
     private var expandedMenuIdentifiers = Set<String>()
+    private var tabItemIndex: Int?
+    private var tabTargetItemIndexes: [Int?] = []
+    private var selectedTabIndex = 0
     private lazy var dataSource = makeDataSource()
 
     init(
@@ -80,6 +87,7 @@ public final class StoreSectionsViewController: BaseViewController {
             StoreSkeletonCell.self
         ])
         if loadsOnViewDidLoad {
+            markSectionsDisplayed()
             loadSectionsIfNeeded()
         } else {
             applyPlaceholder()
@@ -88,8 +96,35 @@ public final class StoreSectionsViewController: BaseViewController {
 
     public func loadSectionsIfNeeded() {
         guard hasRequestedLoad.isNot else { return }
+        reloadSections()
+    }
+
+    public func reloadSections() {
         hasRequestedLoad = true
         viewModel.input.load.send(())
+    }
+
+    public func updatePlaceholderPreview(_ preview: StoreScreenPreviewSection) {
+        placeholderPreview = preview
+        guard hasLoadedSections.isNot, isViewLoaded else { return }
+        applyPlaceholder()
+    }
+
+    public func toggleFavorite() {
+        viewModel.input.didTapFavorite.send(())
+    }
+
+    public func markSectionsDisplayed() {
+        guard isDisplayed.isNot else { return }
+        isDisplayed = true
+        viewModel.input.didDisplay.send(())
+        let admobIdentifiers = dataSource.snapshot().itemIdentifiers.filter { sectionsByIdentifier[$0] is StoreAdmobSection }
+        if admobIdentifiers.isEmpty.isNot {
+            var snapshot = dataSource.snapshot()
+            snapshot.reconfigureItems(admobIdentifiers)
+            dataSource.apply(snapshot, animatingDifferences: false)
+        }
+        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
     }
 
     private func applyPlaceholder() {
@@ -114,6 +149,11 @@ public final class StoreSectionsViewController: BaseViewController {
         viewModel.output.toast
             .receive(on: DispatchQueue.main)
             .sink { ToastManager.shared.show(message: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.isFavorited
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.onFavoriteChanged?($0) }
             .store(in: &cancellables)
 
         viewModel.output.error
@@ -158,6 +198,7 @@ public final class StoreSectionsViewController: BaseViewController {
         onStoreInformationChanged?(title, location)
 
         let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
+        updateTabTargets(sections)
         let previousSectionsByIdentifier = sectionsByIdentifier
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
@@ -180,8 +221,53 @@ public final class StoreSectionsViewController: BaseViewController {
         }
         dataSource.apply(snapshot, animatingDifferences: false)
         if isPlaceholder.isNot {
+            hasLoadedSections = true
             onSectionsLoaded?()
         }
+    }
+
+    private func updateTabTargets(_ sections: [any StoreSectionComponent]) {
+        guard let tabIndex = sections.firstIndex(where: { $0 is StoreTabSection }),
+              let tabSection = sections[tabIndex] as? StoreTabSection else {
+            tabItemIndex = nil
+            tabTargetItemIndexes = []
+            return
+        }
+        tabItemIndex = tabIndex
+        tabTargetItemIndexes = tabSection.tabs.map { tab in
+            guard let link = tab.button.link?.link,
+                  let fragment = URL(string: link)?.fragment else { return nil }
+            return StoreSectionFragment.sectionIndex(for: fragment, in: sections)
+        }
+    }
+
+    private func updateSelectedTabIfNeeded(_ scrollView: UIScrollView) {
+        guard scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating,
+              let tabItemIndex, tabTargetItemIndexes.isEmpty.isNot else { return }
+
+        let topInset = scrollView.adjustedContentInset.top
+        let tabBarBottomY = scrollView.contentOffset.y + topInset + StoreTabCell.Layout.height
+        let maxOffsetY = scrollView.contentSize.height + scrollView.adjustedContentInset.bottom - scrollView.bounds.height
+        let isAtBottom = scrollView.contentOffset.y >= maxOffsetY - 1
+
+        var newIndex = 0
+        for (tabIndex, itemIndex) in tabTargetItemIndexes.enumerated() {
+            guard let itemIndex,
+                  let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(
+                    at: IndexPath(item: itemIndex, section: 0)
+                  ) else { continue }
+            if attributes.frame.minY <= tabBarBottomY + 1 {
+                newIndex = tabIndex
+            }
+        }
+        if isAtBottom, let lastIndex = tabTargetItemIndexes.lastIndex(where: { $0 != nil }) {
+            newIndex = lastIndex
+        }
+
+        guard newIndex != selectedTabIndex else { return }
+        selectedTabIndex = newIndex
+        let tabCell = collectionView.cellForItem(at: IndexPath(item: tabItemIndex, section: 0)) as? StoreTabCell
+        tabCell?.setSelectedIndex(newIndex)
     }
 
     private func expandMenu(identifier: String) {
@@ -217,10 +303,13 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreAdmobSection:
                 let cell: StoreAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section, rootViewController: self); return cell
+                cell.bind(section, rootViewController: self, isDisplayed: self.isDisplayed); return cell
             case let section as StoreTabSection:
                 let cell: StoreTabCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section, selectedIndex: self.selectedTabIndex)
+                cell.onSelectTab = { [weak self] in self?.selectedTabIndex = $0 }
+                cell.onAction = actionHandler
+                return cell
             case let section as StoreCouponSection:
                 let cell: StoreCouponCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
@@ -264,12 +353,17 @@ public final class StoreSectionsViewController: BaseViewController {
 extension StoreSectionsViewController: UICollectionViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         onScrollOffsetChanged?(scrollView.contentOffset.y)
+        updateSelectedTabIfNeeded(scrollView)
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         (collectionView.collectionViewLayout as? StickySectionLayout)?.registerIfNeeded(cell: cell, indexPath: indexPath)
+        sendImpressionLogIfNeeded(at: indexPath)
+    }
 
-        guard let identifier = dataSource.itemIdentifier(for: indexPath),
+    private func sendImpressionLogIfNeeded(at indexPath: IndexPath) {
+        guard isDisplayed,
+              let identifier = dataSource.itemIdentifier(for: indexPath),
               displayedImpressionIdentifiers.insert(identifier).inserted,
               let component = sectionsByIdentifier[identifier] else { return }
 
@@ -319,7 +413,58 @@ private extension StoreSectionsViewController {
             present(navigationController, animated: true)
         case .scrollToSection(let sectionType):
             scrollToSection(sectionType)
+        case .presentNavigationActionSheet:
+            presentNavigationModal()
+        case .navigateAppleMap(let location):
+            navigateAppleMap(location: location)
         }
+    }
+
+    func presentNavigationModal() {
+        let alertController = UIAlertController(
+            title: Strings.NavigationBottomSheet.title,
+            message: Strings.NavigationBottomSheet.message,
+            preferredStyle: .actionSheet
+        )
+        let naverAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.naverMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.naver)
+        }
+        let kakaoAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.kakaoMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.kakao)
+        }
+        let appleAction = UIAlertAction(
+            title: Strings.NavigationBottomSheet.Action.appleMap,
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.input.didTapNavigationAction.send(.apple)
+        }
+        let cancelAction = UIAlertAction(title: Strings.NavigationBottomSheet.Action.cancel, style: .cancel)
+
+        alertController.addAction(naverAction)
+        alertController.addAction(kakaoAction)
+        alertController.addAction(appleAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
+    }
+
+    func navigateAppleMap(location: LocationResponse) {
+        let destinationCoordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+        let placemark = MKPlacemark(coordinate: destinationCoordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "목적지"
+
+        let options: [String: Any] = [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,
+            MKLaunchOptionsShowsTrafficKey: true
+        ]
+        mapItem.openInMaps(launchOptions: options)
     }
 
     func scrollToSection(_ sectionType: StoreSectionType) {

@@ -11,6 +11,12 @@ final class StoreAdmobCell: BaseCollectionViewCell {
     }
 
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
+    private var hasLoadedAd = false
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        hasLoadedAd = false
+    }
 
     override func setup() {
         contentView.addSubview(adBannerView)
@@ -25,7 +31,9 @@ final class StoreAdmobCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(_ section: StoreAdmobSection, rootViewController: UIViewController) {
+    func bind(_ section: StoreAdmobSection, rootViewController: UIViewController, isDisplayed: Bool) {
+        guard isDisplayed, hasLoadedAd.isNot else { return }
+        hasLoadedAd = true
         adBannerView.load(in: rootViewController)
     }
 }

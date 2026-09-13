@@ -26,11 +26,8 @@ final class StoreDetailFullScreenViewController: BaseViewController {
     }()
 
     private let backButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.arrowLeft.image)
-    private let shareButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.share.image)
+    private let saveButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.bookmarkLine.image)
     private let closeButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.close.image)
-
-    private var storeName = ""
-    private var storeLocation: CLLocationCoordinate2D?
 
     init(storeId: Int, latitude: Double, longitude: Double) {
         self.storeId = storeId
@@ -61,7 +58,7 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         sectionsViewController.didMove(toParent: self)
 
         view.addSubview(detailNavigationBar)
-        [backButton, titleLabel, shareButton, closeButton].forEach { detailNavigationBar.addSubview($0) }
+        [backButton, titleLabel, saveButton, closeButton].forEach { detailNavigationBar.addSubview($0) }
 
         detailNavigationBar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -85,14 +82,14 @@ final class StoreDetailFullScreenViewController: BaseViewController {
             $0.centerY.equalToSuperview()
             $0.size.equalTo(32)
         }
-        shareButton.snp.makeConstraints {
+        saveButton.snp.makeConstraints {
             $0.trailing.equalTo(closeButton.snp.leading).offset(-4)
             $0.centerY.equalToSuperview()
             $0.size.equalTo(32)
         }
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(backButton.snp.trailing).offset(12)
-            $0.trailing.equalTo(shareButton.snp.leading).offset(-12)
+            $0.trailing.equalTo(saveButton.snp.leading).offset(-12)
             $0.centerY.equalToSuperview()
         }
     }
@@ -103,18 +100,19 @@ final class StoreDetailFullScreenViewController: BaseViewController {
             self.titleLabel.alpha = min(max(offset / 48, 0), 1)
             self.view.bringSubviewToFront(self.detailNavigationBar)
         }
-        sectionsViewController.onStoreInformationChanged = { [weak self] title, location in
-            self?.storeName = title?.text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression) ?? ""
-            self?.storeLocation = location
+        sectionsViewController.onStoreInformationChanged = { [weak self] title, _ in
             self?.titleLabel.setSDText(title, customFont: Fonts.semiBold.font(size: 16))
             guard let self else { return }
             self.view.bringSubviewToFront(self.detailNavigationBar)
+        }
+        sectionsViewController.onFavoriteChanged = { [weak self] isFavorited in
+            self?.setSaveButton(isFavorited: isFavorited)
         }
     }
 
     private func setupActions() {
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
-        shareButton.addTarget(self, action: #selector(didTapShare), for: .touchUpInside)
+        saveButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
         closeButton.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
     }
 
@@ -122,14 +120,14 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    @objc private func didTapShare() {
-        let location = storeLocation ?? .init(latitude: 0, longitude: 0)
-        Environment.appModuleInterface.shareKakao(
-            storeId: storeId,
-            storeName: storeName,
-            latitude: location.latitude,
-            longitude: location.longitude
-        )
+    @objc private func didTapSave() {
+        sectionsViewController.toggleFavorite()
+    }
+
+    private func setSaveButton(isFavorited: Bool) {
+        let icon = isFavorited ? Icons.bookmarkSolid.image : Icons.bookmarkLine.image
+        let color = isFavorited ? Colors.mainRed.color : Colors.gray100.color
+        saveButton.setImage(icon.resizeImage(scaledTo: 20).withTintColor(color), for: .normal)
     }
 
     @objc private func didTapClose() {

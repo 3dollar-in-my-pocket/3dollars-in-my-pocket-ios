@@ -3,7 +3,9 @@ import Combine
 
 import DependencyInjection
 import StoreInterface
+import Log
 import Model
+import Networking
 import Common
 import DesignSystem
 import ObjectiveC
@@ -39,6 +41,33 @@ public final class StoreInterfaceImpl: StoreInterface {
         viewController.onScrollOffsetChanged = onScrollOffsetChanged
         viewController.onSectionsLoaded = onSectionsLoaded
         return viewController
+    }
+
+    public func getContributorsViewController(storeId: Int) -> UIViewController {
+        let config = ContributorsViewModel.Config(storeId: storeId) {
+            StoreInterfaceImpl.presentEditStoreFromContributors(storeId: storeId)
+        }
+        let viewController = ContributorsViewController(viewModel: ContributorsViewModel(config: config))
+        viewController.modalPresentationStyle = .fullScreen
+        return viewController
+    }
+
+    private static func presentEditStoreFromContributors(storeId: Int) {
+        Task { @MainActor in
+            let result = await StoreRepositoryImpl().fetchStoreDetail(input: .init(storeId: storeId, reviewsCount: 0))
+            guard case .success(let response) = result,
+                  let rootViewController = UIApplication.shared.windows.first?.rootViewController else { return }
+
+            let viewModel = Environment.writeInterface.createEditStoreViewModel(config: .init(
+                store: response.store,
+                fromScreen: .storeContributors,
+                imageCount: response.images.cursor.totalCount
+            ))
+            let viewController = Environment.writeInterface.createEditStoreViewController(viewModel: viewModel)
+            let navigationController = UINavigationController(rootViewController: viewController)
+            navigationController.modalPresentationStyle = .fullScreen
+            UIUtils.getTopViewController(rootViewController).present(navigationController, animated: true)
+        }
     }
 
     public func getVisitViewController(storeId: Int, onSuccessVisit: @escaping (() -> Void)) -> UIViewController {

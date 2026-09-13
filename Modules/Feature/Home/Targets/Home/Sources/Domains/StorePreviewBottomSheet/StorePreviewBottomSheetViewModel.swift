@@ -12,7 +12,6 @@ extension StorePreviewBottomSheetViewModel {
         let didTapBody = PassthroughSubject<Void, Never>()
         let didTapSave = PassthroughSubject<Void, Never>()
         let didTapClose = PassthroughSubject<Void, Never>()
-        let didTapDetailShare = PassthroughSubject<Void, Never>()
         let didTapActionBar = PassthroughSubject<Int, Never>()
         let didTapAddPhoto = PassthroughSubject<Void, Never>()
     }
@@ -121,18 +120,6 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StorePreviewBottomSheetViewModel, _) in
                 owner.output.route.send(.close)
-            }
-            .store(in: &cancellables)
-
-        input.didTapDetailShare
-            .withUnretained(self)
-            .sink { (owner: StorePreviewBottomSheetViewModel, _) in
-                owner.output.route.send(.share(
-                    storeId: owner.config.storeId,
-                    storeName: owner.state.storeName,
-                    latitude: owner.config.latitude,
-                    longitude: owner.config.longitude
-                ))
             }
             .store(in: &cancellables)
 

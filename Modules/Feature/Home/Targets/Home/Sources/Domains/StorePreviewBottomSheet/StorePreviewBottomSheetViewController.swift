@@ -78,8 +78,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         icon: Icons.arrowLeft.image
     )
 
-    private let detailShareButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
-        icon: Icons.share.image
+    private let detailSaveButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
+        icon: Icons.bookmarkLine.image
     )
 
     private let detailCloseButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
@@ -182,12 +182,22 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // 상세 push 중에는 패널이 isHidden 으로 가려질 뿐 부착 상태가 유지되어,
         // pop 으로 Home 이 다시 나타날 때 자식인 이 VC 의 viewWillAppear 도 함께 호출된다.
         viewModel.input.load.send(())
+        loadDetail()
     }
 
     /// 미리보기 위에 모달로 띄운 방문 인증·리뷰 작성이 성공한 뒤 호출해 최신 데이터로 갱신한다.
     /// (모달 dismiss 는 이 VC 의 viewWillAppear 를 호출하지 않으므로 명시적으로 재조회한다.)
     func reload() {
         viewModel.input.load.send(())
+        loadDetail()
+    }
+
+    private func loadDetail() {
+        if detailViewController == nil {
+            embedStoreSectionsIfNeeded()
+        } else {
+            (detailViewController as? StoreDetailSectionsLoadable)?.reloadSections()
+        }
     }
 
     func update(viewModel: StorePreviewBottomSheetViewModel) {
@@ -202,6 +212,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         // detached 상태에서 재사용되는 경우엔 곧 addPanel → viewWillAppear 에서 로드되므로 중복 호출하지 않는다.
         if viewIfLoaded?.window != nil {
             viewModel.input.load.send(())
+            loadDetail()
         }
         if wasShowingDetail {
             didReachFullState()
@@ -246,7 +257,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
         detailNavigationBar.backgroundColor = Colors.systemWhite.color
         detailNavigationBar.alpha = 0
-        [collapseButton, detailNavigationTitleLabel, detailShareButton, detailCloseButton].forEach {
+        [collapseButton, detailNavigationTitleLabel, detailSaveButton, detailCloseButton].forEach {
             detailNavigationBar.addSubview($0)
         }
     }
@@ -325,7 +336,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
             $0.size.equalTo(32)
         }
 
-        detailShareButton.snp.makeConstraints {
+        detailSaveButton.snp.makeConstraints {
             $0.trailing.equalTo(detailCloseButton.snp.leading).offset(-4)
             $0.centerY.equalToSuperview()
             $0.size.equalTo(32)
@@ -339,7 +350,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
 
         detailNavigationTitleLabel.snp.makeConstraints {
             $0.leading.equalTo(collapseButton.snp.trailing).offset(12)
-            $0.trailing.equalTo(detailShareButton.snp.leading).offset(-12)
+            $0.trailing.equalTo(detailSaveButton.snp.leading).offset(-12)
             $0.centerY.equalToSuperview()
         }
     }
@@ -442,7 +453,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
         detailCloseButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
         collapseButton.addTarget(self, action: #selector(didTapCollapseButton), for: .touchUpInside)
-        detailShareButton.addTarget(self, action: #selector(didTapDetailShareButton), for: .touchUpInside)
+        detailSaveButton.addTarget(self, action: #selector(didTapSaveButton), for: .touchUpInside)
     }
 
     @objc private func didTapSaveButton() {
@@ -457,23 +468,19 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         onRequestCollapsePanel?()
     }
 
-    @objc private func didTapDetailShareButton() {
-        viewModel.input.didTapDetailShare.send(())
-    }
-
     func beginExpandingToFull() {
         guard detailContainerView.isHidden else { return }
         embedStoreSectionsIfNeeded()
         previewViews.forEach { $0.isHidden = true }
         detailContainerView.isHidden = false
         showDetailNavigationBar()
+        (detailViewController as? StoreDetailSectionsLoadable)?.markSectionsDisplayed()
     }
 
     func didReachFullState() {
         isPanelAtFull = true
         beginExpandingToFull()
         trackDetailScrollIfNeeded()
-        (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 
     func didReachTipState() {
@@ -519,10 +526,14 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         detailViewController.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         detailViewController.didMove(toParent: self)
         self.detailViewController = detailViewController
+        (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 
     private func render(section: StorePreviewSection) {
         previewSection = section
+        (detailViewController as? StoreDetailSectionsLoadable)?.updatePlaceholderPreview(
+            StoreScreenPreviewSection(preview: section, storeId: viewModel.storeId)
+        )
         if let title = section.header.title {
             titleLabel.setSDText(title)
         }
@@ -660,10 +671,9 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private func setSaveButton(isFavorited: Bool) {
         let icon = isFavorited ? Icons.bookmarkSolid.image : Icons.bookmarkLine.image
         let color = isFavorited ? Colors.mainRed.color : Colors.gray100.color
-        saveButton.setImage(
-            icon.resizeImage(scaledTo: 20).withTintColor(color),
-            for: .normal
-        )
+        let image = icon.resizeImage(scaledTo: 20).withTintColor(color)
+        saveButton.setImage(image, for: .normal)
+        detailSaveButton.setImage(image, for: .normal)
     }
 
     private func makeActionBarButton() -> UIButton {

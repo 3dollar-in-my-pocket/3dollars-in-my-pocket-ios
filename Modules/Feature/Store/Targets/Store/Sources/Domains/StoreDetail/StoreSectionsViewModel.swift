@@ -3,6 +3,7 @@ import UIKit
 
 import AppInterface
 import Common
+import DependencyInjection
 import Log
 import Model
 import Networking
@@ -11,12 +12,16 @@ import WriteInterface
 extension StoreSectionsViewModel {
     struct Input {
         let load = PassthroughSubject<Void, Never>()
+        let didDisplay = PassthroughSubject<Void, Never>()
         let didSelectAction = PassthroughSubject<StoreSectionAction, Never>()
         let scrollToSectionFragment = PassthroughSubject<String, Never>()
+        let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
+        let didTapFavorite = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
         let sections = PassthroughSubject<[any StoreSectionComponent], Never>()
+        let isFavorited = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
         let error = PassthroughSubject<Error, Never>()
         let toast = PassthroughSubject<String, Never>()
@@ -34,6 +39,13 @@ extension StoreSectionsViewModel {
         case presentReviewReport(ReportReviewBottomSheetViewModel)
         case pushEditStore(EditStoreViewModelInterface)
         case scrollToSection(StoreSectionType)
+        case presentNavigationActionSheet
+        case navigateAppleMap(LocationResponse)
+    }
+
+    struct NavigationTarget {
+        let location: LocationResponse
+        let storeName: String
     }
 
     struct Config {
@@ -68,6 +80,10 @@ extension StoreSectionsViewModel {
         var sections: [any StoreSectionComponent] = []
         var isLoading = false
         var pendingSectionFragment: String?
+        var hasDisplayed = false
+        var pendingViewLog: SDPageViewLog?
+        var navigationTarget: NavigationTarget?
+        var isFavorited = false
     }
 }
 
@@ -99,6 +115,13 @@ final class StoreSectionsViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        input.didDisplay
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, _) in
+                owner.markDisplayed()
+            }
+            .store(in: &cancellables)
+
         input.didSelectAction
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, action) in
@@ -110,6 +133,22 @@ final class StoreSectionsViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, fragment: String) in
                 owner.scrollToSectionIfPossible(fragment: fragment)
+            }
+            .store(in: &cancellables)
+
+        input.didTapNavigationAction
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, type: NavigationAppType) in
+                owner.goToNavigationApplication(type: type)
+            }
+            .store(in: &cancellables)
+
+        input.didTapFavorite
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, _) in
+                Task { [weak owner] in
+                    await owner?.toggleFavorite()
+                }.store(in: owner.taskBag)
             }
             .store(in: &cancellables)
     }
@@ -130,7 +169,11 @@ final class StoreSectionsViewModel: BaseViewModel {
         case .success(let response):
             state.sections = response.sections
             output.sections.send(response.sections)
-            sendPageView(response.viewLog)
+            if state.hasDisplayed {
+                sendPageView(response.viewLog)
+            } else {
+                state.pendingViewLog = response.viewLog
+            }
 
             if let fragment = state.pendingSectionFragment {
                 state.pendingSectionFragment = nil
@@ -159,28 +202,9 @@ final class StoreSectionsViewModel: BaseViewModel {
             state.pendingSectionFragment = fragment
             return
         }
-        guard let sectionType = sectionType(fragment: fragment) else { return }
+        guard let sectionType = StoreSectionFragment.sectionType(for: fragment, in: state.sections) else { return }
 
         output.route.send(.scrollToSection(sectionType))
-    }
-
-    private func sectionType(fragment: String) -> StoreSectionType? {
-        let candidates: [StoreSectionType]
-        switch fragment.lowercased() {
-        case "home":
-            candidates = [.preview]
-        case "info":
-            candidates = [.infoV1, .infoV2]
-        case "images":
-            candidates = [.image]
-        case "reviews":
-            candidates = [.review]
-        default:
-            candidates = []
-        }
-
-        let loadedTypes = Set(state.sections.map(\.type))
-        return candidates.first { loadedTypes.contains($0) }
     }
 
     private func handle(_ action: SDCustomAction, cardId: String?) {
@@ -228,8 +252,59 @@ final class StoreSectionsViewModel: BaseViewModel {
         case .unknown where action.stringParam("POST_ID") != nil:
             // The server currently sends STORE_POST_SECTION_LIKE, which decodes as unknown.
             togglePostSticker(action, isLiked: false)
-        case .storePreviewShare, .storePreviewNavigation, .unknown:
+        case .storePreviewNavigation:
+            presentNavigationActionSheet(action)
+        case .storePreviewShare, .unknown:
             break
+        }
+    }
+
+    @MainActor
+    private func toggleFavorite() async {
+        let isDelete = state.isFavorited
+        let result = await dependency.storeRepository.saveStore(
+            storeId: String(config.storeId),
+            isDelete: isDelete
+        )
+        switch result {
+        case .success:
+            state.isFavorited = isDelete.isNot
+            output.isFavorited.send(state.isFavorited)
+            output.toast.send(isDelete ? Strings.StoreDetail.Toast.removeFavorite : Strings.StoreDetail.Toast.addFavorite)
+        case .failure(let error):
+            output.error.send(error)
+        }
+    }
+
+    private func presentNavigationActionSheet(_ action: SDCustomAction) {
+        let extraParams = action.extraParams
+        state.navigationTarget = NavigationTarget(
+            location: LocationResponse(
+                latitude: extraParams["LATITUDE"]?.doubleValue ?? config.latitude,
+                longitude: extraParams["LONGITUDE"]?.doubleValue ?? config.longitude
+            ),
+            storeName: extraParams["STORE_NAME"]?.stringValue ?? ""
+        )
+        output.route.send(.presentNavigationActionSheet)
+    }
+
+    private func goToNavigationApplication(type: NavigationAppType) {
+        guard let target = state.navigationTarget,
+              let appInformation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
+        let location = target.location
+        let storeName = target.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+
+        switch type {
+        case .kakao:
+            guard let url = URL(string: "kakaomap://look?p=\(location.latitude),\(location.longitude)") else { return }
+            UIApplication.shared.open(url)
+        case .naver:
+            let urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)"
+                + "&name=\(storeName)&zoom=20&appname=\(appInformation.bundleId)"
+            guard let url = URL(string: urlScheme) else { return }
+            UIApplication.shared.open(url)
+        case .apple:
+            output.route.send(.navigateAppleMap(location))
         }
     }
 
@@ -407,6 +482,13 @@ final class StoreSectionsViewModel: BaseViewModel {
     private func reviewId(from cardId: String?) -> Int? {
         guard let cardId, cardId.hasPrefix("R:") else { return nil }
         return Int(cardId.dropFirst(2))
+    }
+
+    private func markDisplayed() {
+        state.hasDisplayed = true
+        guard let pendingViewLog = state.pendingViewLog else { return }
+        state.pendingViewLog = nil
+        sendPageView(pendingViewLog)
     }
 
     private func sendPageView(_ log: SDPageViewLog) {

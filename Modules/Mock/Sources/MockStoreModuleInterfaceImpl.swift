@@ -10,6 +10,10 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         EmptyViewController()
     }
 
+    public func getContributorsViewController(storeId: Int) -> UIViewController {
+        EmptyViewController()
+    }
+
     public func getStoreDetailSectionsViewController(
         storeId: Int,
         latitude: Double,
