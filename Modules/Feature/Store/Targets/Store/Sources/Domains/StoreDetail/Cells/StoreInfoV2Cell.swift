@@ -5,115 +5,212 @@ import DesignSystem
 import Model
 import SnapKit
 
-/// INFO_V2 (사장님 가게의 가게 정보 및 메뉴) 섹션 셀.
 final class StoreInfoV2Cell: BaseCollectionViewCell {
+    enum Layout {
+        static let verticalMargin: CGFloat = 16
+        static let horizontalMargin: CGFloat = 20
+        static let contentSpacing: CGFloat = 12
+        static let cardCornerRadius: CGFloat = 20
+        static let cardInset: CGFloat = 16
+        static let galleryItemSize = CGSize(width: 288, height: 180)
+        static let galleryItemSpacing: CGFloat = 12
+        static let galleryCornerRadius: CGFloat = 12
+        static let collapsedMenuItemCount = 6
+        static let moreButtonHeight: CGFloat = 50
+    }
+
     var onAction: ((StoreSectionAction) -> Void)?
+    var onToggleMenuExpansion: (() -> Void)?
+    var onTapGalleryImage: (([SDImage], Int) -> Void)?
+
+    private let headerStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 2
+        return stackView
+    }()
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
+    private let subTitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
     private let actionButton = UIButton(type: .system)
-    private let contentStack = UIStackView()
+
+    private lazy var galleryCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = Layout.galleryItemSize
+        layout.minimumLineSpacing = Layout.galleryItemSpacing
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.backgroundColor = .clear
+        view.showsHorizontalScrollIndicator = false
+        view.contentInset = UIEdgeInsets(
+            top: 0, left: Layout.horizontalMargin, bottom: 0, right: Layout.horizontalMargin
+        )
+        view.register([StoreInfoGalleryImageCell.self])
+        view.dataSource = self
+        view.delegate = self
+        return view
+    }()
+    private var galleryImages: [SDImage] = []
+
+    private let cardsStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = Layout.contentSpacing
+        return stackView
+    }()
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        contentStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        galleryImages = []
         onAction = nil
+        onToggleMenuExpansion = nil
+        onTapGalleryImage = nil
     }
 
     override func setup() {
-        contentStack.axis = .vertical
-        contentStack.spacing = 12
-        contentView.addSubViews([titleLabel, actionButton, contentStack])
+        headerStack.addArrangedSubview(titleLabel)
+        headerStack.addArrangedSubview(subTitleLabel)
+        contentView.addSubViews([headerStack, actionButton, galleryCollectionView, cardsStack])
     }
 
     override func bindConstraints() {
-        titleLabel.snp.makeConstraints { $0.top.leading.equalToSuperview() }
-        actionButton.snp.makeConstraints { $0.top.trailing.equalToSuperview() }
-        contentStack.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
-            $0.leading.trailing.bottom.equalToSuperview()
+        headerStack.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.lessThanOrEqualTo(actionButton.snp.leading).offset(-8)
+        }
+        actionButton.snp.makeConstraints {
+            $0.centerY.equalTo(headerStack)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
+        galleryCollectionView.snp.makeConstraints {
+            $0.top.equalTo(headerStack.snp.bottom).offset(Layout.contentSpacing)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(Layout.galleryItemSize.height)
+        }
+        cardsStack.snp.makeConstraints {
+            $0.top.equalTo(galleryCollectionView.snp.bottom).offset(Layout.contentSpacing)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
         }
     }
 
-    func bind(_ section: StoreInfoV2Section) {
-        titleLabel.setSDText(section.header.title)
+    func bind(_ section: StoreInfoV2Section, isMenuExpanded: Bool = false) {
+        titleLabel.setSDText(section.header.title, lineHeight: 24)
+        subTitleLabel.setSDText(section.header.subTitle, lineHeight: 18)
+        subTitleLabel.isHidden = section.header.subTitle == nil
         actionButton.setOptionalSDButton(section.header.trailingAction)
         actionButton.removeTarget(nil, action: nil, for: .touchUpInside)
         if let action = section.header.trailingAction?.storeSectionAction {
             actionButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
-        contentStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        if let gallery = section.imageGallery, gallery.images.isNotEmpty {
-            contentStack.addArrangedSubview(StoreInfoImageGalleryView(gallery: gallery))
-        }
-        if let detailCard = section.detailCard {
-            contentStack.addArrangedSubview(StoreInfoDetailCardView(card: detailCard) { [weak self] action in
+
+        bindGallery(section.imageGallery?.images ?? [])
+
+        cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        if let detailCard = section.detailCard, detailCard.rows.isEmpty.isNot {
+            cardsStack.addArrangedSubview(StoreInfoDetailCardView(card: detailCard) { [weak self] action in
                 self?.onAction?(action)
             })
+        } else {
+            cardsStack.addArrangedSubview(StoreInfoDetailEmptyCardView())
         }
         section.accountCards.forEach { card in
-            contentStack.addArrangedSubview(StoreInfoAccountCardView(card: card) { [weak self] action in
+            cardsStack.addArrangedSubview(StoreInfoAccountCardView(card: card) { [weak self] action in
                 self?.onAction?(action)
             })
         }
-        if let menuListCard = section.menuListCard {
-            contentStack.addArrangedSubview(StoreInfoMenuListCardView(card: menuListCard) { [weak self] action in
-                self?.onAction?(action)
-            })
-        }
-    }
-}
-
-/// 가게 사진 가로 스크롤 갤러리.
-private final class StoreInfoImageGalleryView: UIView {
-    init(gallery: ImageGallery) {
-        super.init(frame: .zero)
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 8
-
-        addSubViews([scrollView])
-        scrollView.addSubview(stack)
-        scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-            $0.height.equalTo(96)
-        }
-        stack.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-            $0.height.equalToSuperview()
-        }
-
-        gallery.images.forEach { image in
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleAspectFill
-            imageView.layer.cornerRadius = 10
-            imageView.clipsToBounds = true
-            imageView.setImage(urlString: image.url)
-            stack.addArrangedSubview(imageView)
-            // 서버 style 비율을 유지하되 높이는 96으로 고정한다.
-            let ratio = image.style.height > 0 ? image.style.width / image.style.height : 1
-            imageView.snp.makeConstraints { $0.width.equalTo(imageView.snp.height).multipliedBy(ratio) }
+        if let menuListCard = section.menuListCard, menuListCard.items.isEmpty.isNot {
+            let menuCardView = StoreInfoMenuListCardView(card: menuListCard, isExpanded: isMenuExpanded)
+            menuCardView.onTapMore = { [weak self] in self?.onToggleMenuExpansion?() }
+            cardsStack.addArrangedSubview(menuCardView)
+        } else {
+            cardsStack.addArrangedSubview(StoreInfoMenuEmptyView())
         }
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    private func bindGallery(_ images: [SDImage]) {
+        galleryImages = images
+        let hasImages = images.isEmpty.isNot
+        galleryCollectionView.isHidden = hasImages.isNot
+        galleryCollectionView.snp.updateConstraints {
+            $0.height.equalTo(hasImages ? Layout.galleryItemSize.height : 0)
+        }
+        galleryCollectionView.reloadData()
+        galleryCollectionView.setContentOffset(CGPoint(x: -Layout.horizontalMargin, y: 0), animated: false)
+    }
 }
 
-/// SNS 링크·사장님 한마디 등 LINK/TEXT 행으로 구성된 상세 카드.
+extension StoreInfoV2Cell: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard galleryImages[safe: indexPath.item] != nil else { return }
+        onTapGalleryImage?(galleryImages, indexPath.item)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        galleryImages.count
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let cell: StoreInfoGalleryImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        if let image = galleryImages[safe: indexPath.item] {
+            cell.bind(image)
+        }
+        return cell
+    }
+}
+
+private final class StoreInfoGalleryImageCell: BaseCollectionViewCell {
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = StoreInfoV2Cell.Layout.galleryCornerRadius
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.clear()
+    }
+
+    override func setup() {
+        contentView.addSubview(imageView)
+    }
+
+    override func bindConstraints() {
+        imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+    }
+
+    func bind(_ image: SDImage) {
+        imageView.setImage(urlString: image.url)
+    }
+}
+
 private final class StoreInfoDetailCardView: UIView {
+    private enum Layout {
+        static let rowSpacing: CGFloat = 8
+        static let labelWidth: CGFloat = 104
+        static let rowHeight: CGFloat = 18
+    }
+
     private let onAction: (StoreSectionAction) -> Void
 
     init(card: DetailCard, onAction: @escaping (StoreSectionAction) -> Void) {
         self.onAction = onAction
         super.init(frame: .zero)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreInfoV2Cell.Layout.cardCornerRadius
         setSDSurfaceStyle(card.style)
 
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 10
+        stack.spacing = Layout.rowSpacing
         addSubViews([stack])
-        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(14) }
+        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset) }
 
         card.rows.forEach { row in
             switch row {
@@ -131,26 +228,26 @@ private final class StoreInfoDetailCardView: UIView {
 
     private func makeLinkRow(_ row: DetailLinkRow) -> UIView {
         let control = UIControl()
-        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
-        label.setSDText(row.label)
-        let valueLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
-        valueLabel.setSDText(row.value)
+        let label = StoreSectionTextLabel(font: Fonts.bold.font(size: 12))
+        label.setSDText(row.label, lineHeight: 18)
+        label.numberOfLines = 1
+        let valueLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        valueLabel.setSDText(row.value, lineHeight: 18)
         valueLabel.textAlignment = .right
         valueLabel.numberOfLines = 1
         valueLabel.lineBreakMode = .byTruncatingTail
 
         control.addSubViews([label, valueLabel])
+        control.snp.makeConstraints { $0.height.equalTo(Layout.rowHeight) }
         label.snp.makeConstraints {
-            $0.top.bottom.leading.equalToSuperview()
-            $0.width.greaterThanOrEqualTo(56)
+            $0.centerY.leading.equalToSuperview()
+            $0.width.equalTo(Layout.labelWidth)
         }
         valueLabel.snp.makeConstraints {
-            $0.centerY.equalTo(label)
+            $0.centerY.equalToSuperview()
             $0.leading.equalTo(label.snp.trailing).offset(12)
             $0.trailing.equalToSuperview()
         }
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         control.addAction(UIAction { [weak self] _ in
             self?.onAction(.link(row.link, clickLog: nil))
         }, for: .touchUpInside)
@@ -158,24 +255,59 @@ private final class StoreInfoDetailCardView: UIView {
     }
 
     private func makeTextRow(_ row: DetailTextRow) -> UIView {
-        let view = UIView()
-        let titleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
-        titleLabel.setSDText(row.title)
-        let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 13))
-        bodyLabel.setSDText(row.body)
-
-        view.addSubViews([titleLabel, bodyLabel])
-        titleLabel.snp.makeConstraints { $0.top.leading.trailing.equalToSuperview() }
-        bodyLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-        return view
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 2
+        let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 12))
+        titleLabel.setSDText(row.title, lineHeight: 18)
+        let bodyLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        bodyLabel.setSDText(row.body, lineHeight: 18)
+        stack.addArrangedSubview(titleLabel)
+        stack.addArrangedSubview(bodyLabel)
+        return stack
     }
 }
 
-/// 계좌번호 카드. 서버에 계좌 복사 전용 액션이 없어 복사는 클라이언트에서 직접 수행한다.
+private final class StoreInfoDetailEmptyCardView: UIView {
+    private enum Layout {
+        static let rowSpacing: CGFloat = 8
+    }
+
+    init() {
+        super.init(frame: .zero)
+        backgroundColor = Colors.gray0.color
+        layer.cornerRadius = StoreInfoV2Cell.Layout.cardCornerRadius
+
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.spacing = Layout.rowSpacing
+        addSubViews([stack])
+        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset) }
+
+        [
+            Strings.BossStoreDetail.Info.sns,
+            Strings.BossStoreDetail.Info.introduction
+        ].forEach { title in
+            let label = UILabel()
+            label.font = Fonts.bold.font(size: 12)
+            label.textColor = Colors.gray60.color
+            label.text = title
+            stack.addArrangedSubview(label)
+        }
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+}
+
 private final class StoreInfoAccountCardView: UIView {
+    private enum Layout {
+        static let copyButtonHeight: CGFloat = 34
+        static let copyButtonCornerRadius: CGFloat = 10
+        static let copyButtonHorizontalInset: CGFloat = 10
+        static let dividerSize = CGSize(width: 1, height: 12)
+    }
+
     private let card: AccountCopyCard
     private let onAction: (StoreSectionAction) -> Void
 
@@ -183,27 +315,58 @@ private final class StoreInfoAccountCardView: UIView {
         self.card = card
         self.onAction = onAction
         super.init(frame: .zero)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreInfoV2Cell.Layout.cardCornerRadius
         setSDSurfaceStyle(card.style)
 
-        let titleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
-        titleLabel.setSDText(card.title)
-        let accountChip = StoreInfoChipView(chip: card.account, font: Fonts.semiBold.font(size: 14))
-        let copyButton = UIButton(type: .system)
+        let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 12))
+        titleLabel.setSDText(card.title, lineHeight: 18)
+
+        let accountStack = UIStackView()
+        accountStack.axis = .horizontal
+        accountStack.alignment = .center
+        accountStack.spacing = 4
+        let accountLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        accountLabel.setSDText(card.account.text, lineHeight: 18)
+        accountLabel.numberOfLines = 1
+        accountStack.addArrangedSubview(accountLabel)
+        if let additionalText = card.account.additionalText {
+            let divider = UIView()
+            divider.backgroundColor = Colors.gray30.color
+            divider.snp.makeConstraints { $0.size.equalTo(Layout.dividerSize) }
+            let nameLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+            nameLabel.setSDText(additionalText, lineHeight: 18)
+            nameLabel.numberOfLines = 1
+            accountStack.addArrangedSubview(divider)
+            accountStack.addArrangedSubview(nameLabel)
+        }
+
+        let textStack = UIStackView()
+        textStack.axis = .vertical
+        textStack.alignment = .leading
+        textStack.spacing = 2
+        textStack.addArrangedSubview(titleLabel)
+        textStack.addArrangedSubview(accountStack)
+
+        let copyButton = UIButton(type: .custom)
         copyButton.setSDButton(card.copyButton)
+        copyButton.layer.cornerRadius = Layout.copyButtonCornerRadius
+        copyButton.clipsToBounds = true
+        copyButton.contentEdgeInsets = UIEdgeInsets(
+            top: 0, left: Layout.copyButtonHorizontalInset, bottom: 0, right: Layout.copyButtonHorizontalInset
+        )
+        copyButton.setContentHuggingPriority(.required, for: .horizontal)
+        copyButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         copyButton.addAction(UIAction { [weak self] _ in self?.didTapCopy() }, for: .touchUpInside)
 
-        addSubViews([titleLabel, accountChip, copyButton])
-        titleLabel.snp.makeConstraints { $0.top.leading.equalToSuperview().inset(14) }
-        accountChip.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(6)
-            $0.leading.equalToSuperview().inset(14)
-            $0.bottom.equalToSuperview().inset(14)
-            $0.trailing.lessThanOrEqualTo(copyButton.snp.leading).offset(-8)
+        addSubViews([textStack, copyButton])
+        textStack.snp.makeConstraints {
+            $0.top.bottom.leading.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset)
+            $0.trailing.lessThanOrEqualTo(copyButton.snp.leading).offset(-12)
         }
         copyButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(14)
+            $0.trailing.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset)
             $0.centerY.equalToSuperview()
+            $0.height.equalTo(Layout.copyButtonHeight)
         }
     }
 
@@ -212,11 +375,11 @@ private final class StoreInfoAccountCardView: UIView {
     private func didTapCopy() {
         let account = [card.account.text?.text, card.account.additionalText?.text]
             .compactMap { $0 }
+            .map { $0.htmlStripped }
             .joined(separator: " ")
         guard account.isNotEmpty else { return }
         UIPasteboard.general.string = account
         ToastManager.shared.show(message: Strings.BossStoreDetail.Info.copyToast)
-        // 복사 자체는 클라이언트 처리이므로 서버 액션이 있으면 클릭 로그 전송용으로만 전달한다.
         if let action = card.copyButton.storeSectionAction {
             onAction(action)
         } else if let clickLog = card.copyButton.clickLog {
@@ -225,69 +388,134 @@ private final class StoreInfoAccountCardView: UIView {
     }
 }
 
-/// 사장님 가게 메뉴 목록 카드 (이미지 + 메뉴명/가격).
 private final class StoreInfoMenuListCardView: UIView {
-    init(card: MenuListCard, onAction: @escaping (StoreSectionAction) -> Void) {
+    private enum Layout {
+        static let itemSpacing: CGFloat = 16
+        static let imageSize: CGFloat = 44
+        static let imageTextSpacing: CGFloat = 8
+        static let textSpacing: CGFloat = 2
+    }
+
+    var onTapMore: (() -> Void)?
+
+    private let moreButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitleColor(Colors.gray60.color, for: .normal)
+        button.titleLabel?.font = Fonts.medium.font(size: 12)
+        return button
+    }()
+
+    init(card: MenuListCard, isExpanded: Bool) {
         super.init(frame: .zero)
-        layer.cornerRadius = 12
+        layer.cornerRadius = StoreInfoV2Cell.Layout.cardCornerRadius
         setSDSurfaceStyle(card.style)
 
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 12
+        stack.spacing = Layout.itemSpacing
         addSubViews([stack])
-        stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(14) }
-        card.items.forEach { stack.addArrangedSubview(makeItemRow($0)) }
 
-        // 서버 액션이 없는 더보기 버튼은 표시하지 않는다. (모든 메뉴를 이미 노출)
-        if let moreButton = card.moreButton, let action = moreButton.storeSectionAction {
-            let button = UIButton(type: .system)
-            button.setSDButton(moreButton)
-            button.addAction(UIAction { _ in onAction(action) }, for: .touchUpInside)
-            stack.addArrangedSubview(button)
+        let totalItemCount = card.items.count
+        let isCollapsed = isExpanded.isNot && totalItemCount > StoreInfoV2Cell.Layout.collapsedMenuItemCount
+        let shownItems = isCollapsed
+            ? Array(card.items.prefix(StoreInfoV2Cell.Layout.collapsedMenuItemCount))
+            : card.items
+        shownItems.forEach { stack.addArrangedSubview(makeItemRow($0)) }
+
+        guard isCollapsed else {
+            stack.snp.makeConstraints { $0.edges.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset) }
+            return
+        }
+
+        let divider = UIView()
+        divider.backgroundColor = Colors.gray20.color
+        moreButton.setTitle(Strings.StoreDetail.Menu.moreFormat(totalItemCount - shownItems.count), for: .normal)
+        moreButton.addAction(UIAction { [weak self] _ in self?.onTapMore?() }, for: .touchUpInside)
+        addSubViews([divider, moreButton])
+
+        stack.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset)
+        }
+        divider.snp.makeConstraints {
+            $0.top.equalTo(stack.snp.bottom).offset(StoreInfoV2Cell.Layout.cardInset)
+            $0.leading.trailing.equalToSuperview().inset(StoreInfoV2Cell.Layout.cardInset)
+            $0.height.equalTo(1)
+        }
+        moreButton.snp.makeConstraints {
+            $0.top.equalTo(divider.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(StoreInfoV2Cell.Layout.moreButtonHeight)
         }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func makeItemRow(_ item: ImageMenuItem) -> UIView {
-        let view = UIView()
-        let primaryLabel = StoreSectionTextLabel(font: Fonts.semiBold.font(size: 14))
-        primaryLabel.setSDText(item.primaryText)
-        let secondaryLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 13))
-        secondaryLabel.setSDText(item.secondaryText)
+        let rowStack = UIStackView()
+        rowStack.axis = .horizontal
+        rowStack.alignment = .center
+        rowStack.spacing = Layout.imageTextSpacing
 
         if let image = item.image {
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFill
-            imageView.layer.cornerRadius = 8
+            imageView.layer.cornerRadius = Layout.imageSize / 2
             imageView.clipsToBounds = true
             imageView.setImage(urlString: image.url)
-            view.addSubViews([imageView, primaryLabel, secondaryLabel])
-            imageView.snp.makeConstraints {
-                $0.top.bottom.leading.equalToSuperview()
-                $0.size.equalTo(48)
-            }
-            primaryLabel.snp.makeConstraints {
-                $0.top.equalTo(imageView)
-                $0.leading.equalTo(imageView.snp.trailing).offset(10)
-                $0.trailing.lessThanOrEqualToSuperview()
-            }
-            secondaryLabel.snp.makeConstraints {
-                $0.top.equalTo(primaryLabel.snp.bottom).offset(2)
-                $0.leading.equalTo(primaryLabel)
-                $0.trailing.lessThanOrEqualToSuperview()
-            }
-        } else {
-            view.addSubViews([primaryLabel, secondaryLabel])
-            primaryLabel.snp.makeConstraints { $0.top.leading.equalToSuperview() }
-            secondaryLabel.snp.makeConstraints {
-                $0.top.equalTo(primaryLabel.snp.bottom).offset(2)
-                $0.leading.equalToSuperview()
-                $0.bottom.equalToSuperview()
-                $0.trailing.lessThanOrEqualToSuperview()
-            }
+            imageView.snp.makeConstraints { $0.size.equalTo(Layout.imageSize) }
+            rowStack.addArrangedSubview(imageView)
         }
-        return view
+
+        let textStack = UIStackView()
+        textStack.axis = .vertical
+        textStack.spacing = Layout.textSpacing
+        let primaryLabel = StoreSectionTextLabel(font: Fonts.semiBold.font(size: 14))
+        primaryLabel.setSDText(item.primaryText, lineHeight: 20)
+        textStack.addArrangedSubview(primaryLabel)
+        if let secondaryText = item.secondaryText {
+            let secondaryLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+            secondaryLabel.setSDText(secondaryText, lineHeight: 18)
+            textStack.addArrangedSubview(secondaryLabel)
+        }
+        rowStack.addArrangedSubview(textStack)
+        return rowStack
     }
+}
+
+private final class StoreInfoMenuEmptyView: UIView {
+    private enum Layout {
+        static let height: CGFloat = 78
+        static let cornerRadius: CGFloat = 6
+        static let iconSize: CGFloat = 48
+        static let horizontalInset: CGFloat = 20
+    }
+
+    init() {
+        super.init(frame: .zero)
+        backgroundColor = Colors.gray0.color
+        layer.cornerRadius = Layout.cornerRadius
+
+        let emptyImageView = UIImageView()
+        emptyImageView.image = Icons.empty02.image
+        let titleLabel = UILabel()
+        titleLabel.text = Strings.BossStoreDetail.Menu.empty
+        titleLabel.textColor = Colors.gray50.color
+        titleLabel.font = Fonts.medium.font(size: 12)
+        titleLabel.numberOfLines = 0
+
+        addSubViews([emptyImageView, titleLabel])
+        snp.makeConstraints { $0.height.equalTo(Layout.height) }
+        emptyImageView.snp.makeConstraints {
+            $0.size.equalTo(Layout.iconSize)
+            $0.leading.equalToSuperview().inset(Layout.horizontalInset)
+            $0.centerY.equalToSuperview()
+        }
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalTo(emptyImageView.snp.trailing)
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(Layout.horizontalInset)
+        }
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }
