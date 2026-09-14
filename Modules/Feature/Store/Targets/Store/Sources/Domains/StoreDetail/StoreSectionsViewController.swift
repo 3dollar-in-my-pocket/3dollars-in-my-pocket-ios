@@ -27,6 +27,7 @@ public final class StoreSectionsViewController: BaseViewController {
     private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
     private var displayedImpressionIdentifiers = Set<String>()
     private var expandedMenuIdentifiers = Set<String>()
+    private var expandedPostCardIds = Set<String>()
     private var tabItemIndex: Int?
     private var tabTargetItemIndexes: [Int?] = []
     private var selectedTabIndex = 0
@@ -203,6 +204,8 @@ public final class StoreSectionsViewController: BaseViewController {
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
         expandedMenuIdentifiers.formIntersection(identifiers)
+        let postCardIds = sections.compactMap { $0 as? StorePostSection }.flatMap { $0.cards.map(\.cardId) }
+        expandedPostCardIds.formIntersection(postCardIds)
 
         if dataSource.snapshot().itemIdentifiers != identifiers {
             (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
@@ -272,7 +275,15 @@ public final class StoreSectionsViewController: BaseViewController {
 
     private func expandMenu(identifier: String) {
         guard expandedMenuIdentifiers.insert(identifier).inserted else { return }
+        reconfigure(identifier: identifier)
+    }
 
+    private func expandPost(identifier: String, cardId: String) {
+        guard expandedPostCardIds.insert(cardId).inserted else { return }
+        reconfigure(identifier: identifier)
+    }
+
+    private func reconfigure(identifier: String) {
         var snapshot = dataSource.snapshot()
         snapshot.reconfigureItems([identifier])
         dataSource.apply(snapshot, animatingDifferences: false)
@@ -318,7 +329,15 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StorePostSection:
                 let cell: StorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section, expandedCardIds: self.expandedPostCardIds)
+                cell.onAction = actionHandler
+                cell.onToggleBodyExpansion = { [weak self] cardId in
+                    self?.expandPost(identifier: identifier, cardId: cardId)
+                }
+                cell.onTapImage = { [weak self] images, index in
+                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
+                }
+                return cell
             case let section as StoreImageSection:
                 let cell: StoreImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
@@ -333,7 +352,13 @@ public final class StoreSectionsViewController: BaseViewController {
                 return cell
             case let section as StoreInfoV2Section:
                 let cell: StoreInfoV2Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section, isMenuExpanded: self.expandedMenuIdentifiers.contains(identifier))
+                cell.onAction = actionHandler
+                cell.onToggleMenuExpansion = { [weak self] in self?.expandMenu(identifier: identifier) }
+                cell.onTapGalleryImage = { [weak self] images, index in
+                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
+                }
+                return cell
             case let section as StoreCTASection:
                 let cell: StoreCTACell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
@@ -417,6 +442,15 @@ private extension StoreSectionsViewController {
             presentNavigationModal()
         case .navigateAppleMap(let location):
             navigateAppleMap(location: location)
+        case .presentBossStorePhoto(let viewModel):
+            present(BossStorePhotoViewController(viewModel: viewModel), animated: true)
+        case .presentShareSheet(let url):
+            let activityViewController = UIActivityViewController(
+                activityItems: [url],
+                applicationActivities: nil
+            )
+            activityViewController.popoverPresentationController?.sourceView = view
+            present(activityViewController, animated: true)
         }
     }
 

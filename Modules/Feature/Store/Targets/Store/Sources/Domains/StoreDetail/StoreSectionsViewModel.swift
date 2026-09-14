@@ -17,6 +17,7 @@ extension StoreSectionsViewModel {
         let scrollToSectionFragment = PassthroughSubject<String, Never>()
         let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
         let didTapFavorite = PassthroughSubject<Void, Never>()
+        let didTapImageGallery = PassthroughSubject<(images: [SDImage], index: Int), Never>()
     }
 
     struct Output {
@@ -41,6 +42,8 @@ extension StoreSectionsViewModel {
         case scrollToSection(StoreSectionType)
         case presentNavigationActionSheet
         case navigateAppleMap(LocationResponse)
+        case presentShareSheet(URL)
+        case presentBossStorePhoto(BossStorePhotoViewModel)
     }
 
     struct NavigationTarget {
@@ -151,6 +154,13 @@ final class StoreSectionsViewModel: BaseViewModel {
                 }.store(in: owner.taskBag)
             }
             .store(in: &cancellables)
+
+        input.didTapImageGallery
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, payload) in
+                owner.presentBossStorePhoto(images: payload.images, index: payload.index)
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor
@@ -254,7 +264,10 @@ final class StoreSectionsViewModel: BaseViewModel {
             togglePostSticker(action, isLiked: false)
         case .storePreviewNavigation:
             presentNavigationActionSheet(action)
-        case .storePreviewShare, .unknown:
+        case .storePreviewShare:
+            guard let urlString = action.stringParam("URL"), let url = URL(string: urlString) else { return }
+            output.route.send(.presentShareSheet(url))
+        case .unknown:
             break
         }
     }
@@ -276,12 +289,20 @@ final class StoreSectionsViewModel: BaseViewModel {
         }
     }
 
+    private var storeLocation: LocationResponse? {
+        state.sections
+            .compactMap { ($0 as? StoreEditSection)?.map?.location }
+            .first
+            .map { LocationResponse(latitude: $0.latitude, longitude: $0.longitude) }
+    }
+
     private func presentNavigationActionSheet(_ action: SDCustomAction) {
         let extraParams = action.extraParams
+        let fallbackLocation = storeLocation ?? LocationResponse(latitude: config.latitude, longitude: config.longitude)
         state.navigationTarget = NavigationTarget(
             location: LocationResponse(
-                latitude: extraParams["LATITUDE"]?.doubleValue ?? config.latitude,
-                longitude: extraParams["LONGITUDE"]?.doubleValue ?? config.longitude
+                latitude: extraParams["LATITUDE"]?.doubleValue ?? fallbackLocation.latitude,
+                longitude: extraParams["LONGITUDE"]?.doubleValue ?? fallbackLocation.longitude
             ),
             storeName: extraParams["STORE_NAME"]?.stringValue ?? ""
         )
@@ -321,13 +342,21 @@ final class StoreSectionsViewModel: BaseViewModel {
 
     private func makeMapDetailViewModel() -> MapDetailViewModel {
         MapDetailViewModel(config: .init(
-            location: .init(latitude: config.latitude, longitude: config.longitude),
+            location: storeLocation ?? LocationResponse(latitude: config.latitude, longitude: config.longitude),
             storeName: ""
         ))
     }
 
     private func makeUploadPhotoViewModel() -> UploadPhotoViewModel {
         UploadPhotoViewModel(config: .init(uploadType: .storeImage(storeId: config.storeId)))
+    }
+
+    private func presentBossStorePhoto(images: [SDImage], index: Int) {
+        let viewModel = BossStorePhotoViewModel(config: .init(
+            photos: images.map { ImageResponse(imageUrl: $0.url) },
+            selectedIndex: index
+        ))
+        output.route.send(.presentBossStorePhoto(viewModel))
     }
 
     private func presentPhotoDetail(imageId: Int, imageURL: String) {

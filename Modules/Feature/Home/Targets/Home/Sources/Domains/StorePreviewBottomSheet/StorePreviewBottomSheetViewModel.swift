@@ -30,6 +30,7 @@ extension StorePreviewBottomSheetViewModel {
         case presentVisit(storeId: Int)
         case presentReviewWrite(storeId: Int)
         case share(storeId: Int, storeName: String, latitude: Double, longitude: Double)
+        case presentShareSheet(URL)
         case presentNavigation(latitude: Double, longitude: Double, storeName: String)
         case openLink(SDLink)
         case presentUploadPhoto(storeId: Int)
@@ -86,6 +87,8 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
     var storeId: Int { config.storeId }
     var latitude: Double { config.latitude }
     var longitude: Double { config.longitude }
+    var deviceLatitude: Double { dependency.preference.userCurrentLocation.coordinate.latitude }
+    var deviceLongitude: Double { dependency.preference.userCurrentLocation.coordinate.longitude }
 
     override func bind() {
         input.load
@@ -227,12 +230,16 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                     storeName: extraParams["STORE_NAME"]?.stringValue ?? state.storeName
                 ))
             case .storePreviewShare:
-                output.route.send(.share(
-                    storeId: config.storeId,
-                    storeName: state.storeName,
-                    latitude: config.latitude,
-                    longitude: config.longitude
-                ))
+                if let urlString = customAction.extraParams["URL"]?.stringValue, let url = URL(string: urlString) {
+                    output.route.send(.presentShareSheet(url))
+                } else {
+                    output.route.send(.share(
+                        storeId: config.storeId,
+                        storeName: state.storeName,
+                        latitude: config.latitude,
+                        longitude: config.longitude
+                    ))
+                }
             case .storePreviewReviewWrite:
                 output.route.send(.presentReviewWrite(storeId: config.storeId))
             default:

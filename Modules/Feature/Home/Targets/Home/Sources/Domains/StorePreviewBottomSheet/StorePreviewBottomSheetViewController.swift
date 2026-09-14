@@ -425,6 +425,13 @@ final class StorePreviewBottomSheetViewController: UIViewController {
                     self.onRequestPresentReviewWrite?(storeId)
                 case .share(let storeId, let storeName, let lat, let lng):
                     self.onRequestShare?(storeId, storeName, lat, lng)
+                case .presentShareSheet(let url):
+                    let activityViewController = UIActivityViewController(
+                activityItems: [url],
+                applicationActivities: nil
+            )
+                    activityViewController.popoverPresentationController?.sourceView = self.view
+                    self.present(activityViewController, animated: true)
                 case .presentNavigation(let lat, let lng, let name):
                     self.onRequestPresentNavigation?(lat, lng, name)
                 case .openLink(let link):
@@ -513,8 +520,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         let storeId = viewModel.storeId
         let detailViewController = Environment.storeInterface.getStoreDetailSectionsViewController(
             storeId: storeId,
-            latitude: viewModel.latitude,
-            longitude: viewModel.longitude,
+            latitude: viewModel.deviceLatitude,
+            longitude: viewModel.deviceLongitude,
             placeholderPreview: previewSection.map { StoreScreenPreviewSection(preview: $0, storeId: storeId) },
             onScrollOffsetChanged: { [weak self] contentOffset in
                 self?.updateDetailNavigationTitle(for: contentOffset)
