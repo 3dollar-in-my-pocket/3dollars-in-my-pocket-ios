@@ -233,6 +233,14 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.output.focusMarkerAt
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, index: Int) in
+                owner.focusMarker(at: index)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.scrollBottomSheetToIndex
             .main
             .withUnretained(self)
