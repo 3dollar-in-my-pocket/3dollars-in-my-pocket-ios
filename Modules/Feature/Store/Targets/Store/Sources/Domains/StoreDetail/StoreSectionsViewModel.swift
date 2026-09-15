@@ -348,7 +348,14 @@ final class StoreSectionsViewModel: BaseViewModel {
     }
 
     private func makeUploadPhotoViewModel() -> UploadPhotoViewModel {
-        UploadPhotoViewModel(config: .init(uploadType: .storeImage(storeId: config.storeId)))
+        let viewModel = UploadPhotoViewModel(config: .init(uploadType: .storeImage(storeId: config.storeId)))
+        viewModel.output.onSuccessUploadPhotos
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, _) in
+                owner.input.load.send(())
+            }
+            .store(in: &viewModel.cancellables)
+        return viewModel
     }
 
     private func presentBossStorePhoto(images: [SDImage], index: Int) {
