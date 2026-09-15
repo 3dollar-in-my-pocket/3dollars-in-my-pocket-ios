@@ -139,11 +139,7 @@ final class StoreVisitCell: BaseCollectionViewCell {
 
     func bind(_ section: StoreVisitSection) {
         let isEmpty = section.history.items.isEmpty
-        if isEmpty {
-            titleLabel.text = Strings.StoreDetail.Visit.Header.titleEmpty
-        } else {
-            titleLabel.setSDText(section.header.title)
-        }
+        titleLabel.setSDText(section.header.title)
 
         summaryStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         section.summary.chips.forEach { chip in
