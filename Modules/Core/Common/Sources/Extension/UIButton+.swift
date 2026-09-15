@@ -24,7 +24,13 @@ public extension UIButton {
             setTitleColor(UIColor(hex: sdText.fontColor), for: .normal)
 
             if sdText.isHtml {
-                let attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdText.text)
+                let baseFont = titleLabel?.font
+                var parser = ZHTMLParserBuilder.initWithDefault()
+                if let baseFont {
+                    parser = parser.set(rootStyle: MarkupStyle(font: MarkupStyleFont(baseFont)))
+                }
+                let rendered = parser.build().render(sdText.text)
+                let attributedText = baseFont.map { rendered.applyingFontFamily(of: $0) } ?? rendered
                 setAttributedTitle(attributedText, for: .normal)
             } else {
                 setTitle(sdText.text, for: .normal)
