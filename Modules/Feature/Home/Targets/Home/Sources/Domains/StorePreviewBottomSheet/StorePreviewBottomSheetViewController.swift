@@ -488,6 +488,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         isPanelAtFull = true
         beginExpandingToFull()
         trackDetailScrollIfNeeded()
+        viewModel.input.didEnterDetail.send(())
     }
 
     func didReachTipState() {

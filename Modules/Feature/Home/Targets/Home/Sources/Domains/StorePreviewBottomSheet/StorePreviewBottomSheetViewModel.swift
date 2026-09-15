@@ -14,6 +14,7 @@ extension StorePreviewBottomSheetViewModel {
         let didTapClose = PassthroughSubject<Void, Never>()
         let didTapActionBar = PassthroughSubject<Int, Never>()
         let didTapAddPhoto = PassthroughSubject<Void, Never>()
+        let didEnterDetail = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -66,6 +67,7 @@ extension StorePreviewBottomSheetViewModel {
         var isFavorited: Bool = false
         var isLoadingPreview: Bool = false
         var isLoadingDisplayItems: Bool = false
+        var hasEnteredDetail: Bool = false
         var emittedDisplayItemTypes: Set<StoreDisplayItemType> = []
     }
 }
@@ -97,6 +99,18 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                 Task { [weak owner] in
                     await owner?.fetchPreview()
                 }
+                guard owner.state.hasEnteredDetail else { return }
+                Task { [weak owner] in
+                    await owner?.fetchDisplayItems()
+                }
+            }
+            .store(in: &cancellables)
+
+        input.didEnterDetail
+            .withUnretained(self)
+            .sink { (owner: StorePreviewBottomSheetViewModel, _) in
+                guard owner.state.hasEnteredDetail.isNot else { return }
+                owner.state.hasEnteredDetail = true
                 Task { [weak owner] in
                     await owner?.fetchDisplayItems()
                 }
