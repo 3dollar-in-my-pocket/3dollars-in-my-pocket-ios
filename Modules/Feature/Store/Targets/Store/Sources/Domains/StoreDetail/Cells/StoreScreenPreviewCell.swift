@@ -11,6 +11,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         static let imageSpacing: CGFloat = 8
         static let actionBarSpacing: CGFloat = 4
         static let defaultImageSize: CGFloat = 120
+        static let horizontalMargin: CGFloat = 20
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -36,7 +37,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         stack.alignment = .fill
         stack.spacing = 10
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
+        stack.layoutMargins = .init(top: 0, left: Layout.horizontalMargin, bottom: 0, right: Layout.horizontalMargin)
         stack.insetsLayoutMarginsFromSafeArea = false
         return stack
     }()
@@ -87,7 +88,12 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset = .init(top: 0, left: 16, bottom: 0, right: 16)
+        collectionView.contentInset = .init(
+            top: 0,
+            left: Layout.horizontalMargin,
+            bottom: 0,
+            right: Layout.horizontalMargin
+        )
         return collectionView
     }()
     private let imageCollectionView: UICollectionView = {
@@ -99,7 +105,12 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset = .init(top: 0, left: 16, bottom: 0, right: 16)
+        collectionView.contentInset = .init(
+            top: 0,
+            left: Layout.horizontalMargin,
+            bottom: 0,
+            right: Layout.horizontalMargin
+        )
         return collectionView
     }()
 
