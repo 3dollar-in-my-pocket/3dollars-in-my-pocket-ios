@@ -91,11 +91,12 @@ public final class BookmarkViewerViewController: BaseViewController {
         switch route {
         case .pushUserStoreDetail(let id):
             guard let storeId = Int(id) else { return }
-            let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+            let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushBossStoreDetail(let id):
-            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: id, shouldPushReviewList: false)
+            guard let storeId = Int(id) else { return }
+            let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .presentSigninDialog:

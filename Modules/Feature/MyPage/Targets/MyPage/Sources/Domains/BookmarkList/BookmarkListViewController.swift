@@ -99,11 +99,12 @@ final class BookmarkListViewController: BaseViewController {
             viewController.popoverPresentationController?.sourceView = bookmarkListView
             present(viewController, animated: true)
         case .pushStoreDetail(let storeId):
-            let viewController = Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
+            let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushBossStoreDetail(let storeId):
-            let viewController = Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
+            guard let storeId = Int(storeId) else { return }
+            let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
             
             navigationController?.pushViewController(viewController, animated: true)
         case .pushEditBookmark(let viewModel):
