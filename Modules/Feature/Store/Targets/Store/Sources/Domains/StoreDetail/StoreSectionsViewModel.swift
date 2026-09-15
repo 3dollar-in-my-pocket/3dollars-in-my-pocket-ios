@@ -403,6 +403,13 @@ final class StoreSectionsViewModel: BaseViewModel {
                     fromScreen: .storeDetail,
                     imageCount: nil
                 ))
+                viewModel.onEdit
+                    .receive(on: DispatchQueue.main)
+                    .withUnretained(self)
+                    .sink { (owner: StoreSectionsViewModel, _) in
+                        owner.input.load.send(())
+                    }
+                    .store(in: &cancellables)
                 output.route.send(.pushEditStore(viewModel))
             case .failure(let error):
                 output.error.send(error)
