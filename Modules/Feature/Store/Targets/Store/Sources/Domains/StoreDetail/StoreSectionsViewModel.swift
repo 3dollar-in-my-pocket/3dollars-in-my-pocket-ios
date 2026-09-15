@@ -179,6 +179,7 @@ final class StoreSectionsViewModel: BaseViewModel {
         case .success(let response):
             state.sections = response.sections
             output.sections.send(response.sections)
+            syncFavoriteState(from: response.sections)
             if state.hasDisplayed {
                 sendPageView(response.viewLog)
             } else {
@@ -356,6 +357,15 @@ final class StoreSectionsViewModel: BaseViewModel {
             }
             .store(in: &viewModel.cancellables)
         return viewModel
+    }
+
+    private func syncFavoriteState(from sections: [any StoreSectionComponent]) {
+        let isSubscriber = sections
+            .compactMap { ($0 as? StoreScreenPreviewSection)?.additionalInfos.isSubscriber }
+            .first
+        guard let isSubscriber, isSubscriber != state.isFavorited else { return }
+        state.isFavorited = isSubscriber
+        output.isFavorited.send(isSubscriber)
     }
 
     private func presentBossStorePhoto(images: [SDImage], index: Int) {
