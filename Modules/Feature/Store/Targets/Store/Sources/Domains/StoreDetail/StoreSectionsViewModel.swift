@@ -18,6 +18,7 @@ extension StoreSectionsViewModel {
         let didTapNavigationAction = PassthroughSubject<NavigationAppType, Never>()
         let didTapFavorite = PassthroughSubject<Void, Never>()
         let didTapImageGallery = PassthroughSubject<(images: [SDImage], index: Int), Never>()
+        let didConfirmDeleteReview = PassthroughSubject<Int, Never>()
     }
 
     struct Output {
@@ -44,6 +45,7 @@ extension StoreSectionsViewModel {
         case navigateAppleMap(LocationResponse)
         case presentShareSheet(URL)
         case presentBossStorePhoto(BossStorePhotoViewModel)
+        case presentDeleteReviewAlert(reviewId: Int)
     }
 
     struct NavigationTarget {
@@ -146,6 +148,13 @@ final class StoreSectionsViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        input.didConfirmDeleteReview
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, reviewId: Int) in
+                owner.deleteReview(reviewId: reviewId)
+            }
+            .store(in: &cancellables)
+
         input.didTapFavorite
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, _) in
@@ -245,7 +254,7 @@ final class StoreSectionsViewModel: BaseViewModel {
             presentReviewReport(storeId: storeId, reviewId: reviewId)
         case .storeReviewDelete:
             guard let reviewId = action.intParam("REVIEW_ID") ?? reviewId(from: cardId) else { return }
-            deleteReview(reviewId: reviewId)
+            output.route.send(.presentDeleteReviewAlert(reviewId: reviewId))
         case .storeReviewAddLike, .storeReviewCancelLike:
             let storeId = action.intParam("STORE_ID") ?? config.storeId
             guard

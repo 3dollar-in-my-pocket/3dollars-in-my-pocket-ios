@@ -451,6 +451,13 @@ private extension StoreSectionsViewController {
             )
             activityViewController.popoverPresentationController?.sourceView = view
             present(activityViewController, animated: true)
+        case .presentDeleteReviewAlert(let reviewId):
+            AlertUtils.showWithCancel(
+                viewController: self,
+                message: Strings.ReviewList.Alert.delete
+            ) { [weak self] in
+                self?.viewModel.input.didConfirmDeleteReview.send(reviewId)
+            }
         }
     }
 
