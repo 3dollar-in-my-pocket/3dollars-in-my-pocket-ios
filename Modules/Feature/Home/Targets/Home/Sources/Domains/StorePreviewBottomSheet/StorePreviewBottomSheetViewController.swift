@@ -11,6 +11,11 @@ import CombineCocoa
 import SnapKit
 
 final class StorePreviewBottomSheetViewController: UIViewController {
+    private enum Layout {
+        static let grabberAreaHeight: CGFloat = 12
+        static let contentTop: CGFloat = grabberAreaHeight + 16
+    }
+
     private let titleStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -267,14 +272,14 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         closeButton.snp.makeConstraints { $0.size.equalTo(32) }
 
         topButtonStack.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(16)
+            $0.top.equalToSuperview().offset(Layout.contentTop)
             $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(32)
         }
 
         titleStack.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
-            $0.top.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(Layout.contentTop)
             $0.trailing.lessThanOrEqualTo(topButtonStack.snp.leading).offset(-4)
             $0.height.equalTo(28)
         }
@@ -567,7 +572,7 @@ final class StorePreviewBottomSheetViewController: UIViewController {
         var height: CGFloat = 0
 
         // 상단 패딩 + 타이틀
-        height += 16 + 28
+        height += Layout.contentTop + 28
 
         // 메타데이터 (primary/secondary 각 20pt, 둘 다 있을 때 내부 spacing 4pt)
         let hasPrimary = section.metadata.primary.isEmpty.isNot

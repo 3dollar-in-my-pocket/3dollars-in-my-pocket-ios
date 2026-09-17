@@ -18,6 +18,8 @@ import FloatingPanel
 public final class HomeViewController: BaseViewController {
     private enum Layout {
         static let storeDetailExpandStartProgress: CGFloat = 0.02
+        static let storePreviewGrabberSize = CGSize(width: 40, height: 5)
+        static let storePreviewGrabberPadding: CGFloat = 7
     }
 
     public override var screenName: ScreenName {
@@ -720,7 +722,9 @@ extension HomeViewController {
         shadow.radius = 10
         appearance.shadows = [shadow]
         fpc.surfaceView.appearance = appearance
-        fpc.surfaceView.grabberHandle.isHidden = true
+        fpc.surfaceView.grabberHandleSize = Layout.storePreviewGrabberSize
+        fpc.surfaceView.grabberHandlePadding = Layout.storePreviewGrabberPadding
+        fpc.surfaceView.grabberHandle.barColor = Colors.gray20.color
 
         // 시트 외부(지도) 터치는 backdrop 가 가로채지 않도록 비활성화.
         fpc.backdropView.isUserInteractionEnabled = false
@@ -745,6 +749,7 @@ extension HomeViewController {
             appearance.shadows = [shadow]
         }
         fpc.surfaceView.appearance = appearance
+        fpc.surfaceView.grabberHandle.isHidden = isFullScreen
     }
 
     private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
