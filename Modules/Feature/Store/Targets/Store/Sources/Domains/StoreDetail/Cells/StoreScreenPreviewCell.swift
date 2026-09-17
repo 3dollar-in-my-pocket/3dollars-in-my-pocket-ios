@@ -136,6 +136,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
     override func setup() {
         titleStack.addArrangedSubview(titleLabel)
         titleStack.addArrangedSubview(badgeImageView)
+        titleStack.addArrangedSubview(UIView())
         topContentStack.addArrangedSubview(titleStack)
         topContentStack.addArrangedSubview(primaryMetadataStack, previousSpace: 4)
         topContentStack.addArrangedSubview(secondaryMetadataStack, previousSpace: 0)
