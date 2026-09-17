@@ -68,7 +68,7 @@ public extension UILabel {
             var parser = ZHTMLParserBuilder.initWithDefault()
 
             if let baseFont {
-                let rootStyle = MarkupStyle(font: MarkupStyleFont(baseFont))
+                let rootStyle = MarkupStyle(font: MarkupStyleFont(sdBaseFont: baseFont))
                 parser = parser.set(rootStyle: rootStyle)
             }
 

@@ -27,7 +27,7 @@ public extension UIButton {
                 let baseFont = titleLabel?.font
                 var parser = ZHTMLParserBuilder.initWithDefault()
                 if let baseFont {
-                    parser = parser.set(rootStyle: MarkupStyle(font: MarkupStyleFont(baseFont)))
+                    parser = parser.set(rootStyle: MarkupStyle(font: MarkupStyleFont(sdBaseFont: baseFont)))
                 }
                 let rendered = parser.build().render(sdText.text)
                 let attributedText = baseFont.map { rendered.applyingFontFamily(of: $0) } ?? rendered
