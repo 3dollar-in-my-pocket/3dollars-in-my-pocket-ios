@@ -44,13 +44,13 @@ public extension UIButton {
         if let image = sdButton.image,
            let imageUrl = URL(string: image.url),
            isValidImageSize(width: image.style.width, height: image.style.height) {
-            let downsamplingProcessor = DownsamplingImageProcessor(
-                size: CGSize(width: image.style.width, height: image.style.height)
-            )
+            let size = CGSize(width: image.style.width, height: image.style.height)
+            let processor = DownsamplingImageProcessor(size: size)
+                |> ResizingImageProcessor(referenceSize: size, mode: .aspectFit)
             kf.setImage(
                 with: imageUrl,
                 for: .normal,
-                options: [.processor(downsamplingProcessor), .scaleFactor(UIScreen.main.scale)]
+                options: [.processor(processor), .scaleFactor(UIScreen.main.scale)]
             )
         } else {
             setImage(nil, for: .normal)
