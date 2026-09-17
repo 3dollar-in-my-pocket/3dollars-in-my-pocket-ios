@@ -7,7 +7,7 @@ public struct StoreScreenPreviewSection: Decodable, Equatable, Hashable, StoreSe
     public let metadata: StorePreviewMetadata
     public let actionBars: [SDActionBar]
     public let images: [SDImage]
-    public let style: SDSurfaceStyle
+    public let style: SDSurfaceStyle?
     public let additionalInfos: StoreScreenPreviewAdditionalInfos
     public let contributorActionBar: SDActionBar?
 }
@@ -30,7 +30,7 @@ extension StoreScreenPreviewSection {
                 SDActionBar(type: .actionBar, button: $0.button, clickLog: $0.clickLog)
             },
             images: preview.images,
-            style: preview.style ?? SDSurfaceStyle(backgroundColor: "#FFFFFF"),
+            style: preview.style,
             additionalInfos: StoreScreenPreviewAdditionalInfos(
                 type: preview.additionalInfos?.type ?? "STORE",
                 isSubscriber: preview.additionalInfos?.isSubscriber,

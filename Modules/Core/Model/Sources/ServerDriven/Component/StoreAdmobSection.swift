@@ -3,6 +3,7 @@ import Foundation
 public struct StoreAdmobSection: Decodable, Equatable, Hashable, StoreSectionComponent {
     public let type: StoreSectionType
     public let sectionId: String?
+    public let style: SDSurfaceStyle?
     public let cards: [StoreAdmobCard]
 }
 

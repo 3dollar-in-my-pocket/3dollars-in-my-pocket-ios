@@ -3,6 +3,7 @@ import Foundation
 public struct StoreInfoV1Section: Decodable, Equatable, Hashable, StoreSectionComponent {
     public let type: StoreSectionType
     public let sectionId: String?
+    public let style: SDSurfaceStyle?
     public let header: SDHeader
     public let informationCard: InformationCard?
     public let menuCard: MenuCard?

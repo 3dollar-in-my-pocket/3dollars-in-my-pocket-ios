@@ -291,12 +291,27 @@ public final class StoreSectionsViewController: BaseViewController {
 
     private func makeDataSource() -> UICollectionViewDiffableDataSource<Int, String> {
         UICollectionViewDiffableDataSource<Int, String>(collectionView: collectionView) { [weak self] collectionView, indexPath, identifier in
-            guard let self, let component = self.sectionsByIdentifier[identifier] else { return nil }
-            let actionHandler: (StoreSectionAction) -> Void = { [weak self] in
-                self?.viewModel.input.didSelectAction.send($0)
+            guard let self,
+                  let component = self.sectionsByIdentifier[identifier],
+                  let cell = self.makeCell(for: component, identifier: identifier, indexPath: indexPath, in: collectionView) else {
+                return nil
             }
+            cell.contentView.backgroundColor = component.style.flatMap { UIColor(hex: $0.backgroundColor) } ?? Colors.systemWhite.color
+            return cell
+        }
+    }
 
-            switch component {
+    private func makeCell(
+        for component: any StoreSectionComponent,
+        identifier: String,
+        indexPath: IndexPath,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell? {
+        let actionHandler: (StoreSectionAction) -> Void = { [weak self] in
+            self?.viewModel.input.didSelectAction.send($0)
+        }
+
+        switch component {
             case let section as StoreCalloutSection:
                 let cell: StoreCalloutCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell
@@ -370,7 +385,6 @@ public final class StoreSectionsViewController: BaseViewController {
                 return cell
             default:
                 return nil
-            }
         }
     }
 }
