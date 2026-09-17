@@ -443,6 +443,12 @@ final class StorePreviewBottomSheetViewController: UIViewController {
                     self.onRequestOpenLink?(link)
                 case .presentUploadPhoto(let storeId):
                     self.onRequestAddPhoto?(storeId)
+                case .presentPhotoViewer(let imageUrls, let selectedIndex):
+                    let viewController = Environment.storeInterface.getPhotoViewerViewController(
+                        imageUrls: imageUrls,
+                        selectedIndex: selectedIndex
+                    )
+                    self.present(viewController, animated: true)
                 case .presentDisplayItemModal(let itemType, let trigger):
                     Environment.storeInterface.presentStoreDisplayItemModal(
                         from: self,
@@ -751,8 +757,7 @@ extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UIC
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard collectionView === imagesCollectionView else { return }
         if imageItems[safe: indexPath.item] != nil {
-            // 이미지 탭은 같은 FloatingPanel을 full 상태로 확장한다.
-            viewModel.input.didTapBody.send(())
+            viewModel.input.didTapImage.send(indexPath.item)
         } else {
             // 마지막 "사진 추가" 셀 탭.
             viewModel.input.didTapAddPhoto.send(())

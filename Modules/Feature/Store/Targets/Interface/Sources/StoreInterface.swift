@@ -68,6 +68,8 @@ public protocol StoreInterface {
 
     func getPhotoListViewController(storeId: Int) -> UIViewController
 
+    func getPhotoViewerViewController(imageUrls: [String], selectedIndex: Int) -> UIViewController
+
     /// Home 등 Store 모듈 밖의 화면에서 가게 활동 유도 모달을 레거시 상세와 같은 시점에 표시한다.
     func presentStoreDisplayItemModal(
         from viewController: UIViewController,

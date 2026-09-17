@@ -52,6 +52,10 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         return UIViewController()
     }
 
+    public func getPhotoViewerViewController(imageUrls: [String], selectedIndex: Int) -> UIViewController {
+        return UIViewController()
+    }
+
     public func presentStoreDisplayItemModal(
         from viewController: UIViewController,
         storeId: Int,

@@ -148,6 +148,14 @@ public final class StoreInterfaceImpl: StoreInterface {
         return PhotoListViewController.instance(viewModel: viewModel)
     }
 
+    public func getPhotoViewerViewController(imageUrls: [String], selectedIndex: Int) -> UIViewController {
+        let viewModel = BossStorePhotoViewModel(config: .init(
+            photos: imageUrls.map { ImageResponse(imageUrl: $0) },
+            selectedIndex: selectedIndex
+        ))
+        return BossStorePhotoViewController(viewModel: viewModel)
+    }
+
     public func presentStoreDisplayItemModal(
         from viewController: UIViewController,
         storeId: Int,

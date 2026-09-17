@@ -14,6 +14,7 @@ extension StorePreviewBottomSheetViewModel {
         let didTapClose = PassthroughSubject<Void, Never>()
         let didTapActionBar = PassthroughSubject<Int, Never>()
         let didTapAddPhoto = PassthroughSubject<Void, Never>()
+        let didTapImage = PassthroughSubject<Int, Never>()
         let didEnterDetail = PassthroughSubject<Void, Never>()
     }
 
@@ -35,6 +36,7 @@ extension StorePreviewBottomSheetViewModel {
         case presentNavigation(latitude: Double, longitude: Double, storeName: String)
         case openLink(SDLink)
         case presentUploadPhoto(storeId: Int)
+        case presentPhotoViewer(imageUrls: [String], selectedIndex: Int)
         case presentDisplayItemModal(StoreDisplayItemType, StoreDisplayTrigger?)
         case close
     }
@@ -148,6 +150,15 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StorePreviewBottomSheetViewModel, _) in
                 owner.output.route.send(.presentUploadPhoto(storeId: owner.config.storeId))
+            }
+            .store(in: &cancellables)
+
+        input.didTapImage
+            .withUnretained(self)
+            .sink { (owner: StorePreviewBottomSheetViewModel, index: Int) in
+                let imageUrls = owner.state.section?.images.map(\.url) ?? []
+                guard imageUrls.indices.contains(index) else { return }
+                owner.output.route.send(.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: index))
             }
             .store(in: &cancellables)
     }
