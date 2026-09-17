@@ -131,8 +131,10 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             guard let params = url.params(),
                   let storeId = intParam(params, key: "storeId") else { return }
 
-            let storeDetailViewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
-            route(storeDetailViewController)
+            if isStoreDetailVisible(storeId: storeId).isNot {
+                let storeDetailViewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
+                route(storeDetailViewController)
+            }
 
             let config = BossStorePostListViewModel.Config(storeId: String(storeId))
             let viewModel = BossStorePostListViewModel(config: config)
@@ -225,6 +227,19 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         let topViewController = UIUtils.getTopViewController(rootViewController)
 
         return findStoreSectionScrollable(in: topViewController, storeId: storeId)
+    }
+
+    private func isStoreDetailVisible(storeId: Int) -> Bool {
+        guard let viewController = findStoreSectionScrollable(storeId: storeId) as? UIViewController,
+              let view = viewController.viewIfLoaded,
+              view.window != nil else { return false }
+
+        var current: UIView? = view
+        while let candidate = current {
+            if candidate.isHidden || candidate.alpha == 0 { return false }
+            current = candidate.superview
+        }
+        return true
     }
 
     private func findStoreSectionScrollable(in viewController: UIViewController, storeId: Int) -> StoreSectionScrollable? {
