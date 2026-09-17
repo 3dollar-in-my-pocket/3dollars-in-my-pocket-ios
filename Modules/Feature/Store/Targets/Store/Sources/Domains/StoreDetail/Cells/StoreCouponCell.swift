@@ -121,7 +121,12 @@ private final class StoreCouponCardView: UIView {
         return imageView
     }()
 
-    private let trailingButton = UIButton(type: .custom)
+    private let trailingButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.titleLabel?.numberOfLines = 0
+        button.titleLabel?.textAlignment = .center
+        return button
+    }()
     private let rightAreaButton = UIButton(type: .custom)
 
     private let badgeLabel: PaddingLabel = {
@@ -169,7 +174,8 @@ private final class StoreCouponCardView: UIView {
             $0.height.equalTo(Layout.badgeHeight)
         }
         trailingButton.snp.makeConstraints {
-            $0.size.equalTo(Layout.iconSize)
+            $0.width.greaterThanOrEqualTo(Layout.iconSize)
+            $0.height.greaterThanOrEqualTo(Layout.iconSize)
             $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(Layout.iconTrailingInset)
         }
