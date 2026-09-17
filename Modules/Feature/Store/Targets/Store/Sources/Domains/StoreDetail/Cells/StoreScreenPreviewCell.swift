@@ -183,6 +183,11 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         }
     }
 
+    func actionBarFrame(in view: UIView) -> CGRect? {
+        guard actionCollectionView.isHidden.isNot else { return nil }
+        return actionCollectionView.convert(actionCollectionView.bounds, to: view)
+    }
+
     func bind(_ section: StoreScreenPreviewSection) {
         containerView.setSDSurfaceStyle(section.style)
         titleLabel.setSDText(section.header.title)

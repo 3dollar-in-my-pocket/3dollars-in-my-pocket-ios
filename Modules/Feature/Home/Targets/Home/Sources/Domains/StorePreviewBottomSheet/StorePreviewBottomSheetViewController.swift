@@ -517,7 +517,8 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     }
 
     private func trackDetailScrollIfNeeded() {
-        guard isTrackingDetailScroll.isNot, let scrollView = detailViewController?.view as? UIScrollView else { return }
+        guard isTrackingDetailScroll.isNot,
+              let scrollView = (detailViewController as? StoreDetailSectionsLoadable)?.sectionsScrollView else { return }
         isTrackingDetailScroll = true
         onRequestTrackDetailScroll?(scrollView)
     }

@@ -8,6 +8,8 @@ import Model
 import StoreInterface
 import WriteInterface
 
+import SnapKit
+
 /// Store v2 SDUI 응답을 순서대로 전용 셀에 렌더링하는, Home에 임베드 가능한 상세 컨테이너.
 public final class StoreSectionsViewController: BaseViewController {
     /// Home 바텀시트의 상단 chrome이 상세 컨텐츠 스크롤에 맞춰 fade-in 하는 데 사용한다.
@@ -19,6 +21,9 @@ public final class StoreSectionsViewController: BaseViewController {
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
+    private let bottomActionBarView = StoreBottomActionBarView()
+    private var isBottomActionBarVisible = false
+    private var previewItemIndex: Int?
     private var placeholderPreview: StoreScreenPreviewSection?
     private let loadsOnViewDidLoad: Bool
     private var hasRequestedLoad = false
@@ -58,12 +63,25 @@ public final class StoreSectionsViewController: BaseViewController {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    public var sectionsScrollView: UIScrollView {
+        collectionView
+    }
+
     public override func loadView() {
-        view = collectionView
+        let containerView = UIView()
+        containerView.addSubViews([collectionView, bottomActionBarView])
+        collectionView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        bottomActionBarView.snp.makeConstraints { $0.leading.trailing.bottom.equalToSuperview() }
+        view = containerView
     }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        bottomActionBarView.alpha = 0
+        bottomActionBarView.isHidden = true
+        bottomActionBarView.onAction = { [weak self] in
+            self?.viewModel.input.didSelectAction.send($0)
+        }
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.alwaysBounceVertical = true
@@ -200,6 +218,7 @@ public final class StoreSectionsViewController: BaseViewController {
 
         let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
         updateTabTargets(sections)
+        updateBottomActionBar(sections)
         let previousSectionsByIdentifier = sectionsByIdentifier
         sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
         displayedImpressionIdentifiers.removeAll()
@@ -223,9 +242,45 @@ public final class StoreSectionsViewController: BaseViewController {
             snapshot.reconfigureItems(changedIdentifiers)
         }
         dataSource.apply(snapshot, animatingDifferences: false)
+        collectionView.layoutIfNeeded()
+        updateBottomActionBarVisibility()
         if isPlaceholder.isNot {
             hasLoadedSections = true
             onSectionsLoaded?()
+        }
+    }
+
+    private func updateBottomActionBar(_ sections: [any StoreSectionComponent]) {
+        previewItemIndex = sections.firstIndex { $0 is StoreScreenPreviewSection }
+        let actionBars = previewItemIndex
+            .flatMap { sections[$0] as? StoreScreenPreviewSection }?
+            .actionBars ?? []
+        bottomActionBarView.bind(actionBars)
+        bottomActionBarView.isHidden = actionBars.isEmpty
+        collectionView.contentInset.bottom = actionBars.isEmpty ? 0 : StoreBottomActionBarView.Layout.contentHeight
+    }
+
+    private func updateBottomActionBarVisibility() {
+        guard bottomActionBarView.isHidden.isNot, let previewItemIndex else { return }
+        let indexPath = IndexPath(item: previewItemIndex, section: 0)
+        let visibleTop = collectionView.contentOffset.y + collectionView.adjustedContentInset.top
+        let shouldShow: Bool
+        if let cell = collectionView.cellForItem(at: indexPath) as? StoreScreenPreviewCell,
+           let actionBarFrame = cell.actionBarFrame(in: collectionView) {
+            shouldShow = actionBarFrame.minY < visibleTop
+        } else if let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath) {
+            shouldShow = attributes.frame.maxY <= visibleTop
+        } else {
+            shouldShow = false
+        }
+        setBottomActionBarVisible(shouldShow)
+    }
+
+    private func setBottomActionBarVisible(_ isVisible: Bool) {
+        guard isBottomActionBarVisible != isVisible else { return }
+        isBottomActionBarVisible = isVisible
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.bottomActionBarView.alpha = isVisible ? 1 : 0
         }
     }
 
@@ -393,6 +448,7 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         onScrollOffsetChanged?(scrollView.contentOffset.y)
         updateSelectedTabIfNeeded(scrollView)
+        updateBottomActionBarVisibility()
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
