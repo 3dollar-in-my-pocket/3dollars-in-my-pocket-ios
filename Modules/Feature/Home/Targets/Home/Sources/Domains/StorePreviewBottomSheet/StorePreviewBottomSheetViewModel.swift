@@ -99,10 +99,6 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                 Task { [weak owner] in
                     await owner?.fetchPreview()
                 }
-                guard owner.state.hasEnteredDetail else { return }
-                Task { [weak owner] in
-                    await owner?.fetchDisplayItems()
-                }
             }
             .store(in: &cancellables)
 
