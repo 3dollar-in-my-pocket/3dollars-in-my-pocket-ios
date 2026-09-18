@@ -106,3 +106,5 @@ iOSInjectionProject/
 # End of https://www.gitignore.io/api/swift,xcode,cocoapods
 R.generated.swift
 **/.DS_Store
+# Tuist generated module maps
+**/Derived/ModuleMaps/
