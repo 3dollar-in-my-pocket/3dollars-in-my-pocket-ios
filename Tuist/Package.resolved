@@ -1,9 +1,10 @@
 {
+  "originHash" : "86e1a66c8c19378720728c24e4ae5df2b6087a32ea738935eb18f48b5aa109b2",
   "pins" : [
     {
       "identity" : "combinecocoa",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CombineCommunity/CombineCocoa.git",
+      "location" : "https://github.com/CombineCommunity/CombineCocoa",
       "state" : {
         "revision" : "7300c75ff9e072aa7fd0fccefcc88f74aae9bf56",
         "version" : "0.4.1"
@@ -12,7 +13,7 @@
     {
       "identity" : "floatingpanel",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/scenee/FloatingPanel.git",
+      "location" : "https://github.com/scenee/FloatingPanel",
       "state" : {
         "revision" : "1d2e3a0304d5d56bae7d0c0bb861921374390bb0",
         "version" : "2.8.8"
@@ -21,7 +22,7 @@
     {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "location" : "https://github.com/onevcat/Kingfisher",
       "state" : {
         "revision" : "2ef543ee21d63734e1c004ad6c870255e8716c50",
         "version" : "7.12.0"
@@ -30,7 +31,7 @@
     {
       "identity" : "lottie-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/airbnb/lottie-ios.git",
+      "location" : "https://github.com/airbnb/lottie-ios",
       "state" : {
         "revision" : "047aa81b77adcbf583a966dfef620d17650cc656",
         "version" : "4.5.1"
@@ -39,7 +40,7 @@
     {
       "identity" : "panmodal",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/3dollar-in-my-pocket/PanModal.git",
+      "location" : "https://github.com/3dollar-in-my-pocket/PanModal",
       "state" : {
         "revision" : "eb351648552c6fd419d416bdb145394d6d04fae6",
         "version" : "1.0.0"
@@ -57,7 +58,7 @@
     {
       "identity" : "swinject",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Swinject/Swinject.git",
+      "location" : "https://github.com/Swinject/Swinject",
       "state" : {
         "revision" : "be9dbcc7b86811bc131539a20c6f9c2d3e56919f",
         "version" : "2.9.1"
@@ -75,7 +76,7 @@
     {
       "identity" : "zmarkupparser",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ZhgChgLi/ZMarkupParser.git",
+      "location" : "https://github.com/ZhgChgLi/ZMarkupParser",
       "state" : {
         "revision" : "f25c9838e9e77ae49cc3f434ee26e669cb4043c7",
         "version" : "1.12.0"

@@ -55,16 +55,16 @@ public enum HomeStrings: Sendable {
   public static let locationDenyTitle = HomeStrings.tr("Localization", "location_deny_title")
 
   public enum Home: Sendable {
-  /// 🍀 이 동네 가게 소식!
+    /// 🍀 이 동네 가게 소식!
     public static let feedButton = HomeStrings.tr("Localization", "home.feed_button")
     /// 여기가 바로 핫플 🔥
     public static let feedButton2 = HomeStrings.tr("Localization", "home.feed_button_2")
   }
 
   public enum HomeList: Sendable {
-
+  
     public enum Empty: Sendable {
-    /// 다른 주소로 검색하거나 직접 제보해보세요!
+      /// 다른 주소로 검색하거나 직접 제보해보세요!
       public static let description = HomeStrings.tr("Localization", "home_list.empty.description")
       /// 주변 2km 이내에 가게가 없어요.
       public static let title = HomeStrings.tr("Localization", "home_list.empty.title")
@@ -72,7 +72,7 @@ public enum HomeStrings: Sendable {
   }
 
   public enum SearchAddress: Sendable {
-  /// 구, 동, 건물명, 역 등으로 검색
+    /// 구, 동, 건물명, 역 등으로 검색
     public static let placeholder = HomeStrings.tr("Localization", "search_address.placeholder")
     /// 위치 검색
     public static let title = HomeStrings.tr("Localization", "search_address.title")
@@ -91,5 +91,5 @@ extension HomeStrings {
 }
 
 // swiftlint:disable convenience_type
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all

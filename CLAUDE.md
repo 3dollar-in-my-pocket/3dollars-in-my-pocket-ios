@@ -82,9 +82,10 @@ swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
 ## 프로젝트 구조
 
 ### Tuist 모듈러 아키텍처
-- **Tuist 4.44.3**을 사용한 프로젝트 생성 및 모듈러 아키텍처
+- **Tuist 4.207.0**을 사용한 프로젝트 생성 및 모듈러 아키텍처
 - 메인 워크스페이스: `3dollar-in-my-pocket.xcworkspace`
 - 모든 소스 파일은 생성되므로 `.xcodeproj` 파일을 직접 편집하지 마세요
+- **Buildable Folders(폴더 기반 구조)** 사용: Sources/Resources 폴더가 Xcode 동기화 폴더로 등록되므로, 폴더/파일 추가·삭제 시 `make project` 재실행 없이 바로 인식됩니다 (타깃/의존성/설정 변경 시에만 재생성 필요)
 
 ### 모듈 구조
 - 모든 코드는 기능별(Feature) 모듈, Core(공통) 모듈, App(엔트리포인트)로 분리합니다
