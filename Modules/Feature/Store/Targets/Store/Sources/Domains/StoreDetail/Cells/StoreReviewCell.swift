@@ -22,6 +22,10 @@ final class StoreReviewCell: BaseCollectionViewCell {
         static let imageSize: CGFloat = 96
         static let imageSpacing: CGFloat = 8
         static let imageCornerRadius: CGFloat = 8
+        static let replyCornerRadius: CGFloat = 12
+        static let replyTailSize = CGSize(width: 16, height: 12)
+        static let replyHorizontalInset: CGFloat = 16
+        static let replyVerticalInset: CGFloat = 12
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -204,7 +208,7 @@ private final class StoreReviewCardView: UIView {
     private var bodyTopConstraint: Constraint?
     private var likeButtonHeightConstraint: Constraint?
     private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
-    private let replyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 13))
+    private let replyView = StoreReviewReplyView()
     private let likeButton = UIButton(type: .system)
     private let action: StoreSectionAction?
     private let headerAction: StoreSectionAction?
@@ -240,8 +244,8 @@ private final class StoreReviewCardView: UIView {
             badgeStack,
             imageCollectionView,
             bodyLabel,
-            replyLabel,
-            likeButton
+            likeButton,
+            replyView
         ])
         let inset = StoreReviewCell.Layout.cardInset
         headerLabel.snp.makeConstraints {
@@ -267,15 +271,25 @@ private final class StoreReviewCardView: UIView {
             bodyTopConstraint = $0.top.equalTo(imageCollectionView.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing).constraint
             $0.leading.trailing.equalToSuperview().inset(inset)
         }
-        replyLabel.snp.makeConstraints {
-            $0.top.equalTo(bodyLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
-            $0.leading.trailing.equalToSuperview().inset(inset)
-        }
         likeButton.snp.makeConstraints {
-            $0.top.equalTo(replyLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.top.equalTo(bodyLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
             $0.leading.equalToSuperview().inset(inset)
-            $0.bottom.equalToSuperview().inset(inset)
             likeButtonHeightConstraint = $0.height.equalTo(StoreReviewCell.Layout.likeButtonHeight).constraint
+        }
+        replyView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(inset)
+            $0.bottom.equalToSuperview().inset(inset)
+        }
+        if card.reply == nil {
+            replyView.isHidden = true
+            replyView.snp.makeConstraints {
+                $0.top.equalTo(likeButton.snp.bottom)
+                $0.height.equalTo(0)
+            }
+        } else {
+            replyView.snp.makeConstraints {
+                $0.top.equalTo(likeButton.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            }
         }
         bind(card)
         if action != nil {
@@ -328,8 +342,9 @@ private final class StoreReviewCardView: UIView {
         bodyTopConstraint?.update(offset: card.images.isEmpty ? 0 : StoreReviewCell.Layout.contentSpacing)
         imageCollectionView.reloadData()
         bodyLabel.setSDText(card.body)
-        replyLabel.setSDText(card.reply?.body)
-        replyLabel.isHidden = card.reply == nil
+        if let reply = card.reply {
+            replyView.bind(reply)
+        }
         let likeButtonModel = card.like.map { $0.isSelected ? $0.selected : $0.unselected }
         likeButton.setOptionalSDButton(likeButtonModel)
         likeButtonHeightConstraint?.update(offset: likeButtonModel?.image.map { CGFloat($0.style.height) } ?? StoreReviewCell.Layout.likeButtonHeight)
@@ -427,6 +442,105 @@ private final class StoreReviewImageCell: BaseCollectionViewCell {
 
     func bind(_ image: SDImage) {
         imageView.setImage(urlString: image.url)
+    }
+}
+
+private final class StoreReviewReplyView: UIView {
+    private let tailView = StoreReviewReplyTailView()
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = StoreReviewCell.Layout.replyCornerRadius
+        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        view.clipsToBounds = true
+        return view
+    }()
+    private let titleLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.bold.font(size: 12))
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
+        return label
+    }()
+    private let dateLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        label.numberOfLines = 1
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return label
+    }()
+    private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+        bindConstraints()
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    private func setupViews() {
+        addSubViews([tailView, containerView])
+        containerView.addSubViews([titleLabel, dateLabel, bodyLabel])
+    }
+
+    private func bindConstraints() {
+        tailView.snp.makeConstraints {
+            $0.top.leading.equalToSuperview()
+            $0.size.equalTo(StoreReviewCell.Layout.replyTailSize)
+        }
+        containerView.snp.makeConstraints {
+            $0.top.equalTo(tailView.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(StoreReviewCell.Layout.replyVerticalInset)
+            $0.leading.equalToSuperview().inset(StoreReviewCell.Layout.replyHorizontalInset)
+            $0.trailing.lessThanOrEqualTo(dateLabel.snp.leading).offset(-8)
+        }
+        dateLabel.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().inset(StoreReviewCell.Layout.replyHorizontalInset)
+        }
+        bodyLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.leading.trailing.equalToSuperview().inset(StoreReviewCell.Layout.replyHorizontalInset)
+            $0.bottom.equalToSuperview().inset(StoreReviewCell.Layout.replyVerticalInset)
+        }
+    }
+
+    func bind(_ reply: StoreReviewReply) {
+        containerView.setSDSurfaceStyle(reply.style)
+        tailView.fillColor = containerView.backgroundColor ?? Colors.gray10.color
+        titleLabel.setSDText(reply.header.title)
+        dateLabel.setSDText(reply.header.subTitle)
+        dateLabel.isHidden = reply.header.subTitle == nil
+        bodyLabel.setSDText(reply.body)
+    }
+}
+
+private final class StoreReviewReplyTailView: UIView {
+    var fillColor: UIColor = Colors.gray10.color {
+        didSet { shapeLayer.fillColor = fillColor.cgColor }
+    }
+    private let shapeLayer = CAShapeLayer()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .clear
+        shapeLayer.fillColor = fillColor.cgColor
+        layer.addSublayer(shapeLayer)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let path = UIBezierPath()
+        path.move(to: .zero)
+        path.addLine(to: CGPoint(x: 0, y: bounds.height))
+        path.addLine(to: CGPoint(x: bounds.width, y: bounds.height))
+        path.close()
+        shapeLayer.frame = bounds
+        shapeLayer.path = path.cgPath
     }
 }
 
