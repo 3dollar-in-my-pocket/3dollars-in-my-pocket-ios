@@ -109,10 +109,12 @@ final class StoreInfoV2Cell: BaseCollectionViewCell {
         bindGallery(section.imageGallery?.images ?? [])
 
         cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        if let detailCard = section.detailCard, detailCard.rows.isEmpty.isNot {
-            cardsStack.addArrangedSubview(StoreInfoDetailCardView(card: detailCard) { [weak self] action in
-                self?.onAction?(action)
-            })
+        if let detailCard = section.detailCard {
+            if detailCard.rows.isEmpty.isNot {
+                cardsStack.addArrangedSubview(StoreInfoDetailCardView(card: detailCard) { [weak self] action in
+                    self?.onAction?(action)
+                })
+            }
         } else {
             cardsStack.addArrangedSubview(StoreInfoDetailEmptyCardView())
         }
