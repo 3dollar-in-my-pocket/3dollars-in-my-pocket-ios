@@ -16,6 +16,8 @@ final class StoreReviewCell: BaseCollectionViewCell {
         static let moreButtonHeight: CGFloat = 46
         static let moreButtonSpacing: CGFloat = 8
         static let likeButtonHeight: CGFloat = 16
+        static let blindedCardCornerRadius: CGFloat = 8
+        static let blindedCardInset: CGFloat = 12
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -183,10 +185,14 @@ private final class StoreReviewCardView: UIView {
 
     init(card: StoreReviewCard, onAction: ((StoreSectionAction) -> Void)?) {
         self.action = card.link.map { .link($0, clickLog: card.clickLog) }
-        self.headerAction = card.header.trailingAction?.storeSectionAction.map { $0.withCardId(card.cardId) }
+        self.headerAction = card.header?.trailingAction?.storeSectionAction.map { $0.withCardId(card.cardId) }
         self.likeAction = card.like?.storeSectionAction(isSelected: card.like?.isSelected ?? false).map { $0.withCardId(card.cardId) }
         self.onAction = onAction
         super.init(frame: .zero)
+        guard card.header != nil else {
+            setupBlindedLayout(card)
+            return
+        }
         layer.cornerRadius = StoreReviewCell.Layout.cardCornerRadius
         starsStack.axis = .horizontal
         starsStack.spacing = 2
@@ -257,20 +263,31 @@ private final class StoreReviewCardView: UIView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    private func setupBlindedLayout(_ card: StoreReviewCard) {
+        layer.cornerRadius = StoreReviewCell.Layout.blindedCardCornerRadius
+        setSDSurfaceStyle(card.style)
+        addSubview(bodyLabel)
+        bodyLabel.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(StoreReviewCell.Layout.blindedCardInset)
+        }
+        bodyLabel.setSDText(card.body)
+    }
+
     private func bind(_ card: StoreReviewCard) {
         setSDSurfaceStyle(card.style)
-        headerLabel.setSDText(card.header.title)
-        headerSubTitleLabel.setSDText(card.header.subTitle)
-        headerSubTitleLabel.isHidden = card.header.subTitle == nil
-        headerActionButton.setOptionalSDButton(card.header.trailingAction)
+        headerLabel.setSDText(card.header?.title)
+        headerSubTitleLabel.setSDText(card.header?.subTitle)
+        headerSubTitleLabel.isHidden = card.header?.subTitle == nil
+        headerActionButton.setOptionalSDButton(card.header?.trailingAction)
         badgeStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        card.metadata.forEach { badgeStack.addArrangedSubview(makeBadgeView(chip: $0)) }
-        if let style = card.stars.style {
+        card.metadata?.forEach { badgeStack.addArrangedSubview(makeBadgeView(chip: $0)) }
+        if let style = card.stars?.style {
             starsBadgeView.setSDSurfaceStyle(style)
         }
+        starsBadgeView.isHidden = card.stars == nil
         badgeStack.addArrangedSubview(starsBadgeView)
         starsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        card.stars.images.forEach { image in
+        card.stars?.images.forEach { image in
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFit
             imageView.setImage(urlString: image.url)

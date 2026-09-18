@@ -19,9 +19,9 @@ public struct StoreReviewSummary: Decodable, Equatable, Hashable {
 
 public struct StoreReviewCard: Decodable, Equatable, Hashable {
     public let cardId: String
-    public let header: SDHeader
-    public let metadata: [SDChip]
-    public let stars: SDRatingChip
+    public let header: SDHeader?
+    public let metadata: [SDChip]?
+    public let stars: SDRatingChip?
     public let images: [SDImage]
     public let body: SDText
     public let like: SDToggleAction?
