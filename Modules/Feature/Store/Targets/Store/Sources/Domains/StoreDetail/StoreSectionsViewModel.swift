@@ -19,6 +19,7 @@ extension StoreSectionsViewModel {
         let didTapFavorite = PassthroughSubject<Void, Never>()
         let didTapImageGallery = PassthroughSubject<(images: [SDImage], index: Int), Never>()
         let didConfirmDeleteReview = PassthroughSubject<Int, Never>()
+        let didConfirmUseCoupon = PassthroughSubject<String, Never>()
     }
 
     struct Output {
@@ -46,6 +47,7 @@ extension StoreSectionsViewModel {
         case presentShareSheet(URL)
         case presentBossStorePhoto(BossStorePhotoViewModel)
         case presentDeleteReviewAlert(reviewId: Int)
+        case presentUseCouponAlert(issuedKey: String)
     }
 
     struct NavigationTarget {
@@ -152,6 +154,13 @@ final class StoreSectionsViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, reviewId: Int) in
                 owner.deleteReview(reviewId: reviewId)
+            }
+            .store(in: &cancellables)
+
+        input.didConfirmUseCoupon
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, issuedKey: String) in
+                owner.useCoupon(issuedKey: issuedKey)
             }
             .store(in: &cancellables)
 
@@ -268,7 +277,7 @@ final class StoreSectionsViewModel: BaseViewModel {
             issueCoupon(storeId: storeId, couponId: couponId)
         case .storeCouponUse:
             guard let issuedKey = action.stringParam("COUPON_ISSUED_KEY") else { return }
-            useCoupon(issuedKey: issuedKey)
+            output.route.send(.presentUseCouponAlert(issuedKey: issuedKey))
         case .unknown where action.stringParam("POST_ID") != nil:
             // The server currently sends STORE_POST_SECTION_LIKE, which decodes as unknown.
             togglePostSticker(action, isLiked: false)

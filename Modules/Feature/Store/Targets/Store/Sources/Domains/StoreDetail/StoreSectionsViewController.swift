@@ -528,6 +528,11 @@ private extension StoreSectionsViewController {
             ) { [weak self] in
                 self?.viewModel.input.didConfirmDeleteReview.send(reviewId)
             }
+        case .presentUseCouponAlert(let issuedKey):
+            let alertViewController = BossStoreCouponAlertViewController { [weak self] in
+                self?.viewModel.input.didConfirmUseCoupon.send(issuedKey)
+            }
+            present(alertViewController, animated: true)
         }
     }
 
