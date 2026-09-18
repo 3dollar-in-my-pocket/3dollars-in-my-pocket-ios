@@ -14,6 +14,9 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
         static func size(for actionBar: SDActionBar) -> CGSize {
             let sizingButton = makeButton()
             sizingButton.setSDButton(actionBar.button)
+            sizingButton.kf.cancelImageDownloadTask()
+            sizingButton.setImage(nil, for: .normal)
+            sizingButton.configuration?.image = nil
             var width = sizingButton.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
             if let image = actionBar.button.image {
                 width += image.style.width + imagePadding
