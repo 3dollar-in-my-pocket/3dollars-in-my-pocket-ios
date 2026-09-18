@@ -18,9 +18,14 @@ final class StoreReviewCell: BaseCollectionViewCell {
         static let likeButtonHeight: CGFloat = 16
         static let blindedCardCornerRadius: CGFloat = 8
         static let blindedCardInset: CGFloat = 12
+        static let contentSpacing: CGFloat = 8
+        static let imageSize: CGFloat = 96
+        static let imageSpacing: CGFloat = 8
+        static let imageCornerRadius: CGFloat = 8
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
+    var onTapImage: (([SDImage], Int) -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private let actionButton = UIButton(type: .system)
     private let summaryView = StoreReviewSummaryView()
@@ -33,6 +38,7 @@ final class StoreReviewCell: BaseCollectionViewCell {
         super.prepareForReuse()
         cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         onAction = nil
+        onTapImage = nil
     }
 
     override func setup() {
@@ -81,9 +87,11 @@ final class StoreReviewCell: BaseCollectionViewCell {
             cardsStack.addArrangedSubview(StoreSectionEmptyView(text: Strings.StoreDetail.Review.empty))
         }
         section.cards.forEach { card in
-            cardsStack.addArrangedSubview(StoreReviewCardView(card: card) { [weak self] action in
+            let cardView = StoreReviewCardView(card: card) { [weak self] action in
                 self?.onAction?(action)
-            })
+            }
+            cardView.onTapImage = { [weak self] index in self?.onTapImage?(card.images, index) }
+            cardsStack.addArrangedSubview(cardView)
         }
         moreButton.setOptionalSDButton(section.more?.button)
         let hasMore = section.more != nil
@@ -154,6 +162,7 @@ private final class StoreReviewSummaryView: UIView {
 }
 
 private final class StoreReviewCardView: UIView {
+    var onTapImage: ((Int) -> Void)?
     private let headerLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
     private let headerSubTitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
     private let headerActionButton = UIButton(type: .system)
@@ -171,8 +180,27 @@ private final class StoreReviewCardView: UIView {
         return view
     }()
     private let starsStack = UIStackView()
-    private let imageStack = UIStackView()
-    private var imageStackHeightConstraint: Constraint?
+    private lazy var imageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = StoreReviewCell.Layout.imageSpacing
+        layout.minimumInteritemSpacing = StoreReviewCell.Layout.imageSpacing
+        layout.sectionInset = UIEdgeInsets(
+            top: 0,
+            left: StoreReviewCell.Layout.cardInset,
+            bottom: 0,
+            right: StoreReviewCell.Layout.cardInset
+        )
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.backgroundColor = .clear
+        view.showsHorizontalScrollIndicator = false
+        view.register([StoreReviewImageCell.self])
+        view.dataSource = self
+        view.delegate = self
+        return view
+    }()
+    private var images: [SDImage] = []
+    private var imageCollectionHeightConstraint: Constraint?
     private var bodyTopConstraint: Constraint?
     private var likeButtonHeightConstraint: Constraint?
     private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
@@ -196,9 +224,6 @@ private final class StoreReviewCardView: UIView {
         layer.cornerRadius = StoreReviewCell.Layout.cardCornerRadius
         starsStack.axis = .horizontal
         starsStack.spacing = 2
-        imageStack.axis = .horizontal
-        imageStack.spacing = 6
-        imageStack.distribution = .fillEqually
         starsBadgeView.addSubViews([starsStack])
         starsStack.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(UIEdgeInsets(
@@ -213,7 +238,7 @@ private final class StoreReviewCardView: UIView {
             headerSubTitleLabel,
             headerActionButton,
             badgeStack,
-            imageStack,
+            imageCollectionView,
             bodyLabel,
             replyLabel,
             likeButton
@@ -233,18 +258,21 @@ private final class StoreReviewCardView: UIView {
             $0.leading.equalToSuperview().inset(inset)
             $0.trailing.lessThanOrEqualToSuperview().inset(inset)
         }
-        imageStack.snp.makeConstraints {
-            $0.top.equalTo(badgeStack.snp.bottom).offset(8)
-            $0.leading.trailing.equalToSuperview().inset(inset)
-            imageStackHeightConstraint = $0.height.equalTo(88).constraint
+        imageCollectionView.snp.makeConstraints {
+            $0.top.equalTo(badgeStack.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.leading.trailing.equalToSuperview()
+            imageCollectionHeightConstraint = $0.height.equalTo(StoreReviewCell.Layout.imageSize).constraint
         }
         bodyLabel.snp.makeConstraints {
-            bodyTopConstraint = $0.top.equalTo(imageStack.snp.bottom).offset(8).constraint
+            bodyTopConstraint = $0.top.equalTo(imageCollectionView.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing).constraint
             $0.leading.trailing.equalToSuperview().inset(inset)
         }
-        replyLabel.snp.makeConstraints { $0.top.equalTo(bodyLabel.snp.bottom).offset(8); $0.leading.trailing.equalToSuperview().inset(inset) }
+        replyLabel.snp.makeConstraints {
+            $0.top.equalTo(bodyLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.leading.trailing.equalToSuperview().inset(inset)
+        }
         likeButton.snp.makeConstraints {
-            $0.top.equalTo(replyLabel.snp.bottom).offset(8)
+            $0.top.equalTo(replyLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
             $0.leading.equalToSuperview().inset(inset)
             $0.bottom.equalToSuperview().inset(inset)
             likeButtonHeightConstraint = $0.height.equalTo(StoreReviewCell.Layout.likeButtonHeight).constraint
@@ -294,19 +322,11 @@ private final class StoreReviewCardView: UIView {
             imageView.snp.makeConstraints { $0.size.equalTo(CGSize(width: image.style.width, height: image.style.height)) }
             starsStack.addArrangedSubview(imageView)
         }
-        imageStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        // 이미지가 없으면 높이와 간격을 접어 빈 공백이 남지 않게 한다.
-        imageStack.isHidden = card.images.isEmpty
-        imageStackHeightConstraint?.update(offset: card.images.isEmpty ? 0 : 88)
-        bodyTopConstraint?.update(offset: card.images.isEmpty ? 0 : 8)
-        card.images.forEach { image in
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleAspectFill
-            imageView.layer.cornerRadius = 8
-            imageView.clipsToBounds = true
-            imageView.setImage(urlString: image.url)
-            imageStack.addArrangedSubview(imageView)
-        }
+        images = card.images
+        imageCollectionView.isHidden = card.images.isEmpty
+        imageCollectionHeightConstraint?.update(offset: card.images.isEmpty ? 0 : StoreReviewCell.Layout.imageSize)
+        bodyTopConstraint?.update(offset: card.images.isEmpty ? 0 : StoreReviewCell.Layout.contentSpacing)
+        imageCollectionView.reloadData()
         bodyLabel.setSDText(card.body)
         replyLabel.setSDText(card.reply?.body)
         replyLabel.isHidden = card.reply == nil
@@ -350,6 +370,63 @@ private final class StoreReviewCardView: UIView {
     private func didTapHeaderAction() {
         guard let headerAction else { return }
         onAction?(headerAction)
+    }
+}
+
+extension StoreReviewCardView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        images.count
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let cell: StoreReviewImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        if let image = images[safe: indexPath.item] {
+            cell.bind(image)
+        }
+        return cell
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        CGSize(width: StoreReviewCell.Layout.imageSize, height: StoreReviewCell.Layout.imageSize)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        onTapImage?(indexPath.item)
+    }
+}
+
+private final class StoreReviewImageCell: BaseCollectionViewCell {
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = Colors.gray10.color
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = StoreReviewCell.Layout.imageCornerRadius
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.clear()
+    }
+
+    override func setup() {
+        contentView.addSubview(imageView)
+    }
+
+    override func bindConstraints() {
+        imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+    }
+
+    func bind(_ image: SDImage) {
+        imageView.setImage(urlString: image.url)
     }
 }
 

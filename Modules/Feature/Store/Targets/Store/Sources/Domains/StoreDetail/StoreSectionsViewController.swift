@@ -434,7 +434,12 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreReviewSection:
                 let cell: StoreReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section)
+                cell.onAction = actionHandler
+                cell.onTapImage = { [weak self] images, index in
+                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
+                }
+                return cell
             case is StoreSkeletonSection:
                 let cell: StoreSkeletonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
