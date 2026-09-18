@@ -45,6 +45,8 @@ public final class HomeViewController: BaseViewController {
     private var storePreviewBottomSheet: StorePreviewBottomSheetViewController?
     private var storePreviewBottomSheetController: FloatingPanelController?
     private var isMovingStorePreviewToFull = false
+    private var homeListRestoreState: FloatingPanelState?
+    private var homeListRestoreContentOffset: CGPoint?
 
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
@@ -667,6 +669,10 @@ extension HomeViewController {
 
         // 순서가 중요: HomeList 패널 제거 → 탭바 숨김(.tip anchor 의 safeArea 계산이 새 값으로 굳음)
         // → StorePreview 패널 mount. 거꾸로 하면 패널이 부착된 뒤 safeArea 가 바뀌면서 미끄러져 보인다.
+        if let homeListPanel = bottomSheetController, homeListPanel.parent != nil {
+            homeListRestoreState = homeListPanel.state
+            homeListRestoreContentOffset = homeListPanel.trackingScrollView?.contentOffset
+        }
         bottomSheetController?.removePanelFromParent(animated: true)
         tabBarController?.tabBar.isHidden = true
         homeView.currentLocationButton.isHidden = true
@@ -688,7 +694,15 @@ extension HomeViewController {
             guard let self else { return }
             self.tabBarController?.tabBar.isHidden = false
             if self.bottomSheetController?.parent == nil, let homeListPanel = self.bottomSheetController {
+                let restoreState = self.homeListRestoreState ?? .tip
+                homeListPanel.layout = HomeListLayout(initialState: restoreState)
                 homeListPanel.addPanel(toParent: self, animated: true)
+                if let contentOffset = self.homeListRestoreContentOffset {
+                    homeListPanel.trackingScrollView?.setContentOffset(contentOffset, animated: false)
+                }
+                self.homeView.updateTopBackground(progress: restoreState == .full ? 1 : 0)
+                self.homeListRestoreState = nil
+                self.homeListRestoreContentOffset = nil
                 // 재부착으로 패널이 다시 최상단에 삽입되므로 상단 chrome 을 패널 위로 끌어올린다.
                 self.bringTopChromeToFront()
             }
