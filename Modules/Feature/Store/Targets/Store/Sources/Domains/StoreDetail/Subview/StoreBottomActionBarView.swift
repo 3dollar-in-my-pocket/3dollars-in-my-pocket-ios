@@ -24,10 +24,26 @@ final class StoreBottomActionBarView: UIView {
         return view
     }()
 
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.alwaysBounceVertical = false
+        scrollView.bounces = false
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.contentInset = UIEdgeInsets(
+            top: 0,
+            left: Layout.horizontalInset,
+            bottom: 0,
+            right: Layout.horizontalInset
+        )
+        return scrollView
+    }()
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.alignment = .fill
+        stackView.alignment = .center
         stackView.distribution = .fill
         stackView.spacing = Layout.spacing
         return stackView
@@ -45,7 +61,8 @@ final class StoreBottomActionBarView: UIView {
 
     private func setupViews() {
         backgroundColor = Colors.systemWhite.color
-        addSubViews([borderView, stackView])
+        addSubViews([borderView, scrollView])
+        scrollView.addSubview(stackView)
     }
 
     private func bindConstraints() {
@@ -53,11 +70,15 @@ final class StoreBottomActionBarView: UIView {
             $0.top.leading.trailing.equalToSuperview()
             $0.height.equalTo(1)
         }
-        stackView.snp.makeConstraints {
+        scrollView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(Layout.topInset)
-            $0.leading.trailing.equalToSuperview().inset(Layout.horizontalInset)
+            $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(Layout.buttonHeight)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-Layout.bottomInset)
+        }
+        stackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.height.equalToSuperview()
         }
     }
 
@@ -65,20 +86,24 @@ final class StoreBottomActionBarView: UIView {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         actions = actionBars.map(\.storeSectionAction)
 
-        let buttons = actionBars.enumerated().map { index, actionBar in
-            let button = StoreScreenPreviewActionCell.makeButton()
+        actionBars.enumerated().forEach { index, actionBar in
+            let button = makeButton()
             button.setSDButton(actionBar.button)
             button.addAction(UIAction { [weak self] _ in self?.didTap(index: index) }, for: .touchUpInside)
-            return button
+            stackView.addArrangedSubview(button)
         }
-        buttons.forEach { stackView.addArrangedSubview($0) }
+        scrollView.setContentOffset(CGPoint(x: -Layout.horizontalInset, y: 0), animated: false)
+    }
 
-        buttons.first?.setContentHuggingPriority(.required, for: .horizontal)
-        buttons.first?.setContentCompressionResistancePriority(.required, for: .horizontal)
-        let fillingButtons = Array(buttons.dropFirst())
-        zip(fillingButtons, fillingButtons.dropFirst()).forEach { button, next in
-            button.snp.makeConstraints { $0.width.equalTo(next) }
-        }
+    private func makeButton() -> UIButton {
+        let button = UIButton()
+        button.layer.cornerRadius = Layout.buttonHeight / 2
+        button.clipsToBounds = true
+        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        let halfSpacing = Layout.spacing / 2
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12 + halfSpacing, bottom: 8, right: 12 + halfSpacing)
+        button.snp.makeConstraints { $0.height.equalTo(Layout.buttonHeight) }
+        return button
     }
 
     private func didTap(index: Int) {
