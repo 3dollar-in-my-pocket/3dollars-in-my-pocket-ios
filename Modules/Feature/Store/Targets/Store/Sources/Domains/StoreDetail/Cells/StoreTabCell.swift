@@ -14,6 +14,21 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
     var onAction: ((StoreSectionAction) -> Void)?
     var onSelectTab: ((Int) -> Void)?
 
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.alwaysBounceVertical = false
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.contentInset = UIEdgeInsets(
+            top: 0,
+            left: Layout.horizontalMargin,
+            bottom: 0,
+            right: Layout.horizontalMargin
+        )
+        return scrollView
+    }()
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -41,16 +56,19 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
 
     override func setup() {
         contentView.backgroundColor = Colors.systemWhite.color
-        contentView.addSubview(stackView)
+        contentView.addSubview(scrollView)
+        scrollView.addSubview(stackView)
         contentView.addSubview(bottomBorderView)
     }
 
     override func bindConstraints() {
-        stackView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview()
-            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
-            $0.trailing.lessThanOrEqualToSuperview().offset(-Layout.horizontalMargin)
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
             $0.height.equalTo(Layout.height)
+        }
+        stackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.height.equalToSuperview()
         }
         bottomBorderView.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
@@ -79,6 +97,14 @@ final class StoreTabCell: BaseCollectionViewCell, StickyCell {
         for (itemIndex, itemView) in stackView.arrangedSubviews.enumerated() {
             (itemView as? StoreTabItemView)?.setSelected(itemIndex == index)
         }
+        scrollSelectedTabIntoView()
+    }
+
+    private func scrollSelectedTabIntoView() {
+        guard let itemView = stackView.arrangedSubviews[safe: selectedIndex] else { return }
+        scrollView.layoutIfNeeded()
+        let visibleRect = itemView.frame.insetBy(dx: -Layout.horizontalMargin, dy: 0)
+        scrollView.scrollRectToVisible(visibleRect, animated: true)
     }
 
     private func didTapTab(_ index: Int) {
