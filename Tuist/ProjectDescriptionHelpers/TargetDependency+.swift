@@ -36,6 +36,11 @@ public extension TargetDependency {
             target: "DesignSystem",
             path: .relativeToRoot("./Modules/Core/DesignSystem")
         )
+
+        public static let sdu = TargetDependency.project(
+            target: "SDU",
+            path: .relativeToRoot("./Modules/Core/SDU")
+        )
     }
     
     class Feature {
@@ -73,11 +78,6 @@ public extension TargetDependency {
             target: "Feed",
             path: .relativeToRoot("./Modules/Feature/Feed")
         )
-
-        public static let sdu = TargetDependency.project(
-            target: "SDU",
-            path: .relativeToRoot("./Modules/Feature/SDU")
-        )
     }
     
     class Interface {
@@ -114,11 +114,6 @@ public extension TargetDependency {
         public static let feedInterface = TargetDependency.project(
             target: "FeedInterface",
             path: .relativeToRoot("./Modules/Feature/Feed")
-        )
-
-        public static let sduInterface = TargetDependency.project(
-            target: "SDUInterface",
-            path: .relativeToRoot("./Modules/Feature/SDU")
         )
     }
     

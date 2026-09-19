@@ -7,6 +7,8 @@ import DependencyInjection
 import DesignSystem
 
 public final class MockAppModuleInterfaceImpl: AppModuleInterface {
+    public var remoteConfigService: RemoteConfigProtocol = MockRemoteConfigService()
+
     public var kakaoSigninManager: SigninManagerProtocol = MockSigninManager()
 
     public var appleSigninManager: SigninManagerProtocol = MockSigninManager()

@@ -5,13 +5,13 @@ import Common
 import DesignSystem
 import Model
 import StoreInterface
+import FeedInterface
 
 import NMapsMap
 import Then
 import PanModal
 import Log
 import Kingfisher
-import Feed
 import CombineCocoa
 import FloatingPanel
 
@@ -300,8 +300,8 @@ public final class HomeViewController: BaseViewController {
 
                 case .deepLink(let link):
                     Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
-                case .presentFeedList(let viewModel):
-                    owner.presentFeedList(viewModel: viewModel)
+                case .presentFeedList(let config):
+                    owner.presentFeedList(config: config)
                 case .presentPhotoViewer(let imageUrls, let selectedIndex):
                     owner.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: selectedIndex)
                 }
@@ -500,8 +500,8 @@ public final class HomeViewController: BaseViewController {
         tabBarController?.present(viewController, animated: true)
     }
 
-    private func presentFeedList(viewModel: FeedListViewModel) {
-        let viewController = FeedListViewController(viewModel: viewModel)
+    private func presentFeedList(config: FeedListViewModelConfig) {
+        let viewController = Environment.feedInterface.createFeedListViewController(config: config)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .overCurrentContext
         navigationController.isNavigationBarHidden = true
