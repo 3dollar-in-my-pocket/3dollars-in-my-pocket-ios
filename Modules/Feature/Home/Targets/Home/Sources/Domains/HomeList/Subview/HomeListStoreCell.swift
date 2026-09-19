@@ -7,6 +7,8 @@ import Model
 import Kingfisher
 
 final class HomeListStoreCell: BaseCollectionViewCell {
+    var onTapImage: (([SDImage], Int) -> Void)?
+
     enum Layout {
         static let imageRowHeight: CGFloat = 120
         static let imageSpacing: CGFloat = 4
@@ -128,6 +130,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register([HomeListStoreImageCell.self])
         return collectionView
     }()
@@ -231,6 +234,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         bodyHorizontalStackView.isHidden = true
         badgeImageView.kf.cancelDownloadTask()
         badgeImageView.image = nil
+        onTapImage = nil
     }
 
     func bind(_ card: HomeListBasicCardResponse) {
@@ -370,5 +374,11 @@ extension HomeListStoreCell: UICollectionViewDataSource {
         }
 
         return cell
+    }
+}
+
+extension HomeListStoreCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        onTapImage?(images, indexPath.item)
     }
 }

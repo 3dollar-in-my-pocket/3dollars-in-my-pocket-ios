@@ -10,6 +10,7 @@ extension HomeListViewModel {
         let updateCards = PassthroughSubject<[any HomeListCardComponent], Never>()
         let willDisplay = PassthroughSubject<Int, Never>()
         let didTapCard = PassthroughSubject<Int, Never>()
+        let didTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
     }
 
     struct Output {
@@ -19,6 +20,7 @@ extension HomeListViewModel {
         let willLoadMore = PassthroughSubject<Void, Never>()
         /// 부모(HomeViewModel) 가 카드 탭 라우팅을 처리하도록 인덱스 를 전달한다.
         let didTapCardAt = PassthroughSubject<Int, Never>()
+        let didTapImageAt = PassthroughSubject<(images: [SDImage], index: Int), Never>()
     }
 
     struct State {
@@ -67,6 +69,10 @@ final class HomeListViewModel: BaseViewModel {
 
         input.didTapCard
             .subscribe(output.didTapCardAt)
+            .store(in: &cancellables)
+
+        input.didTapImage
+            .subscribe(output.didTapImageAt)
             .store(in: &cancellables)
     }
 

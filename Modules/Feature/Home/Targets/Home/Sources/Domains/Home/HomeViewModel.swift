@@ -44,6 +44,7 @@ extension HomeViewModel {
         // From bottom sheet
         let bottomSheetWillLoadMore = PassthroughSubject<Void, Never>()
         let bottomSheetDidTapCard = PassthroughSubject<Int, Never>()
+        let bottomSheetDidTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
     }
 
     struct Output {
@@ -60,6 +61,7 @@ extension HomeViewModel {
         let markerCards = CurrentValueSubject<[HomeListBasicCardResponse], Never>([])
         /// 마커 탭 시 바텀시트가 해당 카드로 스크롤하도록 알려준다.
         let scrollBottomSheetToIndex = PassthroughSubject<Int, Never>()
+        let focusMarkerAt = PassthroughSubject<Int, Never>()
         let isShowFilterTooltip = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
@@ -102,6 +104,7 @@ extension HomeViewModel {
         case deepLink(SDLink)
         case presentAccountInfo(BaseViewModel)
         case presentFeedList(FeedListViewModel)
+        case presentPhotoViewer(imageUrls: [String], selectedIndex: Int)
     }
 
     struct Dependency {
@@ -455,6 +458,14 @@ final class HomeViewModel: BaseViewModel {
                 owner.handleBottomSheetCardTap(at: index)
             }
             .store(in: &cancellables)
+
+        input.bottomSheetDidTapImage
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, payload) in
+                let imageUrls = payload.images.map(\.url)
+                owner.output.route.send(.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: payload.index))
+            }
+            .store(in: &cancellables)
     }
 
     private var state_markerCards: [HomeListBasicCardResponse] {
@@ -571,16 +582,25 @@ final class HomeViewModel: BaseViewModel {
         if let basic = card as? HomeListBasicCardResponse {
             sendClickHomeCardLog()
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: basic.clickLog))
-            if let link = basic.link {
-                output.route.send(.deepLink(link))
-            }
-            // 카드 탭 시 카메라를 마커 위치로 이동
             if let marker = basic.marker {
                 let cameraPosition = CLLocation(
                     latitude: marker.location.latitude,
                     longitude: marker.location.longitude
                 )
                 output.cameraPosition.send((cameraPosition, nil))
+            }
+
+            if let marker = basic.marker, let storeId = extractStoreId(from: basic) {
+                if let markerIndex = state_markerCards.firstIndex(where: { $0.cardId == basic.cardId }) {
+                    output.focusMarkerAt.send(markerIndex)
+                }
+                output.route.send(.presentStorePreview(
+                    storeId: storeId,
+                    latitude: marker.location.latitude,
+                    longitude: marker.location.longitude
+                ))
+            } else if let link = basic.link {
+                output.route.send(.deepLink(link))
             }
         } else if let admob = card as? HomeListAdmobCardResponse {
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))

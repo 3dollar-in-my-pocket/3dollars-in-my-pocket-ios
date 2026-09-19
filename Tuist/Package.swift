@@ -16,7 +16,8 @@ import PackageDescription
             "CombineCocoa": .framework,
             "ZMarkupParser": .framework,
             "FloatingPanel": .framework
-        ]
+        ],
+        baseSettings: .settings(base: DefaultSetting.baseProductSetting)
     )
 #endif
 

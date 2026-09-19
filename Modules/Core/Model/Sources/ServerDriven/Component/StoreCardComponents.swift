@@ -23,7 +23,9 @@ public struct StoreImagePreviewCard: Decodable, Hashable, StoreCardComponent {
     public let metricLabel: [SDChip]
     public let contextLabel: [SDChip]
     public let link: SDLink?
+    public let style: SDSurfaceStyle
     public let refs: [StoreReferenceResponse]
+    public let clickLog: SDClickLog?
 }
 
 public struct StoreReferenceResponse: Decodable, Hashable {

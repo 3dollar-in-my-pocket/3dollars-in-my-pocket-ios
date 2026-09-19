@@ -1,0 +1,552 @@
+import UIKit
+
+import Common
+import DesignSystem
+import Model
+import SnapKit
+
+final class StoreReviewCell: BaseCollectionViewCell {
+    enum Layout {
+        static let verticalMargin: CGFloat = 16
+        static let horizontalMargin: CGFloat = 20
+        static let cardCornerRadius: CGFloat = 20
+        static let cardInset: CGFloat = 16
+        static let badgeHorizontalInset: CGFloat = 6
+        static let badgeVerticalInset: CGFloat = 2
+        static let moreButtonHeight: CGFloat = 46
+        static let moreButtonSpacing: CGFloat = 8
+        static let likeButtonHeight: CGFloat = 16
+        static let blindedCardCornerRadius: CGFloat = 8
+        static let blindedCardInset: CGFloat = 12
+        static let contentSpacing: CGFloat = 8
+        static let imageSize: CGFloat = 96
+        static let imageSpacing: CGFloat = 8
+        static let imageCornerRadius: CGFloat = 8
+        static let replyCornerRadius: CGFloat = 12
+        static let replyTailSize = CGSize(width: 16, height: 12)
+        static let replyHorizontalInset: CGFloat = 16
+        static let replyVerticalInset: CGFloat = 12
+    }
+
+    var onAction: ((StoreSectionAction) -> Void)?
+    var onTapImage: (([SDImage], Int) -> Void)?
+    private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
+    private let actionButton = UIButton(type: .system)
+    private let summaryView = StoreReviewSummaryView()
+    private let cardsStack = UIStackView()
+    private let moreButton = UIButton(type: .system)
+    private var moreButtonTopConstraint: Constraint?
+    private var moreButtonHeightConstraint: Constraint?
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        onAction = nil
+        onTapImage = nil
+    }
+
+    override func setup() {
+        cardsStack.axis = .vertical
+        cardsStack.spacing = 8
+        contentView.addSubViews([titleLabel, actionButton, summaryView, cardsStack, moreButton])
+    }
+
+    override func bindConstraints() {
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(Layout.verticalMargin)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+        }
+        actionButton.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
+        summaryView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
+        }
+        cardsStack.snp.makeConstraints {
+            $0.top.equalTo(summaryView.snp.bottom).offset(8)
+            $0.leading.trailing.equalTo(summaryView)
+        }
+        moreButton.snp.makeConstraints {
+            moreButtonTopConstraint = $0.top.equalTo(cardsStack.snp.bottom).offset(Layout.moreButtonSpacing).constraint
+            $0.leading.trailing.equalTo(summaryView)
+            moreButtonHeightConstraint = $0.height.equalTo(Layout.moreButtonHeight).constraint
+            $0.bottom.equalToSuperview().offset(-Layout.verticalMargin)
+        }
+    }
+
+    func bind(_ section: StoreReviewSection) {
+        titleLabel.setSDText(section.header.title)
+        actionButton.setOptionalSDButton(section.header.trailingAction)
+        actionButton.removeTarget(nil, action: nil, for: .touchUpInside)
+        moreButton.removeTarget(nil, action: nil, for: .touchUpInside)
+        if let action = section.header.trailingAction?.storeSectionAction {
+            actionButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
+        }
+        summaryView.bind(section.summary)
+        cardsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        if section.cards.isEmpty {
+            cardsStack.addArrangedSubview(StoreSectionEmptyView(text: Strings.StoreDetail.Review.empty))
+        }
+        section.cards.forEach { card in
+            let cardView = StoreReviewCardView(card: card) { [weak self] action in
+                self?.onAction?(action)
+            }
+            cardView.onTapImage = { [weak self] index in self?.onTapImage?(card.images, index) }
+            cardsStack.addArrangedSubview(cardView)
+        }
+        moreButton.setOptionalSDButton(section.more?.button)
+        let hasMore = section.more != nil
+        moreButtonHeightConstraint?.update(offset: hasMore ? Layout.moreButtonHeight : 0)
+        moreButtonTopConstraint?.update(offset: hasMore ? Layout.moreButtonSpacing : 0)
+        if let action = section.more?.storeSectionAction {
+            moreButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
+        }
+    }
+}
+
+private final class StoreReviewSummaryView: UIView {
+    private let titleLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        label.numberOfLines = 1
+        return label
+    }()
+    private let starsStack = UIStackView()
+    private let ratingLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.bold.font(size: 18))
+        label.numberOfLines = 1
+        return label
+    }()
+    private let ratingStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 8
+        return stack
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        layer.cornerRadius = StoreReviewCell.Layout.cardCornerRadius
+        starsStack.axis = .horizontal
+        starsStack.spacing = 2
+        ratingStack.addArrangedSubview(starsStack)
+        ratingStack.addArrangedSubview(ratingLabel)
+        addSubViews([titleLabel, ratingStack])
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(14)
+            $0.centerX.equalToSuperview()
+            $0.leading.greaterThanOrEqualToSuperview().inset(14)
+        }
+        ratingStack.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(6)
+            $0.centerX.equalToSuperview()
+            $0.leading.greaterThanOrEqualToSuperview().inset(14)
+            $0.bottom.equalToSuperview().inset(14)
+        }
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    func bind(_ summary: StoreReviewSummary) {
+        setSDSurfaceStyle(summary.style)
+        titleLabel.setSDText(summary.title)
+        ratingLabel.setSDText(summary.rating)
+        starsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        summary.stars.images.forEach { image in
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFit
+            imageView.setImage(urlString: image.url)
+            imageView.snp.makeConstraints { $0.size.equalTo(CGSize(width: image.style.width, height: image.style.height)) }
+            starsStack.addArrangedSubview(imageView)
+        }
+    }
+}
+
+private final class StoreReviewCardView: UIView {
+    var onTapImage: ((Int) -> Void)?
+    private let headerLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 13))
+    private let headerSubTitleLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+    private let headerActionButton = UIButton(type: .system)
+    private let badgeStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 4
+        return stack
+    }()
+    private let starsBadgeView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 4
+        view.clipsToBounds = true
+        return view
+    }()
+    private let starsStack = UIStackView()
+    private lazy var imageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = StoreReviewCell.Layout.imageSpacing
+        layout.minimumInteritemSpacing = StoreReviewCell.Layout.imageSpacing
+        layout.sectionInset = UIEdgeInsets(
+            top: 0,
+            left: StoreReviewCell.Layout.cardInset,
+            bottom: 0,
+            right: StoreReviewCell.Layout.cardInset
+        )
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.backgroundColor = .clear
+        view.showsHorizontalScrollIndicator = false
+        view.register([StoreReviewImageCell.self])
+        view.dataSource = self
+        view.delegate = self
+        return view
+    }()
+    private var images: [SDImage] = []
+    private var imageCollectionHeightConstraint: Constraint?
+    private var bodyTopConstraint: Constraint?
+    private var likeButtonHeightConstraint: Constraint?
+    private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
+    private let replyView = StoreReviewReplyView()
+    private let likeButton = UIButton(type: .system)
+    private let action: StoreSectionAction?
+    private let headerAction: StoreSectionAction?
+    private let likeAction: StoreSectionAction?
+    private let onAction: ((StoreSectionAction) -> Void)?
+
+    init(card: StoreReviewCard, onAction: ((StoreSectionAction) -> Void)?) {
+        self.action = card.link.map { .link($0, clickLog: card.clickLog) }
+        self.headerAction = card.header?.trailingAction?.storeSectionAction.map { $0.withCardId(card.cardId) }
+        self.likeAction = card.like?.storeSectionAction(isSelected: card.like?.isSelected ?? false).map { $0.withCardId(card.cardId) }
+        self.onAction = onAction
+        super.init(frame: .zero)
+        guard card.header != nil else {
+            setupBlindedLayout(card)
+            return
+        }
+        layer.cornerRadius = StoreReviewCell.Layout.cardCornerRadius
+        starsStack.axis = .horizontal
+        starsStack.spacing = 2
+        starsBadgeView.addSubViews([starsStack])
+        starsStack.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(UIEdgeInsets(
+                top: StoreReviewCell.Layout.badgeVerticalInset,
+                left: StoreReviewCell.Layout.badgeHorizontalInset,
+                bottom: StoreReviewCell.Layout.badgeVerticalInset,
+                right: StoreReviewCell.Layout.badgeHorizontalInset
+            ))
+        }
+        addSubViews([
+            headerLabel,
+            headerSubTitleLabel,
+            headerActionButton,
+            badgeStack,
+            imageCollectionView,
+            bodyLabel,
+            likeButton,
+            replyView
+        ])
+        let inset = StoreReviewCell.Layout.cardInset
+        headerLabel.snp.makeConstraints {
+            $0.top.leading.equalToSuperview().inset(inset)
+            $0.trailing.lessThanOrEqualTo(headerSubTitleLabel.snp.leading).offset(-8)
+        }
+        headerActionButton.snp.makeConstraints { $0.centerY.equalTo(headerLabel); $0.trailing.equalToSuperview().inset(inset) }
+        headerSubTitleLabel.snp.makeConstraints {
+            $0.centerY.equalTo(headerLabel)
+            $0.trailing.equalTo(headerActionButton.snp.leading).offset(-6)
+        }
+        badgeStack.snp.makeConstraints {
+            $0.top.equalTo(headerLabel.snp.bottom).offset(6)
+            $0.leading.equalToSuperview().inset(inset)
+            $0.trailing.lessThanOrEqualToSuperview().inset(inset)
+        }
+        imageCollectionView.snp.makeConstraints {
+            $0.top.equalTo(badgeStack.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.leading.trailing.equalToSuperview()
+            imageCollectionHeightConstraint = $0.height.equalTo(StoreReviewCell.Layout.imageSize).constraint
+        }
+        bodyLabel.snp.makeConstraints {
+            bodyTopConstraint = $0.top.equalTo(imageCollectionView.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing).constraint
+            $0.leading.trailing.equalToSuperview().inset(inset)
+        }
+        likeButton.snp.makeConstraints {
+            $0.top.equalTo(bodyLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.leading.equalToSuperview().inset(inset)
+            likeButtonHeightConstraint = $0.height.equalTo(StoreReviewCell.Layout.likeButtonHeight).constraint
+        }
+        replyView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(inset)
+            $0.bottom.equalToSuperview().inset(inset)
+        }
+        if card.reply == nil {
+            replyView.isHidden = true
+            replyView.snp.makeConstraints {
+                $0.top.equalTo(likeButton.snp.bottom)
+                $0.height.equalTo(0)
+            }
+        } else {
+            replyView.snp.makeConstraints {
+                $0.top.equalTo(likeButton.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            }
+        }
+        bind(card)
+        if action != nil {
+            addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapCard)))
+        }
+        if headerAction != nil {
+            headerActionButton.addAction(UIAction { [weak self] _ in self?.didTapHeaderAction() }, for: .touchUpInside)
+        }
+        if likeAction != nil {
+            likeButton.addAction(UIAction { [weak self] _ in self?.didTapLike() }, for: .touchUpInside)
+        }
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    private func setupBlindedLayout(_ card: StoreReviewCard) {
+        layer.cornerRadius = StoreReviewCell.Layout.blindedCardCornerRadius
+        setSDSurfaceStyle(card.style)
+        addSubview(bodyLabel)
+        bodyLabel.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(StoreReviewCell.Layout.blindedCardInset)
+        }
+        bodyLabel.setSDText(card.body)
+    }
+
+    private func bind(_ card: StoreReviewCard) {
+        setSDSurfaceStyle(card.style)
+        headerLabel.setSDText(card.header?.title)
+        headerSubTitleLabel.setSDText(card.header?.subTitle)
+        headerSubTitleLabel.isHidden = card.header?.subTitle == nil
+        headerActionButton.setOptionalSDButton(card.header?.trailingAction)
+        badgeStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        card.metadata?.forEach { badgeStack.addArrangedSubview(makeBadgeView(chip: $0)) }
+        if let style = card.stars?.style {
+            starsBadgeView.setSDSurfaceStyle(style)
+        }
+        starsBadgeView.isHidden = card.stars == nil
+        badgeStack.addArrangedSubview(starsBadgeView)
+        starsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        card.stars?.images.forEach { image in
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFit
+            imageView.setImage(urlString: image.url)
+            imageView.snp.makeConstraints { $0.size.equalTo(CGSize(width: image.style.width, height: image.style.height)) }
+            starsStack.addArrangedSubview(imageView)
+        }
+        images = card.images
+        imageCollectionView.isHidden = card.images.isEmpty
+        imageCollectionHeightConstraint?.update(offset: card.images.isEmpty ? 0 : StoreReviewCell.Layout.imageSize)
+        bodyTopConstraint?.update(offset: card.images.isEmpty ? 0 : StoreReviewCell.Layout.contentSpacing)
+        imageCollectionView.reloadData()
+        bodyLabel.setSDText(card.body)
+        if let reply = card.reply {
+            replyView.bind(reply)
+        }
+        let likeButtonModel = card.like.map { $0.isSelected ? $0.selected : $0.unselected }
+        likeButton.setOptionalSDButton(likeButtonModel)
+        likeButtonHeightConstraint?.update(offset: likeButtonModel?.image.map { CGFloat($0.style.height) } ?? StoreReviewCell.Layout.likeButtonHeight)
+        likeButton.tintColor = likeButtonModel?.text.flatMap { UIColor(hex: $0.fontColor) } ?? Colors.gray100.color
+    }
+
+    private func makeBadgeView(chip: SDChip) -> UIView {
+        let badgeView = UIView()
+        badgeView.layer.cornerRadius = 4
+        badgeView.clipsToBounds = true
+        if let style = chip.style {
+            badgeView.setSDChipStyle(style)
+        }
+        let chipView = SDChipView(spacing: chip.contentSpacing.map { CGFloat($0) } ?? 2)
+        chipView.bind(chip)
+        badgeView.addSubViews([chipView])
+        chipView.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(UIEdgeInsets(
+                top: StoreReviewCell.Layout.badgeVerticalInset,
+                left: StoreReviewCell.Layout.badgeHorizontalInset,
+                bottom: StoreReviewCell.Layout.badgeVerticalInset,
+                right: StoreReviewCell.Layout.badgeHorizontalInset
+            ))
+        }
+        return badgeView
+    }
+
+    @objc private func didTapCard() {
+        guard let action else { return }
+        onAction?(action)
+    }
+
+    private func didTapLike() {
+        guard let likeAction else { return }
+        onAction?(likeAction)
+    }
+
+    private func didTapHeaderAction() {
+        guard let headerAction else { return }
+        onAction?(headerAction)
+    }
+}
+
+extension StoreReviewCardView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        images.count
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let cell: StoreReviewImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        if let image = images[safe: indexPath.item] {
+            cell.bind(image)
+        }
+        return cell
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        CGSize(width: StoreReviewCell.Layout.imageSize, height: StoreReviewCell.Layout.imageSize)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        onTapImage?(indexPath.item)
+    }
+}
+
+private final class StoreReviewImageCell: BaseCollectionViewCell {
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = Colors.gray10.color
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = StoreReviewCell.Layout.imageCornerRadius
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.clear()
+    }
+
+    override func setup() {
+        contentView.addSubview(imageView)
+    }
+
+    override func bindConstraints() {
+        imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+    }
+
+    func bind(_ image: SDImage) {
+        imageView.setImage(urlString: image.url)
+    }
+}
+
+private final class StoreReviewReplyView: UIView {
+    private let tailView = StoreReviewReplyTailView()
+    private let containerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = StoreReviewCell.Layout.replyCornerRadius
+        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        view.clipsToBounds = true
+        return view
+    }()
+    private let titleLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.bold.font(size: 12))
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
+        return label
+    }()
+    private let dateLabel: StoreSectionTextLabel = {
+        let label = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        label.numberOfLines = 1
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return label
+    }()
+    private let bodyLabel = StoreSectionTextLabel(font: Fonts.regular.font(size: 14))
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+        bindConstraints()
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    private func setupViews() {
+        addSubViews([tailView, containerView])
+        containerView.addSubViews([titleLabel, dateLabel, bodyLabel])
+    }
+
+    private func bindConstraints() {
+        tailView.snp.makeConstraints {
+            $0.top.leading.equalToSuperview()
+            $0.size.equalTo(StoreReviewCell.Layout.replyTailSize)
+        }
+        containerView.snp.makeConstraints {
+            $0.top.equalTo(tailView.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(StoreReviewCell.Layout.replyVerticalInset)
+            $0.leading.equalToSuperview().inset(StoreReviewCell.Layout.replyHorizontalInset)
+            $0.trailing.lessThanOrEqualTo(dateLabel.snp.leading).offset(-8)
+        }
+        dateLabel.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().inset(StoreReviewCell.Layout.replyHorizontalInset)
+        }
+        bodyLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(StoreReviewCell.Layout.contentSpacing)
+            $0.leading.trailing.equalToSuperview().inset(StoreReviewCell.Layout.replyHorizontalInset)
+            $0.bottom.equalToSuperview().inset(StoreReviewCell.Layout.replyVerticalInset)
+        }
+    }
+
+    func bind(_ reply: StoreReviewReply) {
+        containerView.setSDSurfaceStyle(reply.style)
+        tailView.fillColor = containerView.backgroundColor ?? Colors.gray10.color
+        titleLabel.setSDText(reply.header.title)
+        dateLabel.setSDText(reply.header.subTitle)
+        dateLabel.isHidden = reply.header.subTitle == nil
+        bodyLabel.setSDText(reply.body)
+    }
+}
+
+private final class StoreReviewReplyTailView: UIView {
+    var fillColor: UIColor = Colors.gray10.color {
+        didSet { shapeLayer.fillColor = fillColor.cgColor }
+    }
+    private let shapeLayer = CAShapeLayer()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .clear
+        shapeLayer.fillColor = fillColor.cgColor
+        layer.addSublayer(shapeLayer)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let path = UIBezierPath()
+        path.move(to: .zero)
+        path.addLine(to: CGPoint(x: 0, y: bounds.height))
+        path.addLine(to: CGPoint(x: bounds.width, y: bounds.height))
+        path.close()
+        shapeLayer.frame = bounds
+        shapeLayer.path = path.cgPath
+    }
+}
+
+private extension StoreSectionAction {
+    func withCardId(_ cardId: String) -> Self {
+        guard case let .custom(action, clickLog, _) = self else { return self }
+        return .custom(action, clickLog: clickLog, cardId: cardId)
+    }
+}

@@ -156,17 +156,20 @@ public final class MyPageViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { owner, route in
-                let vc = switch route {
-                case .registeredStoreList: RegisteredStoreListViewController()
-                case .review(let viewModel): ReviewTabViewController(viewModel: viewModel)
-                case .visitStore(let viewModel): VisitStoreListViewController(viewModel: viewModel)
-                case .medal(let viewModel): MyMedalViewController(viewModel: viewModel)
-                case .storeDetail(let storeId): Environment.storeInterface.getStoreDetailViewController(storeId: storeId)
-                case .bossStoreDetail(let storeId): Environment.storeInterface.getBossStoreDetailViewController(storeId: storeId, shouldPushReviewList: false)
-                case .favoriteStore: BookmarkListViewController()
-                case .pollDetail(let pollId): Environment.communityInterface.getPollDetailViewController(pollId: pollId)
+                let vc: UIViewController
+                switch route {
+                case .registeredStoreList: vc = RegisteredStoreListViewController()
+                case .review(let viewModel): vc = ReviewTabViewController(viewModel: viewModel)
+                case .visitStore(let viewModel): vc = VisitStoreListViewController(viewModel: viewModel)
+                case .medal(let viewModel): vc = MyMedalViewController(viewModel: viewModel)
+                case .storeDetail(let storeId): vc = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
+                case .bossStoreDetail(let storeId):
+                    guard let storeId = Int(storeId) else { return }
+                    vc = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
+                case .favoriteStore: vc = BookmarkListViewController()
+                case .pollDetail(let pollId): vc = Environment.communityInterface.getPollDetailViewController(pollId: pollId)
                 case .myCoupons:
-                    Environment.storeInterface.getCouponListViewController(onReload: { [weak self] in
+                    vc = Environment.storeInterface.getCouponListViewController(onReload: { [weak self] in
                         self?.viewModel.input.reloadTrigger.send()
                     })
                 }

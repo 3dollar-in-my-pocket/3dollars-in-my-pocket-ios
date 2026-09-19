@@ -26,6 +26,9 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
             case .basicCard(let card):
                 let cell: HomeListStoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(card)
+                cell.onTapImage = { [weak viewModel] images, index in
+                    viewModel?.input.didTapImage.send((images: images, index: index))
+                }
                 return cell
             case .admobCard:
                 let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)

@@ -16,23 +16,23 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     var remoteConfigService: AppInterface.RemoteConfigProtocol {
         return RemoteConfigService.shared
     }
-    
+
     var kakaoSigninManager: AppInterface.SigninManagerProtocol {
         return KakaoSigninManager.shared
     }
-    
+
     var appleSigninManager: AppInterface.SigninManagerProtocol {
         return AppleSigninManager.shared
     }
-    
+
     var deepLinkHandler: DeepLinkHandlerProtocol {
         return DeepLinkHandler.shared
     }
-    
+
     var photoManager: AppInterface.PhotoManagerProtocol {
         return CombinePhotoManager.shared
     }
-    
+
     var onClearSession: (() -> Void) {
         let onClearSession = {
             Preference.shared.clear()
@@ -41,52 +41,52 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
                 sceneDelegate.goToSignIn()
             }
         }
-        
+
         return onClearSession
     }
-    
+
     var globalEventBus: GlobalEventBusProtocol {
         return GlobalEventBus.shared
     }
-    
+
     var kakaoChannelUrl: String {
         return Bundle.kakaoChannelUrl
     }
-    
+
     func createAdBannerView(adType: AdType) -> AdBannerViewProtocol {
         return AdBannerView(adType: adType)
     }
-    
+
     func createWebViewController(title: String, url: String) -> UIViewController {
         return WebViewController(title: title, url: url)
     }
-    
-    func getFCMToken(completion: @escaping ((String) -> ())) {
-        Messaging.messaging().token { token, error in
+
+    func getFCMToken(completion: @escaping ((String) -> Void)) {
+        Messaging.messaging().token { token, _ in
             guard let token = token else {
                 print("⚠️Error in send FCM token")
                 return
             }
-            
+
             completion(token)
         }
     }
-    
+
     func goToMain() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
         sceneDelegate.goToMain()
     }
-    
+
     func goToSignin() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
         sceneDelegate.goToSignIn()
     }
-    
+
     func createWebViewController(webviewType: WebViewType) -> UIViewController {
         return WebViewController.instance(webviewType: webviewType)
     }
-    
-    func shareKakao(storeId: Int, storeType: Model.StoreType, storeName: String, latitude: Double, longitude: Double) {
+
+    func shareKakao(storeId: Int, storeName: String, latitude: Double, longitude: Double) {
         let urlString =
         "https://map.kakao.com/link/map/\(storeName),\(latitude),\(longitude)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let webURL = URL(string: urlString)
@@ -94,12 +94,10 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             webUrl: webURL,
             mobileWebUrl: webURL,
             androidExecutionParams: [
-                "storeId": String(storeId),
-                "storeType": storeType.kakaoParameterValue
+                "storeId": String(storeId)
             ],
             iosExecutionParams: [
-                "storeId": String(storeId),
-                "storeType": storeType.kakaoParameterValue
+                "storeId": String(storeId)
             ]
         )
         let content = Content(
@@ -116,7 +114,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             buttonTitle: nil,
             buttons: [Button(title: Strings.storeDetailShareButton, link: link)]
         )
-        
+
         ShareApi.shared.shareDefault(templatable: feedTemplate) { linkResult, error in
             if let error = error,
                let rootViewController = SceneDelegate.shared?.window?.rootViewController {
@@ -141,21 +139,21 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             }
         }
     }
-    
+
     func requestATTIfNeeded() {
         if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
-            ATTrackingManager.requestTrackingAuthorization { _ in                
+            ATTrackingManager.requestTrackingAuthorization { _ in
             }
         }
     }
-    
+
     func sendPageView(screenName: String, type: AnyObject.Type) {
         Analytics.logEvent(AnalyticsEventScreenView, parameters: [
             AnalyticsParameterScreenName: screenName,
             AnalyticsParameterScreenClass: NSStringFromClass(type.self)
         ])
     }
-    
+
     func sendPageView(screenName: String, type: AnyObject.Type, parameters: [String: Any]?) {
         var pageViewParameters: [String: Any] = [
             AnalyticsParameterScreenName: screenName,
@@ -168,21 +166,21 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
 
         Analytics.logEvent(AnalyticsEventScreenView, parameters: pageViewParameters)
     }
-    
-    func sendEvent(name: String, parameters: [String : Any]?) {
+
+    func sendEvent(name: String, parameters: [String: Any]?) {
         Analytics.logEvent(name, parameters: parameters)
     }
-    
+
     func setGender(gender: Gender) {
         Analytics.setUserProperty(gender.rawValue, forName: "user_gender")
     }
-    
+
     func setAge(birthdayYear: Int) {
         let age = Calendar.current.component(.year, from: Date()) - birthdayYear
-        
+
         Analytics.setUserProperty(String(age), forName: "user_age")
     }
-    
+
     func showFrontAdmob(adType: AdType, viewController: UIViewController) {
         Task {
             do {
@@ -194,7 +192,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
             }
         }
     }
-    
+
     func createBookmarkURL(folderId: String) -> String {
         return Deeplink.bookmark(folderId: folderId).url?.absoluteString ?? ""
     }

@@ -272,6 +272,10 @@ public enum StoreStrings: Sendable {
     public enum Menu: Sendable {
       /// 메뉴 더 보기
       public static let more = StoreStrings.tr("Localization", "store_detail.menu.more")
+      /// 메뉴 %d개 더보기
+      public static func moreFormat(_ p1: Int) -> String {
+        return StoreStrings.tr("Localization", "store_detail.menu.more_format",p1)
+      }
       /// 길 안내
       public static let navigation = StoreStrings.tr("Localization", "store_detail.menu.navigation")
       /// 리뷰쓰기

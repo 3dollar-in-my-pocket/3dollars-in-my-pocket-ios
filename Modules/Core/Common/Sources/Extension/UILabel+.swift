@@ -64,10 +64,11 @@ public extension UILabel {
         }
         textColor = UIColor(hex: sdText.fontColor)
         if sdText.isHtml {
+            let baseFont = customFont ?? font
             var parser = ZHTMLParserBuilder.initWithDefault()
 
-            if let customFont {
-                let rootStyle = MarkupStyle(font: MarkupStyleFont(customFont))
+            if let baseFont {
+                let rootStyle = MarkupStyle(font: MarkupStyleFont(sdBaseFont: baseFont))
                 parser = parser.set(rootStyle: rootStyle)
             }
 
@@ -79,7 +80,8 @@ public extension UILabel {
             )
             parser = parser.set(B_HTMLTagName(), withCustomStyle: boldStyle)
 
-            attributedText = parser.build().render(sdText.text)
+            let rendered = parser.build().render(sdText.text)
+            attributedText = baseFont.map { rendered.applyingFontFamily(of: $0) } ?? rendered
         } else {
             text = sdText.text
             if let font = customFont {
@@ -94,7 +96,7 @@ public extension UILabel {
 
     func setSDChip(_ sdChip: SDChip) {
         if let style = sdChip.style {
-            backgroundColor = UIColor(hex: style.backgroundColor)
+            setSDChipStyle(style)
         }
         setSDText(sdChip.text)
     }
