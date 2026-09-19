@@ -485,6 +485,16 @@ Protocol + Impl 구조 및 API enum + RequestType 확장 패턴으로 네트워�
 
 **참고 파일**: `.claude/skills/ios-repository-pattern/SKILL.md`
 
+### pr-body (3dollars 플러그인)
+브랜치의 지라 티켓 → 테크스펙 → diff → 테스트·드리프트·증거를 모아 `.github/PULL_REQUEST_TEMPLATE.md` 형식의 간단명료한 본문을 채우고 PR 생성/갱신까지 합니다. 이 레포의 PR은 이 스킬로 만듭니다.
+
+**사용법**: `/3dollars:pr-body`
+
+### drift (3dollars 플러그인)
+테크스펙 요구사항·TC와 diff를 대조해 "요구사항 → 구현 → 상태" 표와 스펙 밖 변경 목록을 냅니다.
+
+**사용법**: `/3dollars:drift` 또는 `/3dollars:drift TH-1234`
+
 ### test-cases (3dollars 플러그인)
 현재 브랜치의 지라 티켓 → 노션 테크스펙 TC 목록을 읽어 TC별 테스트 케이스 표를 제안하고, 승인 후 테스트 코드 생성·실행·PR용 커버리지 표까지 만듭니다. 레포가 아니라 `3dollars` 플러그인에 있습니다.
 
