@@ -13,7 +13,7 @@ final class FeedCell: BaseCollectionViewCell {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.layoutMargins = .init(top: 20, left: 16, bottom: 16, right: 16)
+        stackView.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()
@@ -102,7 +102,7 @@ final class FeedCell: BaseCollectionViewCell {
             bodyView.bind(body: body)
             stackView.addArrangedSubview(bodyView, previousSpace: 12)
             bodyView.snp.makeConstraints {
-                $0.height.equalTo(FeedCellContentOnlyBodyView.Layout.height)
+                $0.height.equalTo(FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body))
             }
         default:
             return
@@ -153,8 +153,8 @@ extension FeedResponse {
             bodyHeight = FeedCellContentWithTitleAndImagesBodyView.Layout.calculateHeight(body: body)
         case let body as ContentWithImagesFeedBodyResponse:
             bodyHeight = FeedCellContentWithImagesBodyView.Layout.calculateHeight(body: body)
-        case let _ as ContentOnlyFeedBodyResponse:
-            bodyHeight = FeedCellContentOnlyBodyView.Layout.height
+        case let body as ContentOnlyFeedBodyResponse:
+            bodyHeight = FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body)
         default:
             bodyHeight = 0
         }

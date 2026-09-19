@@ -6,7 +6,30 @@ import Model
 
 final class FeedCellContentOnlyBodyView: BaseView {
     enum Layout {
-        static let height: CGFloat = 36
+        static let verticalPadding: CGFloat = 10
+        static let contentLeadingImageWidth: CGFloat = 20
+        static let contentLineHeight: CGFloat = 20
+
+        static func calculateHeight(body: ContentOnlyFeedBodyResponse) -> CGFloat {
+            var width = UIUtils.windowBounds.width - 88
+            if body.contentLeadingImage != nil {
+                width -= contentLeadingImageWidth
+            }
+            let label = makeContentLabel()
+            label.setSDText(body.content, customFont: Fonts.regular.font(size: 14), lineHeight: contentLineHeight)
+            let contentHeight = ceil(label.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude)).height)
+
+            return contentHeight + verticalPadding * 2
+        }
+
+        static func makeContentLabel() -> UILabel {
+            let label = UILabel()
+            label.font = Fonts.regular.font(size: 14)
+            label.textColor = Colors.gray80.color
+            label.numberOfLines = 0
+            label.textAlignment = .left
+            return label
+        }
     }
     
     private let stackView: UIStackView = {
@@ -23,14 +46,7 @@ final class FeedCellContentOnlyBodyView: BaseView {
         return imageView
     }()
     
-    private let contentLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray80.color
-        label.numberOfLines = 1
-        label.textAlignment = .left
-        return label
-    }()
+    private let contentLabel = Layout.makeContentLabel()
     
     override func setup() {
         layer.cornerRadius = 12
@@ -39,7 +55,8 @@ final class FeedCellContentOnlyBodyView: BaseView {
         
         stackView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(12)
-            $0.centerY.equalToSuperview()
+            $0.top.equalToSuperview().offset(Layout.verticalPadding)
+            $0.bottom.equalToSuperview().offset(-Layout.verticalPadding)
             $0.trailing.lessThanOrEqualToSuperview().offset(-12)
         }
     }
@@ -53,7 +70,11 @@ final class FeedCellContentOnlyBodyView: BaseView {
             }
         }
         
-        contentLabel.setSDText(body.content)
+        contentLabel.setSDText(
+            body.content,
+            customFont: Fonts.regular.font(size: 14),
+            lineHeight: Layout.contentLineHeight
+        )
         stackView.addArrangedSubview(contentLabel)
         backgroundColor = UIColor(hex: body.style.backgroundColor)
     }
