@@ -182,13 +182,13 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     }
 
     func showFrontAdmob(adType: AdType, viewController: UIViewController) {
+        let unitId = Bundle.getAdmobId(adType: adType)
         Task {
             do {
-                let ad = try await InterstitialAd.load(
-                    with: Bundle.getAdmobId(adType: adType), request: Request())
+                let ad = try await InterstitialAd.load(with: unitId, request: Request())
                 await ad.present(from: viewController)
             } catch {
-                print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                AdMobErrorReporter.report(adType: adType, unitId: unitId, from: viewController, error: error)
             }
         }
     }
