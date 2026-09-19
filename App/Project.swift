@@ -362,6 +362,7 @@ let project = Project(
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
                 .Feature.store,
+                .Feature.home,
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,
