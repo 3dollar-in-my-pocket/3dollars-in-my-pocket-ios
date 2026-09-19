@@ -47,21 +47,23 @@ xcodebuild build \
 
 ### 테스트
 ```bash
-# 전체 테스트 실행
+# 전체 테스트 실행 (스킴은 three-dollar-in-my-pocketTests. -debug 스킴에는 test action이 없습니다)
 xcodebuild test \
   -workspace 3dollar-in-my-pocket.xcworkspace \
-  -scheme three-dollar-in-my-pocket-debug \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+  -scheme three-dollar-in-my-pocketTests \
+  -destination 'platform=iOS Simulator,id=<xcrun simctl list devices available 로 확인한 UDID>'
 
-# 특정 테스트 파일 실행
+# 특정 테스트 클래스만
 xcodebuild test \
   -workspace 3dollar-in-my-pocket.xcworkspace \
-  -scheme three-dollar-in-my-pocket-debug \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
-  -only-testing:three-dollar-in-my-pocketTests/ViewModelTests/{TestClassName}
+  -scheme three-dollar-in-my-pocketTests \
+  -destination 'platform=iOS Simulator,id=<UDID>' \
+  -only-testing:three-dollar-in-my-pocketTests/{TestClassName}
 ```
 
-**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
+**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/` 아래 `ViewModelTests/`(화면 로직) · `ServiceTests/`(서비스·매니저) · `DecodingTests/`(응답 파싱) · `Support/`(공용 목·픽스처 로더)
+
+**테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_TC{n}_{조건}_{기대결과}()`. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/test-cases`
 
 ### 린트 검증 (SwiftLint + 모듈 의존성)
 ```bash
@@ -483,6 +485,13 @@ Protocol + Impl 구조 및 API enum + RequestType 확장 패턴으로 네트워�
 
 **참고 파일**: `.claude/skills/ios-repository-pattern/SKILL.md`
 
+### test-cases
+현재 브랜치의 지라 티켓 → 노션 테크스펙 TC 목록을 읽어 TC별 테스트 케이스 표를 제안하고, 승인 후 테스트 코드 생성·실행·PR용 커버리지 표까지 만듭니다.
+
+**사용법**: `/test-cases` (브랜치명에서 티켓 키 추출) 또는 `/test-cases TH-1234`
+
+**참고 파일**: `.claude/skills/test-cases/SKILL.md`, `docs/process/testing.md`
+
 ### ios-viewmodel-test-generator
 ViewModel의 유저 플로우를 기반으로 XCTest 테스트 코드를 자동 생성합니다.
 
@@ -494,7 +503,7 @@ ViewModel의 유저 플로우를 기반으로 XCTest 테스트 코드를 자동 
 
 **참고 파일**: `.claude/skills/ios-viewmodel-test-generator/SKILL.md`
 
-**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
+**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/ViewModelTests/`
 
 ### server-schema
 서버 OpenAPI 스키마(`https://dev.threedollars.co.kr/api/v3/api-docs`)를 조회해 API 요청/응답 모델 구조를 확인합니다.

@@ -16,7 +16,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
 
     func test_load하면_sections이전달된다() async throws {
         // Given
-        let repository = MockStoreSectionsRepository(result: .success(try makeResponse()))
+        let repository = MockStoreRepository(fetchStoreScreenV2Result: .success(try makeResponse()))
         let viewModel = makeViewModel(repository: repository)
         let expectation = expectation(description: "sections")
         var receivedSections: [any StoreSectionComponent] = []
@@ -36,7 +36,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
     func test_네트워크실패하면_error가전달된다() async {
         // Given
         let expectedError = NSError(domain: "StoreSections", code: -1)
-        let repository = MockStoreSectionsRepository(result: .failure(expectedError))
+        let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(expectedError))
         let viewModel = makeViewModel(repository: repository)
         let expectation = expectation(description: "error")
         var receivedError: Error?
@@ -55,7 +55,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
 
     func test_리뷰작성액션이면_리뷰작성Route가발행된다() {
         // Given
-        let repository = MockStoreSectionsRepository(result: .failure(NSError(domain: "unused", code: 0)))
+        let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(NSError(domain: "unused", code: 0)))
         let viewModel = makeViewModel(repository: repository)
         let expectation = expectation(description: "route")
         viewModel.output.route.sink { route in
@@ -74,7 +74,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
-    private func makeViewModel(repository: MockStoreSectionsRepository) -> StoreSectionsViewModel {
+    private func makeViewModel(repository: MockStoreRepository) -> StoreSectionsViewModel {
         StoreSectionsViewModel(
             config: .init(storeId: 1, latitude: 37.5, longitude: 127.0),
             dependency: .init(storeRepository: repository, logManager: MockLogManager())
@@ -233,39 +233,4 @@ final class StoreSectionsViewModelTests: XCTestCase {
         """
         return try JSONDecoder().decode(StoreScreenV2Response.self, from: Data(json.utf8))
     }
-}
-
-private final class MockLogManager: LogManagerProtocol {
-    func sendPageView(screen: ScreenName, type: AnyObject.Type) { }
-    func sendPageView(screen: ScreenName, type: AnyObject.Type, extraParameters: [ParameterName: Any]?) { }
-    func sendEvent(event: any LogEventType) { }
-}
-
-private final class MockStoreSectionsRepository: StoreRepository {
-    let result: Result<StoreScreenV2Response, Error>
-
-    init(result: Result<StoreScreenV2Response, Error>) {
-        self.result = result
-    }
-
-    func fetchStoreScreenV2(input: FetchStoreScreenInput) async -> Result<StoreScreenV2Response, Error> { result }
-    func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> { fatalError() }
-    func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error> { fatalError() }
-    func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error> { fatalError() }
-    func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> { fatalError() }
-    func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> { fatalError() }
-    func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> { fatalError() }
-    func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> { fatalError() }
-    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { fatalError() }
-    func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> { fatalError() }
-    func deletePhoto(photoId: Int) async -> Result<String?, Error> { fatalError() }
-    func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> { fatalError() }
-    func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> { fatalError() }
-    func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error> { fatalError() }
-    func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error> { fatalError() }
-    func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> { fatalError() }
-    func fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error> { fatalError() }
-    func recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<String?, Error> { fatalError() }
-    func fetchStorePreview(input: FetchStoreScreenInput) async -> Result<StorePreviewScreenResponse, Error> { fatalError() }
-    func fetchStoreContributorHistories(storeId: Int, cursor: String?) async -> Result<StoreContributorHistoriesSection, Error> { fatalError() }
 }
