@@ -4,7 +4,6 @@ import Common
 import Membership
 
 import KakaoSDKAuth
-import netfox
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -21,7 +20,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         #if DEBUG
-        window = ShakeDetectingWindow(frame: windowScene.coordinateSpace.bounds)
+        let shakeDetectingWindow = ShakeDetectingWindow(frame: windowScene.coordinateSpace.bounds)
+        shakeDetectingWindow.onShake = { [weak shakeDetectingWindow] in
+            guard let shakeDetectingWindow else { return }
+            DebugMenuPresenter(items: [
+                NetfoxDebugMenuItem(),
+                AdInspectorDebugMenuItem(),
+                AdvertisingIdentifierDebugMenuItem()
+            ]).present(in: shakeDetectingWindow)
+        }
+        window = shakeDetectingWindow
         #else
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         #endif
@@ -96,19 +104,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let userInfo = connectionOptions.notificationResponse?.notification.request.content.userInfo,
               let deepLink = userInfo["link"] as? String else { return }
         DeepLinkHandler.shared.handle(deepLink)
-    }
-}
-
-extension SceneDelegate {
-    final class ShakeDetectingWindow: UIWindow {
-        override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-            if motion == .motionShake {
-                let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
-                notificationFeedbackGenerator.prepare()
-                notificationFeedbackGenerator.notificationOccurred(.success)
-                NFX.sharedInstance().show()
-            }
-            super.motionEnded(motion, with: event)
-        }
     }
 }
