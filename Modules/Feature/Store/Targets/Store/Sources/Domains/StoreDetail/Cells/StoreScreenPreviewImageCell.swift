@@ -30,6 +30,6 @@ final class StoreScreenPreviewImageCell: BaseCollectionViewCell {
     }
 
     func bind(_ image: SDImage) {
-        imageView.setSDImage(image)
+        imageView.setImage(urlString: image.url)
     }
 }
