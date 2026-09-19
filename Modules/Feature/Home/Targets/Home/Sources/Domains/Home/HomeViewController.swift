@@ -93,12 +93,7 @@ public final class HomeViewController: BaseViewController {
         if isFirstLoad {
             isFirstLoad = false
 
-            let distance = homeView.mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: homeView.mapView.contentBounds.boundsLatLngs[1])
-
-            viewModel.input.onMapLoad.send(distance / 3)
+            viewModel.input.onMapLoad.send(())
         }
     }
 
@@ -196,6 +191,20 @@ public final class HomeViewController: BaseViewController {
                     location: cameraPosition.0,
                     zoomLevel: cameraPosition.1
                 )
+            }
+            .store(in: &cancellables)
+
+        // 초기 줌 레벨이 적용된 뒤의 실제 조회 반경을 측정해 첫 조회에 사용한다.
+        viewModel.output.initialCameraPosition
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, cameraPosition in
+                owner.homeView.moveCamera(
+                    location: cameraPosition.0,
+                    zoomLevel: cameraPosition.1,
+                    animated: false
+                )
+                owner.viewModel.input.onInitialMapDistanceReady.send(owner.homeView.mapMaxDistance)
             }
             .store(in: &cancellables)
 
@@ -521,12 +530,7 @@ extension HomeViewController: NMFMapViewCameraDelegate {
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             )
-            let distance = mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: mapView.contentBounds.boundsLatLngs[1])
-
-            viewModel.input.changeMaxDistance.send(distance / 3)
+            viewModel.input.changeMaxDistance.send(homeView.mapMaxDistance)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
     }
@@ -537,12 +541,7 @@ extension HomeViewController: NMFMapViewCameraDelegate {
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             )
-            let distance = mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: mapView.contentBounds.boundsLatLngs[1])
-
-            viewModel.input.changeMaxDistance.send(distance / 3)
+            viewModel.input.changeMaxDistance.send(homeView.mapMaxDistance)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
     }

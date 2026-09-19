@@ -22,7 +22,9 @@ extension HomeViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let onLoadFilter = PassthroughSubject<Void, Never>()
-        let onMapLoad = PassthroughSubject<Double, Never>()
+        let onMapLoad = PassthroughSubject<Void, Never>()
+        /// 최초 카메라가 초기 줌 레벨로 이동을 마친 뒤 측정한 실제 조회 반경.
+        let onInitialMapDistanceReady = PassthroughSubject<Double, Never>()
         let changeMaxDistance = PassthroughSubject<Double, Never>()
         let changeMapLocation = PassthroughSubject<CLLocation, Never>()
         let onTapCategoryFilter = PassthroughSubject<Void, Never>()
@@ -55,6 +57,8 @@ extension HomeViewModel {
         let filterDatasource = CurrentValueSubject<[HomeFilterCollectionView.CellType], Never>([])
         let isHiddenResearchButton = PassthroughSubject<Bool, Never>()
         let cameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
+        /// 최초 진입 카메라 이동. 이동 후 조회 반경을 다시 측정해야 하므로 일반 이동과 분리한다.
+        let initialCameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
         let focusBounds = PassthroughSubject<LocationBoundsResponse, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
         /// 바텀시트로 전달할 카드 목록.
@@ -182,8 +186,7 @@ final class HomeViewModel: BaseViewModel {
 
         let getCurrentLocation = input.onMapLoad
             .withUnretained(self)
-            .handleEvents(receiveOutput: { owner, distance in
-                owner.state.mapMaxDistance = distance
+            .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
             .flatMap { owner, _  in
@@ -206,6 +209,8 @@ final class HomeViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         // 최초 카메라는 위치와 필터 설정 응답이 모두 준비된 뒤 한 번만 이동한다.
+        // 초기 줌 레벨은 서버가 내려주므로, 카메라 이동 전에 측정한 반경은 실제 보이는 범위와 다르다.
+        // 따라서 첫 조회는 이동이 끝난 뒤 받은 onInitialMapDistanceReady 에서 시작한다.
         Publishers.CombineLatest(getCurrentLocation, filterScreenLoaded)
             .first()
             .withUnretained(self)
@@ -214,7 +219,15 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.resultCameraPosition = location
                 owner.state.currentLocation = location
                 owner.state.newCameraPosition = location
-                owner.output.cameraPosition.send((location, owner.state.initialMapZoomLevel))
+                owner.output.initialCameraPosition.send((location, owner.state.initialMapZoomLevel))
+            })
+            .store(in: &cancellables)
+
+        input.onInitialMapDistanceReady
+            .withUnretained(self)
+            .sink(receiveValue: { (owner: HomeViewModel, distance: Double) in
+                owner.state.mapMaxDistance = distance
+                owner.state.newMapMaxDistance = distance
                 owner.fetchInitialCards()
             })
             .store(in: &cancellables)
