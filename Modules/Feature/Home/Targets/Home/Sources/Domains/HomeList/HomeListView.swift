@@ -22,6 +22,13 @@ final class HomeListView: BaseView {
         return view
     }()
 
+    let mapViewButton: MapViewButton = {
+        let button = MapViewButton()
+        button.alpha = 0
+        button.isHidden = true
+        return button
+    }()
+
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.backgroundColor = .clear
@@ -36,7 +43,8 @@ final class HomeListView: BaseView {
 
         addSubViews([
             dragIndicatorView,
-            collectionView
+            collectionView,
+            mapViewButton
         ])
     }
 
@@ -52,6 +60,17 @@ final class HomeListView: BaseView {
             $0.top.equalTo(dragIndicatorView.snp.bottom)
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
+
+        mapViewButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-MapViewButton.Layout.bottomInset)
+        }
+    }
+
+    func updateMapButton(progress: CGFloat) {
+        let clamped = min(max(progress, 0), 1)
+        mapViewButton.alpha = clamped
+        mapViewButton.isHidden = clamped <= 0
     }
 
     private func createLayout() -> UICollectionViewLayout {
