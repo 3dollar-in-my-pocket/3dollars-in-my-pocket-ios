@@ -302,6 +302,8 @@ public final class HomeViewController: BaseViewController {
                     Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
                 case .presentFeedList(let viewModel):
                     owner.presentFeedList(viewModel: viewModel)
+                case .presentPhotoViewer(let imageUrls, let selectedIndex):
+                    owner.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: selectedIndex)
                 }
             }
             .store(in: &cancellables)
@@ -324,6 +326,9 @@ public final class HomeViewController: BaseViewController {
         // 바텀시트 → 홈 ViewModel 단방향 릴레이.
         bottomSheetVM.output.didTapCardAt
             .subscribe(viewModel.input.bottomSheetDidTapCard)
+            .store(in: &cancellables)
+        bottomSheetVM.output.didTapImageAt
+            .subscribe(viewModel.input.bottomSheetDidTapImage)
             .store(in: &cancellables)
         bottomSheetVM.output.willLoadMore
             .subscribe(viewModel.input.bottomSheetWillLoadMore)
@@ -819,6 +824,14 @@ extension HomeViewController {
         guard let fpc = storePreviewBottomSheetController else { return }
         fpc.layout = StorePreviewLayout(visibleHeight: height)
         fpc.invalidateLayout()
+    }
+
+    private func presentPhotoViewer(imageUrls: [String], selectedIndex: Int) {
+        let viewController = Environment.storeInterface.getPhotoViewerViewController(
+            imageUrls: imageUrls,
+            selectedIndex: selectedIndex
+        )
+        present(viewController, animated: true)
     }
 
     private func presentStorePreviewUploadPhoto(storeId: Int) {

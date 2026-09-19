@@ -372,7 +372,12 @@ public final class StoreSectionsViewController: BaseViewController {
                 cell.bind(section); cell.onAction = actionHandler; return cell
             case let section as StoreScreenPreviewSection:
                 let cell: StoreScreenPreviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
+                cell.bind(section)
+                cell.onAction = actionHandler
+                cell.onTapImage = { [weak self] images, index in
+                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
+                }
+                return cell
             case let section as StoreEditSection:
                 let cell: StoreEditCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section); cell.onAction = actionHandler; return cell

@@ -44,6 +44,7 @@ extension HomeViewModel {
         // From bottom sheet
         let bottomSheetWillLoadMore = PassthroughSubject<Void, Never>()
         let bottomSheetDidTapCard = PassthroughSubject<Int, Never>()
+        let bottomSheetDidTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
     }
 
     struct Output {
@@ -103,6 +104,7 @@ extension HomeViewModel {
         case deepLink(SDLink)
         case presentAccountInfo(BaseViewModel)
         case presentFeedList(FeedListViewModel)
+        case presentPhotoViewer(imageUrls: [String], selectedIndex: Int)
     }
 
     struct Dependency {
@@ -454,6 +456,14 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: HomeViewModel, index: Int) in
                 owner.handleBottomSheetCardTap(at: index)
+            }
+            .store(in: &cancellables)
+
+        input.bottomSheetDidTapImage
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, payload) in
+                let imageUrls = payload.images.map(\.url)
+                owner.output.route.send(.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: payload.index))
             }
             .store(in: &cancellables)
     }

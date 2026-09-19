@@ -15,6 +15,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
+    var onTapImage: (([SDImage], Int) -> Void)?
     private let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
@@ -131,6 +132,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         imageCollectionView.isHidden = true
         imageCollectionView.reloadData()
         onAction = nil
+        onTapImage = nil
     }
 
     override func setup() {
@@ -327,6 +329,11 @@ extension StoreScreenPreviewCell: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == imageCollectionView {
+            onTapImage?(images, indexPath.item)
+            return
+        }
+
         guard collectionView == actionCollectionView,
               let action = actionBars[safe: indexPath.item]?.storeSectionAction else { return }
         onAction?(action)
