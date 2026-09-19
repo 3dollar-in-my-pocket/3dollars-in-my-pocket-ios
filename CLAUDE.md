@@ -63,7 +63,7 @@ xcodebuild test \
 
 **테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/` 아래 `ViewModelTests/`(화면 로직) · `ServiceTests/`(서비스·매니저) · `DecodingTests/`(응답 파싱) · `Support/`(공용 목·픽스처 로더)
 
-**테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_TC{n}_{조건}_{기대결과}()`. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/test-cases`
+**테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_TC{n}_{조건}_{기대결과}()`. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/3dollars:test-cases`
 
 ### 린트 검증 (SwiftLint + 모듈 의존성)
 ```bash
@@ -485,12 +485,12 @@ Protocol + Impl 구조 및 API enum + RequestType 확장 패턴으로 네트워�
 
 **참고 파일**: `.claude/skills/ios-repository-pattern/SKILL.md`
 
-### test-cases
-현재 브랜치의 지라 티켓 → 노션 테크스펙 TC 목록을 읽어 TC별 테스트 케이스 표를 제안하고, 승인 후 테스트 코드 생성·실행·PR용 커버리지 표까지 만듭니다.
+### test-cases (3dollars 플러그인)
+현재 브랜치의 지라 티켓 → 노션 테크스펙 TC 목록을 읽어 TC별 테스트 케이스 표를 제안하고, 승인 후 테스트 코드 생성·실행·PR용 커버리지 표까지 만듭니다. 레포가 아니라 `3dollars` 플러그인에 있습니다.
 
-**사용법**: `/test-cases` (브랜치명에서 티켓 키 추출) 또는 `/test-cases TH-1234`
+**사용법**: `/3dollars:test-cases` (브랜치명에서 티켓 키 추출) 또는 `/3dollars:test-cases TH-1234`
 
-**참고 파일**: `.claude/skills/test-cases/SKILL.md`, `docs/process/testing.md`
+**참고 파일**: `docs/process/testing.md`
 
 ### ios-viewmodel-test-generator
 ViewModel의 유저 플로우를 기반으로 XCTest 테스트 코드를 자동 생성합니다.

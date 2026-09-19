@@ -7,7 +7,7 @@
 
 ```
 노션 테크스펙 TC-1..n
-   │  /test-cases  (브랜치명 → 티켓 키 → 지라 `테크스펙` 필드 → 노션)
+   │  /3dollars:test-cases  (브랜치명 → 티켓 키 → 지라 `테크스펙` 필드 → 노션)
    ▼
 TC별 테스트 케이스 표 (자연어, 자동/수동 분류)  ──▶ 사람 승인
    │
@@ -67,6 +67,16 @@ xcodebuild test \
 
 시뮬레이터는 `xcrun simctl list devices available | grep iPhone`으로 고른다. `generic/platform=iOS Simulator`는 아키텍처 에러로 실패한다.
 Buildable Folders 구조라 테스트 파일·픽스처를 추가해도 `make project`는 필요 없다. 단, 새 Feature 모듈을 `@testable import` 하려면 `App/Project.swift`의 테스트 타깃 `dependencies`에 `.Feature.xxx`를 추가하고 `make project`.
+
+## CI (PR 증거)
+
+`.github/workflows/test.yml`이 PR마다 macOS 러너에서 전체 테스트를 돌리고:
+- `scripts/test-summary.sh`로 결과를 마크다운(전체 결과 / 실패 목록 / **TC 커버리지 표** / 전체 목록)으로 만들어 **PR 코멘트(갱신형)** 와 Job Summary에 붙인다
+- `tests.xcresult`를 아티팩트로 올린다(14일)
+- 실패한 테스트가 있으면 체크가 빨간불
+
+TC 커버리지 표는 메서드명 `test_TC{n}_` 접두로 뽑는다. 그래서 네이밍 규칙이 곧 증거 규칙이다.
+UI 회귀는 스냅샷 테스트 대신 `3dollars:simulator-test` 스킬로 시나리오별 스크린샷/영상을 찍어 PR 본문 Before/After 표에 첨부한다.
 
 ## ViewModel 테스트 작성법
 
@@ -145,7 +155,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
 
 ## PR에 남기는 것
 
-`/test-cases`가 아래 표를 만들어 PR 본문에 넣는다. 사람은 이 표만 본다.
+`/3dollars:test-cases`가 아래 표를 만들어 PR 본문에 넣는다. 사람은 이 표만 본다.
 
 | TC | 테스트 | 결과 |
 |---|---|---|
