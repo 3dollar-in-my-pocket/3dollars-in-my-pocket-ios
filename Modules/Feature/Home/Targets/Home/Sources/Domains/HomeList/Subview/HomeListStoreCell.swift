@@ -5,13 +5,32 @@ import DesignSystem
 import Model
 
 import Kingfisher
+import SnapKit
 
 final class HomeListStoreCell: BaseCollectionViewCell {
     var onTapImage: (([SDImage], Int) -> Void)?
 
     enum Layout {
-        static let imageRowHeight: CGFloat = 120
+        static let defaultImageSize = CGSize(width: 120, height: 120)
         static let imageSpacing: CGFloat = 4
+        static var imageAvailableWidth: CGFloat {
+            return UIUtils.windowBounds.width - 40
+        }
+
+        static func imageRowHeight(images: [SDImage]) -> CGFloat {
+            return PreviewImageLayout.rowHeight(images: images, defaultHeight: defaultImageSize.height)
+        }
+
+        static func imageSize(images: [SDImage], at index: Int) -> CGSize {
+            return PreviewImageLayout.itemSize(
+                style: images[safe: index]?.style,
+                count: images.count,
+                availableWidth: imageAvailableWidth,
+                spacing: imageSpacing,
+                defaultSize: defaultImageSize
+            )
+        }
+
         static func height(response: HomeListBasicCardResponse) -> CGFloat {
             var height: CGFloat = 16 // top padding
 
@@ -34,7 +53,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
 
             if response.images.isNotEmpty {
                 if hasHeader || hasPrimary || hasSecondary { height += 8 }
-                height += imageRowHeight
+                height += imageRowHeight(images: response.images)
             }
 
             if let body = response.bodies.first, body.text.text.isNotEmpty {
@@ -121,7 +140,6 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     private lazy var imagesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: Layout.imageRowHeight, height: Layout.imageRowHeight)
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing
         layout.sectionInset = .zero
@@ -136,6 +154,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }()
 
     private var images: [SDImage] = []
+    private var imagesHeightConstraint: Constraint?
 
     private let bodyHorizontalStackView: UIStackView = {
         let stackView = UIStackView()
@@ -222,7 +241,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         }
         
         imagesCollectionView.snp.makeConstraints {
-            $0.height.equalTo(Layout.imageRowHeight)
+            self.imagesHeightConstraint = $0.height.equalTo(Layout.defaultImageSize.height).constraint
         }
     }
 
@@ -344,6 +363,9 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         }
         imagesCollectionView.isHidden = false
         self.images = images
+        imagesHeightConstraint?.update(offset: Layout.imageRowHeight(images: images))
+        imagesCollectionView.isScrollEnabled = images.count > PreviewImageLayout.fillMaxCount
+        imagesCollectionView.collectionViewLayout.invalidateLayout()
         imagesCollectionView.reloadData()
     }
 
@@ -377,8 +399,16 @@ extension HomeListStoreCell: UICollectionViewDataSource {
     }
 }
 
-extension HomeListStoreCell: UICollectionViewDelegate {
+extension HomeListStoreCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         onTapImage?(images, indexPath.item)
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        return Layout.imageSize(images: images, at: indexPath.item)
     }
 }
