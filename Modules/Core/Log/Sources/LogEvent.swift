@@ -210,4 +210,5 @@ public enum LogObjectId: String {
     case disappearanceInquiryModal = "disappearance_inquiry_modal"
     case visitInducementModal = "visit_inducement_modal"
     case selectReason = "select_reason"
+    case mapView = "map_view"
 }
