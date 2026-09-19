@@ -63,21 +63,24 @@ xcodebuild test \
 
 **테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
 
-### SwiftLint 검증
+### 린트 검증 (SwiftLint + 모듈 의존성)
 ```bash
-# 전체 검증
-swiftlint lint
+# 전체 검증 (SwiftLint + scripts/check-module-deps.sh)
+make lint
 
-# 자동 수정
-swiftlint --fix
-
-# 특정 디렉토리 검증
-swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
+# SwiftLint 자동 수정
+make lint-fix
 ```
 
 **주의사항**:
-- SwiftLint 오류가 있으면 빌드 실패
-- 코드 작성 후 반드시 SwiftLint 검증 수행
+- SwiftLint는 Xcode 빌드 페이즈에 없습니다. 로컬은 `make lint`, PR은 GitHub Actions `lint.yml`에서 검사합니다
+- 기존 위반은 `.swiftlint-baseline.json` / `scripts/module-deps-baseline.txt`에 동결되어 있습니다. **새 위반만** 실패로 처리되며, 베이스라인에 항목을 추가하는 PR은 사유가 필요합니다
+- 코드 작성 후 반드시 `make lint`를 실행합니다
+
+## 아키텍처 규칙
+
+경계에 관한 규칙 10개는 **[docs/architecture/RULES.md](docs/architecture/RULES.md)** 에 있습니다 (규칙 / 이유 / 예시 / 강제 수단 / 예외).
+`Modules/Core/CLAUDE.md`, `Modules/Feature/CLAUDE.md`는 각 디렉터리에서 지켜야 할 규칙 번호만 요약합니다. 규칙을 바꿀 때는 RULES.md·`.swiftlint.yml`·디렉터리별 CLAUDE.md를 함께 수정합니다.
 
 ## 프로젝트 구조
 
@@ -99,6 +102,7 @@ swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
 - **Network**: API 정의, 리포지토리, 네트워킹 레이어
 - **DependencyInjection**: DI 컨테이너 및 서비스 등록
 - **Log**: 분석 및 로깅 시스템
+- **SDU**: 서버 주도 UI(Server-Driven UI) 렌더링 컴포넌트
 
 ### Feature 모듈 (`Modules/Feature/`)
 - **Home**: 지도 뷰, 가게 목록, 검색 기능
@@ -107,13 +111,14 @@ swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
 - **Community**: 소셜 기능, 투표, 인기 가게
 - **MyPage**: 사용자 프로필, 북마크, 설정
 - **Membership**: 인증 및 사용자 온보딩
+- **Feed**: 우리 동네 소식(지역 피드)
 
 각 피처 모듈 구성:
 - `Targets/{FeatureName}/Sources/`: 메인 구현부
 - `Targets/Interface/Sources/`: 모듈 간 통신을 위한 공개 인터페이스
 - `Targets/Demo/`: 해당 피처의 독립 실행형 데모 앱
 
-### SDU (Server-Driven UI) 모듈 (`Modules/Feature/SDU/`)
+### SDU (Server-Driven UI) 모듈 (`Modules/Core/SDU/`)
 
 SDU 모듈은 서버에서 전달하는 데이터 구조에 따라 동적으로 UI를 렌더링하는 시스템입니다.
 
@@ -144,7 +149,7 @@ viewModel.output.items
 
 **참고 파일**:
 - `Modules/Feature/Store/Targets/Store/Sources/Domains/Contributors/ContributorsViewController.swift`
-- `Modules/Feature/SDU/Targets/SDU/Sources/Cells/SDUCalloutCell.swift`
+- `Modules/Core/SDU/Sources/Cells/SDUCalloutCell.swift`
 
 ## 주요 개발 패턴
 
@@ -383,7 +388,7 @@ public struct MyRepositoryImpl: MyRepository {
 
 ## 코드 스타일/네이밍/구조 규칙
 
-- SwiftLint 규칙(.swiftlint.yml) 및 Swift 표준 컨벤션을 따릅니다
+- SwiftLint 규칙(.swiftlint.yml), 아키텍처 규칙(docs/architecture/RULES.md) 및 Swift 표준 컨벤션을 따릅니다
 - Import 순서: 표준 → 내부모듈 → 서드파티. 각 분류 사이에는 한 줄 띄어서 사용합니다
 - 클래스/구조체/enum: PascalCase, 변수/함수/상수: camelCase
 - 파일 구성: Import → 선언 → Nested Types → Properties → Initializers → Public Methods → Private Methods → Extensions
