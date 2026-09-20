@@ -51,25 +51,25 @@ final class CategorySelectionView: BaseView {
     
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalToSuperview().offset(24)
         }
         
         multiLabel.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
-            $0.left.equalTo(titleLabel.snp.right).offset(12)
+            $0.leading.equalTo(titleLabel.snp.trailing).offset(12)
         }
         
         categoryCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(17)
             $0.bottom.equalTo(selectButton.snp.top).offset(-28)
         }
         
         selectButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
         }
     }

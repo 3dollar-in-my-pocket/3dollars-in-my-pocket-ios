@@ -52,7 +52,7 @@ final class MedalHeaderView: BaseCollectionViewReusableView {
         
         self.infoButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.titleLabel)
-            make.left.equalTo(self.titleLabel.snp.right).offset(8)
+            make.leading.equalTo(self.titleLabel.snp.trailing).offset(8)
         }
     }
     

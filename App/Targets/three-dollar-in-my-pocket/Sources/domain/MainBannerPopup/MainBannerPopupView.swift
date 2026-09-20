@@ -60,14 +60,14 @@ final class MainBannerPopupView: BaseView {
     
     override func bindConstraints() {
         disableTodayButton.snp.makeConstraints {
-            $0.left.bottom.equalToSuperview()
-            $0.right.equalTo(snp.centerX)
+            $0.leading.bottom.equalToSuperview()
+            $0.trailing.equalTo(snp.centerX)
             $0.height.equalTo(67 + UIUtils.bottomSafeAreaInset)
         }
         
         cancelButton.snp.makeConstraints {
-            $0.right.bottom.equalToSuperview()
-            $0.left.equalTo(snp.centerX)
+            $0.trailing.bottom.equalToSuperview()
+            $0.leading.equalTo(snp.centerX)
             $0.height.equalTo(disableTodayButton)
         }
         
@@ -79,7 +79,7 @@ final class MainBannerPopupView: BaseView {
         }
         
         bannerButton.snp.makeConstraints {
-            $0.left.right.top.equalToSuperview()
+            $0.leading.trailing.top.equalToSuperview()
             $0.bottom.equalTo(disableTodayButton.snp.top)
         }
     }

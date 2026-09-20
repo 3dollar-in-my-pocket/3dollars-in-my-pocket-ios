@@ -76,8 +76,8 @@ final class MyPageOverviewCountButton: UIButton {
         }
         
         self.nameLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.countLabel)
-            make.right.equalTo(self.countLabel)
+            make.leading.equalTo(self.countLabel)
+            make.trailing.equalTo(self.countLabel)
             make.top.equalTo(self.countLabel.snp.bottom).offset(2)
         }
     }

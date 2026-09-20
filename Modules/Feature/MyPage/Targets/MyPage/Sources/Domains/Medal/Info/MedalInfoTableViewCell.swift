@@ -59,14 +59,14 @@ final class MedalInfoTableViewCell: BaseTableViewCell {
         }
         
         self.acquisitionLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
             make.top.equalTo(self.medalNameLabel.snp.bottom).offset(12)
         }
         
         self.descriptionLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.acquisitionLabel)
-            make.right.equalTo(self.acquisitionLabel)
+            make.leading.equalTo(self.acquisitionLabel)
+            make.trailing.equalTo(self.acquisitionLabel)
             make.top.equalTo(self.acquisitionLabel.snp.bottom).offset(5)
             make.bottom.equalToSuperview().offset(-32)
         }

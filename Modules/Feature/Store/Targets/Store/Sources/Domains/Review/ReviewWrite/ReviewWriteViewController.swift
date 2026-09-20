@@ -85,7 +85,7 @@ final class ReviewWriteViewController: BaseViewController {
         ])
         
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
         }

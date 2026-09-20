@@ -23,8 +23,8 @@ final class WriteDetailDayCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         dayStackView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-28)
         }

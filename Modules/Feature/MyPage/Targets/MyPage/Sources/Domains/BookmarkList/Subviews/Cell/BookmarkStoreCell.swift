@@ -78,7 +78,7 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
             $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.trailing.equalToSuperview()
         }
         
         categoryImageView.snp.makeConstraints {

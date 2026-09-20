@@ -118,14 +118,14 @@ final class HomeView: BaseView {
 
         addressButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
-            $0.left.equalToSuperview().offset(14)
-            $0.right.equalToSuperview().offset(-14)
+            $0.leading.equalToSuperview().offset(14)
+            $0.trailing.equalToSuperview().offset(-14)
         }
 
         homeFilterCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalTo(addressButton.snp.bottom)
-            $0.right.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.height.equalTo(60)
         }
 
@@ -141,14 +141,14 @@ final class HomeView: BaseView {
         }
         
         currentLocationButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 12)
             $0.width.height.equalTo(40)
         }
 
         feedButton.snp.makeConstraints {
             $0.centerY.equalTo(currentLocationButton)
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(44)
         }
     }

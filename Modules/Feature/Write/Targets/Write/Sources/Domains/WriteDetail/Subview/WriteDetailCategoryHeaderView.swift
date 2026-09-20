@@ -50,19 +50,19 @@ final class WriteDetailCategoryHeaderView: BaseCollectionViewReusableView {
         if let buttonTitleLabel = deleteButton.titleLabel {
             deleteButton.imageView?.snp.makeConstraints {
                 $0.centerY.equalTo(buttonTitleLabel)
-                $0.right.equalTo(buttonTitleLabel.snp.left).offset(-4).priority(.high)
+                $0.trailing.equalTo(buttonTitleLabel.snp.leading).offset(-4).priority(.high)
                 $0.width.height.equalTo(12)
             }
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.centerY.equalToSuperview()
         }
         
         deleteButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
         }
     }
 }

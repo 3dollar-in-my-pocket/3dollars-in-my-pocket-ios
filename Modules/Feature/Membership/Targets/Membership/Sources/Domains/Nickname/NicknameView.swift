@@ -132,7 +132,7 @@ final class NicknameView: BaseView {
     
     override func bindConstraints() {
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.width.height.equalTo(24)
         }
@@ -171,20 +171,20 @@ final class NicknameView: BaseView {
         
         warningImage.snp.makeConstraints {
             $0.centerY.equalTo(nicknameField)
-            $0.left.equalTo(nicknameField.snp.right).offset(4)
+            $0.leading.equalTo(nicknameField.snp.trailing).offset(4)
             $0.width.height.equalTo(20)
         }
 
         bottomBackground.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
 
         signupButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(bottomBackground.snp.top)
             $0.height.equalTo(64)
         }

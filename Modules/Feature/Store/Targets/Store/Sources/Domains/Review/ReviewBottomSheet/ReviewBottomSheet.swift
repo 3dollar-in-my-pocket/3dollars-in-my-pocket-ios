@@ -57,31 +57,31 @@ final class ReviewBottomSheet: BaseView {
     
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalToSuperview().offset(25)
         }
         
         closeButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.width.height.equalTo(30)
         }
         
         ratingInputView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
         }
         
         textView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(ratingInputView.snp.bottom).offset(12)
             $0.height.equalTo(80)
         }
         
         writeButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(textView.snp.bottom).offset(28)
         }
     }

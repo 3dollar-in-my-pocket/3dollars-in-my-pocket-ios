@@ -69,32 +69,32 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-Layout.topOffset)
         }
         
         categoryImageView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(12)
             $0.top.equalToSuperview().offset(12)
             $0.width.height.equalTo(24)
         }
         
         categoryNameLabel.snp.makeConstraints {
             $0.centerY.equalTo(categoryImageView)
-            $0.left.equalTo(categoryImageView.snp.right).offset(4)
+            $0.leading.equalTo(categoryImageView.snp.trailing).offset(4)
         }
         
         closeButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-12)
+            $0.trailing.equalToSuperview().offset(-12)
             $0.centerY.equalTo(categoryImageView)
             $0.width.height.equalTo(20)
         }
         
         menuCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(12)
-            $0.right.equalToSuperview().offset(-12)
+            $0.leading.equalToSuperview().offset(12)
+            $0.trailing.equalToSuperview().offset(-12)
             $0.top.equalTo(categoryImageView.snp.bottom).offset(16)
             $0.bottom.equalToSuperview()
         }

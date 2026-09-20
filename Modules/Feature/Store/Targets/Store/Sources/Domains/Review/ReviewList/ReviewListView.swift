@@ -55,7 +55,7 @@ final class ReviewListView: BaseView {
     
     override func bindConstraints() {
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
         }
@@ -66,27 +66,27 @@ final class ReviewListView: BaseView {
         }
         
         subtabStackView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalTo(backButton.snp.bottom).offset(24)
         }
         
         collectionView.snp.makeConstraints {
             $0.top.equalTo(subtabStackView.snp.bottom).offset(12)
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(writeButton.snp.top)
         }
         
         buttonBottomView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
         
         writeButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(buttonBottomView.snp.top)
             $0.height.equalTo(64)
         }

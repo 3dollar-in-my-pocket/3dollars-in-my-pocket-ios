@@ -31,7 +31,7 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         nameField.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.width.equalTo(Layout.nameWidth)
@@ -40,8 +40,8 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
         priceField.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.left.equalTo(nameField.snp.right).offset(Layout.space)
+            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(nameField.snp.trailing).offset(Layout.space)
         }
     }
     
