@@ -79,6 +79,10 @@ make lint-fix
 - 기존 위반은 `.swiftlint-baseline.json` / `scripts/module-deps-baseline.txt`에 동결되어 있습니다. **새 위반만** 실패로 처리되며, 베이스라인에 항목을 추가하는 PR은 사유가 필요합니다
 - 코드 작성 후 반드시 `make lint`를 실행합니다
 
+## PR 프로세스
+
+전체 흐름(테크스펙 → 규칙 → 테스트 → 증거 → PR)과 위험도(경량/풀코스) 기준은 **[docs/process/pr-process.md](docs/process/pr-process.md)** 한 장에 있습니다. PR은 `/3dollars:pr-body`로 만듭니다.
+
 ## 아키텍처 규칙
 
 경계에 관한 규칙 10개는 **[docs/architecture/RULES.md](docs/architecture/RULES.md)** 에 있습니다 (규칙 / 이유 / 예시 / 강제 수단 / 예외).
@@ -494,6 +498,16 @@ Protocol + Impl 구조 및 API enum + RequestType 확장 패턴으로 네트워�
 테크스펙 요구사항·TC와 diff를 대조해 "요구사항 → 구현 → 상태" 표와 스펙 밖 변경 목록을 냅니다.
 
 **사용법**: `/3dollars:drift` 또는 `/3dollars:drift TH-1234`
+
+### ask-author (3dollars 플러그인)
+diff에서 설명이 필요한 결정 최대 3개를 뽑아 작성자에게 묻고 Q/A를 PR 본문 형식으로 냅니다. `/3dollars:pr-body`가 호출합니다.
+
+**사용법**: `/3dollars:ask-author`
+
+### review-digest (3dollars 플러그인)
+최근 머지 PR의 리뷰 코멘트를 모아 3회 이상 반복된 지적을 린트 > 스크립트 > 문서 순으로 규칙 승격 제안합니다. 적용은 승인 후 별도.
+
+**사용법**: `/3dollars:review-digest` 또는 `/3dollars:review-digest 50`
 
 ### test-cases (3dollars 플러그인)
 현재 브랜치의 지라 티켓 → 노션 테크스펙 TC 목록을 읽어 TC별 테스트 케이스 표를 제안하고, 승인 후 테스트 코드 생성·실행·PR용 커버리지 표까지 만듭니다. 레포가 아니라 `3dollars` 플러그인에 있습니다.
