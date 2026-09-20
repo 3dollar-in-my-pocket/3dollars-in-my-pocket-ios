@@ -42,7 +42,7 @@ final class CategoryFilterDataSource: UICollectionViewDiffableDataSource<Categor
             }
         }
         
-        self.supplementaryViewProvider = { [weak self] collectionView, type, indexPath -> UICollectionReusableView? in
+        self.supplementaryViewProvider = { [weak self] collectionView, _, indexPath -> UICollectionReusableView? in
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             let headerView: CategoryFilterHeaderView = collectionView.dequeueReusableSupplementaryView(

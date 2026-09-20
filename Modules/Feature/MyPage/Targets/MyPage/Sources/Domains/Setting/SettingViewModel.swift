@@ -201,7 +201,7 @@ public final class SettingViewModel: BaseViewModel {
             let result = await userRepository.editUserSetting(input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 showSuccessToast(type: type)
                 updateNotification(type: type)
                 if let user = state.user {

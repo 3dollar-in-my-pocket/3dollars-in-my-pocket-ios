@@ -62,7 +62,7 @@ extension WriteDetailTimeCellViewModel: Identifiable {
     }
 }
 
-extension WriteDetailTimeCellViewModel: Hashable  {
+extension WriteDetailTimeCellViewModel: Hashable {
     static func == (lhs: WriteDetailTimeCellViewModel, rhs: WriteDetailTimeCellViewModel) -> Bool {
         return lhs.id == rhs.id
     }

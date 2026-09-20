@@ -17,7 +17,7 @@ public extension UIButton {
     func setImage(urlString: String?, state: UIControl.State = .normal, completion: (() -> Void)? = nil) {
         guard let urlString = urlString else { return }
         if let url = URL(string: urlString) {
-            self.kf.setImage(with: url, for: state, completionHandler:  { _ in
+            self.kf.setImage(with: url, for: state, completionHandler: { _ in
                 completion?()
             })
         } else {

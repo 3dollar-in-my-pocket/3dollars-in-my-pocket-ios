@@ -92,4 +92,4 @@ final class WriteDetailCategoryCell: BaseCollectionViewCell {
         containerView.backgroundColor = isSelected ? Colors.pink200.color : Colors.gray10.color
         nameLabel.textColor = isSelected ? Colors.mainPink.color : Colors.gray100.color
     }
-} 
+}

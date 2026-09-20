@@ -33,4 +33,4 @@ final class WriteDetailCategorySectionHeaderView: BaseCollectionViewReusableView
     func setClassification(_ classification: StoreCategoryClassificationResponse) {
         titleLabel.text = classification.description
     }
-} 
+}

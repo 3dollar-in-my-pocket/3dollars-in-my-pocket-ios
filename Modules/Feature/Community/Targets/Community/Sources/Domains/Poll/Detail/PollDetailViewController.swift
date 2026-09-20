@@ -94,7 +94,7 @@ final class PollDetailViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)

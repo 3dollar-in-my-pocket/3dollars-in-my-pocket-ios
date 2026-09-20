@@ -85,7 +85,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.feedbackRepository.sendFeedbacks(
                     targetType: "BOSS_STORE", // TODO
                     targetId: owner.storeId,
@@ -97,7 +97,7 @@ final class BossStoreFeedbackViewModel: BaseViewModel {
                 owner.output.showLoading.send(false)
                 owner.sendClickWriteReviewLog()
                 switch result {
-                case .success(_):
+                case .success:
                     owner.output.showToast.send(Strings.BossStoreFeedback.finishToast)
                     owner.output.route.send(.back)
                     owner.output.sendFeedbacks.send()

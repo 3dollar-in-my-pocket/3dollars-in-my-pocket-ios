@@ -14,10 +14,6 @@ final class TeamInfoViewController: BaseViewController {
         view = teamInfoView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     override func bindEvent() {
         teamInfoView.backButton.controlPublisher(for: .touchUpInside)
             .main

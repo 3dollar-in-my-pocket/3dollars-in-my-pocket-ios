@@ -202,9 +202,9 @@ final class CommunityViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { (owner: CommunityViewModel, _) in
                 owner.sendClickPollCategoryLog()
             })
-            .map { owner, category in 
+            .map { owner, category in
                 let viewModel = owner.bindPollCategoryTabViewModel(with: category)
-                return .pollCategoryTab(viewModel) 
+                return .pollCategoryTab(viewModel)
             }
             .subscribe(output.route)
             .store(in: &cancellables)
@@ -229,7 +229,7 @@ final class CommunityViewModel: BaseViewModel {
     /// 투표 카테고리 탭 목록
     private func bindPollCategoryTabViewModel(with category: PollCategoryResponse) -> PollCategoryTabViewModel {
         let config = PollCategoryTabViewModel.Config(
-            categoryId: category.categoryId, 
+            categoryId: category.categoryId,
             categoryName: category.title
         )
         let viewModel = PollCategoryTabViewModel(config: config)

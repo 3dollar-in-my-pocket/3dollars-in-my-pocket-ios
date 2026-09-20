@@ -77,7 +77,7 @@ final class EditNicknameViewModel: BaseViewModel {
             let result = await userRepository.editUser(input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 globalEventBus.onEditNickname.send(nickname)
                 output.route.send(.pop)
                 output.showToast.send(Strings.EditNickname.successEdit)

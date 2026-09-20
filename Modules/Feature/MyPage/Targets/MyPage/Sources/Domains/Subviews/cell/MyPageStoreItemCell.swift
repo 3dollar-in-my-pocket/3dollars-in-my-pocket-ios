@@ -77,7 +77,7 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
         ])
 
         containerView.addSubViews([
-            stackView,
+            stackView
         ])
         
         storeView.addSubViews([
@@ -290,4 +290,3 @@ final private class MyPageStoreCouponView: BaseView {
         titleLabel.text = item.name
     }
 }
-

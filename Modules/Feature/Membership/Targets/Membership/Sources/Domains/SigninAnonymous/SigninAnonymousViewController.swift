@@ -23,11 +23,6 @@ final class SigninAnonymousViewController: BaseViewController {
         self.view = signinAnonymousView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
-    
     override func bindEvent() {
         signinAnonymousView.closeButton
             .controlPublisher(for: .touchUpInside)

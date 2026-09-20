@@ -57,7 +57,7 @@ final class EditStoreViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
-    override var extraParameters: [ParameterName : Any]? {
+    override var extraParameters: [ParameterName: Any]? {
         if let fromScreen = viewModel.output.fromScreen {
             return [.referer: fromScreen.rawValue]
         } else {

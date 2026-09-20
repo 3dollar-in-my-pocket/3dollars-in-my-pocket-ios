@@ -42,10 +42,6 @@ final class MyMedalViewController: BaseViewController {
         viewModel.input.loadTrigger.send(())
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     override func loadView() {
         self.view = self.myMedalView
     }
@@ -57,14 +53,10 @@ final class MyMedalViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
-    }
-    
-    override func bindViewModelInput() {
-        super.bindViewModelInput()
     }
     
     override func bindViewModelOutput() {
@@ -127,7 +119,7 @@ extension MyMedalViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .currentMedal:
-            return .zero 
+            return .zero
         default:
             return MedalHeaderView.size
         }

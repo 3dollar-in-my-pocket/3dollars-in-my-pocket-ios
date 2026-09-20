@@ -41,7 +41,7 @@ final class BossAppBottomSheetViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
     }
-} 
+}
 
 // MARK: Log
 extension BossAppBottomSheetViewModel {

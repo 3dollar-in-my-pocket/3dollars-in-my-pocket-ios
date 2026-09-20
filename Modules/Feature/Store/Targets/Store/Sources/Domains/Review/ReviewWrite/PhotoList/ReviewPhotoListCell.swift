@@ -103,10 +103,6 @@ final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
 
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
     }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-    }
     
     func bind(totalCount: Int) {
         countLabel.text = "\(totalCount)/10"

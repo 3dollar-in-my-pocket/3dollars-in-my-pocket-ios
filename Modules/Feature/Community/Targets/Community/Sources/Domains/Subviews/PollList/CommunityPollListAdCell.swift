@@ -166,7 +166,7 @@ private extension UILabel {
         let attributedString = NSMutableAttributedString(
             string: text,
             attributes: [
-                .paragraphStyle: style,
+                .paragraphStyle: style
             ]
         )
         attributedText = attributedString

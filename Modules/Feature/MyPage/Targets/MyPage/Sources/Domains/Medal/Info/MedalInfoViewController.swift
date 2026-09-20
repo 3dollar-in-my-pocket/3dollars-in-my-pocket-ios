@@ -20,7 +20,7 @@ final class MedalInfoViewController: BaseViewController {
         
         super.init(nibName: nil, bundle: nil)
         
-        modalPresentationStyle = .overCurrentContext    
+        modalPresentationStyle = .overCurrentContext
     }
     
     required init?(coder: NSCoder) {
@@ -43,7 +43,7 @@ final class MedalInfoViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)

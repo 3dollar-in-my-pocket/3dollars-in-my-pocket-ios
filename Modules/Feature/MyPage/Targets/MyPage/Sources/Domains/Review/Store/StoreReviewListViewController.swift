@@ -85,7 +85,7 @@ final class StoreReviewListViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, route in
                 switch route {
-                case .storeDetail(let storeId): 
+                case .storeDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
                 case .bossStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)

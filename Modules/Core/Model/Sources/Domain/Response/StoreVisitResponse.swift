@@ -8,4 +8,3 @@ public struct StoreVisitResponse: Decodable {
     public let visitDate: String
     public let isOwner: Bool
 }
-

@@ -39,7 +39,7 @@ final class ReviewWriteContentView: BaseView {
         addSubViews([
             titleLabel,
             ratingInputView,
-            textView,
+            textView
         ])
         
         textView.delegate = self

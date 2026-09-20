@@ -48,7 +48,7 @@ final class BookmarkListView: BaseView {
             titleLabel,
             collectionView,
             bottomBackgroundView,
-            shareButton,
+            shareButton
         ])
         
         collectionView.backgroundColor = .clear
@@ -90,7 +90,7 @@ final class BookmarkListView: BaseView {
     
     func setEnableShare(_ isEnable: Bool) {
         let backgroundColor = isEnable ? Colors.mainPink.color : Colors.gray80.color
-        let titleColor = isEnable ? Colors.systemWhite.color : Colors.gray60.color 
+        let titleColor = isEnable ? Colors.systemWhite.color : Colors.gray60.color
         
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self else { return }

@@ -27,7 +27,7 @@ public final class BookmarkViewerViewModel: BaseViewModel {
     
     struct State {
         var hasMore = true
-        var cursor: String? = nil
+        var cursor: String?
         let size = 20
         var title = ""
         var description = ""
