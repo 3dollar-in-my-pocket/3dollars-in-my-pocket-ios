@@ -1,0 +1,33 @@
+name: Label verification changes
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          configuration-path: .github/labeler.yml
+          sync-labels: true
+
+      - name: 검증 장치 변경 파일 코멘트
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          LABELS="$(gh pr view "$PR" --repo "$REPO" --json labels --jq '[.labels[].name] | join(" ")')"
+          case " $LABELS " in *" verification-change "*) ;; *) echo "검증 장치 변경 없음"; exit 0;; esac
+          FILES="$(gh pr diff "$PR" --repo "$REPO" --name-only | grep -E '^(\.github/|\.swiftlint|scripts/|makefile|ci_scripts/|Tuist|.*Project\.swift$|App/Targets/three-dollar-in-my-pocketTests/|docs/architecture/RULES\.md|.*CLAUDE\.md$)' || true)"
+          MARK="<!-- verification-change -->"
+          { echo "$MARK"; echo "### 🔍 검증 장치 변경"; echo; echo "이 PR은 린트·테스트·CI·모듈 규칙 같은 **검증 장치**를 바꿉니다. 바뀐 검증 장치가 왜 필요한지 본문 \"설명이 필요한 결정\"에 적어주세요. 리뷰어는 코드보다 이 파일들을 먼저 봅니다."; echo; printf '%s\n' "$FILES" | sed 's/^/- `/; s/$/`/'; } > comment.md
+          ID="$(gh api "repos/$REPO/issues/$PR/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARK\")) | .id" | head -1)"
+          if [ -n "$ID" ]; then gh api -X PATCH "repos/$REPO/issues/comments/$ID" -F body=@comment.md > /dev/null
+          else gh pr comment "$PR" --repo "$REPO" --body-file comment.md; fi
