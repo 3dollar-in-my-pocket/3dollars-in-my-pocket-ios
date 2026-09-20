@@ -1,7 +1,8 @@
 name: Label verification changes
 
+# pull_request(= PR 브랜치의 워크플로 파일 사용). 포크 PR은 토큰이 읽기 전용이라 라벨이 안 붙지만, 협업자는 레포 안 브랜치를 쓰므로 무방.
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
 
 permissions:
