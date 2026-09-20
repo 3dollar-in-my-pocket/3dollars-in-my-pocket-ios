@@ -1,12 +1,12 @@
-//import Foundation
-//import Combine
+// import Foundation
+// import Combine
 //
-//import Common
-//import Networking
-//import Model
-//import Log
+// import Common
+// import Networking
+// import Model
+// import Log
 //
-//final class CategorySelectionViewModel: BaseViewModel {
+// final class CategorySelectionViewModel: BaseViewModel {
 //    struct Input {
 //        let onLoadDataSource = PassthroughSubject<Void, Never>()
 //        let selectCategory = PassthroughSubject<String, Never>()
@@ -103,4 +103,4 @@
 //            extraParameters: [.categoryName: categoryNames]
 //        ))
 //    }
-//}
+// }

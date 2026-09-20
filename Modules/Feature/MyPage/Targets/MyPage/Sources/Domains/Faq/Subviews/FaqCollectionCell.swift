@@ -25,7 +25,7 @@ final class FaqCollectionCell: BaseCollectionViewCell {
                 options: .usesLineFragmentOrigin,
                 attributes: [
                     .font: Fonts.semiBold.font(size: 14),
-                    .paragraphStyle: style,
+                    .paragraphStyle: style
                 ],
                 context: nil
             ).height

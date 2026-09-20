@@ -63,7 +63,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
             $0.top.leading.trailing.equalToSuperview()
         }
         
-        medalImageButton.snp.makeConstraints { 
+        medalImageButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().inset(28)
             $0.size.equalTo(60)
@@ -74,7 +74,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
             $0.top.equalTo(self.medalImageButton.snp.bottom).offset(12)
         }
         
-        nicknameLabel.snp.makeConstraints { 
+        nicknameLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(self.medalLabel.snp.bottom).offset(4)
         }
@@ -90,13 +90,13 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         stackView.addArrangedSubview(lineView())
         stackView.addArrangedSubview(medalCountButton)
         
-        storeCountButton.snp.makeConstraints { 
+        storeCountButton.snp.makeConstraints {
             $0.size.equalTo(MyPageOverviewCountButton.size)
         }
         reviewCountButton.snp.makeConstraints {
             $0.size.equalTo(MyPageOverviewCountButton.size)
         }
-        medalCountButton.snp.makeConstraints { 
+        medalCountButton.snp.makeConstraints {
             $0.size.equalTo(MyPageOverviewCountButton.size)
         }
     }

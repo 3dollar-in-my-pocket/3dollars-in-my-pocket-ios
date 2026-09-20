@@ -18,7 +18,7 @@ final class BossStoreReviewListDataSource: UICollectionViewDiffableDataSource<Bo
 
     init(collectionView: UICollectionView) {
         collectionView.register([
-            BossStoreReviewListCell.self,
+            BossStoreReviewListCell.self
         ])
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in

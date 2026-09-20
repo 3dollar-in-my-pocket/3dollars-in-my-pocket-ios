@@ -64,7 +64,7 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
         ratingButton.setImage(
             Icons.starSolid.image
                 .resizeImage(scaledTo: 12)
-                .withTintColor(Colors.gray40.color), 
+                .withTintColor(Colors.gray40.color),
             for: .normal
         )
         ratingButton.imageEdgeInsets.right = 2

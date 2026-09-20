@@ -210,7 +210,7 @@ final class SearchAddressViewModel: BaseViewModel {
                 roadAddressName: document.roadAddressName
             )
 
-            let _ = await userRepository.saveMyPlace(
+            _ = await userRepository.saveMyPlace(
                 placeType: .recentSearch,
                 input: input
             )
@@ -225,7 +225,7 @@ final class SearchAddressViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { owner, placeId in
                 Task {
-                    let _ = await owner.userRepository.deleteMyPlace(
+                    _ = await owner.userRepository.deleteMyPlace(
                         placeType: .recentSearch,
                         placeId: placeId
                     )

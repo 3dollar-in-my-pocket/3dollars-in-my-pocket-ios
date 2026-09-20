@@ -57,7 +57,7 @@ final class ReviewTabViewController: BaseViewController {
         view.addSubViews([
             myPageNavigationBar,
             lineView,
-            tabView,
+            tabView
         ])
 
         myPageNavigationBar.snp.makeConstraints {
@@ -150,7 +150,7 @@ final class ReviewTabViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
@@ -159,7 +159,7 @@ final class ReviewTabViewController: BaseViewController {
         viewModel.output.route
             .main
             .withUnretained(self)
-            .sink { owner, route in
+            .sink { _, route in
                 switch route {
                 case .none: break
                 }

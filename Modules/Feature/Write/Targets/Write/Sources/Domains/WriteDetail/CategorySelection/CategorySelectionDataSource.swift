@@ -1,10 +1,10 @@
-//import UIKit
+// import UIKit
 //
-//import Model
+// import Model
 //
-//typealias CategorySelectionSnapshot = NSDiffableDataSourceSnapshot<CategorySelectionSection, CategorySelectionItem>
+// typealias CategorySelectionSnapshot = NSDiffableDataSourceSnapshot<CategorySelectionSection, CategorySelectionItem>
 //
-//final class CategorySelectionDataSource: UICollectionViewDiffableDataSource<CategorySelectionSection, CategorySelectionItem> {
+// final class CategorySelectionDataSource: UICollectionViewDiffableDataSource<CategorySelectionSection, CategorySelectionItem> {
 //    let viewModel: CategorySelectionViewModel
 //    
 //    init(collectionView: UICollectionView, viewModel: CategorySelectionViewModel) {
@@ -70,10 +70,10 @@
 //        
 //        return IndexPath(row: row, section: section)
 //    }
-//}
+// }
 //
 //
-//extension CategorySelectionDataSource: UICollectionViewDelegate {
+// extension CategorySelectionDataSource: UICollectionViewDelegate {
 //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        guard let section = snapshot().sectionIdentifiers[safe: indexPath.section],
 //              let item = section.items[safe: indexPath.row],
@@ -89,9 +89,9 @@
 //        
 //        viewModel.input.deSelectCategory.send(category.categoryId)
 //    }
-//}
+// }
 //
-//struct CategorySelectionSection: Hashable {
+// struct CategorySelectionSection: Hashable {
 //    enum SectionType: Hashable {
 //        case category
 //    }
@@ -99,9 +99,9 @@
 //    let type: SectionType
 //    let title: String
 //    var items: [CategorySelectionItem]
-//}
+// }
 //
-//enum CategorySelectionItem: Hashable {
+// enum CategorySelectionItem: Hashable {
 //    case category(PlatformStoreCategory)
 //    
 //    var id: String {
@@ -110,4 +110,4 @@
 //            return category.categoryId
 //        }
 //    }
-//}
+// }

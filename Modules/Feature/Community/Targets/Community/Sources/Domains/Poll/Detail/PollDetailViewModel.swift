@@ -36,7 +36,7 @@ final class PollDetailViewModel: BaseViewModel {
         var comments = CurrentValueSubject<[PollCommentWithUserApiResponse], Never>([])
         let loadComments = PassthroughSubject<Void, Never>()
         let loadComment = PassthroughSubject<String, Never>() // commentId
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = false
         var commentTotalCount: Int = 0
         var blindedCommentIds: [String] = []
@@ -75,7 +75,7 @@ final class PollDetailViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.communityRepository.fetchPoll(pollId: owner.pollId)
             }
             .withUnretained(self)

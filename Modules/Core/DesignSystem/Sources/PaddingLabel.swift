@@ -51,7 +51,7 @@ public class PaddingLabel: UILabel {
             topInset = top
         }
         
-        if let bottom  {
+        if let bottom {
             bottomInset = bottom
         }
         

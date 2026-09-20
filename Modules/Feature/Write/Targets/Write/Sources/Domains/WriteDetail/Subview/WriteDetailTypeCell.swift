@@ -46,7 +46,7 @@ extension WriteDetailTypeCell {
         
         let roadRadioButton = TypeRadioButton(title: Strings.storeTypeRoad)
         
-        let storeRadioButton = TypeRadioButton(title:Strings.storeTypeStore)
+        let storeRadioButton = TypeRadioButton(title: Strings.storeTypeStore)
         
         let convenienceStoreRadioButton = TypeRadioButton(title: Strings.storeTypeConvenienceStore)
         

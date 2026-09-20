@@ -13,7 +13,7 @@ final class WebView: BaseView {
         return button
     }()
     
-    private let titleLabel:  UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         
         label.textColor = Colors.systemWhite.color

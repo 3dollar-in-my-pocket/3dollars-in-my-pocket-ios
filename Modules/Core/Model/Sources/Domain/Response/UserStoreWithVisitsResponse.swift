@@ -10,5 +10,5 @@ public struct UserStoreWithVisitsResponse: Decodable {
 extension UserStoreWithVisitsResponse {
     public struct StoreVisitCountSimpleResponse: Decodable {
         public let count: StoreVisitCountResponse
-    } 
+    }
 }

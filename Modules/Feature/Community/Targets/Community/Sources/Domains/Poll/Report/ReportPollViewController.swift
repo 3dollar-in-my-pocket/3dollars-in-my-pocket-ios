@@ -104,7 +104,7 @@ final class ReportPollViewController: BaseViewController {
         view.backgroundColor = .clear
         view.addSubViews([
             backgroundButton,
-            containerView,
+            containerView
         ])
 
         containerView.addSubViews([
@@ -164,7 +164,7 @@ final class ReportPollViewController: BaseViewController {
             )
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)

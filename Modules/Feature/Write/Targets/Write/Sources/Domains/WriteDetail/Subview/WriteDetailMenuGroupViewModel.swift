@@ -73,7 +73,7 @@ final class WriteDetailMenuGroupViewModel: BaseViewModel {
     }
 }
 
-extension WriteDetailMenuGroupViewModel: Hashable  {
+extension WriteDetailMenuGroupViewModel: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(output.menus)
     }

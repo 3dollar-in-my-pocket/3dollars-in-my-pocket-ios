@@ -75,7 +75,7 @@ final class CategorySelectionView: BaseView {
     }
     
     private func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, _ in
+        return UICollectionViewCompositionalLayout { _, _ in
             let item = NSCollectionLayoutItem(layoutSize: .init(
                 widthDimension: .absolute(CategorySelectionCell.size.width),
                 heightDimension: .absolute(CategorySelectionCell.size.height)

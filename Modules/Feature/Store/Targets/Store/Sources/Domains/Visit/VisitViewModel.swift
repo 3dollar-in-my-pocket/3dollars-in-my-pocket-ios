@@ -177,7 +177,7 @@ public final class VisitViewModel: BaseViewModel {
             let result = await dependency.visitRepository.visitStore(input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 output.onSuccessVisit.send(())
                 output.toast.send(Strings.Visit.resultMessage)
                 output.route.send(.dismiss)

@@ -86,14 +86,6 @@ class PollItemBaseCell: BaseCollectionViewCell {
 
     private var viewModel: PollItemCellViewModel?
 
-    override func setup() {
-        super.setup()
-    }
-
-    override func bindConstraints() {
-        super.bindConstraints()
-    }
-
     func bind(viewModel: PollItemCellViewModel) {
         self.viewModel = viewModel
 
@@ -298,7 +290,7 @@ final class CommunityPollSelectionView: UIControl {
 
     private func setup() {
         addSubViews([
-            containerView,
+            containerView
         ])
 
         containerView.addSubViews([

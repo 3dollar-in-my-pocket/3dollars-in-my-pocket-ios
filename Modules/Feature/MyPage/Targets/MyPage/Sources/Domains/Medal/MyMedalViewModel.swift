@@ -49,7 +49,7 @@ final class MyMedalViewModel: BaseViewModel {
         userRepository: UserRepository = UserRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.medalRepository = medalRepository 
+        self.medalRepository = medalRepository
         self.userRepository = userRepository
         self.logManager = logManager
 

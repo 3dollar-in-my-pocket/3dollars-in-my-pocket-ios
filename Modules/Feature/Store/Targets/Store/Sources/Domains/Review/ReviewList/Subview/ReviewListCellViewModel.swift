@@ -97,7 +97,7 @@ final class ReviewListCellViewModel: BaseViewModel {
             let result = await reviewRepository.toggleReviewSticker(storeId: Int(config.storeId) ?? 0, reviewId: review.reviewId, input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 if review.reactedByMe {
                     review.likeCount -= 1
                 } else {
@@ -116,7 +116,7 @@ final class ReviewListCellViewModel: BaseViewModel {
         Task {
             let result = await reviewRepository.deleteReview(reviewId: output.review.reviewId)
             switch result {
-            case .success(_):
+            case .success:
                 output.onSuccessDelete.send(output.review.reviewId)
             case .failure(let error):
                 output.error.send(error)

@@ -38,7 +38,7 @@ final class CouponEmptyView: BaseView {
         
         backgroundColor = .clear
         addSubViews([
-            emptyContainerView,
+            emptyContainerView
         ])
         
         emptyContainerView.addSubViews([

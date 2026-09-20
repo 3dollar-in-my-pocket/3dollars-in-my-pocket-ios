@@ -100,7 +100,7 @@ final class ReportReviewBottomSheetViewModel: BaseViewModel {
             )
             
             switch reportResult {
-            case .success(_):
+            case .success:
                 output.onSuccessReport.send(config.reviewId)
                 output.route.send(.dismiss)
                 

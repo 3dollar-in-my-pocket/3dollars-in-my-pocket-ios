@@ -67,7 +67,7 @@ extension EditStoreViewModel {
     }
 }
 
-final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface  {
+final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
     let input = Input()
     let output: Output
     private var state: State

@@ -38,7 +38,7 @@ final class MyPageEmptyView: BaseView {
         
         backgroundColor = .clear
         addSubViews([
-            emptyContainerView,
+            emptyContainerView
         ])
         
         emptyContainerView.addSubViews([
@@ -51,7 +51,7 @@ final class MyPageEmptyView: BaseView {
     override func bindConstraints() {
         super.bindConstraints()
         
-        emptyContainerView.snp.makeConstraints { 
+        emptyContainerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
         
@@ -61,13 +61,13 @@ final class MyPageEmptyView: BaseView {
             $0.size.equalTo(100)
         }
         
-        emptyTitleLabel.snp.makeConstraints { 
+        emptyTitleLabel.snp.makeConstraints {
             $0.top.equalTo(emptyImageView.snp.bottom).offset(8)
             $0.leading.trailing.lessThanOrEqualToSuperview().inset(12)
             $0.centerX.equalToSuperview()
         }
         
-        emptyDescriptionLabel.snp.makeConstraints { 
+        emptyDescriptionLabel.snp.makeConstraints {
             $0.top.equalTo(emptyTitleLabel.snp.bottom).offset(4)
             $0.leading.trailing.lessThanOrEqualToSuperview().inset(12)
             $0.bottom.equalToSuperview().inset(25)

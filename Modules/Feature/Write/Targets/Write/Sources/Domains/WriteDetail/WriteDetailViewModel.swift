@@ -1,14 +1,14 @@
-//import Foundation
-//import CoreLocation
-//import Combine
+// import Foundation
+// import CoreLocation
+// import Combine
 //
-//import Networking
-//import Model
-//import Common
-//import Log
-//import WriteInterface
+// import Networking
+// import Model
+// import Common
+// import Log
+// import WriteInterface
 //
-//final class WriteDetailViewModel: BaseViewModel {
+// final class WriteDetailViewModel: BaseViewModel {
 //    struct Input {
 //        let viewDidLoad = PassthroughSubject<Void, Never>()
 //        let tapFullMap = PassthroughSubject<Void, Never>()
@@ -544,14 +544,14 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
 //// MARK: Log
-//extension WriteDetailViewModel {
+// extension WriteDetailViewModel {
 //    private func sendClickCloseButtonLog() {
 //        logManager.sendEvent(LogEvent(
 //            screen: output.screenName,
 //            eventName: .clickClose
 //        ))
 //    }
-//}
+// }

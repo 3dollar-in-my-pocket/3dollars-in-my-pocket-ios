@@ -17,7 +17,7 @@ final class StoreReviewListDataSource: UICollectionViewDiffableDataSource<StoreR
 
     init(collectionView: UICollectionView) {
         collectionView.register([
-            StoreReviewListCell.self,
+            StoreReviewListCell.self
         ])
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in

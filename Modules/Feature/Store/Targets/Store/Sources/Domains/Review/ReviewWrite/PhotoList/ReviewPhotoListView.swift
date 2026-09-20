@@ -64,7 +64,7 @@ final class ReviewPhotoListView: BaseView {
         ])
 
         collectionView.registerSectionHeader([
-            ReviewPhotoListHeaderView.self,
+            ReviewPhotoListHeaderView.self
         ])
         
         photoAddButtonView.snp.makeConstraints {

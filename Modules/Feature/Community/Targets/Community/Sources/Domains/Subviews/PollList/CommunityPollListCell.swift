@@ -147,8 +147,8 @@ final class CommunityPollListCell: BaseCollectionViewCell {
     }
     
     private func openUrl(with urlString: String?) {
-        guard let urlString, 
-                let url = URL(string: urlString), 
+        guard let urlString,
+                let url = URL(string: urlString),
                 UIApplication.shared.canOpenURL(url) else { return }
         
         UIApplication.shared.open(url, options: [:], completionHandler: nil)

@@ -27,7 +27,7 @@ final class PollListViewModel: BaseViewModel {
 
     struct State {
         var items: [PollItemCellViewModel] = []
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
     }

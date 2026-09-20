@@ -50,7 +50,7 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
         
         view.addSubViews([
             backgroundButton,
-            containerView,
+            containerView
         ])
         
         containerView.addSubViews([

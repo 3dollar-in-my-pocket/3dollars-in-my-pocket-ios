@@ -70,4 +70,3 @@ final class QnaView: BaseView {
         return layout
     }
 }
-

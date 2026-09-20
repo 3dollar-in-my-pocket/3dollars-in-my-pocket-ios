@@ -25,7 +25,7 @@ final class BossStoreReviewListViewModel: BaseViewModel {
     }
 
     struct State {
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
         var items: [MyStoreFeedback] = []
@@ -64,7 +64,7 @@ final class BossStoreReviewListViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.feedbackRepository.fetchMyStoreFeedbacks(
                     input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
@@ -96,7 +96,7 @@ final class BossStoreReviewListViewModel: BaseViewModel {
 
         state.loadMore
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.feedbackRepository.fetchMyStoreFeedbacks(
                     input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )

@@ -191,13 +191,13 @@ final class PhotoDetailViewModel: BaseViewModel {
             output.showLoading.send(false)
             
             switch result {
-            case .success(_):
+            case .success:
                 state.photos.remove(at: state.currentIndex)
                 if state.photos.count == state.currentIndex {
                     state.currentIndex -= 1
                 }
                 output.photos.send(state.photos)
-                output.scrollToIndex.send((state.currentIndex , true))
+                output.scrollToIndex.send((state.currentIndex, true))
                 updatePhotoListState()
                 
             case .failure(let error):
