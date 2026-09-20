@@ -5,12 +5,32 @@ import ZMarkupParser
 import Kingfisher
 
 public extension UIButton {
+    func clear() {
+        kf.cancelImageDownloadTask()
+        setImage(nil, for: .normal)
+        setAttributedTitle(nil, for: .normal)
+        setTitle(nil, for: .normal)
+
+        if var config = configuration {
+            config.image = nil
+            config.title = nil
+            config.attributedTitle = nil
+            configuration = config
+        }
+    }
+
     func setSDButton(_ sdButton: SDButton) {
         if let sdText = sdButton.text {
             setTitleColor(UIColor(hex: sdText.fontColor), for: .normal)
 
             if sdText.isHtml {
-                let attributedText = ZHTMLParserBuilder.initWithDefault().build().render(sdText.text)
+                let baseFont = titleLabel?.font
+                var parser = ZHTMLParserBuilder.initWithDefault()
+                if let baseFont {
+                    parser = parser.set(rootStyle: MarkupStyle(font: MarkupStyleFont(sdBaseFont: baseFont)))
+                }
+                let rendered = parser.build().render(sdText.text)
+                let attributedText = baseFont.map { rendered.applyingFontFamily(of: $0) } ?? rendered
                 setAttributedTitle(attributedText, for: .normal)
             } else {
                 setTitle(sdText.text, for: .normal)
@@ -20,17 +40,20 @@ public extension UIButton {
             setTitle(nil, for: .normal)
         }
 
+        kf.cancelImageDownloadTask()
         if let image = sdButton.image,
            let imageUrl = URL(string: image.url),
            isValidImageSize(width: image.style.width, height: image.style.height) {
-            let resizeProcessor = ResizingImageProcessor(
-                referenceSize: CGSize(width: image.style.width, height: image.style.height),
-                mode: .aspectFit
+            let size = CGSize(width: image.style.width, height: image.style.height)
+            let processor = DownsamplingImageProcessor(size: size)
+                |> ResizingImageProcessor(referenceSize: size, mode: .aspectFit)
+            kf.setImage(
+                with: imageUrl,
+                for: .normal,
+                options: [.processor(processor), .scaleFactor(UIScreen.main.scale)]
             )
-
-            DispatchQueue.main.async { [weak self] in
-                self?.kf.setImage(with: imageUrl, for: .normal, options: [.processor(resizeProcessor)])
-            }
+        } else {
+            setImage(nil, for: .normal)
         }
 
         if let backgroundColor = UIColor(hex: sdButton.style.backgroundColor) {

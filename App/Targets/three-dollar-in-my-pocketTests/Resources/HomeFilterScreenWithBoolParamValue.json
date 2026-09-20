@@ -1,0 +1,221 @@
+{
+  "sections": [
+    {
+      "type": "HOME_FILTER",
+      "bars": [
+        {
+          "type": "CATEGORY_BAR",
+          "categoriesFilter": {
+            "image": {
+              "url": "https://x/category.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "간식 필터",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 4.0,
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#D0D0D0",
+                "width": 1.0
+              }
+            }
+          },
+          "categoriesFilterClickLog": {
+            "eventType": "CLICK",
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {}
+          },
+          "currentCategoryFilter": {
+            "fontColor": "#FF858F",
+            "style": {
+              "backgroundColor": "#FFF3F4",
+              "border": {
+                "color": "#FF858F",
+                "width": 1.0
+              }
+            },
+            "clickLog": {
+              "eventType": "CLICK",
+              "screenName": "home",
+              "objectType": "button",
+              "objectId": "current_category_filter",
+              "extraParameters": {}
+            }
+          }
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "focusLabels",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "a",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF"
+                }
+              },
+              "clickLog": {
+                "eventType": "CLICK",
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "event_filter",
+                "extraParameters": {
+                  "value": "false"
+                }
+              }
+            },
+            {
+              "chip": {
+                "text": {
+                  "text": "b",
+                  "isHtml": true,
+                  "fontColor": "#FF858F"
+                },
+                "style": {
+                  "backgroundColor": "#FFF3F4"
+                }
+              },
+              "paramValue": "LIVE_ALONE_YURI",
+              "clickLog": {
+                "eventType": "CLICK",
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "event_filter",
+                "extraParameters": {
+                  "value": "true",
+                  "type": "live_alone_yuri"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "focusFavoriteStores",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "저장",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF"
+                }
+              },
+              "paramValue": false,
+              "clickLog": {
+                "eventType": "CLICK",
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "favorite_store_filter",
+                "extraParameters": {
+                  "value": "false"
+                }
+              }
+            },
+            {
+              "chip": {
+                "text": {
+                  "text": "저장",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFF3F4"
+                }
+              },
+              "paramValue": true,
+              "clickLog": {
+                "eventType": "CLICK",
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "favorite_store_filter",
+                "extraParameters": {
+                  "value": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "ACTION_BAR",
+          "button": {
+            "text": {
+              "text": "(테스트) 링크 이동",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "link": {
+              "type": "APP_SCHEME",
+              "link": "/community"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#D0D0D0",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "eventType": "CLICK",
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "link",
+            "extraParameters": {
+              "type": "test"
+            }
+          }
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "sortType",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "추천순",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF"
+                }
+              },
+              "paramValue": "POPULAR",
+              "clickLog": {
+                "eventType": "CLICK",
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "sorting",
+                "extraParameters": {
+                  "value": "POPULAR"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "configuration": {
+    "initialMapZoomLevel": 14.5
+  }
+}

@@ -48,6 +48,16 @@ public enum SDClickLogValue: Decodable, Equatable, Hashable {
         return nil
     }
 
+    public var queryValue: String? {
+        switch self {
+        case .string(let value): return value
+        case .int(let value): return String(value)
+        case .double(let value): return String(value)
+        case .bool(let value): return String(value)
+        case .null: return nil
+        }
+    }
+
     /// 좌표처럼 숫자로 내려오는 값. 서버가 정수로 보내도 Double 로 받을 수 있게 int 도 변환한다.
     public var doubleValue: Double? {
         switch self {

@@ -13,7 +13,7 @@ final class HomeListLayout: FloatingPanelLayout {
     }
 
     let position: FloatingPanelPosition = .bottom
-    let initialState: FloatingPanelState = .tip
+    let initialState: FloatingPanelState
 
     let anchors: [FloatingPanelState: any FloatingPanelLayoutAnchoring] = [
         .full: FloatingPanelLayoutAnchor(
@@ -27,4 +27,8 @@ final class HomeListLayout: FloatingPanelLayout {
             referenceGuide: .safeArea
         )
     ]
+
+    init(initialState: FloatingPanelState = .tip) {
+        self.initialState = initialState
+    }
 }

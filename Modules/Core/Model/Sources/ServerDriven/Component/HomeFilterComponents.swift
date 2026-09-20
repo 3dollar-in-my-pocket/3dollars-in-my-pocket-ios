@@ -87,6 +87,20 @@ public struct HomeFilterRadioOption: Decodable, Hashable {
     public let chip: SDChip
     public let paramValue: String?
     public let clickLog: SDClickLog?
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.chip = try container.decode(SDChip.self, forKey: .chip)
+        self.clickLog = try container.decodeIfPresent(SDClickLog.self, forKey: .clickLog)
+        self.paramValue = try container.decodeIfPresent(SDClickLogValue.self, forKey: .paramValue)
+            .flatMap(\.queryValue)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case chip
+        case paramValue
+        case clickLog
+    }
 }
 
 public struct HomeFilterActionBar: HomeFilterBar {

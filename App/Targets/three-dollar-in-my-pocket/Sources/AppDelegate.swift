@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         // Override point for customization after application launch.
+        initializeFonts()
         initializeDI()
         initializeNotification()
         initializeFirebase()
@@ -84,6 +85,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
     }
     
+    private func initializeFonts() {
+        DesignSystemFontFamily.registerAllCustomFonts()
+    }
+
     private func initializeKakao() {
         let kakaoAppKey
             = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String ?? ""
