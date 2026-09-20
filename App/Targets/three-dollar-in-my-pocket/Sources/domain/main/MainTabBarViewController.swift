@@ -281,7 +281,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
 }
 
 extension MainTabBarViewController {
-    final class WriteTabBarIconViewController: UIViewController {
+    final class WriteTabBarIconViewController: BaseViewController {
         init() {
             super.init(nibName: nil, bundle: nil)
 

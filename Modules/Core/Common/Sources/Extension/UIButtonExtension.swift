@@ -20,8 +20,6 @@ public extension UIButton {
             self.kf.setImage(with: url, for: state, completionHandler: { _ in
                 completion?()
             })
-        } else {
-            print("⚠️ setImage(urlString: String): 올바른 URl 형태가 아닙니다.")
         }
     }
 }
