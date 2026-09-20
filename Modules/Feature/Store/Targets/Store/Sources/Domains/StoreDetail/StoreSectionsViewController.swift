@@ -531,6 +531,10 @@ private extension StoreSectionsViewController {
             )
             activityViewController.popoverPresentationController?.sourceView = view
             present(activityViewController, animated: true)
+        case .openURL(let url):
+            UIApplication.shared.open(url)
+        case .copyToPasteboard(let text):
+            UIPasteboard.general.string = text
         case .presentDeleteReviewAlert(let reviewId):
             AlertUtils.showWithCancel(
                 viewController: self,
