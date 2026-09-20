@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -15,30 +14,40 @@ public final class MyPageViewController: BaseViewController {
     
     public override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     
-    private let refreshControl = UIRefreshControl().then {
-        $0.tintColor = .white
-    }
+    private let refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .white
+        return refreshControl
+    }()
     
-    private let navigationBackgroundView = UIView().then {
-        $0.backgroundColor = Colors.gray100.color
-    }
+    private let navigationBackgroundView: UIView = {
+        let navigationBackgroundView = UIView()
+        navigationBackgroundView.backgroundColor = Colors.gray100.color
+        return navigationBackgroundView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.textColor = Colors.systemWhite.color
-        $0.font = Fonts.medium.font(size: 16)
-        $0.text = "마이 페이지"
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.textColor = Colors.systemWhite.color
+        titleLabel.font = Fonts.medium.font(size: 16)
+        titleLabel.text = "마이 페이지"
+        return titleLabel
+    }()
     
-    private let settingButton = UIButton().then {
-        $0.setImage(Icons.setting.image.withTintColor(Colors.mainPink.color), for: .normal)
-    }
+    private let settingButton: UIButton = {
+        let settingButton = UIButton()
+        settingButton.setImage(Icons.setting.image.withTintColor(Colors.mainPink.color), for: .normal)
+        return settingButton
+    }()
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = Colors.gray100.color
-        $0.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
-        $0.refreshControl = self.refreshControl
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = Colors.gray100.color
+        collectionView.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
+        collectionView.refreshControl = self.refreshControl
+        collectionView.delegate = self
+        return collectionView
+    }()
     
     private lazy var dataSource = MyPageDataSource(collectionView: collectionView)
     
@@ -62,10 +71,10 @@ public final class MyPageViewController: BaseViewController {
             tag: TabBarTag.my.rawValue
         )
 
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.interactivePopGestureRecognizer?.delegate = nil
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.interactivePopGestureRecognizer?.delegate = nil
+        return navigationController
     }
     
     public override func viewDidLoad() {

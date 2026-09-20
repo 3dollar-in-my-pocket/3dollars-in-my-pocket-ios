@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import Common
 import DesignSystem
 import Log
@@ -16,78 +15,91 @@ final class CreatePollModalViewController: BaseViewController {
 
     private let backgroundView = UIView()
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.backgroundColor = .white
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 20
+        containerView.backgroundColor = .white
+        return containerView
+    }()
 
-    private let countLabel = UILabel().then {
-        $0.text = "0"
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-    }
+    private let countLabel: UILabel = {
+        let countLabel = UILabel()
+        countLabel.text = "0"
+        countLabel.font = Fonts.medium.font(size: 12)
+        countLabel.textColor = Colors.gray60.color
+        return countLabel
+    }()
 
-    private let maxCountLabel = UILabel().then {
-        $0.text = "/\(Constant.maxTitleCount)"
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray30.color
-    }
+    private let maxCountLabel: UILabel = {
+        let maxCountLabel = UILabel()
+        maxCountLabel.text = "/\(Constant.maxTitleCount)"
+        maxCountLabel.font = Fonts.medium.font(size: 12)
+        maxCountLabel.textColor = Colors.gray30.color
+        return maxCountLabel
+    }()
 
-    private lazy var titleTextField = UITextField().then {
-        $0.font = Fonts.semiBold.font(size: 20)
-        $0.backgroundColor = .clear
-        $0.textColor = Colors.gray100.color
-        $0.returnKeyType = .done
-        $0.attributedPlaceholder = NSAttributedString(
+    private lazy var titleTextField: UITextField = {
+        let titleTextField = UITextField()
+        titleTextField.font = Fonts.semiBold.font(size: 20)
+        titleTextField.backgroundColor = .clear
+        titleTextField.textColor = Colors.gray100.color
+        titleTextField.returnKeyType = .done
+        titleTextField.attributedPlaceholder = NSAttributedString(
             string: "투표 제목을 입력하세요",
             attributes: [
                 .font: Fonts.semiBold.font(size: 20),
                 .foregroundColor: Colors.gray30.color
             ])
-        $0.delegate = self
-        $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-    }
+        titleTextField.delegate = self
+        titleTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        return titleTextField
+    }()
 
-    private lazy var firstOptionTextField = CreatePollOptionTextField(
+    private lazy var firstOptionTextField: CreatePollOptionTextField = {
+        let firstOptionTextField = CreatePollOptionTextField(
         padding: .init(top: 12, left: 16, bottom: 12, right: 16)
-    ).then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.backgroundColor = Colors.gray10.color
-        $0.textColor = Colors.gray100.color
-        $0.returnKeyType = .done
-        $0.attributedPlaceholder = NSAttributedString(
+    )
+        firstOptionTextField.font = Fonts.regular.font(size: 14)
+        firstOptionTextField.backgroundColor = Colors.gray10.color
+        firstOptionTextField.textColor = Colors.gray100.color
+        firstOptionTextField.returnKeyType = .done
+        firstOptionTextField.attributedPlaceholder = NSAttributedString(
             string: "ex) 슈붕",
             attributes: [
                 .font: Fonts.regular.font(size: 14),
                 .foregroundColor: Colors.gray40.color
             ])
-        $0.layer.cornerRadius = 12
-        $0.delegate = self
-        $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-    }
+        firstOptionTextField.layer.cornerRadius = 12
+        firstOptionTextField.delegate = self
+        firstOptionTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        return firstOptionTextField
+    }()
 
-    private lazy var secondOptionTextField = CreatePollOptionTextField(
+    private lazy var secondOptionTextField: CreatePollOptionTextField = {
+        let secondOptionTextField = CreatePollOptionTextField(
         padding: .init(top: 12, left: 16, bottom: 12, right: 16)
-    ).then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.backgroundColor = Colors.gray10.color
-        $0.textColor = Colors.gray100.color
-        $0.returnKeyType = .done
-        $0.attributedPlaceholder = NSAttributedString(
+    )
+        secondOptionTextField.font = Fonts.regular.font(size: 14)
+        secondOptionTextField.backgroundColor = Colors.gray10.color
+        secondOptionTextField.textColor = Colors.gray100.color
+        secondOptionTextField.returnKeyType = .done
+        secondOptionTextField.attributedPlaceholder = NSAttributedString(
             string: "ex) 팥붕",
             attributes: [
                 .font: Fonts.regular.font(size: 14),
                 .foregroundColor: Colors.gray40.color
             ])
-        $0.layer.cornerRadius = 12
-        $0.delegate = self
-        $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-    }
+        secondOptionTextField.layer.cornerRadius = 12
+        secondOptionTextField.delegate = self
+        secondOptionTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        return secondOptionTextField
+    }()
 
-    private lazy var descriptionLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray50.color
-        $0.numberOfLines = 0
+    private lazy var descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = Fonts.medium.font(size: 12)
+        descriptionLabel.textColor = Colors.gray50.color
+        descriptionLabel.numberOfLines = 0
 
         let style = NSMutableParagraphStyle()
         style.maximumLineHeight = 18
@@ -116,30 +128,37 @@ final class CreatePollModalViewController: BaseViewController {
             range: (text as NSString).range(of: limitCount)
         )
 
-        $0.attributedText = attributedText
-    }
+        descriptionLabel.attributedText = attributedText
+        return descriptionLabel
+    }()
 
-    private lazy var buttonStackView = UIStackView(
+    private lazy var buttonStackView: UIStackView = {
+        let buttonStackView = UIStackView(
         arrangedSubviews: [cancelButton, createButton]
-    ).then {
-        $0.axis = .horizontal
-        $0.spacing = 12
-        $0.distribution = .fillEqually
-    }
+    )
+        buttonStackView.axis = .horizontal
+        buttonStackView.spacing = 12
+        buttonStackView.distribution = .fillEqually
+        return buttonStackView
+    }()
 
-    private let cancelButton = UIButton().then {
-        $0.setTitle("취소", for: .normal)
-        $0.setTitleColor(Colors.gray50.color, for: .normal)
-        $0.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        $0.backgroundColor = .clear
-        $0.layer.cornerRadius = 12
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = Colors.gray40.color.cgColor
-    }
+    private let cancelButton: UIButton = {
+        let cancelButton = UIButton()
+        cancelButton.setTitle("취소", for: .normal)
+        cancelButton.setTitleColor(Colors.gray50.color, for: .normal)
+        cancelButton.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        cancelButton.backgroundColor = .clear
+        cancelButton.layer.cornerRadius = 12
+        cancelButton.layer.borderWidth = 1
+        cancelButton.layer.borderColor = Colors.gray40.color.cgColor
+        return cancelButton
+    }()
 
-    private let createButton = Button.Normal(size: .h48, text: "투표 만들기").then {
-        $0.isEnabled = false
-    }
+    private let createButton: Button.Normal = {
+        let createButton = Button.Normal(size: .h48, text: "투표 만들기")
+        createButton.isEnabled = false
+        return createButton
+    }()
 
     private var containerMinY: CGFloat = 0
 

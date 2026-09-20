@@ -6,15 +6,19 @@ import StoreInterface
 
 final class StoreReviewListViewController: BaseViewController {
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout()).then {
-        $0.backgroundColor = .clear
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        return collectionView
+    }()
     
-    private let emptyView = MyPageEmptyView().then {
-        $0.isHidden = true
-        $0.bind(title: "아직 작성한 리뷰가 없어요")
-    }
+    private let emptyView: MyPageEmptyView = {
+        let emptyView = MyPageEmptyView()
+        emptyView.isHidden = true
+        emptyView.bind(title: "아직 작성한 리뷰가 없어요")
+        return emptyView
+    }()
 
     private lazy var dataSource = StoreReviewListDataSource(collectionView: collectionView)
 

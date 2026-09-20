@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -12,23 +11,29 @@ final class MedalInfoTableViewCell: BaseTableViewCell {
     
     private let medalImage = UIImageView()
     
-    private let medalNameLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 16)
-        $0.textColor = Colors.mainPink.color
-    }
+    private let medalNameLabel: UILabel = {
+        let medalNameLabel = UILabel()
+        medalNameLabel.font = Fonts.medium.font(size: 16)
+        medalNameLabel.textColor = Colors.mainPink.color
+        return medalNameLabel
+    }()
     
-    private let acquisitionLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 14)
-        $0.textColor = .white
-        $0.textAlignment = .center
-    }
+    private let acquisitionLabel: UILabel = {
+        let acquisitionLabel = UILabel()
+        acquisitionLabel.font = Fonts.bold.font(size: 14)
+        acquisitionLabel.textColor = .white
+        acquisitionLabel.textAlignment = .center
+        return acquisitionLabel
+    }()
     
-    private let descriptionLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = .white
-        $0.textAlignment = .center
-        $0.numberOfLines = 0
-    }
+    private let descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = Fonts.regular.font(size: 14)
+        descriptionLabel.textColor = .white
+        descriptionLabel.textAlignment = .center
+        descriptionLabel.numberOfLines = 0
+        return descriptionLabel
+    }()
     
     override func setup() {
         self.backgroundColor = .clear

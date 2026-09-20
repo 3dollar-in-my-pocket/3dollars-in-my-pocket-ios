@@ -9,19 +9,23 @@ final class WriteDetailCategoryHeaderView: BaseCollectionViewReusableView {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
     }
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.gray100.color
-        $0.text = Strings.writeDetailHeaderCategory
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.semiBold.font(size: 14)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.text = Strings.writeDetailHeaderCategory
+        return titleLabel
+    }()
     
-    let deleteButton = UIButton().then {
-        $0.setTitle(Strings.writeDetailHeaderDeleteAllMenu, for: .normal)
-        $0.setTitleColor(Colors.mainRed.color, for: .normal)
-        $0.titleLabel?.font = Fonts.bold.font(size: 12)
-        $0.setImage(Icons.delete.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = Colors.mainRed.color
-    }
+    let deleteButton: UIButton = {
+        let deleteButton = UIButton()
+        deleteButton.setTitle(Strings.writeDetailHeaderDeleteAllMenu, for: .normal)
+        deleteButton.setTitleColor(Colors.mainRed.color, for: .normal)
+        deleteButton.titleLabel?.font = Fonts.bold.font(size: 12)
+        deleteButton.setImage(Icons.delete.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        deleteButton.tintColor = Colors.mainRed.color
+        return deleteButton
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

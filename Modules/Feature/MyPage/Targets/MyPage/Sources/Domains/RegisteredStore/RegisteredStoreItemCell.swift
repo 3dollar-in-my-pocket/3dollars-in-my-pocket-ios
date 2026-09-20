@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 import Model
 
 final class RegisteredStoreItemCell: BaseCollectionViewCell {
@@ -11,64 +10,80 @@ final class RegisteredStoreItemCell: BaseCollectionViewCell {
         static let height: CGFloat = 114
     }
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 20
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray95.color
+        return containerView
+    }()
     
     private let storeView = UIView()
 
-    private let titleStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
-        $0.alignment = .leading
-    }
+    private let titleStackView: UIStackView = {
+        let titleStackView = UIStackView()
+        titleStackView.axis = .vertical
+        titleStackView.spacing = 4
+        titleStackView.alignment = .leading
+        return titleStackView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 16)
+        titleLabel.textColor = Colors.systemWhite.color
+        return titleLabel
+    }()
 
-    private let tagStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let tagStackView: UIStackView = {
+        let tagStackView = UIStackView()
+        tagStackView.axis = .horizontal
+        tagStackView.spacing = 4
+        return tagStackView
+    }()
 
-    private let tagLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray40.color
-    }
+    private let tagLabel: UILabel = {
+        let tagLabel = UILabel()
+        tagLabel.font = Fonts.medium.font(size: 12)
+        tagLabel.textColor = Colors.gray40.color
+        return tagLabel
+    }()
 
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = .clear
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .clear
+        return imageView
+    }()
     
     private let newBadge = UIImageView(image: MyPageAsset.iconNewBadgeShort.image)
 
     private let bottomView = UIView()
 
-    private let ratingButton = UIButton().then {
-        $0.setImage(
+    private let ratingButton: UIButton = {
+        let ratingButton = UIButton()
+        ratingButton.setImage(
             Icons.starSolid.image
                 .resizeImage(scaledTo: 12)
                 .withTintColor(Colors.gray40.color), 
             for: .normal
         )
-        $0.imageEdgeInsets.right = 2
-//        $0.titleEdgeInsets.right = 8
-        $0.contentEdgeInsets.right = 8
-        $0.setTitleColor(Colors.gray40.color, for: .normal)
-        $0.titleLabel?.font = Fonts.bold.font(size: 12)
-    }
+        ratingButton.imageEdgeInsets.right = 2
+//        ratingButton.titleEdgeInsets.right = 8
+        ratingButton.contentEdgeInsets.right = 8
+        ratingButton.setTitleColor(Colors.gray40.color, for: .normal)
+        ratingButton.titleLabel?.font = Fonts.bold.font(size: 12)
+        return ratingButton
+    }()
     
-    private let countLabel = PaddingLabel(topInset: 0, bottomInset: 0, leftInset: 8, rightInset: 8).then {
-        $0.font = Fonts.bold.font(size: 12)
-        $0.textColor = Colors.systemWhite.color
-        $0.backgroundColor = Colors.gray80.color
-        $0.layer.cornerRadius = 12
-        $0.clipsToBounds = true
-    }
+    private let countLabel: PaddingLabel = {
+        let countLabel = PaddingLabel(topInset: 0, bottomInset: 0, leftInset: 8, rightInset: 8)
+        countLabel.font = Fonts.bold.font(size: 12)
+        countLabel.textColor = Colors.systemWhite.color
+        countLabel.backgroundColor = Colors.gray80.color
+        countLabel.layer.cornerRadius = 12
+        countLabel.clipsToBounds = true
+        return countLabel
+    }()
     
     override func setup() {
         super.setup()

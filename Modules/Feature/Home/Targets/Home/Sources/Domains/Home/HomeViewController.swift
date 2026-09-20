@@ -8,7 +8,6 @@ import StoreInterface
 import FeedInterface
 
 import NMapsMap
-import Then
 import PanModal
 import Log
 import Kingfisher
@@ -68,10 +67,10 @@ public final class HomeViewController: BaseViewController {
     public static func instance() -> UINavigationController {
         let viewController = HomeViewController()
 
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.interactivePopGestureRecognizer?.delegate = nil
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.interactivePopGestureRecognizer?.delegate = nil
+        return navigationController
     }
 
     public override func loadView() {

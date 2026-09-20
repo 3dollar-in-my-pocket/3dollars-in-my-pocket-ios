@@ -143,10 +143,12 @@ extension WriteDetailTypeCell {
             }
         }
         
-        let dotImage = UIView().then {
-            $0.layer.cornerRadius = 3
-            $0.backgroundColor = Colors.gray40.color
-        }
+        let dotImage: UIView = {
+            let dotImage = UIView()
+            dotImage.layer.cornerRadius = 3
+            dotImage.backgroundColor = Colors.gray40.color
+            return dotImage
+        }()
         
         init(title: String) {
             super.init(frame: .zero)

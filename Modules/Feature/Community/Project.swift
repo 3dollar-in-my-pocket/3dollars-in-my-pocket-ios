@@ -14,7 +14,6 @@ let project = Project.makeFeatureModule(
         .Core.log,
         .Interface.communityInterface,
         .SPM.snapKit,
-        .SPM.then
     ],
     includeInterface: true,
     includeDemo: true

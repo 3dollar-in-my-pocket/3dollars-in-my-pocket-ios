@@ -2,7 +2,6 @@ import UIKit
 import Combine
 
 import DesignSystem
-import Then
 import Common
 
 final class PollDetailWriteCommentView: BaseView {
@@ -17,34 +16,40 @@ final class PollDetailWriteCommentView: BaseView {
 
     let didChangeText = PassthroughSubject<String, Never>()
 
-    let lineView = UIView().then {
-        $0.backgroundColor = Colors.gray30.color
-    }
+    let lineView: UIView = {
+        let lineView = UIView()
+        lineView.backgroundColor = Colors.gray30.color
+        return lineView
+    }()
 
-    lazy var textView = UITextView().then {
-        $0.backgroundColor = Colors.gray10.color
-        $0.layer.cornerRadius = 8
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.clear.cgColor
-        $0.isScrollEnabled = false
-        $0.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.text = Layout.Placeholder.text
-        $0.textColor = Layout.Placeholder.color
-        $0.font = Fonts.regular.font(size: 14)
-        $0.keyboardDismissMode = .interactive
-        $0.delegate = self
-    }
+    lazy var textView: UITextView = {
+        let textView = UITextView()
+        textView.backgroundColor = Colors.gray10.color
+        textView.layer.cornerRadius = 8
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor.clear.cgColor
+        textView.isScrollEnabled = false
+        textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
+        textView.text = Layout.Placeholder.text
+        textView.textColor = Layout.Placeholder.color
+        textView.font = Fonts.regular.font(size: 14)
+        textView.keyboardDismissMode = .interactive
+        textView.delegate = self
+        return textView
+    }()
 
-    let writeButton = UIButton().then {
-        $0.setImage(Icons.writeSolid.image
+    let writeButton: UIButton = {
+        let writeButton = UIButton()
+        writeButton.setImage(Icons.writeSolid.image
             .resizeImage(scaledTo: 20)
             .withTintColor(Colors.mainPink.color), for: .normal)
-        $0.setImage(Icons.writeSolid.image
+        writeButton.setImage(Icons.writeSolid.image
             .resizeImage(scaledTo: 20)
             .withTintColor(Colors.gray40.color), for: .disabled)
-        $0.contentEdgeInsets = .init(top: 16, left: 12, bottom: 20, right: 16)
-        $0.isEnabled = false
-    }
+        writeButton.contentEdgeInsets = .init(top: 16, left: 12, bottom: 20, right: 16)
+        writeButton.isEnabled = false
+        return writeButton
+    }()
 
     override func setup() {
         super.setup()

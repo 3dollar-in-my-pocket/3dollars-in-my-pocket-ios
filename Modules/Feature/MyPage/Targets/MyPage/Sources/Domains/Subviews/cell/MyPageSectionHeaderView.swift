@@ -1,6 +1,5 @@
 import UIKit
 import Combine
-import Then
 import SnapKit
 
 import Model
@@ -12,30 +11,38 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
         static let height: CGFloat = 66
     }
 
-    private let iconView = UIImageView().then {
-        $0.tintColor = Colors.gray50.color
-    }
+    private let iconView: UIImageView = {
+        let iconView = UIImageView()
+        iconView.tintColor = Colors.gray50.color
+        return iconView
+    }()
     
-    private let iconLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray50.color
-    }
+    private let iconLabel: UILabel = {
+        let iconLabel = UILabel()
+        iconLabel.font = Fonts.medium.font(size: 12)
+        iconLabel.textColor = Colors.gray50.color
+        return iconLabel
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 20)
-        $0.textColor = Colors.gray10.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.semiBold.font(size: 20)
+        titleLabel.textColor = Colors.gray10.color
+        return titleLabel
+    }()
     
-    fileprivate let countButton = UIButton().then {
-        $0.setTitle("0개", for: .normal)
-        $0.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        $0.imageEdgeInsets.left = 2
-        $0.semanticContentAttribute = .forceRightToLeft
-        $0.setTitleColor(Colors.mainPink.color, for: .normal)
-        $0.setImage(Icons.arrowRight.image
+    fileprivate let countButton: UIButton = {
+        let countButton = UIButton()
+        countButton.setTitle("0개", for: .normal)
+        countButton.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        countButton.imageEdgeInsets.left = 2
+        countButton.semanticContentAttribute = .forceRightToLeft
+        countButton.setTitleColor(Colors.mainPink.color, for: .normal)
+        countButton.setImage(Icons.arrowRight.image
             .resizeImage(scaledTo: 12)
             .withTintColor(Colors.gray20.color), for: .normal)
-    }
+        return countButton
+    }()
     
     override func setup() {
         super.setup()

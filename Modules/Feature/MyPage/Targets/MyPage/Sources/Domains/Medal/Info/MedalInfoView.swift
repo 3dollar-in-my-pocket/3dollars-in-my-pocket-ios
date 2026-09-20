@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -8,26 +7,32 @@ import DesignSystem
 import Common
 
 final class MedalInfoView: BaseView {
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 16)
-        $0.textColor = .white
-        $0.text = "칭호 살펴보기"
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 16)
+        titleLabel.textColor = .white
+        titleLabel.text = "칭호 살펴보기"
+        return titleLabel
+    }()
     
-    let closeButton = UIButton().then {
-        $0.setImage(Icons.close.image.withTintColor(Colors.systemWhite.color), for: .normal)
-    }
+    let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.setImage(Icons.close.image.withTintColor(Colors.systemWhite.color), for: .normal)
+        return closeButton
+    }()
     
-    let tableView = UITableView().then {
-        $0.tableFooterView = UIView()
-        $0.backgroundColor = .clear
-        $0.separatorStyle = .none
-        $0.register(
+    let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.tableFooterView = UIView()
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.register(
             MedalInfoTableViewCell.self,
             forCellReuseIdentifier: MedalInfoTableViewCell.registerId
         )
-        $0.rowHeight = UITableView.automaticDimension
-    }
+        tableView.rowHeight = UITableView.automaticDimension
+        return tableView
+    }()
     
     override func setup() {
         self.backgroundColor = .black.withAlphaComponent(0.9)

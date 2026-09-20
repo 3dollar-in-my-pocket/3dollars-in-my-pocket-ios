@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -14,25 +13,31 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         static let height: CGFloat = 240
     }
     
-    private let bgCloud = UIImageView().then {
-        $0.image = MyPageAsset.bgCloud.image
-    }
+    private let bgCloud: UIImageView = {
+        let bgCloud = UIImageView()
+        bgCloud.image = MyPageAsset.bgCloud.image
+        return bgCloud
+    }()
     
     private let medalImageButton = UIButton()
     
-    private let medalLabel = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 4, rightInset: 4).then {
-        $0.font = Fonts.medium.font(size: 10)
-        $0.backgroundColor = Colors.gray80.color
-        $0.textColor = Colors.mainPink.color
-        $0.layer.cornerRadius = 4
-        $0.clipsToBounds = true
-    }
+    private let medalLabel: PaddingLabel = {
+        let medalLabel = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 4, rightInset: 4)
+        medalLabel.font = Fonts.medium.font(size: 10)
+        medalLabel.backgroundColor = Colors.gray80.color
+        medalLabel.textColor = Colors.mainPink.color
+        medalLabel.layer.cornerRadius = 4
+        medalLabel.clipsToBounds = true
+        return medalLabel
+    }()
     
-    private let nicknameLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 30)
-        $0.textAlignment = .center
-        $0.textColor = .white
-    }
+    private let nicknameLabel: UILabel = {
+        let nicknameLabel = UILabel()
+        nicknameLabel.font = Fonts.bold.font(size: 30)
+        nicknameLabel.textAlignment = .center
+        nicknameLabel.textColor = .white
+        return nicknameLabel
+    }()
     
     private let stackView = UIStackView()
     private let storeCountButton = MyPageOverviewCountButton(type: .store)

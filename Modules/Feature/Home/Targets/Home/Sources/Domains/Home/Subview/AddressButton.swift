@@ -4,20 +4,26 @@ import Common
 import DesignSystem
 
 public final class AddressButton: BaseView {
-    private let containerView = UIView().then {
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.layer.cornerRadius = 9
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        containerView.layer.cornerRadius = 9
+        return containerView
+    }()
   
-    private let addressButton = UIButton().then {
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-        $0.setTitleColor(DesignSystemAsset.Colors.gray100.color, for: .normal)
-        $0.contentHorizontalAlignment = .left
-    }
+    private let addressButton: UIButton = {
+        let addressButton = UIButton()
+        addressButton.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+        addressButton.setTitleColor(DesignSystemAsset.Colors.gray100.color, for: .normal)
+        addressButton.contentHorizontalAlignment = .left
+        return addressButton
+    }()
     
-    private let rightArrowImage = UIImageView().then {
-        $0.image = DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray30.color)
-    }
+    private let rightArrowImage: UIImageView = {
+        let rightArrowImage = UIImageView()
+        rightArrowImage.image = DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray30.color)
+        return rightArrowImage
+    }()
     
     public override func setup() {
         addSubViews([

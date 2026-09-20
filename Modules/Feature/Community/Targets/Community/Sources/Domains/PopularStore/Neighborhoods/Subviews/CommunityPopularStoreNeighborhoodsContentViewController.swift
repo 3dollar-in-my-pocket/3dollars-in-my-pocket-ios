@@ -5,15 +5,17 @@ import DesignSystem
 import Model
 
 final class CommunityPopularStoreNeighborhoodsContentViewController: BaseViewController {
-    private lazy var collectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
-    ).then {
-        $0.delegate = self
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-    }
+    )
+        collectionView.delegate = self
+        collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
     
     private var viewModel: CommunityPopularStoreNeighborhoodsContentViewModel?
     private lazy var dataSource = CommunityPopularStoreNeighborhoodsContentDataSource(collectionView: collectionView)

@@ -3,7 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 import Model
-import Then
 
 final class CategorySelectionCell: BaseCollectionViewCell {
     static let size = CGSize(
@@ -13,19 +12,23 @@ final class CategorySelectionCell: BaseCollectionViewCell {
     
     private let categoryImage = UIImageView()
     
-    private let categoryLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray70.color
-        $0.textAlignment = .center
-    }
+    private let categoryLabel: UILabel = {
+        let categoryLabel = UILabel()
+        categoryLabel.font = Fonts.medium.font(size: 12)
+        categoryLabel.textColor = Colors.gray70.color
+        categoryLabel.textAlignment = .center
+        return categoryLabel
+    }()
     
-    private let selectIndicator = UIView().then {
-        $0.backgroundColor = Colors.pink100.color
-        $0.layer.cornerRadius = 28
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = Colors.mainPink.color.cgColor
-        $0.isHidden = true
-    }
+    private let selectIndicator: UIView = {
+        let selectIndicator = UIView()
+        selectIndicator.backgroundColor = Colors.pink100.color
+        selectIndicator.layer.cornerRadius = 28
+        selectIndicator.layer.borderWidth = 1
+        selectIndicator.layer.borderColor = Colors.mainPink.color.cgColor
+        selectIndicator.isHidden = true
+        return selectIndicator
+    }()
     
     override var isSelected: Bool {
         didSet {

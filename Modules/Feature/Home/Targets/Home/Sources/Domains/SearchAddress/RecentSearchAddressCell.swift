@@ -5,24 +5,32 @@ import DesignSystem
 import Model
 
 final class RecentSearchAddressCell: BaseCollectionViewCell {
-    private let placeNameLabel = UILabel().then {
-        $0.textColor = Colors.systemBlack.color
-        $0.font = Fonts.semiBold.font(size: 14)
-    }
+    private let placeNameLabel: UILabel = {
+        let placeNameLabel = UILabel()
+        placeNameLabel.textColor = Colors.systemBlack.color
+        placeNameLabel.font = Fonts.semiBold.font(size: 14)
+        return placeNameLabel
+    }()
     
-    private let addressLabel = UILabel().then {
-        $0.textColor = Colors.gray50.color
-        $0.font = Fonts.regular.font(size: 14)
-    }
+    private let addressLabel: UILabel = {
+        let addressLabel = UILabel()
+        addressLabel.textColor = Colors.gray50.color
+        addressLabel.font = Fonts.regular.font(size: 14)
+        return addressLabel
+    }()
     
-    private let dividerView = UIView().then {
-        $0.backgroundColor = Colors.gray20.color
-    }
+    private let dividerView: UIView = {
+        let dividerView = UIView()
+        dividerView.backgroundColor = Colors.gray20.color
+        return dividerView
+    }()
     
-    private let deleteButton = UIButton().then {
-        $0.setImage(Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = Colors.gray50.color
-    }
+    private let deleteButton: UIButton = {
+        let deleteButton = UIButton()
+        deleteButton.setImage(Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        deleteButton.tintColor = Colors.gray50.color
+        return deleteButton
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()

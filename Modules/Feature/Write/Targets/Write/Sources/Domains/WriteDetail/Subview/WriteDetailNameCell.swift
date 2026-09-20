@@ -8,18 +8,22 @@ final class WriteDetailNameCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
     }
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.gray10.color
-        $0.layer.cornerRadius = 8
-        $0.layer.masksToBounds = true
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = Colors.gray10.color
+        containerView.layer.cornerRadius = 8
+        containerView.layer.masksToBounds = true
+        return containerView
+    }()
     
-    let nameField = UITextField().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.gray100.color
-        $0.attributedPlaceholder = NSAttributedString(string: Strings.writeDetailNamePlaceholer, attributes: [.foregroundColor: Colors.gray50.color])
-        $0.returnKeyType = .done
-    }
+    let nameField: UITextField = {
+        let nameField = UITextField()
+        nameField.font = Fonts.regular.font(size: 14)
+        nameField.textColor = Colors.gray100.color
+        nameField.attributedPlaceholder = NSAttributedString(string: Strings.writeDetailNamePlaceholer, attributes: [.foregroundColor: Colors.gray50.color])
+        nameField.returnKeyType = .done
+        return nameField
+    }()
     
     override func setup() {
         backgroundColor = Colors.systemWhite.color

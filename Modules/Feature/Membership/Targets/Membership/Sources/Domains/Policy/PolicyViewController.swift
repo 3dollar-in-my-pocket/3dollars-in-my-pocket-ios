@@ -20,10 +20,10 @@ public final class PolicyViewController: Common.BaseViewController {
         let viewController = PolicyViewController()
         
         viewController.delegate = delegate
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.modalPresentationStyle = .overCurrentContext
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overCurrentContext
+        return navigationController
     }
     
     init() {

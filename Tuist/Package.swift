@@ -7,7 +7,6 @@ import PackageDescription
 
     let packageSettings = PackageSettings(
         productTypes: [
-            "Then": .framework,
             "SnapKit": .framework,
             "Kingfisher": .framework,
             "lottie-ios": .framework,
@@ -24,7 +23,6 @@ import PackageDescription
 let package = Package(
     name: "PackageName",
     dependencies: [
-        .package(url: "https://github.com/devxoul/Then", from: "2.0.0"),
         .package(url: "https://github.com/SnapKit/SnapKit", from: "5.0.0"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.6.2"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.0.1"),

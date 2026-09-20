@@ -12,12 +12,16 @@ final class ReviewTabViewController: BaseViewController {
     }
 
     private lazy var myPageNavigationBar = MyPageNavigationBar(title: "내가 쓴 리뷰")
-    private let tabView = MyPageTabView(titles: ReviewTab.list.map { $0.title }).then {
-        $0.isUserInteractionEnabled = false
-    }
-    private let lineView: UIView = UIView().then {
-        $0.backgroundColor = Colors.gray90.color
-    }
+    private let tabView: MyPageTabView = {
+        let tabView = MyPageTabView(titles: ReviewTab.list.map { $0.title })
+        tabView.isUserInteractionEnabled = false
+        return tabView
+    }()
+    private let lineView: UIView = {
+        let lineView = UIView()
+        lineView.backgroundColor = Colors.gray90.color
+        return lineView
+    }()
     private let pageContainerView = UIView()
     private let pageViewController = BasePageViewController(
         transitionStyle: .scroll,

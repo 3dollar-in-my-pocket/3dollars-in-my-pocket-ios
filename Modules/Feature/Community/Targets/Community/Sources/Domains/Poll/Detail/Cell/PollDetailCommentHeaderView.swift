@@ -1,7 +1,6 @@
 import UIKit
 
 import DesignSystem
-import Then
 
 final class PollDetailCommentHeaderView: UICollectionReusableView {
 
@@ -9,10 +8,12 @@ final class PollDetailCommentHeaderView: UICollectionReusableView {
         static let height: CGFloat = 68
     }
 
-    private let countLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.gray100.color
-    }
+    private let countLabel: UILabel = {
+        let countLabel = UILabel()
+        countLabel.font = Fonts.semiBold.font(size: 14)
+        countLabel.textColor = Colors.gray100.color
+        return countLabel
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,16 +26,17 @@ final class PollDetailCommentHeaderView: UICollectionReusableView {
     }
 
     private func setup() {
+        let titleLabel = UILabel()
+        titleLabel.text = "의견"
+        titleLabel.font = Fonts.regular.font(size: 14)
+        titleLabel.textColor = Colors.gray100.color
+
         let stackView = UIStackView(arrangedSubviews: [
             UIImageView(image: Icons.communitySolid.image
                 .resizeImage(scaledTo: 20)
                 .withTintColor(Colors.mainRed.color)),
             countLabel,
-            UILabel().then {
-                $0.text = "의견"
-                $0.font = Fonts.regular.font(size: 14)
-                $0.textColor = Colors.gray100.color
-            }
+            titleLabel
         ])
 
         stackView.axis = .horizontal

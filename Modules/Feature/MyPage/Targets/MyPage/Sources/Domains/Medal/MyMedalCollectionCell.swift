@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -13,17 +12,21 @@ final class MyMedalCollectionCell: BaseCollectionViewCell {
         height: 148
     )
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 12)
-        $0.textColor = .white
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 12)
+        titleLabel.textColor = .white
+        return titleLabel
+    }()
     
-    private let containerView = UIView().then {
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = Colors.mainPink.color.cgColor
-        $0.backgroundColor = Colors.gray95.color
-        $0.layer.cornerRadius = 8
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = Colors.mainPink.color.cgColor
+        containerView.backgroundColor = Colors.gray95.color
+        containerView.layer.cornerRadius = 8
+        return containerView
+    }()
     
     private let medalImage = UIImageView()
     

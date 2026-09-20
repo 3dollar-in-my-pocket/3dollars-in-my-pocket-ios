@@ -3,7 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 import Model
 
 final class MyPagePollItemCell: BaseCollectionViewCell {
@@ -12,29 +11,37 @@ final class MyPagePollItemCell: BaseCollectionViewCell {
         static let optionHeight: CGFloat = 90
     }
     
-    private let containerView = UIView().then {
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-        $0.layer.cornerRadius = 16
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray95.color
+        containerView.layer.cornerRadius = 16
+        return containerView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
-        $0.textColor = Colors.gray10.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 24)
+        titleLabel.textColor = Colors.gray10.color
+        return titleLabel
+    }()
     
-    private let dateLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray10.color
-        $0.setContentCompressionResistancePriority(.required, for: .horizontal)
-    }
+    private let dateLabel: UILabel = {
+        let dateLabel = UILabel()
+        dateLabel.font = Fonts.medium.font(size: 12)
+        dateLabel.textColor = Colors.gray10.color
+        dateLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return dateLabel
+    }()
     
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.distribution = .fillEqually
-        $0.alignment = .fill
-        $0.spacing = 12
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
+        stackView.spacing = 12
+        return stackView
+    }()
     
     private let firstOptionView = MyPagePollOptionView()
     private let secondOptionView = MyPagePollOptionView()
@@ -116,31 +123,41 @@ final class MyPagePollItemCell: BaseCollectionViewCell {
 }
 
 final private class MyPagePollOptionView: BaseView {
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = Colors.gray70.color.cgColor
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 16
+        containerView.clipsToBounds = true
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = Colors.gray70.color.cgColor
+        return containerView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.systemWhite.color
-        $0.numberOfLines = 2
-        $0.textAlignment = .left
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 12)
+        titleLabel.textColor = Colors.systemWhite.color
+        titleLabel.numberOfLines = 2
+        titleLabel.textAlignment = .left
+        return titleLabel
+    }()
     
-    private let emojiLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-    }
+    private let emojiLabel: UILabel = {
+        let emojiLabel = UILabel()
+        emojiLabel.font = Fonts.bold.font(size: 16)
+        return emojiLabel
+    }()
     
-    private let percentLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-    }
+    private let percentLabel: UILabel = {
+        let percentLabel = UILabel()
+        percentLabel.font = Fonts.bold.font(size: 16)
+        return percentLabel
+    }()
     
-    private let countLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 10)
-    }
+    private let countLabel: UILabel = {
+        let countLabel = UILabel()
+        countLabel.font = Fonts.medium.font(size: 10)
+        return countLabel
+    }()
     
     override func setup() {
         super.setup()
