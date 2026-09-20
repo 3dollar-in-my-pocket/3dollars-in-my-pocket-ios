@@ -127,8 +127,9 @@ custom_rules:
   no_uicolor_literal:                       # R7
     name: "R7 UIColor 리터럴 금지"
     excluded: "Modules/Core/DesignSystem/.*"
-    regex: "\\bUIColor\\("
-    message: "R7: 색상은 DesignSystem 의 Colors 만 사용한다."
+    # 하드코딩(hex 문자열 리터럴, red/r/white 직접 생성)만 금지. 서버가 내려준 색을 변수로 넘기는 UIColor(hex: value) 는 허용
+    regex: "UIColor\\((hex: *)?\"|UIColor\\((red|r|white):"
+    message: "R7: 하드코딩 색은 DesignSystem 의 Colors 를 사용한다. (서버 색 변수는 허용)"
     severity: error
 
   snapkit_leading_trailing:                 # R7

@@ -9,6 +9,8 @@ final class CommunityUserMedalView: BaseView {
     private let containerView: UIView = {
         let containerView = UIView()
         containerView.layer.cornerRadius = 4
+        // 칭호 뱃지 디자인 지정 색, DesignSystem 토큰 없음
+        // swiftlint:disable:next no_uicolor_literal
         containerView.backgroundColor = UIColor(hex: "#FFA1AA")?.withAlphaComponent(0.1)
         return containerView
     }()
@@ -61,6 +63,8 @@ final class CommunityUserMedalView: BaseView {
     }
 
     func setBackgroundColor(_ color: UIColor?) {
+        // 칭호 뱃지 디자인 지정 색, DesignSystem 토큰 없음
+        // swiftlint:disable:next no_uicolor_literal
         containerView.backgroundColor = color ?? UIColor(hex: "#FFA1AA")?.withAlphaComponent(0.1)
     }
 }

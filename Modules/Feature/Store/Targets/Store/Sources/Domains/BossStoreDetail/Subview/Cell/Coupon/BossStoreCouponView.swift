@@ -92,6 +92,8 @@ final class BossStoreCouponView: BaseView {
     
     private let dashedBorderLineView: UIImageView = {
         let dashedBorderLineView = UIImageView()
+        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+        // swiftlint:disable:next no_uicolor_literal
         dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
         return dashedBorderLineView
     }()
@@ -235,6 +237,8 @@ final class BossStoreCouponView: BaseView {
                         owner.backgroundImageView.image = Assets.couponBackgroundBlack.image
                     } else {
                         owner.backgroundImageView.image = Assets.couponBackground.image
+                        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+                        // swiftlint:disable:next no_uicolor_literal
                         owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
                     }
                 case .expired:
@@ -252,6 +256,8 @@ final class BossStoreCouponView: BaseView {
                         owner.backgroundImageView.image = Assets.couponBackgroundBlack.image
                     } else {
                         owner.backgroundImageView.image = Assets.couponBackground.image
+                        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+                        // swiftlint:disable:next no_uicolor_literal
                         owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
                     }
                 }

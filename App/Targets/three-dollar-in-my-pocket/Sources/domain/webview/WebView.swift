@@ -24,14 +24,14 @@ final class WebView: BaseView {
     private let topLineView: UIView = {
         let view = UIView()
         
-        view.backgroundColor = UIColor(r: 43, g: 43, b: 43)
+        view.backgroundColor = Colors.gray80.color
         return view
     }()
     
     private let webView = WKWebView()
     
     override func setup() {
-        backgroundColor = UIColor(r: 28, g: 28, b: 28)
+        backgroundColor = Colors.gray90.color
         addSubViews([
             backButton,
             titleLabel,

@@ -82,6 +82,8 @@ private final class StoreCouponCardView: UIView {
         static let dividerVerticalInset: CGFloat = 12
         static let textInset: CGFloat = 12
         static let textLeadingInset: CGFloat = 18
+        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+        // swiftlint:disable:next no_uicolor_literal
         static let dividerColor = UIColor(hex: "#BC4BD6") ?? Colors.mainPink.color
     }
 

@@ -254,7 +254,7 @@ private let titleLabel = UILabel().then {          // ❌ then
 titleLabel.snp.makeConstraints { $0.left.equalToSuperview() }   // ❌ left
 ```
 
-**강제 수단** — SwiftLint custom_rules `no_uicolor_literal`(`UIColor(` 금지, `Modules/Core/DesignSystem/` 제외), `snapkit_leading_trailing`(`$0.left.`/`.right.`/`make.left` 등), `no_then`(`.then {` 및 `import Then`).
+**강제 수단** — SwiftLint custom_rules `no_uicolor_literal`(hex 문자열 리터럴·RGB 직접 생성 금지. 서버가 내려준 색을 변수로 넘기는 `UIColor(hex: value)`는 허용, `Modules/Core/DesignSystem/` 제외), `snapkit_leading_trailing`(`$0.left.`/`.right.`/`make.left` 등), `no_then`(`.then {` 및 `import Then`).
 
 **예외(베이스라인)** — `UIColor(` 47건, left/right 284건, `then` 405건(`import Then` 64 + `.then {` 341) 전부 동결. `DesignSystem` 모듈 내부는 `UIColor(` 사용이 정당하므로 제외. `left`/`right`가 의미상 물리적 방향이어야 하는 경우(예: 지도 위 좌우 버튼)는 `// swiftlint:disable:next snapkit_leading_trailing` + 이유 주석으로 예외 처리한다.
 
