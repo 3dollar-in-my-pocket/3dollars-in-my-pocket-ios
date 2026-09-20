@@ -3,7 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 import Model
 
 final class MyPageStoreListCell: BaseCollectionViewCell {
@@ -13,14 +12,16 @@ final class MyPageStoreListCell: BaseCollectionViewCell {
         }
     }
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.showsHorizontalScrollIndicator = false
-        $0.decelerationRate = .fast
-        $0.register([MyPageStoreItemCell.self])
-        $0.dataSource = self
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.decelerationRate = .fast
+        collectionView.register([MyPageStoreItemCell.self])
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        return collectionView
+    }()
     
     private var viewModel: MyPageStoreListCellViewModel?
     private var data: [MyPageStore] = []

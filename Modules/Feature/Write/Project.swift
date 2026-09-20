@@ -19,7 +19,6 @@ let project = Project.makeFeatureModule(
         .Interface.storeInterface,
         .Interface.writeInterface,
         .SPM.snapKit,
-        .SPM.then,
         .SPM.panModal,
         .SPM.combineCocoa,
         .Package.naverMap,

@@ -1,8 +1,8 @@
 name: Test
 
+# 모든 PR에서 실행 (스택 PR처럼 base가 feature 브랜치여도)
 on:
   pull_request:
-    branches: [develop, master]
 
 # 같은 PR에 새 푸시가 오면 이전 실행은 취소 (macOS 러너 분 절약)
 concurrency:

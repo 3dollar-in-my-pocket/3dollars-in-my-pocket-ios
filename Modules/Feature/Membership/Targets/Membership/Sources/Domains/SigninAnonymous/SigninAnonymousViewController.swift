@@ -14,9 +14,9 @@ final class SigninAnonymousViewController: BaseViewController {
     }
     
     static func instance() -> SigninAnonymousViewController {
-        return SigninAnonymousViewController(nibName: nil, bundle: nil).then {
-            $0.modalPresentationStyle = .overCurrentContext
-        }
+        let viewController = SigninAnonymousViewController(nibName: nil, bundle: nil)
+        viewController.modalPresentationStyle = .overCurrentContext
+        return viewController
     }
     
     override func loadView() {

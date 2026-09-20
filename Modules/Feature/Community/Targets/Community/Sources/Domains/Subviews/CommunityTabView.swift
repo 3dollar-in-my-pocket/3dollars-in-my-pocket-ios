@@ -2,7 +2,6 @@ import UIKit
 import Combine
 
 import DesignSystem
-import Then
 
 final class CommunityTabView: UIView {
 

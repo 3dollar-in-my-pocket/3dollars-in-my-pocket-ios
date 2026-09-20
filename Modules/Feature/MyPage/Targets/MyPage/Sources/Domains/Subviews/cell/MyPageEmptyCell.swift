@@ -3,7 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 import Model
 
 final class MyPageEmptyCell: BaseCollectionViewCell {
@@ -11,27 +10,35 @@ final class MyPageEmptyCell: BaseCollectionViewCell {
         static let height: CGFloat = 118
     }
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 16
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray95.color
+        return containerView
+    }()
     
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = .clear
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .clear
+        return imageView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray60.color
-        $0.textAlignment = .center
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 16)
+        titleLabel.textColor = Colors.gray60.color
+        titleLabel.textAlignment = .center
+        return titleLabel
+    }()
     
-    private let descriptionLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray70.color
-        $0.textAlignment = .center
-    }
+    private let descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = Fonts.medium.font(size: 12)
+        descriptionLabel.textColor = Colors.gray70.color
+        descriptionLabel.textAlignment = .center
+        return descriptionLabel
+    }()
     
     override func setup() {
         super.setup()

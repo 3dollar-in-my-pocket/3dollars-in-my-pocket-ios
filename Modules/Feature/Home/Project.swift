@@ -19,7 +19,6 @@ let project = Project.makeFeatureModule(
         .Interface.membershipInterface,
         .Interface.feedInterface,
         .SPM.snapKit,
-        .SPM.then,
         .SPM.panModal,
         .SPM.combineCocoa,
         .SPM.kingfisher,

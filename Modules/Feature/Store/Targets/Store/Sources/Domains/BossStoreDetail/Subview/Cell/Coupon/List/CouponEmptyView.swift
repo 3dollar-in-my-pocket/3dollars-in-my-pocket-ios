@@ -2,29 +2,36 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class CouponEmptyView: BaseView {
-    private let emptyContainerView = UIView().then {
-        $0.backgroundColor = Colors.gray95.color
-        $0.layer.cornerRadius = 16
-    }
+    private let emptyContainerView: UIView = {
+        let emptyContainerView = UIView()
+        emptyContainerView.backgroundColor = Colors.gray95.color
+        emptyContainerView.layer.cornerRadius = 16
+        return emptyContainerView
+    }()
     
-    private let emptyImageView = UIImageView().then {
-        $0.image = Icons.empty100.image
-    }
+    private let emptyImageView: UIImageView = {
+        let emptyImageView = UIImageView()
+        emptyImageView.image = Icons.empty100.image
+        return emptyImageView
+    }()
     
-    private let emptyTitleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.gray30.color
-        $0.textAlignment = .center
-    }
+    private let emptyTitleLabel: UILabel = {
+        let emptyTitleLabel = UILabel()
+        emptyTitleLabel.font = Fonts.semiBold.font(size: 14)
+        emptyTitleLabel.textColor = Colors.gray30.color
+        emptyTitleLabel.textAlignment = .center
+        return emptyTitleLabel
+    }()
     
-    private let emptyDescriptionLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-        $0.textAlignment = .center
-    }
+    private let emptyDescriptionLabel: UILabel = {
+        let emptyDescriptionLabel = UILabel()
+        emptyDescriptionLabel.font = Fonts.medium.font(size: 12)
+        emptyDescriptionLabel.textColor = Colors.gray60.color
+        emptyDescriptionLabel.textAlignment = .center
+        return emptyDescriptionLabel
+    }()
     
     override func setup() {
         super.setup()

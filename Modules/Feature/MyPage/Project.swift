@@ -18,7 +18,6 @@ let project = Project.makeFeatureModule(
         .Interface.membershipInterface,
         .Interface.communityInterface,
         .SPM.snapKit,
-        .SPM.then,
         .Package.deviceKit
     ],
     includeInterface: true,

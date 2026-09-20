@@ -2,39 +2,50 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class SearchAddressView: BaseView {
-    private let navigationView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        $0.backgroundColor = .white
-    }
+    private let navigationView: UIView = {
+        let navigationView = UIView()
+        navigationView.layer.cornerRadius = 20
+        navigationView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        navigationView.backgroundColor = .white
+        return navigationView
+    }()
     
-    let closeButton = UIButton().then {
-        $0.setImage(Icons.close.image, for: .normal)
-    }
+    let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.setImage(Icons.close.image, for: .normal)
+        return closeButton
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.text = Strings.SearchAddress.title
-        $0.font = Fonts.medium.font(size: 16)
-        $0.textColor = Colors.gray100.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.text = Strings.SearchAddress.title
+        titleLabel.font = Fonts.medium.font(size: 16)
+        titleLabel.textColor = Colors.gray100.color
+        return titleLabel
+    }()
     
-    private let inputBoxContainer = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 9
-    }
+    private let inputBoxContainer: UIView = {
+        let inputBoxContainer = UIView()
+        inputBoxContainer.backgroundColor = .white
+        inputBoxContainer.layer.cornerRadius = 9
+        return inputBoxContainer
+    }()
     
-    let searchImage = UIImageView().then {
-        $0.image = Icons.search.image.withTintColor(Colors.gray50.color)
-    }
+    let searchImage: UIImageView = {
+        let searchImage = UIImageView()
+        searchImage.image = Icons.search.image.withTintColor(Colors.gray50.color)
+        return searchImage
+    }()
     
-    let addressField = UITextField().then {
-        $0.placeholder = Strings.SearchAddress.placeholder
-        $0.textColor = Colors.systemBlack.color
-        $0.font = Fonts.regular.font(size: 14)
-    }
+    let addressField: UITextField = {
+        let addressField = UITextField()
+        addressField.placeholder = Strings.SearchAddress.placeholder
+        addressField.textColor = Colors.systemBlack.color
+        addressField.font = Fonts.regular.font(size: 14)
+        return addressField
+    }()
     
     let clearButton: UIButton = {
         let button = UIButton()

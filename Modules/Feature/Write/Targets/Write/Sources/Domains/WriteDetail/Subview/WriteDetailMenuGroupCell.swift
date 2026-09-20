@@ -23,30 +23,38 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     
     private var viewModel: WriteDetailMenuGroupViewModel?
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.systemWhite.color
-        $0.layer.cornerRadius = 16
-        $0.layer.masksToBounds = true
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = Colors.systemWhite.color
+        containerView.layer.cornerRadius = 16
+        containerView.layer.masksToBounds = true
+        return containerView
+    }()
     
     private let categoryImageView = UIImageView()
     
-    private let categoryNameLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 14)
-        $0.textColor = Colors.gray90.color
-    }
+    private let categoryNameLabel: UILabel = {
+        let categoryNameLabel = UILabel()
+        categoryNameLabel.font = Fonts.bold.font(size: 14)
+        categoryNameLabel.textColor = Colors.gray90.color
+        return categoryNameLabel
+    }()
     
-    let closeButton = UIButton().then {
-        $0.backgroundColor = Colors.mainRed.color
-        $0.layer.cornerRadius = 10
-        $0.setImage(Icons.close.image.withTintColor(Colors.gray0.color), for: .normal)
-        $0.contentEdgeInsets = .init(top: 4, left: 4, bottom: 4, right: 4)
-    }
+    let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.backgroundColor = Colors.mainRed.color
+        closeButton.layer.cornerRadius = 10
+        closeButton.setImage(Icons.close.image.withTintColor(Colors.gray0.color), for: .normal)
+        closeButton.contentEdgeInsets = .init(top: 4, left: 4, bottom: 4, right: 4)
+        return closeButton
+    }()
     
-    lazy var menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.register([WriteDetailMenuItemCell.self])
-        $0.dataSource = self
-    }
+    lazy var menuCollectionView: UICollectionView = {
+        let menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        menuCollectionView.register([WriteDetailMenuItemCell.self])
+        menuCollectionView.dataSource = self
+        return menuCollectionView
+    }()
     
     override func setup() {
         backgroundColor = Colors.gray0.color

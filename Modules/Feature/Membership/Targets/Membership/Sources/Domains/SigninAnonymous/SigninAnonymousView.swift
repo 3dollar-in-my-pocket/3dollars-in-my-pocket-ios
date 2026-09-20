@@ -3,7 +3,6 @@ import AuthenticationServices
 
 import Common
 import DesignSystem
-import Then
 
 final class SigninAnonymousView: BaseView {
     let closeButton: UIButton = {
@@ -19,13 +18,15 @@ final class SigninAnonymousView: BaseView {
     
     let appleButton = SigninButton(type: .apple)
     
-    private let anonymousLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.systemWhite.color
-        $0.numberOfLines = 0
-        $0.text = Strings.signinAnonymousDescription
-        $0.textAlignment = .center
-    }
+    private let anonymousLabel: UILabel = {
+        let anonymousLabel = UILabel()
+        anonymousLabel.font = Fonts.regular.font(size: 14)
+        anonymousLabel.textColor = Colors.systemWhite.color
+        anonymousLabel.numberOfLines = 0
+        anonymousLabel.text = Strings.signinAnonymousDescription
+        anonymousLabel.textAlignment = .center
+        return anonymousLabel
+    }()
     
     override func setup() {
         backgroundColor = Colors.mainPink.color

@@ -3,7 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 import Model
 
 final class MyPagePollTotalParticipantsCountCell: BaseCollectionViewCell {
@@ -12,28 +11,36 @@ final class MyPagePollTotalParticipantsCountCell: BaseCollectionViewCell {
         static let bottomInset: CGFloat = 8
     }
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 16
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray95.color
+        return containerView
+    }()
     
-    private let imageView = UIImageView().then {
-        $0.image = Icons.fireSolid.image.withTintColor(Colors.mainRed.color)
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = Icons.fireSolid.image.withTintColor(Colors.mainRed.color)
+        return imageView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
-        $0.textColor = Colors.gray10.color
-        $0.textAlignment = .center
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 24)
+        titleLabel.textColor = Colors.gray10.color
+        titleLabel.textAlignment = .center
+        return titleLabel
+    }()
     
-    private let descriptionLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray10.color
-        $0.textAlignment = .center
-        $0.text = "내가 만든 투표에 참여"
-    }
+    private let descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = Fonts.medium.font(size: 12)
+        descriptionLabel.textColor = Colors.gray10.color
+        descriptionLabel.textAlignment = .center
+        descriptionLabel.text = "내가 만든 투표에 참여"
+        return descriptionLabel
+    }()
     
     override func setup() {
         super.setup()

@@ -1,8 +1,8 @@
 name: Lint
 
+# 모든 PR에서 실행 (스택 PR처럼 base가 feature 브랜치여도)
 on:
   pull_request:
-    branches: [develop, master]
 
 jobs:
   lint:

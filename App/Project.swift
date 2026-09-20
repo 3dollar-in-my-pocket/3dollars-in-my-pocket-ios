@@ -313,7 +313,6 @@ let project = Project(
                 .Feature.myPage,
                 .Feature.feed,
                 .SPM.snapKit,
-                .SPM.then,
                 .SPM.kingfisher,
                 .SPM.lottie,
                 .Package.cameraPermission,

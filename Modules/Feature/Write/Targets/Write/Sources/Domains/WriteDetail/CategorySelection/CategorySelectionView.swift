@@ -13,25 +13,31 @@ final class CategorySelectionView: BaseView {
         return label
     }()
     
-    private let multiLabel = UILabel().then {
-        $0.text = Strings.categorySelectionMulti
-        $0.textColor = Colors.mainPink.color
-        $0.font = Fonts.bold.font(size: 12)
-    }
+    private let multiLabel: UILabel = {
+        let multiLabel = UILabel()
+        multiLabel.text = Strings.categorySelectionMulti
+        multiLabel.textColor = Colors.mainPink.color
+        multiLabel.font = Fonts.bold.font(size: 12)
+        return multiLabel
+    }()
     
-    lazy var categoryCollectionView = UICollectionView(
+    lazy var categoryCollectionView: UICollectionView = {
+        let categoryCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
-    ).then {
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-        $0.allowsMultipleSelection = true
-    }
+    )
+        categoryCollectionView.backgroundColor = .clear
+        categoryCollectionView.showsVerticalScrollIndicator = false
+        categoryCollectionView.showsHorizontalScrollIndicator = false
+        categoryCollectionView.allowsMultipleSelection = true
+        return categoryCollectionView
+    }()
     
-    let selectButton = Button.Normal(size: .h52, text: Strings.categorySelectionOk).then {
-        $0.isEnabled = false
-    }
+    let selectButton: Button.Normal = {
+        let selectButton = Button.Normal(size: .h52, text: Strings.categorySelectionOk)
+        selectButton.isEnabled = false
+        return selectButton
+    }()
     
     override func setup() {
         backgroundColor = Colors.systemWhite.color

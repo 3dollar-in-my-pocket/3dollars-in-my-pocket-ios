@@ -10,10 +10,12 @@ final class WriteDetailHeaderView: BaseCollectionViewReusableView {
     
     private let stackView = UIStackView()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.gray100.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.semiBold.font(size: 14)
+        titleLabel.textColor = Colors.gray100.color
+        return titleLabel
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

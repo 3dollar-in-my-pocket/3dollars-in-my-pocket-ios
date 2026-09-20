@@ -6,67 +6,83 @@ import Model
 
 class PollItemBaseCell: BaseCollectionViewCell {
 
-    let containerView = UIView().then {
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.systemWhite.color
-    }
+    let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 20
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.systemWhite.color
+        return containerView
+    }()
 
-    let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 20)
-        $0.textColor = Colors.gray90.color
-        $0.textAlignment = .center
-    }
+    let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.semiBold.font(size: 20)
+        titleLabel.textColor = Colors.gray90.color
+        titleLabel.textAlignment = .center
+        return titleLabel
+    }()
 
-    let userInfoStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    let userInfoStackView: UIStackView = {
+        let userInfoStackView = UIStackView()
+        userInfoStackView.axis = .horizontal
+        userInfoStackView.spacing = 4
+        return userInfoStackView
+    }()
 
-    let userNameLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray80.color
-    }
+    let userNameLabel: UILabel = {
+        let userNameLabel = UILabel()
+        userNameLabel.font = Fonts.medium.font(size: 12)
+        userNameLabel.textColor = Colors.gray80.color
+        return userNameLabel
+    }()
 
     let medalView = CommunityUserMedalView()
 
-    let selectionStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 8
-    }
+    let selectionStackView: UIStackView = {
+        let selectionStackView = UIStackView()
+        selectionStackView.axis = .vertical
+        selectionStackView.spacing = 8
+        return selectionStackView
+    }()
 
     let firstSelectionView = CommunityPollSelectionView()
 
     let secondSelectionView = CommunityPollSelectionView()
 
-    let commentButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.medium.font(size: 12)
-        $0.setTitleColor(Colors.gray50.color, for: .normal)
-        $0.setImage(Icons.communityLine.image
+    let commentButton: UIButton = {
+        let commentButton = UIButton()
+        commentButton.titleLabel?.font = Fonts.medium.font(size: 12)
+        commentButton.setTitleColor(Colors.gray50.color, for: .normal)
+        commentButton.setImage(Icons.communityLine.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray50.color), for: .normal)
-        $0.contentEdgeInsets.right = 2
-        $0.imageEdgeInsets.left = -2
-        $0.titleEdgeInsets.right = -2
-        $0.isUserInteractionEnabled = false
-    }
+        commentButton.contentEdgeInsets.right = 2
+        commentButton.imageEdgeInsets.left = -2
+        commentButton.titleEdgeInsets.right = -2
+        commentButton.isUserInteractionEnabled = false
+        return commentButton
+    }()
 
-    let countButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.medium.font(size: 12)
-        $0.setTitleColor(Colors.gray50.color, for: .normal)
-        $0.setImage(Icons.fireLine.image
+    let countButton: UIButton = {
+        let countButton = UIButton()
+        countButton.titleLabel?.font = Fonts.medium.font(size: 12)
+        countButton.setTitleColor(Colors.gray50.color, for: .normal)
+        countButton.setImage(Icons.fireLine.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray50.color), for: .normal)
-        $0.contentEdgeInsets.right = 2
-        $0.imageEdgeInsets.left = -2
-        $0.titleEdgeInsets.right = -2
-        $0.isUserInteractionEnabled = false
-    }
+        countButton.contentEdgeInsets.right = 2
+        countButton.imageEdgeInsets.left = -2
+        countButton.titleEdgeInsets.right = -2
+        countButton.isUserInteractionEnabled = false
+        return countButton
+    }()
 
-     let deadlineLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray50.color
-    }
+     let deadlineLabel: UILabel = {
+         let deadlineLabel = UILabel()
+        deadlineLabel.font = Fonts.medium.font(size: 12)
+        deadlineLabel.textColor = Colors.gray50.color
+         return deadlineLabel
+     }()
 
     private var viewModel: PollItemCellViewModel?
 
@@ -208,50 +224,66 @@ final class CommunityPollSelectionView: UIControl {
         static let height: CGFloat = 44
     }
 
-    let containerView = UIView().then {
-        $0.layer.cornerRadius = 12
-        $0.layer.borderColor = Colors.gray30.color.cgColor
-        $0.layer.borderWidth = 1
-        $0.isUserInteractionEnabled = false
-    }
+    let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 12
+        containerView.layer.borderColor = Colors.gray30.color.cgColor
+        containerView.layer.borderWidth = 1
+        containerView.isUserInteractionEnabled = false
+        return containerView
+    }()
 
-    private let titleStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let titleStackView: UIStackView = {
+        let titleStackView = UIStackView()
+        titleStackView.axis = .horizontal
+        titleStackView.spacing = 4
+        return titleStackView
+    }()
 
-    let checkImageView = UIImageView().then {
-        $0.image = Icons.check.image
+    let checkImageView: UIImageView = {
+        let checkImageView = UIImageView()
+        checkImageView.image = Icons.check.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.mainRed.color)
-        $0.isHidden = true
-    }
+        checkImageView.isHidden = true
+        return checkImageView
+    }()
 
-    let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 16)
-        $0.textColor = Colors.gray100.color
-        $0.textAlignment = .center
-    }
+    let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 16)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.textAlignment = .center
+        return titleLabel
+    }()
 
-    let emojiLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray100.color
-    }
+    let emojiLabel: UILabel = {
+        let emojiLabel = UILabel()
+        emojiLabel.font = Fonts.bold.font(size: 16)
+        emojiLabel.textColor = Colors.gray100.color
+        return emojiLabel
+    }()
 
-    let percentLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray60.color
-    }
+    let percentLabel: UILabel = {
+        let percentLabel = UILabel()
+        percentLabel.font = Fonts.bold.font(size: 16)
+        percentLabel.textColor = Colors.gray60.color
+        return percentLabel
+    }()
 
-    let countLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 10)
-        $0.textColor = Colors.gray40.color
-    }
+    let countLabel: UILabel = {
+        let countLabel = UILabel()
+        countLabel.font = Fonts.medium.font(size: 10)
+        countLabel.textColor = Colors.gray40.color
+        return countLabel
+    }()
 
-    let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 2
-    }
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 2
+        return stackView
+    }()
 
     init() {
         super.init(frame: .zero)

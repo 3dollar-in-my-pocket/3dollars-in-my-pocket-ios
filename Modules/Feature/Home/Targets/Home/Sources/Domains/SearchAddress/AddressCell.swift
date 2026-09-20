@@ -9,19 +9,25 @@ final class AddressCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIUtils.windowBounds.width, height: 70)
     }
     
-    private let buildingName = UILabel().then {
-        $0.textColor = Colors.systemBlack.color
-        $0.font = Fonts.bold.font(size: 16)
-    }
+    private let buildingName: UILabel = {
+        let buildingName = UILabel()
+        buildingName.textColor = Colors.systemBlack.color
+        buildingName.font = Fonts.bold.font(size: 16)
+        return buildingName
+    }()
     
-    private let addressLabel = UILabel().then {
-        $0.textColor = Colors.gray50.color
-        $0.font = Fonts.regular.font(size: 14)
-    }
+    private let addressLabel: UILabel = {
+        let addressLabel = UILabel()
+        addressLabel.textColor = Colors.gray50.color
+        addressLabel.font = Fonts.regular.font(size: 14)
+        return addressLabel
+    }()
     
-    private let dividorView = UIView().then {
-        $0.backgroundColor = Colors.gray20.color
-    }
+    private let dividorView: UIView = {
+        let dividorView = UIView()
+        dividorView.backgroundColor = Colors.gray20.color
+        return dividorView
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()

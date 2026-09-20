@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -19,19 +18,23 @@ public final class RegisteredStoreListViewController: BaseViewController {
     
     private let myPageNavigationBar = MyPageNavigationBar(title: "제보한 가게")
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = Colors.gray100.color
-        $0.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
-        $0.dataSource = self
-        $0.delegate = self
-        $0.registerSectionHeader([RegisteredStoreHeaderView.self])
-        $0.register([RegisteredStoreItemCell.self])
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = Colors.gray100.color
+        collectionView.contentInset = .init(top: 0, left: 0, bottom: 24, right: 0)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.registerSectionHeader([RegisteredStoreHeaderView.self])
+        collectionView.register([RegisteredStoreItemCell.self])
+        return collectionView
+    }()
     
-    private let emptyView = MyPageEmptyView().then {
-        $0.isHidden = true
-        $0.bind(title: "제보한 가게가 없어요!", description: "발견한 가게를 제보해 보세요 :)")
-    }
+    private let emptyView: MyPageEmptyView = {
+        let emptyView = MyPageEmptyView()
+        emptyView.isHidden = true
+        emptyView.bind(title: "제보한 가게가 없어요!", description: "발견한 가게를 제보해 보세요 :)")
+        return emptyView
+    }()
     
     private let viewModel: RegisteredStoreListViewModel
     

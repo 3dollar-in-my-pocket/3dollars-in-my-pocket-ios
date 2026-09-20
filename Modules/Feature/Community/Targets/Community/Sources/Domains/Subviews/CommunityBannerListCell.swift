@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class CommunityBannerListCell: BaseCollectionViewCell {
     enum Layout {

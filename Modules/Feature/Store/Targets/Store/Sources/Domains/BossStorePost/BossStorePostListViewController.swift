@@ -1,7 +1,6 @@
 import UIKit
 
 import DesignSystem
-import Then
 import Common
 import Log
 

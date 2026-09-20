@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class BossStoreFeedbackHeaderCell: BaseCollectionViewCell {
 
@@ -10,17 +9,21 @@ final class BossStoreFeedbackHeaderCell: BaseCollectionViewCell {
         static let height: CGFloat = 68
     }
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 20)
-        $0.textColor = Colors.gray100.color
-        $0.text = "이 가게에서 가장 좋았던 점은 무엇인가요?" // Strings.BossStoreFeedback.Content.title
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.semiBold.font(size: 20)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.text = "이 가게에서 가장 좋았던 점은 무엇인가요?" // Strings.BossStoreFeedback.Content.title
+        return titleLabel
+    }()
 
-    private let subtitleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray50.color
-        $0.text = Strings.BossStoreFeedback.Content.subtitle
-    }
+    private let subtitleLabel: UILabel = {
+        let subtitleLabel = UILabel()
+        subtitleLabel.font = Fonts.medium.font(size: 12)
+        subtitleLabel.textColor = Colors.gray50.color
+        subtitleLabel.text = Strings.BossStoreFeedback.Content.subtitle
+        return subtitleLabel
+    }()
 
     override func setup() {
         super.setup()

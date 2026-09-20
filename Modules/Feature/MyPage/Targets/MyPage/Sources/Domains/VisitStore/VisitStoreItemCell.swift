@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 import Model
 
 final class VisitStoreItemCell: BaseCollectionViewCell {
@@ -11,48 +10,64 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         static let height: CGFloat = 80
     }
 
-    private let visitTypeView = UIView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-    }
+    private let visitTypeView: UIView = {
+        let visitTypeView = UIView()
+        visitTypeView.layer.cornerRadius = 16
+        visitTypeView.clipsToBounds = true
+        visitTypeView.backgroundColor = Colors.gray95.color
+        return visitTypeView
+    }()
     
     private let visitTypeImageView = UIImageView()
     
-    private let visitTimeLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 10)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let visitTimeLabel: UILabel = {
+        let visitTimeLabel = UILabel()
+        visitTimeLabel.font = Fonts.medium.font(size: 10)
+        visitTimeLabel.textColor = Colors.systemWhite.color
+        return visitTimeLabel
+    }()
     
-    private let storeView = UIView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-    }
+    private let storeView: UIView = {
+        let storeView = UIView()
+        storeView.layer.cornerRadius = 16
+        storeView.clipsToBounds = true
+        storeView.backgroundColor = Colors.gray95.color
+        return storeView
+    }()
 
-    private let titleStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
-    }
+    private let titleStackView: UIStackView = {
+        let titleStackView = UIStackView()
+        titleStackView.axis = .vertical
+        titleStackView.spacing = 4
+        return titleStackView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 16)
+        titleLabel.textColor = Colors.systemWhite.color
+        return titleLabel
+    }()
 
-    private let tagStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let tagStackView: UIStackView = {
+        let tagStackView = UIStackView()
+        tagStackView.axis = .horizontal
+        tagStackView.spacing = 4
+        return tagStackView
+    }()
 
-    private let tagLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray40.color
-    }
+    private let tagLabel: UILabel = {
+        let tagLabel = UILabel()
+        tagLabel.font = Fonts.medium.font(size: 12)
+        tagLabel.textColor = Colors.gray40.color
+        return tagLabel
+    }()
 
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = .clear
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .clear
+        return imageView
+    }()
     
     override func setup() {
         super.setup()
