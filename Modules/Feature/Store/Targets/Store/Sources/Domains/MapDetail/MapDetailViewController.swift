@@ -61,6 +61,8 @@ public final class MapDetailViewController: BaseViewController {
                     owner.presentNavigationModal()
                 case .navigateAppleMap(let location):
                     owner.navigateAppleMap(location: location)
+                case .openURL(let url):
+                    UIApplication.shared.open(url)
                 }
             }
             .store(in: &cancellables)
