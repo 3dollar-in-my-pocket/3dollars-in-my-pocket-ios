@@ -432,7 +432,6 @@ public struct MyRepositoryImpl: MyRepository {
 ## 주요 참고사항
 
 - iOS 배포 타겟: **18.0+**
-- 현재 앱 버전: **4.35.0**
 - Git-flow 브랜치 전략 사용
 - 메인 개발 브랜치: `develop`
 - SwiftUI 사용 안 함 - UIKit만 사용
