@@ -21,10 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Xcode 선택
-        run: |
-          sudo xcode-select -s /Applications/Xcode_27.0.app
-          xcodebuild -version
+      # 러너 이미지(macos-26)의 기본 Xcode 사용. 특정 버전이 필요하면 /Applications/Xcode_<ver>.app 로 xcode-select
+      # (사용 가능한 버전: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md)
+      - name: Xcode 버전
+        run: xcodebuild -version
 
       - name: mise (mise.toml의 tuist 설치)
         uses: jdx/mise-action@v2
@@ -61,6 +61,7 @@ jobs:
       - name: xcodebuild test
         run: |
           set -o pipefail
+          mkdir -p build
           xcodebuild test \
             -workspace 3dollar-in-my-pocket.xcworkspace \
             -scheme three-dollar-in-my-pocketTests \
@@ -72,6 +73,7 @@ jobs:
       - name: 결과 요약 (Job Summary)
         if: always()
         run: |
+          mkdir -p build
           if [ -d build/tests.xcresult ]; then
             scripts/test-summary.sh build/tests.xcresult > build/summary.md
           else
@@ -101,12 +103,19 @@ jobs:
           name: tests.xcresult
           path: build/tests.xcresult
           retention-days: 14
+          if-no-files-found: ignore
 
       - name: 실패 판정
         if: always()
         run: |
+          if [ ! -d build/tests.xcresult ]; then
+            echo "::error::테스트가 실행되지 않았습니다 (빌드 실패 또는 이전 스텝 실패). 위 스텝 로그를 확인하세요."
+            exit 1
+          fi
           python3 - <<'PY'
           import json,subprocess,sys
           s=json.loads(subprocess.check_output(["xcrun","xcresulttool","get","test-results","summary","--path","build/tests.xcresult"]))
-          sys.exit(0 if s.get("result")=="Passed" and s.get("failedTests",0)==0 else 1)
+          ok = s.get("result")=="Passed" and s.get("failedTests",0)==0
+          print("passed" if ok else f"failed: {s.get('failedTests')} failed tests")
+          sys.exit(0 if ok else 1)
           PY
