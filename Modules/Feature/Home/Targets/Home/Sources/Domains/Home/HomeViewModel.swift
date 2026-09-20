@@ -8,7 +8,6 @@ import Common
 import Log
 import AppInterface
 import MembershipInterface
-import Feed
 import FeedInterface
 
 import Kingfisher
@@ -105,7 +104,7 @@ extension HomeViewModel {
         case showErrorAlert(Error)
         case deepLink(SDLink)
         case presentAccountInfo(BaseViewModel)
-        case presentFeedList(FeedListViewModel)
+        case presentFeedList(FeedListViewModelConfig)
         case presentPhotoViewer(imageUrls: [String], selectedIndex: Int)
     }
 
@@ -441,9 +440,8 @@ final class HomeViewModel: BaseViewModel {
                     mapLatitude: mapLocation?.coordinate.latitude,
                     mapLongitude: mapLocation?.coordinate.longitude
                 )
-                let viewModel = FeedListViewModel(config: config)
                 owner.sendClickFeedButtonLog()
-                owner.output.route.send(.presentFeedList(viewModel))
+                owner.output.route.send(.presentFeedList(config))
             }
             .store(in: &cancellables)
 

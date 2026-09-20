@@ -3,8 +3,10 @@ import ProjectDescriptionHelpers
 
 let name = "SDU"
 
-let project = Project.makeFeatureModule(
+let project = Project.makeModule(
     name: name,
+    product: .framework,
+    includeResource: true,
     dependencies: [
         .Core.networking,
         .Core.common,
@@ -13,7 +15,5 @@ let project = Project.makeFeatureModule(
         .SPM.snapKit,
         .SPM.kingfisher,
         .SPM.combineCocoa
-    ],
-    includeInterface: true,
-    includeDemo: true
+    ]
 )

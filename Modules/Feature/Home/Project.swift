@@ -24,8 +24,7 @@ let project = Project.makeFeatureModule(
         .SPM.combineCocoa,
         .SPM.kingfisher,
         .SPM.floatingPanel,
-        .Package.naverMap,
-        .Feature.feed
+        .Package.naverMap
     ],
     includeInterface: false,
     includeDemo: true

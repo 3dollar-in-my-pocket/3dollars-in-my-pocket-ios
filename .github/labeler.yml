@@ -1,0 +1,34 @@
+# 경로 기반 라벨 (actions/labeler v5). 검증 장치를 건드리는 PR을 결정론적으로 표시한다.
+# 규칙: docs/process/verification-change.md
+
+verification-change:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".github/labeler.yml"
+          - ".swiftlint.yml"
+          - ".swiftlint-baseline.json"
+          - "scripts/**"
+          - "makefile"
+          - "ci_scripts/**"
+          - "Tuist/**"
+          - "Tuist.swift"
+          - "**/Project.swift"
+          - "App/Targets/three-dollar-in-my-pocketTests/**"
+          - "docs/architecture/RULES.md"
+          - "CLAUDE.md"
+          - "Modules/Core/CLAUDE.md"
+          - "Modules/Feature/CLAUDE.md"
+
+baseline-change:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".swiftlint-baseline.json"
+          - "scripts/module-deps-baseline.txt"
+
+module-boundary:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/Project.swift"
+          - "Tuist/ProjectDescriptionHelpers/**"
+          - "Modules/Feature/*/Targets/Interface/**"

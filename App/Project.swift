@@ -311,6 +311,7 @@ let project = Project(
                 .Feature.store,
                 .Feature.write,
                 .Feature.myPage,
+                .Feature.feed,
                 .SPM.snapKit,
                 .SPM.then,
                 .SPM.kingfisher,

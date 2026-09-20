@@ -10,6 +10,7 @@ import Store
 import Write
 import Community
 import MyPage
+import Feed
 
 import SnapKit
 import Firebase
@@ -120,6 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         WriteInterfaceImpl.registerStoreInterface()
         CommunityInterfaceImpl.registerCommunityInterface()
         MyPageInterfaceImpl.registerMyPageInterface()
+        FeedInterfaceImpl.registerFeedInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInformationImpl.registerAppInformation()
     }
