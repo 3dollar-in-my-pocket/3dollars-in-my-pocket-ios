@@ -6,7 +6,8 @@ import DesignSystem
 import SnapKit
 
 final class DebugMenuViewController: BaseViewController {
-    var onSelectNetworkLog: (() -> Void)?
+    var items: [DebugMenuItem] = []
+    var onSelectItem: ((DebugMenuItem) -> Void)?
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -21,7 +22,6 @@ final class DebugMenuViewController: BaseViewController {
         description: "가게 상세에 가게 ID 플로팅 뷰를 띄웁니다"
     )
 
-    private let networkRow = DebugMenuLinkRow(title: "네트워크 보기")
 
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -40,7 +40,13 @@ final class DebugMenuViewController: BaseViewController {
         view.addSubview(titleLabel)
         view.addSubview(stackView)
         stackView.addArrangedSubview(storeIdRow)
-        stackView.addArrangedSubview(networkRow)
+        items.forEach { item in
+            let row = DebugMenuLinkRow(title: item.title)
+            row.onTap = { [weak self] in
+                self?.select(item)
+            }
+            stackView.addArrangedSubview(row)
+        }
 
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(24)
@@ -59,12 +65,11 @@ final class DebugMenuViewController: BaseViewController {
         storeIdRow.onChange = { isOn in
             Preference.shared.isShowStoreIdDebugView = isOn
         }
+    }
 
-        networkRow.onTap = { [weak self] in
-            guard let self else { return }
-            dismiss(animated: true) { [weak self] in
-                self?.onSelectNetworkLog?()
-            }
+    private func select(_ item: DebugMenuItem) {
+        dismiss(animated: true) { [weak self] in
+            self?.onSelectItem?(item)
         }
     }
 }

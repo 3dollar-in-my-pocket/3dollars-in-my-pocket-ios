@@ -54,5 +54,11 @@ extension AdBannerView: BannerViewDelegate {
     
     func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
         isLoaded = false
+        AdMobErrorReporter.report(
+            adType: adType,
+            unitId: bannerView.adUnitID ?? "",
+            from: bannerView.rootViewController,
+            error: error
+        )
     }
 }

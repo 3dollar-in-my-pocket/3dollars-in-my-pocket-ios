@@ -2,8 +2,6 @@ import UIKit
 
 import Common
 
-import netfox
-
 final class DebugOverlayWindow: UIWindow {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event) else { return nil }
@@ -41,8 +39,14 @@ enum DebugOverlay {
         guard let presenter = topViewController() else { return }
 
         let menuViewController = DebugMenuViewController()
-        menuViewController.onSelectNetworkLog = {
-            NFX.sharedInstance().show()
+        menuViewController.items = [
+            NetfoxDebugMenuItem(),
+            AdInspectorDebugMenuItem(),
+            AdvertisingIdentifierDebugMenuItem()
+        ]
+        menuViewController.onSelectItem = { item in
+            guard let presenter = topViewController() else { return }
+            item.perform(from: presenter)
         }
 
         if let sheet = menuViewController.sheetPresentationController {
