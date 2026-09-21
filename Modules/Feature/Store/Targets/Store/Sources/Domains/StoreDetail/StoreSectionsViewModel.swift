@@ -50,6 +50,8 @@ extension StoreSectionsViewModel {
         case presentBossStorePhoto(BossStorePhotoViewModel)
         case presentDeleteReviewAlert(reviewId: Int)
         case presentUseCouponAlert(issuedKey: String)
+        /// 삭제된 가게일 때 서버 안내 메시지를 보여주고 상세를 닫는다.
+        case closeWithDeletedStore(message: String)
     }
 
     struct NavigationTarget {
@@ -211,8 +213,22 @@ final class StoreSectionsViewModel: BaseViewModel {
                 scrollToSectionIfPossible(fragment: fragment)
             }
         case .failure(let error):
-            output.error.send(error)
+            // 신고 누적으로 삭제된 가게는 서버가 NF002 로 내려준다.
+            // 사라진 가게 화면에 계속 머무르지 않도록 서버 메시지를 보여주고 상세를 닫는다. (TH-1337)
+            if let message = Self.deletedStoreMessage(from: error) {
+                output.route.send(.closeWithDeletedStore(message: message))
+            } else {
+                output.error.send(error)
+            }
         }
+    }
+
+    /// 삭제된 가게(NF002) 에러면 서버가 내려준 안내 메시지를 돌려준다.
+    static func deletedStoreMessage(from error: Error) -> String? {
+        guard case .errorContainer(let container) = error as? NetworkError,
+              NetworkResultCode(value: container.resultCode) == .notExistsStore else { return nil }
+
+        return container.message
     }
 
     private func handle(_ action: StoreSectionAction) {
@@ -453,10 +469,19 @@ final class StoreSectionsViewModel: BaseViewModel {
             let result = await dependency.reportRepository.fetchReportReasons(group: .store)
             switch result {
             case .success(let response):
-                output.route.send(.presentStoreReport(.init(config: .init(
+                let viewModel = ReportBottomSheetViewModel(config: .init(
                     storeId: storeId,
                     reportReasons: response.reasons.map(ReportReason.init)
-                ))))
+                ))
+                // 신고가 끝나면 상세를 다시 조회한다.
+                // 신고 누적으로 삭제됐다면 재조회가 NF002 로 떨어지며 상세가 닫힌다. (TH-1337)
+                viewModel.output.onSuccessReport
+                    .withUnretained(self)
+                    .sink { (owner: StoreSectionsViewModel, _) in
+                        owner.input.load.send(())
+                    }
+                    .store(in: &cancellables)
+                output.route.send(.presentStoreReport(viewModel))
             case .failure(let error):
                 output.error.send(error)
             }

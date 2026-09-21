@@ -114,6 +114,10 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
         closeButton.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
+        // 삭제된 가게면 상세를 유지할 수 없으므로 화면을 닫는다. (TH-1337)
+        sectionsViewController.onRequestClose = { [weak self] in
+            self?.didTapBackButton()
+        }
     }
 
     @objc private func didTapBackButton() {

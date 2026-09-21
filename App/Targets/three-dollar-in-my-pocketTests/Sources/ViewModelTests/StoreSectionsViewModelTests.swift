@@ -74,6 +74,62 @@ final class StoreSectionsViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
+    // MARK: TH-1337 — 삭제된 가게 처리
+
+    /// 신고 누적으로 삭제된 가게는 서버가 NF002(not_exists_store, "삭제된 가게입니다")로 내려준다.
+    /// 사라진 가게 화면에 계속 머무르지 않도록 서버 메시지를 보여주고 상세를 닫아야 한다.
+    func test_TC9_삭제된가게면_서버메시지와함께_상세를닫는Route가발행된다() async {
+        // Given
+        let error = NetworkError.errorContainer(.init(message: "삭제된 가게입니다", resultCode: "NF002"))
+        let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(error))
+        let viewModel = makeViewModel(repository: repository)
+        let expectation = expectation(description: "route")
+        var receivedRoute: StoreSectionsViewModel.Route?
+        viewModel.output.route.sink {
+            receivedRoute = $0
+            expectation.fulfill()
+        }.store(in: &cancellables)
+
+        // When
+        viewModel.input.load.send(())
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 1)
+        guard case .closeWithDeletedStore(let message) = receivedRoute else {
+            return XCTFail("closeWithDeletedStore route가 아님")
+        }
+        XCTAssertEqual(message, "삭제된 가게입니다")
+    }
+
+    /// 삭제가 아닌 일반 에러는 기존처럼 에러 알럿만 띄우고 상세를 닫지 않는다.
+    func test_TC10_삭제가아닌에러면_상세를닫지않고_에러만발행된다() async {
+        // Given
+        let error = NetworkError.errorContainer(.init(message: "일시적인 문제가 발생하였습니다", resultCode: "IS000"))
+        let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(error))
+        let viewModel = makeViewModel(repository: repository)
+        let expectation = expectation(description: "error")
+        viewModel.output.error.sink { _ in expectation.fulfill() }.store(in: &cancellables)
+
+        var didRoute = false
+        viewModel.output.route.sink { _ in didRoute = true }.store(in: &cancellables)
+
+        // When
+        viewModel.input.load.send(())
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 1)
+        XCTAssertFalse(didRoute, "삭제가 아닌 에러로는 상세를 닫지 않는다")
+    }
+
+    func test_TC10_네트워크에러면_상세를닫지않는다() {
+        // Given / When
+        let error = NetworkError.errorContainer(.init(message: "세션이 만료되었습니다", resultCode: "UA000"))
+
+        // Then
+        XCTAssertNil(StoreSectionsViewModel.deletedStoreMessage(from: error))
+        XCTAssertNil(StoreSectionsViewModel.deletedStoreMessage(from: NSError(domain: "offline", code: -1009)))
+    }
+
     private func makeViewModel(repository: MockStoreRepository) -> StoreSectionsViewModel {
         StoreSectionsViewModel(
             config: .init(storeId: 1, latitude: 37.5, longitude: 127.0),

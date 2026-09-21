@@ -7,10 +7,18 @@ import Networking
 /// 새 메서드를 스텁해야 하면 같은 패턴으로 `var xxxResult` 프로퍼티를 추가한다.
 final class MockStoreRepository: StoreRepository {
     var fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error> = .failure(MockError.notStubbed())
+    var reportStoreResult: Result<StoreDeleteResponse, Error> = .failure(MockError.notStubbed())
+    private(set) var reportStoreCallCount = 0
 
-    init(fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error>? = nil) {
+    init(
+        fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error>? = nil,
+        reportStoreResult: Result<StoreDeleteResponse, Error>? = nil
+    ) {
         if let fetchStoreScreenV2Result {
             self.fetchStoreScreenV2Result = fetchStoreScreenV2Result
+        }
+        if let reportStoreResult {
+            self.reportStoreResult = reportStoreResult
         }
     }
 
@@ -19,7 +27,10 @@ final class MockStoreRepository: StoreRepository {
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error> { .failure(MockError.notStubbed()) }
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error> { .failure(MockError.notStubbed()) }
     func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> { .failure(MockError.notStubbed()) }
-    func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> { .failure(MockError.notStubbed()) }
+    func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> {
+        reportStoreCallCount += 1
+        return reportStoreResult
+    }
     func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> { .failure(MockError.notStubbed()) }
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> { .failure(MockError.notStubbed()) }
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { .failure(MockError.notStubbed()) }

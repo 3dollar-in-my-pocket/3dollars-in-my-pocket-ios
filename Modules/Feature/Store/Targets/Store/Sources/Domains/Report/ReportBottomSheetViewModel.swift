@@ -15,8 +15,14 @@ final class ReportBottomSheetViewModel: BaseViewModel {
         let screenName: ScreenName = .reportStore
         let reportReasons: [ReportReason]
         let isEnableReport = CurrentValueSubject<Bool, Never>(false)
-        let dismissWithPop = PassthroughSubject<Void, Never>()
+        /// 신고 결과 해당 가게가 삭제됐는지(신고 누적으로 자동 삭제) 상세 화면에 전달한다.
+        let onSuccessReport = PassthroughSubject<Bool, Never>()
+        let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+    }
+
+    enum Route {
+        case dismiss
     }
     
     struct State {
@@ -74,9 +80,10 @@ final class ReportBottomSheetViewModel: BaseViewModel {
             let reportResult = await storeRepository.reportStore(storeId: config.storeId, reportReason: reason.type)
             
             switch reportResult {
-            case .success:
-                output.dismissWithPop.send(())
-                
+            case .success(let response):
+                output.onSuccessReport.send(response.isDeleted)
+                output.route.send(.dismiss)
+
             case .failure(let error):
                 output.showErrorAlert.send(error)
             }
