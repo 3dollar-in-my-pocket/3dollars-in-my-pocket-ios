@@ -18,6 +18,8 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
     public var onSectionsLoaded: (() -> Void)?
     public var onFavoriteChanged: ((Bool) -> Void)?
+    /// 삭제된 가게처럼 상세를 유지할 수 없을 때 호스트(전체화면/홈 바텀시트)가 닫도록 요청한다.
+    public var onRequestClose: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
@@ -111,6 +113,11 @@ public final class StoreSectionsViewController: BaseViewController {
         } else {
             applyPlaceholder()
         }
+    }
+
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateCollectionViewBottomInset()
     }
 
     public func loadSectionsIfNeeded() {
@@ -257,7 +264,24 @@ public final class StoreSectionsViewController: BaseViewController {
             .actionBars ?? []
         bottomActionBarView.bind(actionBars)
         bottomActionBarView.isHidden = actionBars.isEmpty
-        collectionView.contentInset.bottom = actionBars.isEmpty ? 0 : StoreBottomActionBarView.Layout.contentHeight
+        view.setNeedsLayout()
+    }
+
+    /// 바텀 액션바에 컨텐츠가 가리지 않도록 컬렉션뷰 하단 inset 을 맞춘다.
+    ///
+    /// 홈 바텀시트 호스트에서는 FloatingPanel 이 레이아웃/safe area 갱신마다
+    /// tracking scrollView 의 contentInset 을 자기 값으로 덮어쓰므로 한 번만 설정하면 유지되지 않는다.
+    /// 레이아웃·스크롤 패스마다 다시 맞춰 두 호스트 모두에서 같은 결과가 되게 한다. (TH-1336)
+    private func updateCollectionViewBottomInset() {
+        let coveringHeight = bottomActionBarView.isHidden ? 0 : bottomActionBarView.coveringHeight
+        let appliedAdjustment = collectionView.adjustedContentInset.bottom - collectionView.contentInset.bottom
+        let inset = StoreBottomActionBarView.Layout.bottomContentInset(
+            coveringHeight: coveringHeight,
+            appliedAdjustment: appliedAdjustment
+        )
+
+        guard abs(collectionView.contentInset.bottom - inset) > 0.5 else { return }
+        collectionView.contentInset.bottom = inset
     }
 
     private func updateBottomActionBarVisibility() {
@@ -459,6 +483,8 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
         onScrollOffsetChanged?(scrollView.contentOffset.y)
         updateSelectedTabIfNeeded(scrollView)
         updateBottomActionBarVisibility()
+        // FloatingPanel 이 레이아웃 패스 이후에 inset 을 덮어쓰는 경우가 있어 스크롤 중에도 보정한다.
+        updateCollectionViewBottomInset()
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -547,6 +573,13 @@ private extension StoreSectionsViewController {
                 self?.viewModel.input.didConfirmUseCoupon.send(issuedKey)
             }
             present(alertViewController, animated: true)
+        case .closeWithDeletedStore(let message):
+            AlertUtils.showWithAction(
+                viewController: self,
+                message: message
+            ) { [weak self] in
+                self?.onRequestClose?()
+            }
         }
     }
 
