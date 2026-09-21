@@ -10,7 +10,7 @@ import StoreInterface
 import CombineCocoa
 import SnapKit
 
-final class StorePreviewBottomSheetViewController: UIViewController {
+final class StorePreviewBottomSheetViewController: BaseViewController {
     private enum Layout {
         static let grabberAreaHeight: CGFloat = 12
         static let contentTop: CGFloat = grabberAreaHeight + 16
@@ -142,7 +142,6 @@ final class StorePreviewBottomSheetViewController: UIViewController {
     private var canAddPhoto: Bool = false
 
     private var viewModel: StorePreviewBottomSheetViewModel
-    private var cancellables = Set<AnyCancellable>()
     private var detailViewController: UIViewController?
     private var previewSection: StorePreviewSection?
     private var isTrackingDetailScroll = false

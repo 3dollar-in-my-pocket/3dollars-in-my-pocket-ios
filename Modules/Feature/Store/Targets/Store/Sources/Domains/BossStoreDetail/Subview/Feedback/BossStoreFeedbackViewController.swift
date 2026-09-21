@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Combine
 
-import Then
 import Common
 import DesignSystem
 import Log
@@ -16,42 +15,52 @@ final class BossStoreFeedbackViewController: BaseViewController {
 
     }
 
-    private let closeButton = UIButton().then {
-        $0.setImage(
+    private let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.setImage(
             Icons.close.image
                 .resizeImage(scaledTo: 24)
                 .withTintColor(Colors.gray100.color),
             for: .normal
         )
-    }
+        return closeButton
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.text = Strings.BossStoreFeedback.title
-        $0.textColor = Colors.gray100.color
-        $0.font = Fonts.medium.font(size: 16)
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.text = Strings.BossStoreFeedback.title
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.font = Fonts.medium.font(size: 16)
+        return titleLabel
+    }()
 
-    private lazy var collectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
-    ).then {
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-        $0.delegate = self
-    }
+    )
+        collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        return collectionView
+    }()
 
-    private let sendFeedbackButton = UIButton().then {
-        $0.isEnabled = false
-        $0.backgroundColor = Colors.mainPink.color
-        $0.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
-        $0.titleLabel?.font = Fonts.bold.font(size: 16)
-        $0.setTitleColor(.white, for: .normal)
-    }
+    private let sendFeedbackButton: UIButton = {
+        let sendFeedbackButton = UIButton()
+        sendFeedbackButton.isEnabled = false
+        sendFeedbackButton.backgroundColor = Colors.mainPink.color
+        sendFeedbackButton.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
+        sendFeedbackButton.titleLabel?.font = Fonts.bold.font(size: 16)
+        sendFeedbackButton.setTitleColor(.white, for: .normal)
+        return sendFeedbackButton
+    }()
 
-    private let bottomBackgroundView = UIView().then {
-        $0.backgroundColor = Colors.mainPink.color
-    }
+    private let bottomBackgroundView: UIView = {
+        let bottomBackgroundView = UIView()
+        bottomBackgroundView.backgroundColor = Colors.mainPink.color
+        return bottomBackgroundView
+    }()
 
     private lazy var dataSource = BossStoreFeedbackDataSource(collectionView: collectionView)
 
@@ -124,7 +133,7 @@ final class BossStoreFeedbackViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)

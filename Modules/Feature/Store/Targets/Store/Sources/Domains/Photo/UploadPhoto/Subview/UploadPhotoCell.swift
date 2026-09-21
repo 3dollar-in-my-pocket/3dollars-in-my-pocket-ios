@@ -27,7 +27,7 @@ final class UploadPhotoCell: BaseCollectionViewCell {
     
     private let dimView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 0.3)
+        view.backgroundColor = Colors.gray90.color.withAlphaComponent(0.3)
         view.layer.cornerRadius = 2
         view.isHidden = true
         
@@ -85,7 +85,7 @@ final class UploadPhotoCell: BaseCollectionViewCell {
         
         circleView.snp.makeConstraints {
             $0.top.equalTo(imageView).offset(8)
-            $0.right.equalTo(imageView).offset(-8)
+            $0.trailing.equalTo(imageView).offset(-8)
             $0.size.equalTo(20)
         }
         

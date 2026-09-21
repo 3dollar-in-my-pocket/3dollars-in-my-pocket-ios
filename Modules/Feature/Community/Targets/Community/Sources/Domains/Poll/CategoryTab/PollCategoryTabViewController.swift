@@ -12,33 +12,39 @@ final class PollCategoryTabViewController: BaseViewController {
     }
 
     private lazy var communityNavigationBar = CommunityNavigationBar(title: viewModel.output.categoryName)
-    private let tabView: CommunityTabView = CommunityTabView(titles: PollListSortType.list.compactMap { $0.title }).then {
-        $0.isUserInteractionEnabled = false
-    }
-    private let lineView: UIView = UIView().then {
-        $0.backgroundColor = Colors.gray20.color
-    }
+    private let tabView: CommunityTabView = {
+        let tabView = CommunityTabView(titles: PollListSortType.list.compactMap { $0.title })
+        tabView.isUserInteractionEnabled = false
+        return tabView
+    }()
+    private let lineView: UIView = {
+        let lineView = UIView()
+        lineView.backgroundColor = Colors.gray20.color
+        return lineView
+    }()
     private let pageContainerView = UIView()
     private let pageViewController = BasePageViewController(
         transitionStyle: .scroll,
         navigationOrientation: .horizontal
     )
     private var pageContentViewControllers: [PollListViewController] = []
-    private let createPollButton = UIButton().then {
-        $0.backgroundColor = Colors.mainRed.color
-        $0.layer.cornerRadius = 22
-        $0.clipsToBounds = true
-        $0.contentEdgeInsets = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        $0.setTitle("투표 만들기 0/1회", for: .normal)
-        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
-        $0.setImage(Icons.fireSolid.image
+    private let createPollButton: UIButton = {
+        let createPollButton = UIButton()
+        createPollButton.backgroundColor = Colors.mainRed.color
+        createPollButton.layer.cornerRadius = 22
+        createPollButton.clipsToBounds = true
+        createPollButton.contentEdgeInsets = .init(top: 12, left: 12, bottom: 12, right: 12)
+        createPollButton.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        createPollButton.setTitle("투표 만들기 0/1회", for: .normal)
+        createPollButton.setTitleColor(Colors.systemWhite.color, for: .normal)
+        createPollButton.setImage(Icons.fireSolid.image
             .resizeImage(scaledTo: 20)
             .withTintColor(Colors.systemWhite.color), for: .normal)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOffset = CGSize(width: 8, height: 8)
-        $0.layer.shadowOpacity = 0.1
-    }
+        createPollButton.layer.shadowColor = UIColor.black.cgColor
+        createPollButton.layer.shadowOffset = CGSize(width: 8, height: 8)
+        createPollButton.layer.shadowOpacity = 0.1
+        return createPollButton
+    }()
 
     private let viewModel: PollCategoryTabViewModel
 
@@ -159,7 +165,7 @@ final class PollCategoryTabViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)

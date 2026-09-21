@@ -62,7 +62,7 @@ final class MarkerPopupViewModel: BaseViewModel {
                 owner.sendClickEvent()
                 owner.sendClickEventLog()
             })
-            .compactMap({ (owner: MarkerPopupViewModel, Void) in
+            .compactMap({ (owner: MarkerPopupViewModel, _) in
                 owner.state.advertisement
             })
             .map { Route.deepLink($0) }
@@ -93,7 +93,7 @@ final class MarkerPopupViewModel: BaseViewModel {
         guard let advertisementId = state.advertisement?.advertisementId else { return }
 
         Task {
-            let _ = await eventRepository.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
+            _ = await eventRepository.sendClickEvent(targetId: advertisementId, type: "ADVERTISEMENT")
         }
         .store(in: taskBag)
     }

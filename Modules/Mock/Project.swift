@@ -10,6 +10,7 @@ let projdct = Project.makeModule(
         .Core.dependencyInjection,
         .Interface.appInterface,
         .Interface.storeInterface,
+        .Interface.feedInterface,
         .Core.designSystem
     ]
 )

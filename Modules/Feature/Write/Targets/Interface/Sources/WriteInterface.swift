@@ -7,7 +7,7 @@ import Model
 public protocol WriteInterface {
     func getWriteAddressViewController(
         config: WriteAddressViewModelConfig,
-        onSuccessWrite: @escaping ((String) -> ())
+        onSuccessWrite: @escaping ((String) -> Void)
     ) -> UIViewController
     
     func createEditStoreViewModel(config: EditStoreViewModelConfig) -> EditStoreViewModelInterface

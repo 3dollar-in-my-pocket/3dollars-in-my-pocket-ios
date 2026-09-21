@@ -57,7 +57,7 @@ final class EditStoreViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
-    override var extraParameters: [ParameterName : Any]? {
+    override var extraParameters: [ParameterName: Any]? {
         if let fromScreen = viewModel.output.fromScreen {
             return [.referer: fromScreen.rawValue]
         } else {
@@ -246,8 +246,8 @@ extension EditStoreViewController {
             pushEditStoreInfo(viewModel: viewModel)
         case .editMenu(let viewModel):
             pushEditMenu(viewModel: viewModel)
-        case .editPhoto(let viewController):
-            presentUploadPhoto(viewController: viewController)
+        case .editPhoto(let config):
+            presentUploadPhoto(viewController: Environment.storeInterface.getUploadPhotoViewController(config: config))
         case .pop:
             navigationController?.popViewController(animated: true)
         case .toast(let message):

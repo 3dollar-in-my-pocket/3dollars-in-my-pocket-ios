@@ -74,7 +74,7 @@ final class ReportBottomSheetViewModel: BaseViewModel {
             let reportResult = await storeRepository.reportStore(storeId: config.storeId, reportReason: reason.type)
             
             switch reportResult {
-            case .success(_):
+            case .success:
                 output.dismissWithPop.send(())
                 
             case .failure(let error):

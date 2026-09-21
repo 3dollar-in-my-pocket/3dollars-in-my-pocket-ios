@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 
 import Model
 import DesignSystem
@@ -36,10 +35,10 @@ public final class CommunityViewController: BaseViewController {
             tag: TabBarTag.community.rawValue
         )
 
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.interactivePopGestureRecognizer?.delegate = nil
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.interactivePopGestureRecognizer?.delegate = nil
+        return navigationController
     }
 
     public override func loadView() {

@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -17,16 +16,20 @@ public final class VisitStoreListViewController: BaseViewController {
     
     private let myPageNavigationBar = MyPageNavigationBar(title: "방문 인증 내역")
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = Colors.gray100.color
-        $0.contentInset = .init(top: 0, left: 20, bottom: 24, right: 20)
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = Colors.gray100.color
+        collectionView.contentInset = .init(top: 0, left: 20, bottom: 24, right: 20)
+        collectionView.delegate = self
+        return collectionView
+    }()
     
-    private let emptyView = MyPageEmptyView().then {
-        $0.isHidden = true
-        $0.bind(title: "방문 인증 내역이 없어요!", description: "방문하고 가게 정확도를 높혀봐요")
-    }
+    private let emptyView: MyPageEmptyView = {
+        let emptyView = MyPageEmptyView()
+        emptyView.isHidden = true
+        emptyView.bind(title: "방문 인증 내역이 없어요!", description: "방문하고 가게 정확도를 높혀봐요")
+        return emptyView
+    }()
     
     private lazy var dataSource = VisitStoreListDataSource(collectionView: collectionView)
     
@@ -90,14 +93,10 @@ public final class VisitStoreListViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
-    }
-    
-    override public func bindViewModelInput() {
-        super.bindViewModelInput()
     }
     
     public override func bindViewModelOutput() {

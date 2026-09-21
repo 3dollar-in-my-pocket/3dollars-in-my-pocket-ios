@@ -10,7 +10,6 @@ typealias Assets = CommunityAsset
 typealias Strings = CommunityStrings
 
 
-
 final class Environment {
     static var storeInterface: StoreInterface {
         guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {

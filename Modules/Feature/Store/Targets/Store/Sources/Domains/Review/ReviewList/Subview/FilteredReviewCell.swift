@@ -34,15 +34,15 @@ final class FilteredReviewCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalToSuperview().offset(16)
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.bottom.equalToSuperview().offset(-16)
             $0.height.equalTo(Layout.height)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(12)
+            $0.leading.equalTo(containerView).offset(12)
             $0.centerY.equalTo(containerView)
         }
     }

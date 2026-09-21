@@ -3,7 +3,6 @@ import Combine
 
 import Common
 import DesignSystem
-import Then
 
 final class ReportReviewReasonDetailCell: BaseCollectionViewCell {
 
@@ -20,17 +19,19 @@ final class ReportReviewReasonDetailCell: BaseCollectionViewCell {
         static let textColor = Colors.gray100.color
     }
 
-    private lazy var textView = UITextView().then {
-        $0.backgroundColor = Colors.gray10.color
-        $0.layer.cornerRadius = 12
-        $0.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
-        $0.text = Layout.Placeholder.text
-        $0.textColor = Layout.Placeholder.color
-        $0.font = Fonts.regular.font(size: 14)
-        $0.keyboardDismissMode = .onDrag
-        $0.returnKeyType = .done
-        $0.delegate = self
-    }
+    private lazy var textView: UITextView = {
+        let textView = UITextView()
+        textView.backgroundColor = Colors.gray10.color
+        textView.layer.cornerRadius = 12
+        textView.textContainerInset = .init(top: 12, left: 12, bottom: 12, right: 12)
+        textView.text = Layout.Placeholder.text
+        textView.textColor = Layout.Placeholder.color
+        textView.font = Fonts.regular.font(size: 14)
+        textView.keyboardDismissMode = .onDrag
+        textView.returnKeyType = .done
+        textView.delegate = self
+        return textView
+    }()
 
     override func setup() {
         super.setup()
@@ -76,7 +77,7 @@ extension ReportReviewReasonDetailCell: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if(text == "\n") {
+        if text == "\n" {
             textView.resignFirstResponder()
             return false
         }

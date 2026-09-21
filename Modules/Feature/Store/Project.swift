@@ -15,15 +15,14 @@ let project = Project.makeFeatureModule(
         .Core.dependencyInjection,
         .Core.designSystem,
         .Core.log,
-        .Feature.sdu,
+        .Core.sdu,
         .Interface.appInterface,
         .Interface.storeInterface,
         .Interface.writeInterface,
         .SPM.snapKit,
-        .SPM.then,
         .SPM.panModal,
         .SPM.combineCocoa,
-        .Package.naverMap,
+        .Package.naverMap
     ],
     includeInterface: true,
     includeDemo: true

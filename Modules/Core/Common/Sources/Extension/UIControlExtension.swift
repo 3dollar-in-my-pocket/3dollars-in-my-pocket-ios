@@ -14,7 +14,7 @@ public extension UIControl {
         let control: UIControl
         let event: UIControl.Event
         
-        public func receive<S>(subscriber: S) where S : Subscriber, Never == S.Failure, UIControl == S.Input {
+        public func receive<S>(subscriber: S) where S: Subscriber, Never == S.Failure, UIControl == S.Input {
             let subscription = EventSubscription(control: control, subscrier: subscriber, event: event)
             subscriber.receive(subscription: subscription)
         }

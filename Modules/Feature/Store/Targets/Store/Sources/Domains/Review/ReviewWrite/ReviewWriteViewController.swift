@@ -33,16 +33,20 @@ final class ReviewWriteViewController: BaseViewController {
     private lazy var feedbackSelectionView = ReviewFeedbackSelectionView(viewModel.output.feedbackSelectionViewModel)
     private let contentView = ReviewWriteContentView()
     private let photoListView = ReviewPhotoListView(config: .init(size: CGSize(width: 72, height: 72), canEdit: true))
-    private let completeButton = UIButton().then {
-        $0.isEnabled = false
-        $0.backgroundColor = Colors.mainPink.color
-        $0.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
-        $0.titleLabel?.font = Fonts.bold.font(size: 16)
-        $0.setTitleColor(.white, for: .normal)
-    }
-    private let bottomBackgroundView = UIView().then {
-        $0.backgroundColor = Colors.mainPink.color
-    }
+    private let completeButton: UIButton = {
+        let completeButton = UIButton()
+        completeButton.isEnabled = false
+        completeButton.backgroundColor = Colors.mainPink.color
+        completeButton.setTitle(Strings.BossStoreFeedback.sendFeedback, for: .normal)
+        completeButton.titleLabel?.font = Fonts.bold.font(size: 16)
+        completeButton.setTitleColor(.white, for: .normal)
+        return completeButton
+    }()
+    private let bottomBackgroundView: UIView = {
+        let bottomBackgroundView = UIView()
+        bottomBackgroundView.backgroundColor = Colors.mainPink.color
+        return bottomBackgroundView
+    }()
     
     private let viewModel: ReviewWriteViewModel
     
@@ -81,7 +85,7 @@ final class ReviewWriteViewController: BaseViewController {
         ])
         
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
         }
@@ -185,7 +189,7 @@ final class ReviewWriteViewController: BaseViewController {
         
         viewModel.output.onSuccessWriteReview
             .main
-            .sink { [weak self] isEnabled in
+            .sink { [weak self] _ in
                 guard let self else { return }
                 
                 ToastManager.shared.show(message: "리뷰가 등록되었습니다!")

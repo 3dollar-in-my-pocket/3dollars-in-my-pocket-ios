@@ -167,4 +167,3 @@ final class PaymentMethodSectionView: BaseView {
         accountButton.isSelected = methods.contains(.accountTransfer)
     }
 }
-

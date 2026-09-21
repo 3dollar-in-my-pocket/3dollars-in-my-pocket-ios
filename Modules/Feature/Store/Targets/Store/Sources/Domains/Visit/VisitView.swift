@@ -170,7 +170,7 @@ final class VisitView: BaseView {
     
     override func bindConstraints() {
         closeButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
         }
@@ -181,15 +181,15 @@ final class VisitView: BaseView {
         }
         
         bottomContainerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-100)
         }
         
         bottomRightCircleView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(26)
-            $0.right.equalToSuperview().offset(-40)
+            $0.trailing.equalToSuperview().offset(-40)
             $0.size.equalTo(48)
         }
         
@@ -206,19 +206,19 @@ final class VisitView: BaseView {
         progressBackgroundView.snp.makeConstraints {
             $0.height.equalTo(12)
             $0.centerY.equalTo(bottomRightCircleView)
-            $0.left.equalToSuperview().offset(40)
-            $0.right.equalTo(bottomRightCircleView.snp.left).offset(4)
+            $0.leading.equalToSuperview().offset(40)
+            $0.trailing.equalTo(bottomRightCircleView.snp.leading).offset(4)
         }
         
         progressView.snp.makeConstraints {
-            $0.left.equalTo(progressBackgroundView).offset(3)
-            $0.right.equalTo(progressBackgroundView).offset(-3)
+            $0.leading.equalTo(progressBackgroundView).offset(3)
+            $0.trailing.equalTo(progressBackgroundView).offset(-3)
             $0.top.equalTo(progressBackgroundView).offset(3)
             $0.bottom.equalTo(progressBackgroundView).offset(-3)
         }
         
         indicatorImage.snp.makeConstraints {
-            $0.centerX.equalTo(progressView.snp.left)
+            $0.centerX.equalTo(progressView.snp.leading)
                 .offset(CGFloat(progressView.progress) * progressView.frame.width)
             $0.bottom.equalTo(progressBackgroundView.snp.top)
             $0.width.equalTo(24)
@@ -226,60 +226,60 @@ final class VisitView: BaseView {
         }
         
         mapContainerView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(24)
-            $0.right.equalToSuperview().offset(-24)
+            $0.leading.equalToSuperview().offset(24)
+            $0.trailing.equalToSuperview().offset(-24)
             $0.height.equalTo(111)
             $0.top.equalTo(titleLabel.snp.bottom).offset(28)
         }
         
         storeCategoryImage.snp.makeConstraints {
-            $0.left.equalTo(mapContainerView).offset(16)
+            $0.leading.equalTo(mapContainerView).offset(16)
             $0.top.equalTo(mapContainerView).offset(12)
             $0.size.equalTo(44)
         }
         
         storeNameLabel.snp.makeConstraints {
-            $0.left.equalTo(storeCategoryImage.snp.right).offset(12)
+            $0.leading.equalTo(storeCategoryImage.snp.trailing).offset(12)
             $0.top.equalTo(mapContainerView).offset(13)
-            $0.right.lessThanOrEqualTo(mapContainerView).offset(-16)
+            $0.trailing.lessThanOrEqualTo(mapContainerView).offset(-16)
             $0.height.equalTo(24)
         }
         
         storeCategoryLabel.snp.makeConstraints {
-            $0.left.right.equalTo(storeNameLabel)
+            $0.leading.trailing.equalTo(storeNameLabel)
             $0.top.equalTo(storeNameLabel.snp.bottom)
             $0.height.equalTo(18)
         }
         
         mapView.snp.makeConstraints {
-            $0.left.right.equalTo(mapContainerView)
+            $0.leading.trailing.equalTo(mapContainerView)
             $0.top.equalTo(storeCategoryImage.snp.bottom).offset(12)
             $0.bottom.equalTo(bottomContainerView.snp.top).offset(-40)
         }
         
         currentLocationButton.snp.makeConstraints {
-            $0.right.equalTo(mapView).offset(-16)
+            $0.trailing.equalTo(mapView).offset(-16)
             $0.bottom.equalTo(mapView).offset(-16)
             $0.size.equalTo(40)
         }
         
         bottomSheetContainerView.snp.makeConstraints {
-            $0.left.right.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(existedButton).offset(-24)
             $0.bottom.equalToSuperview()
         }
         
         existedButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(24)
-            $0.right.equalTo(snp.centerX).offset(-8)
+            $0.leading.equalToSuperview().offset(24)
+            $0.trailing.equalTo(snp.centerX).offset(-8)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-8)
             $0.height.equalTo(existedButton.snp.width)
         }
         
         notExistedButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-24)
+            $0.trailing.equalToSuperview().offset(-24)
             $0.centerY.equalTo(existedButton)
-            $0.left.equalTo(snp.centerX).offset(8)
+            $0.leading.equalTo(snp.centerX).offset(8)
             $0.height.equalTo(notExistedButton.snp.width)
         }
     }
@@ -300,7 +300,7 @@ final class VisitView: BaseView {
         
         progressView.progress = progress
         indicatorImage.snp.updateConstraints {
-            $0.centerX.equalTo(progressView.snp.left).offset(CGFloat(progress) * progressView.frame.width)
+            $0.centerX.equalTo(progressView.snp.leading).offset(CGFloat(progress) * progressView.frame.width)
         }
         
         distanceLabel.text = Strings.Visit.distanceFormat(distance)
@@ -328,7 +328,7 @@ final class VisitView: BaseView {
     private func setVisitable() {
         setupTitleLabel(canVisit: true)
         mapView.snp.remakeConstraints {
-            $0.left.right.equalTo(mapContainerView)
+            $0.leading.trailing.equalTo(mapContainerView)
             $0.top.equalTo(storeCategoryImage.snp.bottom).offset(12)
             $0.bottom.equalTo(bottomSheetContainerView.snp.top).offset(-40)
         }
@@ -347,7 +347,7 @@ final class VisitView: BaseView {
     private func setUnvisitable() {
         setupTitleLabel(canVisit: false)
         mapView.snp.remakeConstraints {
-            $0.left.right.equalTo(mapContainerView)
+            $0.leading.trailing.equalTo(mapContainerView)
             $0.top.equalTo(storeCategoryImage.snp.bottom).offset(12)
             $0.bottom.equalTo(bottomContainerView.snp.top).offset(-40)
         }

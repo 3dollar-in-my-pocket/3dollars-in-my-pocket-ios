@@ -15,4 +15,3 @@ public struct EventRepositoryImpl: EventRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
 }
-

@@ -18,9 +18,11 @@ import MyPageInterface
 
 final class MainTabBarViewController: UITabBarController {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
-    private lazy var dimView = UIView(frame: self.view.frame).then {
-        $0.backgroundColor = .clear
-    }
+    private lazy var dimView: UIView = {
+        let dimView = UIView(frame: self.view.frame)
+        dimView.backgroundColor = .clear
+        return dimView
+    }()
 
     private lazy var contentViewControllers: [UIViewController] = [
         UINavigationController(rootViewController: homeViewController),
@@ -279,7 +281,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
 }
 
 extension MainTabBarViewController {
-    final class WriteTabBarIconViewController: UIViewController {
+    final class WriteTabBarIconViewController: BaseViewController {
         init() {
             super.init(nibName: nil, bundle: nil)
 

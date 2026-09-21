@@ -35,14 +35,14 @@ final class StoreDetailStarBadgeView: BaseView {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
-            $0.right.equalTo(stackView).offset(4)
+            $0.trailing.equalTo(stackView).offset(4)
             $0.bottom.equalTo(stackView).offset(4)
         }
         
         stackView.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(4)
+            $0.leading.equalTo(containerView).offset(4)
             $0.top.equalTo(containerView).offset(4)
         }
         

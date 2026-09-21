@@ -51,7 +51,7 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.communityRepository.fetchPopularStoreNeighborhoods()
             }
             .withUnretained(self)
@@ -125,8 +125,8 @@ final class CommunityPopularStoreNeighborhoodsViewModel: BaseViewModel {
         output.contentViewModel.send(viewModel)
     }
     
-    private func bindDistrictViewModel(_ neighborhood :NeighborhoodProtocol) {
-        guard let province = neighborhood as? CommunityNeighborhoodProvince else{ return }
+    private func bindDistrictViewModel(_ neighborhood: NeighborhoodProtocol) {
+        guard let province = neighborhood as? CommunityNeighborhoodProvince else { return }
         
         let config = CommunityPopularStoreNeighborhoodsContentViewModel.Config(neighborhoods: province.districts)
         let viewModel = CommunityPopularStoreNeighborhoodsContentViewModel(config: config)

@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 import Combine
 
 import Networking
@@ -120,7 +120,7 @@ final class BossStoreCouponViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.couponRepository.issueStoreCoupon(
                     storeId: owner.config.storeId,
                     couponId: owner.coupon.couponId

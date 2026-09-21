@@ -2,7 +2,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 import Model
 
 final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
@@ -18,76 +17,102 @@ final class StoreBridgeCarouselItemCell: BaseCollectionViewCell {
         }
     }
     
-    private let imageContainerView = UIView().then {
-        $0.backgroundColor = Colors.gray0.color
-        $0.layer.borderColor = Colors.gray10.color.cgColor
-        $0.layer.borderWidth = 1
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-    }
+    private let imageContainerView: UIView = {
+        let imageContainerView = UIView()
+        imageContainerView.backgroundColor = Colors.gray0.color
+        imageContainerView.layer.borderColor = Colors.gray10.color.cgColor
+        imageContainerView.layer.borderWidth = 1
+        imageContainerView.layer.cornerRadius = 16
+        imageContainerView.clipsToBounds = true
+        return imageContainerView
+    }()
     
-    private let imageView = UIImageView().then {
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.gray100.color
-        $0.numberOfLines = 2
-        $0.lineBreakMode = .byTruncatingTail
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.semiBold.font(size: 14)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.numberOfLines = 2
+        titleLabel.lineBreakMode = .byTruncatingTail
+        return titleLabel
+    }()
     
-    private let metricsStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-        $0.alignment = .center
-    }
+    private let metricsStackView: UIStackView = {
+        let metricsStackView = UIStackView()
+        metricsStackView.axis = .horizontal
+        metricsStackView.spacing = 4
+        metricsStackView.alignment = .center
+        return metricsStackView
+    }()
     
-    private let ratingStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 2
-        $0.alignment = .center
-    }
+    private let ratingStackView: UIStackView = {
+        let ratingStackView = UIStackView()
+        ratingStackView.axis = .horizontal
+        ratingStackView.spacing = 2
+        ratingStackView.alignment = .center
+        return ratingStackView
+    }()
     
-    private let starIcon = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-    }
+    private let starIcon: UIImageView = {
+        let starIcon = UIImageView()
+        starIcon.contentMode = .scaleAspectFill
+        return starIcon
+    }()
     
-    private let ratingLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-    }
+    private let ratingLabel: UILabel = {
+        let ratingLabel = UILabel()
+        ratingLabel.font = Fonts.medium.font(size: 12)
+        ratingLabel.textColor = Colors.gray60.color
+        return ratingLabel
+    }()
     
-    private let reviewStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 2
-        $0.alignment = .center
-    }
+    private let reviewStackView: UIStackView = {
+        let reviewStackView = UIStackView()
+        reviewStackView.axis = .horizontal
+        reviewStackView.spacing = 2
+        reviewStackView.alignment = .center
+        return reviewStackView
+    }()
     
-    private let reviewIcon = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-    }
+    private let reviewIcon: UIImageView = {
+        let reviewIcon = UIImageView()
+        reviewIcon.contentMode = .scaleAspectFill
+        return reviewIcon
+    }()
     
-    private let reviewLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-    }
+    private let reviewLabel: UILabel = {
+        let reviewLabel = UILabel()
+        reviewLabel.font = Fonts.medium.font(size: 12)
+        reviewLabel.textColor = Colors.gray60.color
+        return reviewLabel
+    }()
     
-    private let distanceStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 2
-        $0.alignment = .center
-    }
+    private let distanceStackView: UIStackView = {
+        let distanceStackView = UIStackView()
+        distanceStackView.axis = .horizontal
+        distanceStackView.spacing = 2
+        distanceStackView.alignment = .center
+        return distanceStackView
+    }()
     
-    private let locationIcon = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-    }
+    private let locationIcon: UIImageView = {
+        let locationIcon = UIImageView()
+        locationIcon.contentMode = .scaleAspectFill
+        return locationIcon
+    }()
     
-    private let distanceLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.mainPink.color
-    }
+    private let distanceLabel: UILabel = {
+        let distanceLabel = UILabel()
+        distanceLabel.font = Fonts.medium.font(size: 12)
+        distanceLabel.textColor = Colors.mainPink.color
+        return distanceLabel
+    }()
     
     override func setup() {
         contentView.addSubViews([imageContainerView, titleLabel, metricsStackView, distanceStackView])

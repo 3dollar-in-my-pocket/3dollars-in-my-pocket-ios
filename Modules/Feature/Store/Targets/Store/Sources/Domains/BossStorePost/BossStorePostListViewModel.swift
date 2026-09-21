@@ -26,7 +26,7 @@ extension BossStorePostListViewModel {
     }
     
     struct State {
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = true
         var posts: [PostWithStoreResponse] = []
     }
@@ -173,7 +173,7 @@ public final class BossStorePostListViewModel: BaseViewModel {
             )
             
             switch result {
-            case .success(_):
+            case .success:
                 sticker.reactedByMe.toggle()
                 
                 if sticker.reactedByMe {

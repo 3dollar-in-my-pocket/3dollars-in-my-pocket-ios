@@ -13,26 +13,30 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIScreen.main.bounds.width, height: 166)
     }
     
-    let mapView = NMFMapView().then {
-        $0.positionMode = .direction
-        $0.zoomLevel = 15
-        $0.layer.cornerRadius = 20
-        $0.layer.masksToBounds = true
-        $0.isUserInteractionEnabled = false
-    }
+    let mapView: NMFMapView = {
+        let mapView = NMFMapView()
+        mapView.positionMode = .direction
+        mapView.zoomLevel = 15
+        mapView.layer.cornerRadius = 20
+        mapView.layer.masksToBounds = true
+        mapView.isUserInteractionEnabled = false
+        return mapView
+    }()
     
-    let zoomButton = UIButton().then {
-        $0.setImage(Icons.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = Colors.gray50.color
-        $0.layer.cornerRadius = 18
-        $0.layer.borderColor = Colors.gray20.color.cgColor
-        $0.layer.borderWidth = 1
-        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
-        $0.layer.shadowColor = Colors.systemBlack.color.cgColor
-        $0.layer.shadowOpacity = 0.1
-        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-        $0.backgroundColor = Colors.systemWhite.color
-    }
+    let zoomButton: UIButton = {
+        let zoomButton = UIButton()
+        zoomButton.setImage(Icons.zoom.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        zoomButton.tintColor = Colors.gray50.color
+        zoomButton.layer.cornerRadius = 18
+        zoomButton.layer.borderColor = Colors.gray20.color.cgColor
+        zoomButton.layer.borderWidth = 1
+        zoomButton.layer.shadowOffset = CGSize(width: 2, height: 2)
+        zoomButton.layer.shadowColor = Colors.systemBlack.color.cgColor
+        zoomButton.layer.shadowOpacity = 0.1
+        zoomButton.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
+        zoomButton.backgroundColor = Colors.systemWhite.color
+        return zoomButton
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -49,8 +53,8 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         mapView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview().offset(8)
             $0.bottom.equalToSuperview().offset(-18)
         }
@@ -58,7 +62,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         zoomButton.snp.makeConstraints {
             $0.width.height.equalTo(36)
             $0.bottom.equalTo(mapView).offset(-8)
-            $0.right.equalTo(mapView).offset(-8)
+            $0.trailing.equalTo(mapView).offset(-8)
         }
     }
     

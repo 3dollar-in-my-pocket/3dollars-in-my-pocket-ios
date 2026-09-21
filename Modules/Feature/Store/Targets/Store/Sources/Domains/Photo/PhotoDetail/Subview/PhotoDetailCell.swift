@@ -28,8 +28,8 @@ final class PhotoDetailCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         imageView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.centerY.equalToSuperview()
         }
     }

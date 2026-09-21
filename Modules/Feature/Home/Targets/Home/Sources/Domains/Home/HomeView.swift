@@ -6,7 +6,6 @@ import Model
 
 import NMapsMap
 import SnapKit
-import Then
 
 final class HomeView: BaseView {
     enum Layout {
@@ -18,10 +17,12 @@ final class HomeView: BaseView {
 
     private let homeFilterSelectable: HomeFilterSelectable
     
-    let mapView = NMFMapView().then {
-        $0.positionMode = .direction
-        $0.zoomLevel = 15
-    }
+    let mapView: NMFMapView = {
+        let mapView = NMFMapView()
+        mapView.positionMode = .direction
+        mapView.zoomLevel = 15
+        return mapView
+    }()
 
     /// 바텀시트가 `.full` 상태일 때 상단 주소/필터 영역에도 시트와 동일한 배경색을 깔아 하나의 화면처럼 보이게 한다.
     /// 평소(`.tip`) 에는 alpha 0 으로 지도를 보여주고, 시트가 끌어올려질수록 alpha 가 1 로 보간된다.
@@ -37,27 +38,31 @@ final class HomeView: BaseView {
     
     lazy var homeFilterCollectionView = HomeFilterCollectionView(homeFilterSelectable: homeFilterSelectable)
     
-    let researchButton = UIButton().then {
-        $0.setTitle(HomeStrings.homeResearchButton, for: .normal)
-        $0.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        $0.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 12)
-        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        $0.backgroundColor = DesignSystemAsset.Colors.mainRed.color
-        $0.layer.cornerRadius = 17
-        $0.alpha = 0.0
-    }
+    let researchButton: UIButton = {
+        let researchButton = UIButton()
+        researchButton.setTitle(HomeStrings.homeResearchButton, for: .normal)
+        researchButton.setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
+        researchButton.titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 12)
+        researchButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        researchButton.backgroundColor = DesignSystemAsset.Colors.mainRed.color
+        researchButton.layer.cornerRadius = 17
+        researchButton.alpha = 0.0
+        return researchButton
+    }()
     
-    let currentLocationButton = UIButton().then {
-        $0.setImage(DesignSystemAsset.Icons.locationCurrent.image.withTintColor(DesignSystemAsset.Colors.systemBlack.color), for: .normal)
-        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-        $0.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = DesignSystemAsset.Colors.gray20.color.cgColor
-        $0.layer.cornerRadius = 20
-        $0.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
-        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
-        $0.layer.shadowOpacity = 0.1
-    }
+    let currentLocationButton: UIButton = {
+        let currentLocationButton = UIButton()
+        currentLocationButton.setImage(DesignSystemAsset.Icons.locationCurrent.image.withTintColor(DesignSystemAsset.Colors.systemBlack.color), for: .normal)
+        currentLocationButton.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
+        currentLocationButton.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
+        currentLocationButton.layer.borderWidth = 1
+        currentLocationButton.layer.borderColor = DesignSystemAsset.Colors.gray20.color.cgColor
+        currentLocationButton.layer.cornerRadius = 20
+        currentLocationButton.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
+        currentLocationButton.layer.shadowOffset = CGSize(width: 2, height: 2)
+        currentLocationButton.layer.shadowOpacity = 0.1
+        return currentLocationButton
+    }()
     
     let feedButton: UIButton = {
         let button = UIButton()
@@ -113,14 +118,14 @@ final class HomeView: BaseView {
 
         addressButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
-            $0.left.equalToSuperview().offset(14)
-            $0.right.equalToSuperview().offset(-14)
+            $0.leading.equalToSuperview().offset(14)
+            $0.trailing.equalToSuperview().offset(-14)
         }
 
         homeFilterCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalTo(addressButton.snp.bottom)
-            $0.right.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.height.equalTo(60)
         }
 
@@ -136,14 +141,14 @@ final class HomeView: BaseView {
         }
         
         currentLocationButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 12)
             $0.width.height.equalTo(40)
         }
 
         feedButton.snp.makeConstraints {
             $0.centerY.equalTo(currentLocationButton)
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(44)
         }
     }

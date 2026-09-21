@@ -68,7 +68,7 @@ final class PollCategoryTabViewModel: BaseViewModel {
 
         input.firstLoad
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.communityRepository.fetchUserPollPolicy()
             }
             .withUnretained(self)

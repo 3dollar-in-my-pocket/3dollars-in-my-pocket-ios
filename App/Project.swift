@@ -45,13 +45,13 @@ struct BuildSetting {
             "GCC_WARN_UNUSED_VARIABLE": "YES",
             "IPHONEOS_DEPLOYMENT_TARGET": "18.0",
             "MTL_FAST_MATH": "YES",
-            "SDKROOT": "iphoneos",
+            "SDKROOT": "iphoneos"
         ]
         
         static let debug: SettingsDictionary = [
             "DEBUG_INFORMATION_FORMAT": "dwarf",
             "ENABLE_TESTABILITY": "YES",
-            "GCC_DYNAMIC_NO_PIC" :"NO",
+            "GCC_DYNAMIC_NO_PIC": "NO",
             "GCC_OPTIMIZATION_LEVEL": "0",
             "GCC_PREPROCESSOR_DEFINITIONS": "DEBUG=1 $(inherited)",
             "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
@@ -313,8 +313,8 @@ let project = Project(
                 .Feature.store,
                 .Feature.write,
                 .Feature.myPage,
+                .Feature.feed,
                 .SPM.snapKit,
-                .SPM.then,
                 .SPM.kingfisher,
                 .SPM.lottie,
                 .Package.cameraPermission,
@@ -341,7 +341,7 @@ let project = Project(
                 .Package.naverMap,
                 .Package.lookinServer,
                 .target(name: "service-extension"),
-                .target(name: "content-extension"),
+                .target(name: "content-extension")
             ],
             settings: .settings(
                 base: BuildSetting.App.base,
@@ -363,7 +363,7 @@ let project = Project(
             ],
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
-                .Feature.store,
+                .Feature.store
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,

@@ -3,7 +3,6 @@ import Combine
 
 import Common
 import DesignSystem
-import Then
 
 final class ReviewPhotoListCell: BaseCollectionViewCell {
     private let imageView = UIImageView()
@@ -52,19 +51,25 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
 final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
     let didTapEvent = PassthroughSubject<Void, Never>()
     
-    private let plusBackgroundView = UIView().then {
-        $0.backgroundColor = Colors.gray100.color
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 14
-    }
+    private let plusBackgroundView: UIView = {
+        let plusBackgroundView = UIView()
+        plusBackgroundView.backgroundColor = Colors.gray100.color
+        plusBackgroundView.clipsToBounds = true
+        plusBackgroundView.layer.cornerRadius = 14
+        return plusBackgroundView
+    }()
     
-    private let plusImageView = UIImageView().then {
-        $0.image = Icons.plus.image.withTintColor(Colors.mainPink.color)
-    }
-    private let countLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray95.color
-    }
+    private let plusImageView: UIImageView = {
+        let plusImageView = UIImageView()
+        plusImageView.image = Icons.plus.image.withTintColor(Colors.mainPink.color)
+        return plusImageView
+    }()
+    private let countLabel: UILabel = {
+        let countLabel = UILabel()
+        countLabel.font = Fonts.medium.font(size: 12)
+        countLabel.textColor = Colors.gray95.color
+        return countLabel
+    }()
     
     override func setup() {
         super.setup()
@@ -97,10 +102,6 @@ final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
         }
 
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
     }
     
     func bind(totalCount: Int) {

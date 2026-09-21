@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 import Model
 
 final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
@@ -12,27 +11,33 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
         static let itemSpacing: CGFloat = 9
     }
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
-        $0.textColor = Colors.systemBlack.color
-        $0.text = Strings.CommunityPopularStore.Tab.title
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 24)
+        titleLabel.textColor = Colors.systemBlack.color
+        titleLabel.text = Strings.CommunityPopularStore.Tab.title
+        return titleLabel
+    }()
 
-    private let districtButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.bold.font(size: 16)
-        $0.imageEdgeInsets.left = 2
-        $0.semanticContentAttribute = .forceRightToLeft
-        $0.contentEdgeInsets = .init(top: 6, left: 8, bottom: 6, right: 8)
-        $0.setTitleColor(Colors.gray80.color, for: .normal)
-        $0.setImage(Icons.arrowRight.image
+    private let districtButton: UIButton = {
+        let districtButton = UIButton()
+        districtButton.titleLabel?.font = Fonts.bold.font(size: 16)
+        districtButton.imageEdgeInsets.left = 2
+        districtButton.semanticContentAttribute = .forceRightToLeft
+        districtButton.contentEdgeInsets = .init(top: 6, left: 8, bottom: 6, right: 8)
+        districtButton.setTitleColor(Colors.gray80.color, for: .normal)
+        districtButton.setImage(Icons.arrowRight.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray60.color), for: .normal)
-    }
+        return districtButton
+    }()
 
     private let tabView = CommunityTabView(titles: CommunityPopularStoreTab.allCases.map { $0.title })
-    private let lineView: UIView = UIView().then {
-        $0.backgroundColor = Colors.gray20.color
-    }
+    private let lineView: UIView = {
+        let lineView = UIView()
+        lineView.backgroundColor = Colors.gray20.color
+        return lineView
+    }()
 
     private var viewModel: CommunityPopularStoreTabCellViewModel?
 

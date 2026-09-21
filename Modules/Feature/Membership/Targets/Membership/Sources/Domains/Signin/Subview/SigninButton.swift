@@ -31,6 +31,8 @@ final class SigninButton: UIButton {
         var backgroundColor: UIColor? {
             switch self {
             case .kakao:
+                // 카카오 브랜드 가이드 색
+                // swiftlint:disable:next no_uicolor_literal
                 return UIColor(hex: "#F7E317")
                 
             case .apple:
@@ -41,6 +43,8 @@ final class SigninButton: UIButton {
         var textColor: UIColor? {
             switch self {
             case .kakao:
+                // 카카오 브랜드 가이드 색
+                // swiftlint:disable:next no_uicolor_literal
                 return UIColor(hex: "#381E1F")
                 
             case .apple:

@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class PollDetailContentCell: PollItemBaseCell {
     enum Layout {

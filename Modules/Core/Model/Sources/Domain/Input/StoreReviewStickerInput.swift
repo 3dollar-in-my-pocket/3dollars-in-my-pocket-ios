@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreReviewStickerListReplaceInput:Encodable {
+public struct StoreReviewStickerListReplaceInput: Encodable {
     public let stickers: [StoreReviewStickerReplaceInput]
     
     public init(stickers: [StoreReviewStickerReplaceInput]) {

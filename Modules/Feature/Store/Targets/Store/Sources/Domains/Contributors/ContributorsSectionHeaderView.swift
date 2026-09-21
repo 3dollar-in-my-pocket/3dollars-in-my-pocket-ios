@@ -1,8 +1,6 @@
 import UIKit
 
 final class ContributorsSectionHeaderView: UICollectionReusableView {
-    static let reuseIdentifier = "ContributorsSectionHeaderView"
-
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = Strings.Contributors.Header.title

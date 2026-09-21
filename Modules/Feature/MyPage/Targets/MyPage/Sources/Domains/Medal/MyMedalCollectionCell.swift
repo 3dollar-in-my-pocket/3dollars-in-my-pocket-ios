@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -13,17 +12,21 @@ final class MyMedalCollectionCell: BaseCollectionViewCell {
         height: 148
     )
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 12)
-        $0.textColor = .white
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 12)
+        titleLabel.textColor = .white
+        return titleLabel
+    }()
     
-    private let containerView = UIView().then {
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = Colors.mainPink.color.cgColor
-        $0.backgroundColor = Colors.gray95.color
-        $0.layer.cornerRadius = 8
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = Colors.mainPink.color.cgColor
+        containerView.backgroundColor = Colors.gray95.color
+        containerView.layer.cornerRadius = 8
+        return containerView
+    }()
     
     private let medalImage = UIImageView()
     
@@ -39,19 +42,19 @@ final class MyMedalCollectionCell: BaseCollectionViewCell {
     override func bindConstraints() {
         self.titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.left.equalToSuperview().offset(24)
+            make.leading.equalToSuperview().offset(24)
         }
         
         self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
+            make.leading.equalToSuperview().offset(24)
             make.top.equalTo(self.titleLabel.snp.bottom).offset(12)
-            make.right.equalTo(self.medalImage).offset(32)
+            make.trailing.equalTo(self.medalImage).offset(32)
             make.bottom.equalTo(self.medalImage).offset(15)
             make.bottom.equalToSuperview()
         }
         
         self.medalImage.snp.makeConstraints { make in
-            make.left.equalTo(self.containerView).offset(32)
+            make.leading.equalTo(self.containerView).offset(32)
             make.top.equalTo(self.containerView).offset(15)
             make.width.height.equalTo(90)
         }

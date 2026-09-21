@@ -3,7 +3,6 @@ import AuthenticationServices
 
 import Common
 import DesignSystem
-import Then
 
 final class SigninAnonymousView: BaseView {
     let closeButton: UIButton = {
@@ -19,13 +18,15 @@ final class SigninAnonymousView: BaseView {
     
     let appleButton = SigninButton(type: .apple)
     
-    private let anonymousLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.systemWhite.color
-        $0.numberOfLines = 0
-        $0.text = Strings.signinAnonymousDescription
-        $0.textAlignment = .center
-    }
+    private let anonymousLabel: UILabel = {
+        let anonymousLabel = UILabel()
+        anonymousLabel.font = Fonts.regular.font(size: 14)
+        anonymousLabel.textColor = Colors.systemWhite.color
+        anonymousLabel.numberOfLines = 0
+        anonymousLabel.text = Strings.signinAnonymousDescription
+        anonymousLabel.textAlignment = .center
+        return anonymousLabel
+    }()
     
     override func setup() {
         backgroundColor = Colors.mainPink.color
@@ -40,28 +41,28 @@ final class SigninAnonymousView: BaseView {
     
     override func bindConstraints() {
         closeButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.width.equalTo(24)
             $0.height.equalTo(24)
         }
         
         logoImage.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(32)
-            $0.right.equalToSuperview().offset(-32)
+            $0.leading.equalToSuperview().offset(32)
+            $0.trailing.equalToSuperview().offset(-32)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-48)
         }
         
         kakaoButton.snp.makeConstraints {
             $0.centerY.equalToSuperview().offset(48)
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(48)
         }
         
         appleButton.snp.makeConstraints {
-            $0.left.equalTo(kakaoButton)
-            $0.right.equalTo(kakaoButton)
+            $0.leading.equalTo(kakaoButton)
+            $0.trailing.equalTo(kakaoButton)
             $0.top.equalTo(kakaoButton.snp.bottom).offset(12)
             $0.height.equalTo(48)
         }

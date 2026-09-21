@@ -15,4 +15,3 @@ public struct VisitRepositoryImpl: VisitRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
 }
-

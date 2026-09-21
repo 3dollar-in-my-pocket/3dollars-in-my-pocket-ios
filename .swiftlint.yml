@@ -1,30 +1,40 @@
+# SwiftLint 설정
+# 아키텍처 규칙(R3~R9)의 강제 수단. 규칙의 이유·예외는 docs/architecture/RULES.md 참고.
+# 기존 위반은 .swiftlint-baseline.json 에 동결되어 있다 (make lint-baseline 로 재생성). 새 위반만 보고된다.
+
+baseline: .swiftlint-baseline.json
+
 disabled_rules:
   - multiple_closures_with_trailing_closure
   - cyclomatic_complexity
 
 excluded:
-  - Pods
-  - 3dollar-in-my-pocket/resource/R.generated.swift
+  - Tuist
+  - build
+  - Frameworks
+  - .claude
+  - "**/Derived"
+  - "**/*.xcodeproj"
 
-force_cast: warning
-force_try:
-  severity: warning # explicitly
-
+# ---- 기본 룰 임계값 ----
 line_length: 200
 
-type_body_length:
-  - 300 # warning
-  - 500 # error
+type_body_length:          # R8
+  warning: 300
+  error: 500
 
 function_body_length:
-  - 50
-  
-large_tuple:
-  error: 5
+  warning: 100
 
 file_length:
   warning: 500
   error: 1200
+
+large_tuple:
+  error: 5
+
+force_cast: error          # R9
+force_try: error           # R9
 
 type_name:
   min_length: 3
@@ -41,15 +51,108 @@ identifier_name:
     - URL
     - GlobalAPIKey
   allowed_symbols: ["_"]
-  
+
 trailing_whitespace:
   ignores_empty_lines: true
-  
+
 vertical_whitespace:
   max_empty_lines: 2
-  
-function_body_length:
-  warning: 100
 
-  
+# ---- 아키텍처 custom rules (RULES.md 번호와 1:1) ----
+custom_rules:
+
+  interface_no_class:                       # R3
+    name: "R3 Interface 타깃엔 class 금지"
+    included: ".*/Targets/Interface/.*\\.swift"
+    regex: "^\\s*(public\\s+|open\\s+|final\\s+|internal\\s+)*class\\s+\\w+"
+    message: "R3: Interface 타깃에는 protocol / enum / 값 타입(struct Config)만 둔다. 구현체는 Feature 타깃으로."
+    severity: error
+
+  no_network_manager_outside_network:       # R4
+    name: "R4 NetworkManager 직접 호출 금지"
+    excluded: "Modules/Core/Network/.*"
+    regex: "NetworkManager\\.shared"
+    message: "R4: 서버 호출은 Core/Network 의 Repository(Protocol+Impl)에서만. ViewModel 은 Dependency 로 주입받는다."
+    severity: error
+
+  viewmodel_no_uikit_import:                # R5
+    name: "R5 ViewModel 에서 UIKit import 금지"
+    included: ".*ViewModel\\.swift"
+    regex: "^import UIKit\\b"
+    message: "R5: ViewModel 은 UI 를 모른다. UI 동작은 Route/Output 으로 ViewController 에 넘긴다."
+    severity: error
+
+  viewmodel_no_uiapplication:               # R5
+    name: "R5 ViewModel 에서 UIApplication 금지"
+    included: ".*ViewModel\\.swift"
+    regex: "UIApplication\\.shared"
+    message: "R5: URL 열기 등 UI 동작은 Route(.openURL) 로 ViewController 에서 처리한다."
+    severity: error
+
+  viewmodel_inherits_base:                  # R5
+    name: "R5 ViewModel 은 BaseViewModel 상속"
+    included: ".*ViewModel\\.swift"
+    excluded: "Modules/Core/Common/.*"
+    regex: "class\\s+\\w*ViewModel\\b\\s*(\\{|:(?!\\s*(Common\\.)?BaseViewModel\\b))"
+    message: "R5: ViewModel 은 BaseViewModel 을 상속한다 (cancellables / taskBag / bind 공통 관리)."
+    severity: error
+
+  vc_inherits_base:                         # R6
+    name: "R6 ViewController 는 BaseViewController 상속"
+    excluded:
+      - "Modules/Core/Common/.*"
+      - "Modules/Mock/.*"
+      - ".*/Targets/Demo/.*"
+      - "App/Targets/content-extension/.*"
+      - "App/Targets/service-extension/.*"
+    regex: "class\\s+\\w+\\s*:\\s*UIViewController\\b"
+    message: "R6: ViewController 는 BaseViewController 를 상속한다."
+    severity: error
+
+  cell_inherits_base:                       # R6
+    name: "R6 Cell 은 BaseCollectionViewCell 상속"
+    excluded:
+      - "Modules/Core/Common/.*"
+      - ".*/Targets/Demo/.*"
+    regex: "class\\s+\\w+\\s*:\\s*UICollectionViewCell\\b"
+    message: "R6: UICollectionViewCell 은 BaseCollectionViewCell 을 상속한다."
+    severity: error
+
+  no_register_id:                           # R6
+    name: "R6 registerId 금지"
+    regex: "static\\s+(let|var)\\s+(registerId|reuseIdentifier)\\b"
+    message: "R6: Cell 식별자는 Common 의 register(_:) / dequeueReusableCell(indexPath:) 가 타입명으로 처리한다."
+    severity: error
+
+  no_uicolor_literal:                       # R7
+    name: "R7 UIColor 리터럴 금지"
+    excluded: "Modules/Core/DesignSystem/.*"
+    # 하드코딩(hex 문자열 리터럴, red/r/white 직접 생성)만 금지. 서버가 내려준 색을 변수로 넘기는 UIColor(hex: value) 는 허용
+    regex: "UIColor\\((hex: *)?\"|UIColor\\((red|r|white):"
+    message: "R7: 하드코딩 색은 DesignSystem 의 Colors 를 사용한다. (서버 색 변수는 허용)"
+    severity: error
+
+  snapkit_leading_trailing:                 # R7
+    name: "R7 SnapKit left/right 금지"
+    regex: "(\\$0|make)\\.([a-zA-Z]+\\.)*(left|right)\\b"
+    message: "R7: SnapKit 제약은 left/right 대신 leading/trailing 을 사용한다. 물리적 방향이 필요하면 disable:next + 이유 주석."
+    severity: error
+
+  no_then:                                  # R7
+    name: "R7 then 금지"
+    regex: "^import Then\\b|\\.then\\s*\\{"
+    message: "R7: then 대신 클로저 초기화를 사용한다 (let v: UILabel = { ... }())."
+    severity: error
+
+  no_print:                                 # R9
+    name: "R9 print 금지"
+    excluded:
+      - "Modules/Core/Network/Sources/APIBase/Logger/.*"
+      - "Modules/Core/Network/Sources/APIBase/Manager/ResponseProvider\\.swift"
+      - "App/Targets/service-extension/.*"
+      - "App/Targets/content-extension/.*"
+    regex: "(^|[^.\\w])print\\("
+    message: "R9: print 대신 Log 모듈(LogManager)을 사용한다."
+    severity: error
+
 reporter: "xcode"

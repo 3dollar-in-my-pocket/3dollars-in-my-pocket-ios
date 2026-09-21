@@ -70,8 +70,8 @@ final class MapDetailView: BaseView {
     
     override func bindConstraints() {
         topContainer.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.top).offset(56)
         }
@@ -83,27 +83,27 @@ final class MapDetailView: BaseView {
         
         closeButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
-            $0.right.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.size.equalTo(24)
         }
         
         mapView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(topContainer.snp.bottom).offset(-10)
             $0.bottom.equalTo(navigationButton.snp.top)
         }
         
         buttonBackgroundView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
         
         navigationButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(buttonBackgroundView.snp.top)
             $0.height.equalTo(64)
         }

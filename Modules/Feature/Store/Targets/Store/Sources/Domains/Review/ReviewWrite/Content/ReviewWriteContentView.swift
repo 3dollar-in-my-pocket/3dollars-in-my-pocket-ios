@@ -39,7 +39,7 @@ final class ReviewWriteContentView: BaseView {
         addSubViews([
             titleLabel,
             ratingInputView,
-            textView,
+            textView
         ])
         
         textView.delegate = self
@@ -47,18 +47,18 @@ final class ReviewWriteContentView: BaseView {
     
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalToSuperview()
         }
         
         ratingInputView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
         }
         
         textView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(ratingInputView.snp.bottom).offset(12)
             $0.height.equalTo(228)
             $0.bottom.equalToSuperview()

@@ -23,8 +23,8 @@ final class WriteDetailTypeCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         typeStackView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
@@ -46,7 +46,7 @@ extension WriteDetailTypeCell {
         
         let roadRadioButton = TypeRadioButton(title: Strings.storeTypeRoad)
         
-        let storeRadioButton = TypeRadioButton(title:Strings.storeTypeStore)
+        let storeRadioButton = TypeRadioButton(title: Strings.storeTypeStore)
         
         let convenienceStoreRadioButton = TypeRadioButton(title: Strings.storeTypeConvenienceStore)
         
@@ -143,10 +143,12 @@ extension WriteDetailTypeCell {
             }
         }
         
-        let dotImage = UIView().then {
-            $0.layer.cornerRadius = 3
-            $0.backgroundColor = Colors.gray40.color
-        }
+        let dotImage: UIView = {
+            let dotImage = UIView()
+            dotImage.layer.cornerRadius = 3
+            dotImage.backgroundColor = Colors.gray40.color
+            return dotImage
+        }()
         
         init(title: String) {
             super.init(frame: .zero)
@@ -167,7 +169,7 @@ extension WriteDetailTypeCell {
             if let titleLabel = titleLabel {
                 dotImage.snp.makeConstraints {
                     $0.centerY.equalTo(titleLabel)
-                    $0.right.equalTo(titleLabel.snp.left).offset(-8)
+                    $0.trailing.equalTo(titleLabel.snp.leading).offset(-8)
                     $0.width.height.equalTo(6)
                 }
             }

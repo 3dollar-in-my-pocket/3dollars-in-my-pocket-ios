@@ -54,22 +54,22 @@ final class ReportReasonCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.height.equalTo(Layout.size.height)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(12)
+            $0.leading.equalTo(containerView).offset(12)
             $0.centerY.equalTo(containerView)
             $0.height.equalTo(20)
         }
         
         checkImage.snp.makeConstraints {
             $0.centerY.equalTo(containerView)
-            $0.right.equalTo(containerView).offset(-12)
+            $0.trailing.equalTo(containerView).offset(-12)
             $0.size.equalTo(20)
         }
     }

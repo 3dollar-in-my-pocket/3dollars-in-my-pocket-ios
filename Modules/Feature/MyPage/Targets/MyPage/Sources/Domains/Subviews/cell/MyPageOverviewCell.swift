@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -14,25 +13,31 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         static let height: CGFloat = 240
     }
     
-    private let bgCloud = UIImageView().then {
-        $0.image = MyPageAsset.bgCloud.image
-    }
+    private let bgCloud: UIImageView = {
+        let bgCloud = UIImageView()
+        bgCloud.image = MyPageAsset.bgCloud.image
+        return bgCloud
+    }()
     
     private let medalImageButton = UIButton()
     
-    private let medalLabel = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 4, rightInset: 4).then {
-        $0.font = Fonts.medium.font(size: 10)
-        $0.backgroundColor = Colors.gray80.color
-        $0.textColor = Colors.mainPink.color
-        $0.layer.cornerRadius = 4
-        $0.clipsToBounds = true
-    }
+    private let medalLabel: PaddingLabel = {
+        let medalLabel = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 4, rightInset: 4)
+        medalLabel.font = Fonts.medium.font(size: 10)
+        medalLabel.backgroundColor = Colors.gray80.color
+        medalLabel.textColor = Colors.mainPink.color
+        medalLabel.layer.cornerRadius = 4
+        medalLabel.clipsToBounds = true
+        return medalLabel
+    }()
     
-    private let nicknameLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 30)
-        $0.textAlignment = .center
-        $0.textColor = .white
-    }
+    private let nicknameLabel: UILabel = {
+        let nicknameLabel = UILabel()
+        nicknameLabel.font = Fonts.bold.font(size: 30)
+        nicknameLabel.textAlignment = .center
+        nicknameLabel.textColor = .white
+        return nicknameLabel
+    }()
     
     private let stackView = UIStackView()
     private let storeCountButton = MyPageOverviewCountButton(type: .store)
@@ -58,7 +63,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
             $0.top.leading.trailing.equalToSuperview()
         }
         
-        medalImageButton.snp.makeConstraints { 
+        medalImageButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().inset(28)
             $0.size.equalTo(60)
@@ -69,7 +74,7 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
             $0.top.equalTo(self.medalImageButton.snp.bottom).offset(12)
         }
         
-        nicknameLabel.snp.makeConstraints { 
+        nicknameLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(self.medalLabel.snp.bottom).offset(4)
         }
@@ -85,13 +90,13 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         stackView.addArrangedSubview(lineView())
         stackView.addArrangedSubview(medalCountButton)
         
-        storeCountButton.snp.makeConstraints { 
+        storeCountButton.snp.makeConstraints {
             $0.size.equalTo(MyPageOverviewCountButton.size)
         }
         reviewCountButton.snp.makeConstraints {
             $0.size.equalTo(MyPageOverviewCountButton.size)
         }
-        medalCountButton.snp.makeConstraints { 
+        medalCountButton.snp.makeConstraints {
             $0.size.equalTo(MyPageOverviewCountButton.size)
         }
     }

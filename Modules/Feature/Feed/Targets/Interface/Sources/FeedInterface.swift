@@ -4,7 +4,7 @@ import Common
 import Networking
 
 public protocol FeedInterface {
-    
+    func createFeedListViewController(config: FeedListViewModelConfig) -> UIViewController
 }
 
 public struct FeedListViewModelConfig {

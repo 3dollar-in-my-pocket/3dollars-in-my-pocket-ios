@@ -114,7 +114,7 @@ final class MyPageViewModel: BaseViewModel {
         
         let fetchMyCoupons = loadTrigger
             .asyncMap { owner, _ in
-                await owner.couponRepository.getMyIssuedCoupons(input:  GetMyIssuedCouponsInput(statuses: [.issued]))
+                await owner.couponRepository.getMyIssuedCoupons(input: GetMyIssuedCouponsInput(statuses: [.issued]))
             }.compactMapValue()
         
         Publishers.Zip(
@@ -132,10 +132,10 @@ final class MyPageViewModel: BaseViewModel {
                 
                 state.userState.send(user)
                 state.visitStores.send(visitStore.contents.map {
-                    MyPageStore(storeResponse: $0.store, visitResponse: $0.visit) 
+                    MyPageStore(storeResponse: $0.store, visitResponse: $0.visit)
                 })
-                state.favoriteStores.send(favoriteStores.favorites.map { 
-                    MyPageStore(storeResponse: $0) 
+                state.favoriteStores.send(favoriteStores.favorites.map {
+                    MyPageStore(storeResponse: $0)
                 })
                 state.poll.send(myPolls)
                 state.coupons.send(myCoupons.contents)
@@ -168,7 +168,7 @@ final class MyPageViewModel: BaseViewModel {
         if let user = state.userState.value {
             sections.append(
                 MyPageSection(
-                    type: .overview, 
+                    type: .overview,
                     items: [.overview(bindMyPageOverviewCellViewModel(with: user))],
                     headerViewModel: nil
                 )
@@ -177,7 +177,7 @@ final class MyPageViewModel: BaseViewModel {
         
         // 방문한 가게
         let visitStores = state.visitStores.value
-        let visitStoreSectionItems: MyPageSectionItem = 
+        let visitStoreSectionItems: MyPageSectionItem =
             if visitStores.isEmpty {
                 .empty(.visitStore)
             } else {
@@ -186,7 +186,7 @@ final class MyPageViewModel: BaseViewModel {
         
         sections.append(
             MyPageSection(
-                type: .visitStore, 
+                type: .visitStore,
                 items: [visitStoreSectionItems],
                 headerViewModel: visitStoreHeaderViewModel
             )
@@ -194,7 +194,7 @@ final class MyPageViewModel: BaseViewModel {
         
         // 좋아하는 가게
         let favoriteStores = state.favoriteStores.value
-        let favoriteStoresSectionItems: MyPageSectionItem = 
+        let favoriteStoresSectionItems: MyPageSectionItem =
             if favoriteStores.isEmpty {
                 .empty(.favoriteStore)
             } else {
@@ -202,7 +202,7 @@ final class MyPageViewModel: BaseViewModel {
             }
         sections.append(
             MyPageSection(
-                type: .favoriteStore, 
+                type: .favoriteStore,
                 items: [favoriteStoresSectionItems],
                 headerViewModel: favoriteStoreHeaderViewModel
             )
@@ -213,10 +213,10 @@ final class MyPageViewModel: BaseViewModel {
         if let poll = state.poll.value, poll.polls.contents.count > 0 {
             pollSectionItems.append(.pollTotalParticipantsCount(poll.meta.totalParticipantsCount))
             pollSectionItems.append(
-                contentsOf: poll.polls.contents.map { 
+                contentsOf: poll.polls.contents.map {
                     .poll(
-                        data: $0.poll, 
-                        isFirst: poll.polls.contents.first?.poll.pollId == $0.poll.pollId, 
+                        data: $0.poll,
+                        isFirst: poll.polls.contents.first?.poll.pollId == $0.poll.pollId,
                         isLast: poll.polls.contents.last?.poll.pollId == $0.poll.pollId
                     )
                 }
@@ -226,8 +226,8 @@ final class MyPageViewModel: BaseViewModel {
         }
         sections.append(
             MyPageSection(
-                type: .poll, 
-                items: pollSectionItems, 
+                type: .poll,
+                items: pollSectionItems,
                 headerViewModel: pollHeaderViewModel
             )
         )
@@ -279,7 +279,7 @@ final class MyPageViewModel: BaseViewModel {
         viewModel.output.route
             .compactMap {
                 switch $0 {
-                case .review: 
+                case .review:
                     return .review(ReviewTabViewModel(config: .init()))
                 case .store:
                     return .registeredStoreList
@@ -306,7 +306,7 @@ final class MyPageViewModel: BaseViewModel {
         viewModel.output.route
             .compactMap {
                 switch $0 {
-                case .storeDetail(let storeId): 
+                case .storeDetail(let storeId):
                     return .storeDetail(storeId)
                 case .bossStoreDetail(let storeId):
                     return .bossStoreDetail(storeId)

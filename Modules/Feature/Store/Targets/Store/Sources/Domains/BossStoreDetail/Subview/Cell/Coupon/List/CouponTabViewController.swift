@@ -12,12 +12,16 @@ final class CouponTabViewController: BaseViewController {
     }
 
     private lazy var myPageNavigationBar = CouponNavigationBar(title: "내 쿠폰함")
-    private let tabView = CouponTabView(titles: CouponTab.list.map { $0.title }).then {
-        $0.isUserInteractionEnabled = false
-    }
-    private let lineView: UIView = UIView().then {
-        $0.backgroundColor = Colors.gray90.color
-    }
+    private let tabView: CouponTabView = {
+        let tabView = CouponTabView(titles: CouponTab.list.map { $0.title })
+        tabView.isUserInteractionEnabled = false
+        return tabView
+    }()
+    private let lineView: UIView = {
+        let lineView = UIView()
+        lineView.backgroundColor = Colors.gray90.color
+        return lineView
+    }()
     private let pageContainerView = UIView()
     private let pageViewController = BasePageViewController(
         transitionStyle: .scroll,
@@ -53,7 +57,7 @@ final class CouponTabViewController: BaseViewController {
         view.addSubViews([
             myPageNavigationBar,
             lineView,
-            tabView,
+            tabView
         ])
 
         myPageNavigationBar.snp.makeConstraints {
@@ -146,7 +150,7 @@ final class CouponTabViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
@@ -155,7 +159,7 @@ final class CouponTabViewController: BaseViewController {
         viewModel.output.route
             .main
             .withUnretained(self)
-            .sink { owner, route in
+            .sink { _, route in
                 switch route {
                 case .none: break
                 }

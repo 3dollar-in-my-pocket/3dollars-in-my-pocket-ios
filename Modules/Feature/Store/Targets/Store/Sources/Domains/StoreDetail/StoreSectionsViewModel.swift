@@ -1,5 +1,5 @@
 import Combine
-import UIKit
+import Foundation
 
 import AppInterface
 import Common
@@ -45,6 +45,8 @@ extension StoreSectionsViewModel {
         case presentNavigationActionSheet
         case navigateAppleMap(LocationResponse)
         case presentShareSheet(URL)
+        case openURL(URL)
+        case copyToPasteboard(String)
         case presentBossStorePhoto(BossStorePhotoViewModel)
         case presentDeleteReviewAlert(reviewId: Int)
         case presentUseCouponAlert(issuedKey: String)
@@ -240,7 +242,7 @@ final class StoreSectionsViewModel: BaseViewModel {
         switch action.actionType {
         case .storeEditCopyAddress:
             guard let address = action.extraParams["ADDRESS"]?.stringValue else { return }
-            UIPasteboard.general.string = address
+            output.route.send(.copyToPasteboard(address))
             output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
         case .storeEditMapEnlarge:
             output.route.send(.presentMapDetail(makeMapDetailViewModel()))
@@ -337,12 +339,12 @@ final class StoreSectionsViewModel: BaseViewModel {
         switch type {
         case .kakao:
             guard let url = URL(string: "kakaomap://look?p=\(location.latitude),\(location.longitude)") else { return }
-            UIApplication.shared.open(url)
+            output.route.send(.openURL(url))
         case .naver:
             let urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)"
                 + "&name=\(storeName)&zoom=20&appname=\(appInformation.bundleId)"
             guard let url = URL(string: urlScheme) else { return }
-            UIApplication.shared.open(url)
+            output.route.send(.openURL(url))
         case .apple:
             output.route.send(.navigateAppleMap(location))
         }

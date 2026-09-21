@@ -11,11 +11,6 @@ enum SearchAddressSectionType {
 struct SearchAddressSection: Hashable {
     var type: SearchAddressSectionType
     var items: [SearchAddressSectionItem]
-    
-    init(type: SearchAddressSectionType, items: [SearchAddressSectionItem]) {
-        self.type = type
-        self.items = items
-    }
 }
 
 enum SearchAddressSectionItem: Hashable {
@@ -25,7 +20,7 @@ enum SearchAddressSectionItem: Hashable {
 }
 
 final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAddressSection, SearchAddressSectionItem> {
-    typealias Snapshot = NSDiffableDataSourceSnapshot<SearchAddressSection,SearchAddressSectionItem>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<SearchAddressSection, SearchAddressSectionItem>
     
     let viewModel: SearchAddressViewModel
     
@@ -50,7 +45,7 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
             }
         }
         
-        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
+        supplementaryViewProvider = { [weak self] collectionView, _, indexPath -> UICollectionReusableView? in
             switch self?.sectionIdentifier(section: indexPath.section)?.type {
             case .recentSearch:
                 let headerView: SearchAddressHeaderCell = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
@@ -67,7 +62,7 @@ final class SearchAddressDatasource: UICollectionViewDiffableDataSource<SearchAd
             SearchAddressBannerCell.self
         ])
         collectionView.registerSectionHeader([
-            SearchAddressHeaderCell.self,
+            SearchAddressHeaderCell.self
         ])
         collectionView.delegate = self
     }

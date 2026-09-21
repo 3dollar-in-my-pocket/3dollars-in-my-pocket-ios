@@ -18,7 +18,7 @@ final class VisitStoreListDataSource: UICollectionViewDiffableDataSource<VisitSt
 
     init(collectionView: UICollectionView) {
         collectionView.register([
-            VisitStoreItemCell.self,
+            VisitStoreItemCell.self
         ])
         
         collectionView.registerSectionHeader([
@@ -34,7 +34,7 @@ final class VisitStoreListDataSource: UICollectionViewDiffableDataSource<VisitSt
             }
         }
         
-        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
+        supplementaryViewProvider = { [weak self] collectionView, _, indexPath -> UICollectionReusableView? in
             guard let section = self?.sectionIdentifier(section: indexPath.section) else {
                 return nil
             }

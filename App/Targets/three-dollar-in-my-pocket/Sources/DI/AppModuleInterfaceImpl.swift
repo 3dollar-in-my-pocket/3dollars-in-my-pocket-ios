@@ -64,7 +64,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     func getFCMToken(completion: @escaping ((String) -> Void)) {
         Messaging.messaging().token { token, _ in
             guard let token = token else {
-                print("⚠️Error in send FCM token")
+                Log.error("⚠️Error in send FCM token")
                 return
             }
 

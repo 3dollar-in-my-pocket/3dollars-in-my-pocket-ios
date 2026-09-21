@@ -69,12 +69,12 @@ final class UploadPhotoView: BaseView {
     
     override func bindConstraints() {
         topContainerView.snp.makeConstraints {
-            $0.left.top.right.equalToSuperview()
+            $0.leading.top.trailing.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.top).offset(56)
         }
         
         closeButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.centerY.equalTo(titleLabel)
         }
         
@@ -84,21 +84,21 @@ final class UploadPhotoView: BaseView {
         }
         
         photoCollectionView.snp.makeConstraints {
-            $0.left.right.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(uploadButton.snp.top)
             $0.top.equalTo(topContainerView.snp.bottom)
         }
         
         uploadButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(buttonBackgroundView.snp.top)
             $0.height.equalTo(64)
         }
         
         buttonBackgroundView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }

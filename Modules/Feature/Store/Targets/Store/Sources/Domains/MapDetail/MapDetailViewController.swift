@@ -24,10 +24,6 @@ public final class MapDetailViewController: BaseViewController {
         self.view = mapDetailView
     }
     
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     public override func bindEvent() {
         mapDetailView.closeButton
             .controlPublisher(for: .touchUpInside)
@@ -65,6 +61,8 @@ public final class MapDetailViewController: BaseViewController {
                     owner.presentNavigationModal()
                 case .navigateAppleMap(let location):
                     owner.navigateAppleMap(location: location)
+                case .openURL(let url):
+                    UIApplication.shared.open(url)
                 }
             }
             .store(in: &cancellables)
@@ -116,7 +114,7 @@ public final class MapDetailViewController: BaseViewController {
         let options = [
             MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,  // 운전 모드
             MKLaunchOptionsShowsTrafficKey: true  // 교통 상황 표시
-        ] as [String : Any]
+        ] as [String: Any]
         
         mapItem.openInMaps(launchOptions: options)
     }

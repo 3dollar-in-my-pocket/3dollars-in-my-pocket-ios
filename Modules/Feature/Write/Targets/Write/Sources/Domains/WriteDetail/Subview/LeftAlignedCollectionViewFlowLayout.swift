@@ -7,7 +7,7 @@ class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
         }
 
         // Copy to avoid modifying the original attributes
-        let attributes = originalAttributes.map { $0.copy() as! UICollectionViewLayoutAttributes }
+        let attributes = originalAttributes.compactMap { $0.copy() as? UICollectionViewLayoutAttributes }
 
         var leftMargin = sectionInset.left
         var maxY: CGFloat = -1.0

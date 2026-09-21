@@ -8,15 +8,17 @@ final class ReviewFeedbackSelectionView: BaseView {
         static let maxLengthOfReview = 100
     }
     
-    private lazy var collectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
-    ).then {
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-        $0.delegate = self
-    }
+    )
+        collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        return collectionView
+    }()
     
     private lazy var dataSource = BossStoreFeedbackDataSource(collectionView: collectionView)
     

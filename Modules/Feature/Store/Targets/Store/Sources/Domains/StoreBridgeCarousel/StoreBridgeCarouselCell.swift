@@ -2,7 +2,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 import Model
 
 final class StoreBridgeCarouselCell: BaseCollectionViewCell {
@@ -40,19 +39,23 @@ extension StoreBridgeCarouselCell {
 }
 
 final class StoreBridgeCarouselView: BaseView {
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray100.color
-        $0.numberOfLines = 0
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 16)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.numberOfLines = 0
+        return titleLabel
+    }()
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.showsHorizontalScrollIndicator = false
-        $0.register([StoreBridgeCarouselItemCell.self])
-        $0.dataSource = self
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.register([StoreBridgeCarouselItemCell.self])
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        return collectionView
+    }()
 
     private var viewModel: StoreBridgeCarouselViewModel?
 

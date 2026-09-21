@@ -18,7 +18,7 @@ final class CouponListDataSource: UICollectionViewDiffableDataSource<CouponListS
 
     init(collectionView: UICollectionView) {
         collectionView.register([
-            CouponListCell.self,
+            CouponListCell.self
         ])
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in

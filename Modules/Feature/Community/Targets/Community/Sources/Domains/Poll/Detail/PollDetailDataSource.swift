@@ -70,7 +70,7 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
         ])
 
         collectionView.registerSectionHeader([
-            PollDetailCommentHeaderView.self,
+            PollDetailCommentHeaderView.self
         ])
 
         super.init(collectionView: collectionView) { [weak containerVC] collectionView, indexPath, itemIdentifier in
@@ -94,7 +94,7 @@ final class PollDetailDataSource: UICollectionViewDiffableDataSource<PollDetailS
             }
         }
 
-        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
+        supplementaryViewProvider = { [weak self] collectionView, _, indexPath -> UICollectionReusableView? in
             guard let section = self?.sectionIdentifier(section: indexPath.section) else {
                 return nil
             }

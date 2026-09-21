@@ -1,7 +1,6 @@
 import UIKit
 
 import DesignSystem
-import Then
 import Common
 import Log
 
@@ -10,23 +9,29 @@ final class PollDetailViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var communityNavigationBar = CommunityNavigationBar(rightButtons: [reportButton]).then {
-        $0.backgroundColor = Colors.gray0.color
-    }
+    private lazy var communityNavigationBar: CommunityNavigationBar = {
+        let communityNavigationBar = CommunityNavigationBar(rightButtons: [reportButton])
+        communityNavigationBar.backgroundColor = Colors.gray0.color
+        return communityNavigationBar
+    }()
 
-    private let reportButton = UIButton().then {
-        $0.setImage(
+    private let reportButton: UIButton = {
+        let reportButton = UIButton()
+        reportButton.setImage(
             Icons.deletion.image
                 .resizeImage(scaledTo: 24)
                 .withTintColor(Colors.mainRed.color),
             for: .normal
         )
-    }
+        return reportButton
+    }()
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = Colors.systemWhite.color
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = Colors.systemWhite.color
+        collectionView.delegate = self
+        return collectionView
+    }()
 
     private let writeCommentView = PollDetailWriteCommentView()
 
@@ -89,7 +94,7 @@ final class PollDetailViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)

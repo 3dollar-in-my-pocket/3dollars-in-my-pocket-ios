@@ -110,7 +110,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
             let connectAccount = await userRepository.connectAccount(input: input)
             
             switch connectAccount {
-            case .success(_):
+            case .success:
                 preference.isAnonymousUser = false
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.dismiss)

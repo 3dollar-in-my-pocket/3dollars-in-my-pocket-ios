@@ -6,7 +6,7 @@ public extension Publisher {
         return receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
     
-    var mapVoid : Publishers.Map<Self, Void> {
+    var mapVoid: Publishers.Map<Self, Void> {
         map { _ in () }
     }
     

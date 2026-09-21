@@ -9,7 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var networkConfiguration = MockNetworkConfiguration()
     var preference = Preference(name: "Home-Demo")
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         
         initializeDI()
         return true
@@ -30,5 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MockAppModuleInterfaceImpl.registerAppModuleInterface()
         MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
         MockStoreModuleInterfaceImpl.registerModuleInterface()
+        MockFeedInterfaceImpl.registerFeedInterface()
     }
 }

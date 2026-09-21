@@ -251,7 +251,7 @@ final class BookmarkListViewModel: BaseViewModel {
             let result = await bookmarkRepository.removeBookmarkStore(storeId: storeId)
             
             switch result {
-            case .success(_):
+            case .success:
                 state.stores.remove(at: index)
                 state.totalCount -= 1
                 output.sections.send(createBookmarkListSection())

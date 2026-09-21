@@ -3,15 +3,16 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 
 final class CommunityView: BaseView {
 
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = Colors.gray0.color
-        $0.contentInset = .init(top: 0, left: 4, bottom: 0, right: 4)
-        $0.showsVerticalScrollIndicator = false
-    }
+    lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = Colors.gray0.color
+        collectionView.contentInset = .init(top: 0, left: 4, bottom: 0, right: 4)
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
 
     override func setup() {
         super.setup()
