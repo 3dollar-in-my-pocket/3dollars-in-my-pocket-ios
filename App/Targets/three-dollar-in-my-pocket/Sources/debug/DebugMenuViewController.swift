@@ -110,7 +110,7 @@ private final class DebugMenuToggleRow: UIView {
         setupViews()
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required init?(coder _: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func setupViews() {
         let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel])
@@ -162,7 +162,7 @@ private final class DebugMenuLinkRow: UIView {
         setupViews()
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required init?(coder _: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func setupViews() {
         addSubview(titleLabel)

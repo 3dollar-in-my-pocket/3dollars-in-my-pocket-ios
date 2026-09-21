@@ -37,6 +37,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         // Then
         await fulfillment(of: [expectation], timeout: 1)
         guard case .dismiss = receivedRoute else { return XCTFail("dismiss route가 아님") }
+        // 선택한 사유가 그대로 서버로 나갔는지 확인한다.
+        XCTAssertEqual(repository.lastReportStoreArguments?.storeId, 1)
+        XCTAssertEqual(repository.lastReportStoreArguments?.reportReason, "NOSTORE")
     }
 
     // MARK: TC7

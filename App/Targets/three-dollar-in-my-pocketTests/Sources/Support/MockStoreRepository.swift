@@ -9,6 +9,8 @@ final class MockStoreRepository: StoreRepository {
     var fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error> = .failure(MockError.notStubbed())
     var reportStoreResult: Result<StoreDeleteResponse, Error> = .failure(MockError.notStubbed())
     private(set) var reportStoreCallCount = 0
+    /// 마지막 신고 요청 인자. 어떤 사유로 신고했는지 검증할 때 쓴다.
+    private(set) var lastReportStoreArguments: (storeId: Int, reportReason: String)?
 
     init(
         fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error>? = nil,
@@ -29,6 +31,7 @@ final class MockStoreRepository: StoreRepository {
     func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> { .failure(MockError.notStubbed()) }
     func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> {
         reportStoreCallCount += 1
+        lastReportStoreArguments = (storeId: storeId, reportReason: reportReason)
         return reportStoreResult
     }
     func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> { .failure(MockError.notStubbed()) }

@@ -32,7 +32,7 @@ final class DebugFloatingButton: UIView {
         setupGestures()
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required init?(coder _: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func setupViews() {
         backgroundColor = Colors.gray100.color.withAlphaComponent(0.85)
