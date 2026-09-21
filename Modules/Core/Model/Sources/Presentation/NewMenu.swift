@@ -20,7 +20,7 @@ public struct NewMenu: Hashable {
         name: String = "",
         price: String = ""
     ) {
-        self.category = PlatformStoreCategory(response: category) 
+        self.category = PlatformStoreCategory(response: category)
         self.name = name
         self.price = price
     }

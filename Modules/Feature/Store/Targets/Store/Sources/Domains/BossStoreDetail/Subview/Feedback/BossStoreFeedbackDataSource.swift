@@ -32,7 +32,7 @@ final class BossStoreFeedbackDataSource: UICollectionViewDiffableDataSource<Boss
             }
         }
 
-        supplementaryViewProvider = { collectionView, kind, indexPath -> UICollectionReusableView? in
+        supplementaryViewProvider = { collectionView, _, indexPath -> UICollectionReusableView? in
             let headerView: BossStoreFeedbackHeaderCell = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
             return headerView
         }
@@ -42,7 +42,7 @@ final class BossStoreFeedbackDataSource: UICollectionViewDiffableDataSource<Boss
         ])
 
         collectionView.registerSectionHeader([
-            BossStoreFeedbackHeaderCell.self,
+            BossStoreFeedbackHeaderCell.self
         ])
     }
 

@@ -85,7 +85,7 @@ final class UploadPhotoCell: BaseCollectionViewCell {
         
         circleView.snp.makeConstraints {
             $0.top.equalTo(imageView).offset(8)
-            $0.right.equalTo(imageView).offset(-8)
+            $0.trailing.equalTo(imageView).offset(-8)
             $0.size.equalTo(20)
         }
         

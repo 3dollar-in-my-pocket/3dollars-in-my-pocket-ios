@@ -36,7 +36,7 @@ final class BookmarkListDatasource: UICollectionViewDiffableDataSource<BookmarkL
             }
         }
         
-        supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView? in
+        supplementaryViewProvider = { [weak self] collectionView, _, indexPath -> UICollectionReusableView? in
             guard let section = self?.sectionIdentifier(section: indexPath.section) else { return nil }
             
             switch section.type {

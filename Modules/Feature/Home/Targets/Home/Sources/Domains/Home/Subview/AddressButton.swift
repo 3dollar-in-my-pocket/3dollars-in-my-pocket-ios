@@ -42,14 +42,14 @@ public final class AddressButton: BaseView {
         containerView.layer.borderColor = DesignSystemAsset.Colors.gray30.color.withAlphaComponent(0).cgColor
         
         addressButton.snp.makeConstraints { make in
-            make.left.equalTo(containerView).offset(12)
+            make.leading.equalTo(containerView).offset(12)
             make.centerY.equalTo(containerView)
-            make.right.equalTo(rightArrowImage).offset(-12)
+            make.trailing.equalTo(rightArrowImage).offset(-12)
         }
         
         rightArrowImage.snp.makeConstraints { make in
             make.centerY.equalTo(containerView)
-            make.right.equalTo(containerView).offset(-16)
+            make.trailing.equalTo(containerView).offset(-16)
             make.width.equalTo(12)
             make.height.equalTo(12)
         }

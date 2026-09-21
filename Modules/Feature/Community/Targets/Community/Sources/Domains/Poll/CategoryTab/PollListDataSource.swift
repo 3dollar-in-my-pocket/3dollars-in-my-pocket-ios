@@ -17,11 +17,11 @@ final class PollListDataSource: UICollectionViewDiffableDataSource<PollListSecti
 
     init(collectionView: UICollectionView) {
         collectionView.register([
-            PollItemCell.self,
+            PollItemCell.self
         ])
 
         collectionView.registerSectionHeader([
-            PollHeaderView.self,
+            PollHeaderView.self
         ])
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in

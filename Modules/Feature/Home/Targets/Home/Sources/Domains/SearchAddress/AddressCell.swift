@@ -47,19 +47,19 @@ final class AddressCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         buildingName.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview().offset(12)
         }
         
         addressLabel.snp.makeConstraints {
-            $0.left.right.equalTo(buildingName)
+            $0.leading.trailing.equalTo(buildingName)
             $0.top.equalTo(buildingName.snp.bottom).offset(2)
         }
         
         dividorView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(1)
             $0.bottom.equalToSuperview()
         }

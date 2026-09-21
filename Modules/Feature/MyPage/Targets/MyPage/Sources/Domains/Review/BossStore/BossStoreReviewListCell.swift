@@ -97,7 +97,7 @@ private final class FeedbackView: BaseView {
         view.layer.cornerRadius = 4
         view.clipsToBounds = true
         return view
-    }() 
+    }()
     
     private let emojiLabel: UILabel = {
         let label = UILabel()

@@ -60,7 +60,7 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
     override func bindConstraints() {
         super.bindConstraints()
         
-        iconView.snp.makeConstraints { 
+        iconView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalToSuperview().inset(20)
             $0.size.equalTo(16)

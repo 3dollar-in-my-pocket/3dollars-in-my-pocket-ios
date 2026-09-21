@@ -42,21 +42,21 @@ final class WriteDetailAddressCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-16)
         }
         
         addressLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(12)
-            $0.right.equalTo(editAddressButton.snp.left).offset(-10)
+            $0.leading.equalTo(containerView).offset(12)
+            $0.trailing.equalTo(editAddressButton.snp.leading).offset(-10)
             $0.centerY.equalTo(containerView)
         }
         
         editAddressButton.snp.makeConstraints {
             $0.centerY.equalTo(containerView)
-            $0.right.equalTo(containerView).offset(-12)
+            $0.trailing.equalTo(containerView).offset(-12)
         }
     }
     

@@ -13,7 +13,7 @@ let project = Project.makeFeatureModule(
         .Core.designSystem,
         .Core.log,
         .Interface.communityInterface,
-        .SPM.snapKit,
+        .SPM.snapKit
     ],
     includeInterface: true,
     includeDemo: true

@@ -352,4 +352,4 @@ extension AddressConfirmBottomSheetViewController: PanModalPresentable {
     var cornerRadius: CGFloat { 24 }
     
     var showDragIndicator: Bool { false }
-} 
+}

@@ -54,7 +54,7 @@ final class AddressConfirmBottomSheetViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
     }
-} 
+}
 
 extension AddressConfirmBottomSheetViewModel {
     private func sendClickConfirmButtonLog() {

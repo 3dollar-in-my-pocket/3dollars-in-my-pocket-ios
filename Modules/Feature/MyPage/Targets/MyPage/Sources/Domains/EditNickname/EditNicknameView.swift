@@ -134,7 +134,7 @@ final class EditNicknameView: BaseView {
     
     func setCurrentNickname(_ nickname: String) {
         let attributedString = NSAttributedString(string: nickname, attributes: [
-            .foregroundColor : Colors.gray60.color,
+            .foregroundColor: Colors.gray60.color,
             .font: Fonts.bold.font(size: 30)
         ])
         

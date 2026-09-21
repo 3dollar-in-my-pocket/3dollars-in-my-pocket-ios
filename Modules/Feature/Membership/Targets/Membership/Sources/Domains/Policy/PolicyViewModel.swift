@@ -102,7 +102,7 @@ final class PolicyViewModel: Common.BaseViewModel {
             
             output.route.send(.showLoading(isShow: false))
             switch changeMarketingConsent {
-            case .success(_):
+            case .success:
                 output.route.send(.dismiss)
             case .failure(let error):
                 output.route.send(.showErrorAlert(error))

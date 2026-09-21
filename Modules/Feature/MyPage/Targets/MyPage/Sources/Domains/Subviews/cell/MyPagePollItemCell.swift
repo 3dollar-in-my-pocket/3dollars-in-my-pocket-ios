@@ -95,11 +95,11 @@ final class MyPagePollItemCell: BaseCollectionViewCell {
         
         if let firstOption = data.options[safe: 0], let secondOption = data.options[safe: 1] {
             firstOptionView.bind(
-                item: firstOption, 
+                item: firstOption,
                 isHighlighted: firstOption.choice.count > secondOption.choice.count
             )
             secondOptionView.bind(
-                item: secondOption, 
+                item: secondOption,
                 isHighlighted: secondOption.choice.count > firstOption.choice.count
             )
         }

@@ -85,7 +85,7 @@ final class ReviewWriteViewController: BaseViewController {
         ])
         
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
         }
@@ -189,7 +189,7 @@ final class ReviewWriteViewController: BaseViewController {
         
         viewModel.output.onSuccessWriteReview
             .main
-            .sink { [weak self] isEnabled in
+            .sink { [weak self] _ in
                 guard let self else { return }
                 
                 ToastManager.shared.show(message: "리뷰가 등록되었습니다!")

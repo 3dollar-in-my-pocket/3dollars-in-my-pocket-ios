@@ -306,7 +306,7 @@ public final class ReviewListViewModel: BaseViewModel {
             let result = await reviewRepository.toggleReviewSticker(storeId: config.storeId, reviewId: review.reviewId, input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 if review.reactedByMe {
                     state.reviews[index].likeCount -= 1
                 } else {
@@ -327,7 +327,7 @@ public final class ReviewListViewModel: BaseViewModel {
         Task {
             let result = await reviewRepository.deleteReview(reviewId: review.reviewId)
             switch result {
-            case .success(_):
+            case .success:
                 state.reviews.remove(at: index)
                 output.sections.send(getReviewListSection())
                 output.onSuccessDeleteReview.send(review.reviewId)

@@ -55,9 +55,9 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
+            make.leading.equalToSuperview()
             make.top.equalToSuperview()
-            make.right.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.bottom.equalTo(self.medalImage).offset(15)
         }
         
@@ -68,8 +68,8 @@ final class MedalCollectionCell: BaseCollectionViewCell {
         }
         
         self.nameContainerView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.top.equalTo(self.containerView.snp.bottom).offset(9)
             make.bottom.equalToSuperview()
         }

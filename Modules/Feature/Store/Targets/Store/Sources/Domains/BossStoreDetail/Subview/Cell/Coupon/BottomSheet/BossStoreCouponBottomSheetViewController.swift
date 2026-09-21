@@ -27,10 +27,6 @@ final class BossStoreCouponBottomSheetViewController: BaseViewController {
         view = bottomSheet
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     override func bindEvent() {
         bottomSheet.closeButton
             .controlPublisher(for: .touchUpInside)

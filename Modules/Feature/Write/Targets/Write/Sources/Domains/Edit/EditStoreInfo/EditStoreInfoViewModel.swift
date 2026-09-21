@@ -78,7 +78,7 @@ final class EditStoreInfoViewModel: BaseViewModel {
                 guard let self = self else { return }
                 
                 if state.store.paymentMethods.contains(method) {
-                    state.store.paymentMethods.removeAll(where:  { $0 == method})
+                    state.store.paymentMethods.removeAll(where: { $0 == method})
                 } else {
                     state.store.paymentMethods.append(method)
                 }

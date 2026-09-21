@@ -43,7 +43,7 @@ final class MyMedalView: BaseView {
     
     override func bindConstraints() {
         self.backButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
+            make.leading.equalToSuperview().offset(24)
             make.top.equalTo(safeAreaLayoutGuide).offset(15)
             make.width.height.equalTo(24)
         }
@@ -55,8 +55,8 @@ final class MyMedalView: BaseView {
         
         self.collectionView.snp.makeConstraints { (make) in
             make.bottom.equalTo(self.safeAreaLayoutGuide)
-            make.right.equalToSuperview()
-            make.left.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.leading.equalToSuperview()
             make.top.equalTo(self.backButton.snp.bottom).offset(10)
         }
     }

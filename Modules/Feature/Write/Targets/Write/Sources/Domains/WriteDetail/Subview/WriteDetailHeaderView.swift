@@ -44,7 +44,7 @@ final class WriteDetailHeaderView: BaseCollectionViewReusableView {
     
     override func bindConstraints() {
         stackView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalToSuperview().offset(12)
             $0.bottom.equalToSuperview().offset(-12)
         }

@@ -5,7 +5,7 @@ import Common
 import PanModal
 import CombineCocoa
 
-final class BirthdayYearBottomSheetViewController: BaseViewController  {
+final class BirthdayYearBottomSheetViewController: BaseViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "태어난 년도를 선택해주세요!"

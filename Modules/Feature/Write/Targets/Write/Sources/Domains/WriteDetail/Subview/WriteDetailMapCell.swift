@@ -53,8 +53,8 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         mapView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview().offset(8)
             $0.bottom.equalToSuperview().offset(-18)
         }
@@ -62,7 +62,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         zoomButton.snp.makeConstraints {
             $0.width.height.equalTo(36)
             $0.bottom.equalTo(mapView).offset(-8)
-            $0.right.equalTo(mapView).offset(-8)
+            $0.trailing.equalTo(mapView).offset(-8)
         }
     }
     

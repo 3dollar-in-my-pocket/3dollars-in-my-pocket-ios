@@ -57,21 +57,21 @@ final class CategoryBannerCell: BaseCollectionViewCell {
         ])
         
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalToSuperview()
             $0.height.equalTo(84)
         }
         
         stackView.snp.makeConstraints {
             $0.centerY.equalTo(containerView)
-            $0.left.equalTo(containerView).offset(16)
-            $0.right.equalTo(rightImageView.snp.left)
+            $0.leading.equalTo(containerView).offset(16)
+            $0.trailing.equalTo(rightImageView.snp.leading)
         }
         
         rightImageView.snp.makeConstraints {
             $0.top.equalTo(containerView)
-            $0.right.equalTo(containerView)
+            $0.trailing.equalTo(containerView)
             $0.width.height.equalTo(84)
         }
         

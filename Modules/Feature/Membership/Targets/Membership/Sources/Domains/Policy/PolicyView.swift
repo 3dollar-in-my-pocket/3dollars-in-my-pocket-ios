@@ -91,56 +91,56 @@ final class PolicyView: Common.BaseView {
     
     override func bindConstraints() {
         backgroundButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(containerView.snp.top)
         }
         
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(allCheckButton).offset(-24)
         }
         
         nextButton.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(20)
-            $0.right.equalTo(containerView).offset(-20)
+            $0.leading.equalTo(containerView).offset(20)
+            $0.trailing.equalTo(containerView).offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
         }
         
         marketingButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.width.height.equalTo(16)
             $0.bottom.equalTo(nextButton.snp.top).offset(-42)
         }
         
         marketingCheckButton.snp.makeConstraints {
             $0.centerY.equalTo(marketingButton)
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
         }
         
         policyCheckButton.snp.makeConstraints {
             $0.bottom.equalTo(marketingCheckButton.snp.top).offset(-28)
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
         }
         
         policyButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.width.height.equalTo(16)
             $0.centerY.equalTo(policyCheckButton)
         }
         
         dividerView.snp.makeConstraints {
             $0.height.equalTo(1)
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.bottom.equalTo(policyCheckButton.snp.top).offset(-24)
         }
         
         allCheckButton.snp.makeConstraints {
-            $0.left.equalTo(marketingCheckButton)
+            $0.leading.equalTo(marketingCheckButton)
             $0.bottom.equalTo(dividerView.snp.top).offset(-18)
         }
     }

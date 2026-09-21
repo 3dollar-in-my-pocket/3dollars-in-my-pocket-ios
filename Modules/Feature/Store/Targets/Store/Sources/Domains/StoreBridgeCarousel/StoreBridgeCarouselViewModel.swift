@@ -72,7 +72,7 @@ final class StoreBridgeCarouselViewModel: BaseViewModel {
         guard !hasLoggedImpression else { return }
         hasLoggedImpression = true
         
-        var extraParameters: [ParameterName : Any]?
+        var extraParameters: [ParameterName: Any]?
         if let experimentReference {
             extraParameters = [
                 .experimentType: experimentReference.type,
@@ -93,7 +93,7 @@ final class StoreBridgeCarouselViewModel: BaseViewModel {
         if let storeRef = card.refs.first(where: { $0.type.lowercased() == "store" }),
            let storeId = Int(storeRef.storeId) {
             
-            var extraParameters: [ParameterName : Any] = [:]
+            var extraParameters: [ParameterName: Any] = [:]
             if let experimentReference {
                 extraParameters = [
                     .experimentType: experimentReference.type,
@@ -124,4 +124,3 @@ extension StoreBridgeCarouselViewModel: Hashable {
         hasher.combine(identifier)
     }
 }
-

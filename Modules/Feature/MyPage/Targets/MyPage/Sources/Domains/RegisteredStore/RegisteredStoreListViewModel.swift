@@ -24,7 +24,7 @@ final class RegisteredStoreListViewModel: BaseViewModel {
     }
 
     struct State {
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
     }
@@ -46,7 +46,7 @@ final class RegisteredStoreListViewModel: BaseViewModel {
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
-        self.myPageRepository = myPageRepository 
+        self.myPageRepository = myPageRepository
         self.logManager = logManager
 
         super.init()

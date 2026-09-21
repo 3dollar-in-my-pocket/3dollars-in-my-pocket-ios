@@ -101,7 +101,7 @@ final class EditBookmarkViewModel: BaseViewModel {
             let result = await bookmarkRepository.editBookmarkFolder(input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 relay.onUpdateFolder.send((title: title, description: description))
                 output.toast.send("즐겨찾기가 수정되었습니다.")
                 output.route.send(.pop)

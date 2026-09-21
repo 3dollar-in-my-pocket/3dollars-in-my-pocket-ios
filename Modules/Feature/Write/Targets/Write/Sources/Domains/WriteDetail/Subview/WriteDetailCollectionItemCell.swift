@@ -62,13 +62,13 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         
         closeButton.snp.makeConstraints {
             $0.top.equalTo(categoryButton)
-            $0.right.equalTo(categoryButton)
+            $0.trailing.equalTo(categoryButton)
             $0.width.height.equalTo(16)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(categoryButton.snp.bottom).offset(4)
         }
     }

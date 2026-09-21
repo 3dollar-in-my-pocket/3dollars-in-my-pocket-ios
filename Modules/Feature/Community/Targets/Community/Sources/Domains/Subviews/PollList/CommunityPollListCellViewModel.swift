@@ -35,7 +35,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
     }
 
     struct State {
-        var category: PollCategoryResponse? 
+        var category: PollCategoryResponse?
         var pollList: [PollItemCellViewModel] = []
         var ad: AdvertisementResponse?
     }
@@ -142,7 +142,7 @@ final class CommunityPollListCellViewModel: BaseViewModel {
             .sink { owner, result in
                 switch result {
                 case .success(let response):
-                    owner.state.pollList = response.contents.map { 
+                    owner.state.pollList = response.contents.map {
                        owner.bindPollItemCellViewModel(with: $0)
                     }
                     owner.updateDataSource()

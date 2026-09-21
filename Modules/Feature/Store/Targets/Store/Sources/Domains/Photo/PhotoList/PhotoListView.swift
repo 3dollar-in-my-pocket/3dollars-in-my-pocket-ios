@@ -66,14 +66,14 @@ final class PhotoListView: BaseView {
     
     override func bindConstraints() {
         topContainer.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.top).offset(56)
         }
         
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.bottom.equalTo(topContainer).offset(-16)
             $0.size.equalTo(24)
         }
@@ -84,22 +84,22 @@ final class PhotoListView: BaseView {
         }
         
         collectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(topContainer.snp.bottom)
             $0.bottom.equalTo(uploadButton.snp.top)
         }
         
         uploadButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(buttonBottomView.snp.top)
             $0.height.equalTo(64)
         }
         
         buttonBottomView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }

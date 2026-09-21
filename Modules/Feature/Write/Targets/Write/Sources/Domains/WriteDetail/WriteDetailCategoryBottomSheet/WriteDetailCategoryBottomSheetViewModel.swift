@@ -32,14 +32,6 @@ extension WriteDetailCategoryBottomSheetViewModel {
     struct Config {
         let categories: [StoreFoodCategoryResponse]
         let selectedCategories: [StoreFoodCategoryResponse]
-        
-        init(
-            categories: [StoreFoodCategoryResponse],
-            selectedCategories: [StoreFoodCategoryResponse]
-        ) {
-            self.categories = categories
-            self.selectedCategories = selectedCategories
-        }
     }
     
     private struct State {

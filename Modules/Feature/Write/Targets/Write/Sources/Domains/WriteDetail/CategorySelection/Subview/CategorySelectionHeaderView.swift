@@ -33,8 +33,8 @@ final class CategorySelectionHeaderView: UICollectionReusableView {
     
     private func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalToSuperview().offset(24)
             $0.bottom.equalToSuperview().offset(-12)
         }
