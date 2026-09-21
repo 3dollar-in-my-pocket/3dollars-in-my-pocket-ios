@@ -17,9 +17,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: TC6
+    // MARK: TC1
 
-    func test_TC6_신고에성공하면_dismissRoute가발행된다() async throws {
+    func test_TC1_신고에성공하면_dismissRoute가발행된다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
@@ -42,9 +42,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(repository.lastReportStoreArguments?.reportReason, "NOSTORE")
     }
 
-    // MARK: TC7
+    // MARK: TC2
 
-    func test_TC7_신고누적으로삭제되면_onSuccessReport로_isDeleted_true가전달된다() async throws {
+    func test_TC2_신고누적으로삭제되면_onSuccessReport로_isDeleted_true가전달된다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: true)))
         let viewModel = makeViewModel(repository: repository)
@@ -64,7 +64,7 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(isDeleted, true)
     }
 
-    func test_TC7_삭제되지않으면_onSuccessReport로_isDeleted_false가전달된다() async throws {
+    func test_TC2_삭제되지않으면_onSuccessReport로_isDeleted_false가전달된다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
@@ -84,9 +84,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(isDeleted, false)
     }
 
-    // MARK: TC8
+    // MARK: TC3
 
-    func test_TC8_신고에실패하면_에러가발행되고_시트는닫히지않는다() async {
+    func test_TC3_신고에실패하면_에러가발행되고_시트는닫히지않는다() async {
         // Given
         let expectedError = NSError(domain: "ReportStore", code: -1)
         let repository = MockStoreRepository(reportStoreResult: .failure(expectedError))
@@ -112,7 +112,7 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
     }
 
     /// 사유를 고르지 않으면 신고 요청 자체가 나가지 않는다.
-    func test_TC8_사유를고르지않고_신고하면_요청이나가지않는다() async throws {
+    func test_TC3_사유를고르지않고_신고하면_요청이나가지않는다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
