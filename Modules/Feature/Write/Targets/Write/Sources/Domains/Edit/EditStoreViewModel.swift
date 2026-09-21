@@ -1,4 +1,3 @@
-import UIKit
 import Foundation
 import Combine
 import CoreLocation
@@ -36,7 +35,7 @@ extension EditStoreViewModel {
         case pushEditAddress(WriteAddressViewModel)
         case editStoreInfo(EditStoreInfoViewModel)
         case editMenu(WriteDetailMenuViewModel)
-        case editPhoto(UIViewController)
+        case editPhoto(UploadPhotoConfig)
         case pop
         case toast(String)
         case showErrorAlert(Error)
@@ -44,16 +43,13 @@ extension EditStoreViewModel {
     
     struct Dependency {
         let storeRepository: StoreRepository
-        let storeInterface: StoreInterface
         let logManager: LogManagerProtocol
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
-            storeInterface: StoreInterface = Environment.storeInterface,
             logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.storeRepository = storeRepository
-            self.storeInterface = storeInterface
             self.logManager = logManager
         }
     }
@@ -211,8 +207,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
             }
         )
 
-        let viewController = dependency.storeInterface.getUploadPhotoViewController(config: config)
-        output.route.send(.editPhoto(viewController))
+        output.route.send(.editPhoto(config))
     }
 
     private func updateImageCount() {

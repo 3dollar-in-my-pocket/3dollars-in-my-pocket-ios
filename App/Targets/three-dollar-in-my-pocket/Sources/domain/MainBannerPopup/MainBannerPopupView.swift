@@ -20,7 +20,7 @@ final class MainBannerPopupView: BaseView {
         let button = UIButton()
         button.setTitle(Strings.MainBannerPopup.close, for: .normal)
         button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 44/255, alpha: 1)
+        button.backgroundColor = Colors.gray80.color
         button.contentVerticalAlignment = .top
         button.contentEdgeInsets = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         button.titleLabel?.font = Fonts.medium.font(size: 16)
@@ -32,7 +32,7 @@ final class MainBannerPopupView: BaseView {
         let button = UIButton()
         button.setTitle(Strings.MainBannerPopup.disableToday, for: .normal)
         button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 44/255, alpha: 1)
+        button.backgroundColor = Colors.gray80.color
         button.contentVerticalAlignment = .top
         button.contentEdgeInsets = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         button.titleLabel?.font = Fonts.medium.font(size: 16)
