@@ -143,6 +143,17 @@ public final class Preference {
         }
     }
     
+    /// 디버깅: 가게 상세에서 가게 ID 플로팅 뷰를 띄울지 여부.
+    /// `AppEnvironment.isDebugToolAvailable` 이 false 면 값과 무관하게 노출하지 않는다.
+    public var isShowStoreIdDebugView: Bool {
+        get {
+            return instance.bool(forKey: "KEY_DEBUG_SHOW_STORE_ID")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_DEBUG_SHOW_STORE_ID")
+        }
+    }
+
     public func clear() {
         instance.removeObject(forKey: "KEY_USER_ID")
         instance.removeObject(forKey: "KEY_TOKEN")

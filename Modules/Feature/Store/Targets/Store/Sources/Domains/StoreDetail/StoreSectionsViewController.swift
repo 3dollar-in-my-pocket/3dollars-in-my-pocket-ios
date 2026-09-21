@@ -24,6 +24,8 @@ public final class StoreSectionsViewController: BaseViewController {
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
     private let bottomActionBarView = StoreBottomActionBarView()
+    /// 디버깅용 가게 ID 플로팅 뷰. 개발 환경 + 설정 토글이 켜졌을 때만 생성된다.
+    private var storeIdDebugView: StoreIdDebugView?
     private var isBottomActionBarVisible = false
     private var previewItemIndex: Int?
     private var placeholderPreview: StoreScreenPreviewSection?
@@ -75,6 +77,29 @@ public final class StoreSectionsViewController: BaseViewController {
         collectionView.snp.makeConstraints { $0.edges.equalToSuperview() }
         bottomActionBarView.snp.makeConstraints { $0.leading.trailing.bottom.equalToSuperview() }
         view = containerView
+        setupStoreIdDebugViewIfNeeded(in: containerView)
+    }
+
+    /// 개발 환경에서 설정 토글이 켜져 있을 때만 가게 ID 플로팅 뷰를 붙인다.
+    /// 프로덕션 빌드는 `isDebugToolAvailable` 이 false 라 뷰가 생성되지 않는다.
+    private func setupStoreIdDebugViewIfNeeded(in containerView: UIView) {
+        guard AppEnvironment.isDebugToolAvailable,
+              Preference.shared.isShowStoreIdDebugView else { return }
+
+        let debugView = StoreIdDebugView()
+        debugView.bind(storeId: viewModel.storeId)
+        debugView.onCopy = { storeId in
+            UIPasteboard.general.string = storeId
+            ToastManager.shared.show(message: "가게 ID \(storeId) 복사됨")
+        }
+        containerView.addSubview(debugView)
+        debugView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(16)
+            // 하단 액션바(chip) 위에 떠 있도록 바 높이만큼 띄운다.
+            $0.bottom.equalTo(containerView.safeAreaLayoutGuide)
+                .offset(-(StoreBottomActionBarView.Layout.contentHeight + 8))
+        }
+        storeIdDebugView = debugView
     }
 
     public override func viewDidLoad() {

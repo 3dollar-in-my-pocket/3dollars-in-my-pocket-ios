@@ -12,6 +12,8 @@ enum SettingCellType {
     case teamInfo
     case signout
     case advertisement(SettingAdBannerType)
+    /// 디버깅 전용. 프로덕션 빌드에서는 목록에 추가되지 않는다.
+    case debugStoreId(isOn: Bool)
     
     var title: String? {
         switch self {
@@ -33,6 +35,9 @@ enum SettingCellType {
             return nil
         case .signout:
             return nil
+        case .debugStoreId:
+            // 디버깅 전용 메뉴라 현지화하지 않는다.
+            return "[디버그] 가게 ID 표시"
         }
     }
     
@@ -56,6 +61,8 @@ enum SettingCellType {
             return nil
         case .signout:
             return nil
+        case .debugStoreId:
+            return "가게 상세에서 가게 ID 플로팅 뷰를 띄웁니다"
         }
     }
 }

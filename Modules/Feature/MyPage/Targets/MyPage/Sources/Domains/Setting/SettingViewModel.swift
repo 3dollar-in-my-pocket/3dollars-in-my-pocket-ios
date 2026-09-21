@@ -16,6 +16,7 @@ public final class SettingViewModel: BaseViewModel {
         let logout = PassthroughSubject<Void, Never>()
         let signout = PassthroughSubject<Void, Never>()
         let disableMarketingOff = PassthroughSubject<Void, Never>()
+        let toggleStoreIdDebugView = PassthroughSubject<Bool, Never>()
     }
     
     struct Output {
@@ -90,7 +91,7 @@ public final class SettingViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: SettingViewModel, cellType: SettingCellType) in
                 switch cellType {
-                case .account, .activityNotification, .marketingNotification, .signout:
+                case .account, .activityNotification, .marketingNotification, .signout, .debugStoreId:
                     break
                 case .accountInfo:
                     owner.output.route.send(.pushAccountInfo)
@@ -136,6 +137,16 @@ public final class SettingViewModel: BaseViewModel {
                 owner.editNotification(type: .marketing(false))
             }
             .store(in: &cancellables)
+
+        input.toggleStoreIdDebugView
+            .withUnretained(self)
+            .sink { (owner: SettingViewModel, isOn: Bool) in
+                owner.preference.isShowStoreIdDebugView = isOn
+                if let user = owner.state.user {
+                    owner.output.cellTypes.send(owner.createCellTypes(user: user))
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchUser() {
@@ -158,7 +169,7 @@ public final class SettingViewModel: BaseViewModel {
         let socialType = SocialType(value: user.socialType ?? "")
         let isEnableMarketingConsent = MarketingConsent(value: user.settings.marketingConsent) == .approve
         
-        return [
+        var cellTypes: [SettingCellType] = [
             .account(name: user.name, socialType: socialType),
             .activityNotification(isOn: user.settings.enableActivitiesPush),
             .marketingNotification(isOn: isEnableMarketingConsent),
@@ -167,9 +178,16 @@ public final class SettingViewModel: BaseViewModel {
             .agreement,
             .teamInfo,
             .advertisement(.normal),
-            .advertisement(.boss),
-            .signout
+            .advertisement(.boss)
         ]
+
+        // 디버그 메뉴는 개발 환경에서만 목록에 넣는다. 프로덕션에서는 셀 자체가 존재하지 않는다.
+        if AppEnvironment.isDebugToolAvailable {
+            cellTypes.append(.debugStoreId(isOn: preference.isShowStoreIdDebugView))
+        }
+
+        cellTypes.append(.signout)
+        return cellTypes
     }
     
     private func pushEditNickname() {
