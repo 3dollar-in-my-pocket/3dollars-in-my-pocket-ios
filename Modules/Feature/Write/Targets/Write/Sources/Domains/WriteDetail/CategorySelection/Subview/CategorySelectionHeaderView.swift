@@ -4,7 +4,6 @@ import DesignSystem
 import SnapKit
 
 final class CategorySelectionHeaderView: UICollectionReusableView {
-    static let registerId = "\(CategorySelectionHeaderView.self)"
     static let estimatedHeight: CGFloat = 64
     
     private let titleLabel: UILabel = {

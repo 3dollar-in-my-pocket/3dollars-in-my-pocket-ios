@@ -26,10 +26,7 @@ final class MedalInfoView: BaseView {
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.register(
-            MedalInfoTableViewCell.self,
-            forCellReuseIdentifier: MedalInfoTableViewCell.registerId
-        )
+        tableView.register([MedalInfoTableViewCell.self])
         tableView.rowHeight = UITableView.automaticDimension
         return tableView
     }()

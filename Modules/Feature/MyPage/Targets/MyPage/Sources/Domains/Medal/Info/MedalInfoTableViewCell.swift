@@ -7,7 +7,6 @@ import DesignSystem
 import Common
 
 final class MedalInfoTableViewCell: BaseTableViewCell {
-    static let registerId = "\(MedalInfoTableViewCell.self)"
     
     private let medalImage = UIImageView()
     

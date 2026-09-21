@@ -61,7 +61,7 @@ extension MedalInfoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let medal = viewModel.output.medals[safe: indexPath.item] else { return UITableViewCell() }
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MedalInfoTableViewCell.registerId, for: indexPath) as? MedalInfoTableViewCell else { return UITableViewCell() }
+        let cell: MedalInfoTableViewCell = tableView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(medal: medal)
         return cell
     }

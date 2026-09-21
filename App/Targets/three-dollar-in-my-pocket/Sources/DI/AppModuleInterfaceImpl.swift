@@ -64,7 +64,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     func getFCMToken(completion: @escaping ((String) -> Void)) {
         Messaging.messaging().token { token, _ in
             guard let token = token else {
-                print("⚠️Error in send FCM token")
+                Log.error("⚠️Error in send FCM token")
                 return
             }
 
@@ -188,7 +188,7 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
                     with: Bundle.getAdmobId(adType: adType), request: Request())
                 await ad.present(from: viewController)
             } catch {
-                print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                Log.error("Failed to load interstitial ad with error: \(error.localizedDescription)")
             }
         }
     }
