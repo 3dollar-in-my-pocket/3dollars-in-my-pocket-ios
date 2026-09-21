@@ -18,13 +18,11 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
     public var onSectionsLoaded: (() -> Void)?
     public var onFavoriteChanged: ((Bool) -> Void)?
-    /// 삭제된 가게처럼 상세를 유지할 수 없을 때 호스트(전체화면/홈 바텀시트)가 닫도록 요청한다.
     public var onRequestClose: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
     private let bottomActionBarView = StoreBottomActionBarView()
-    /// 디버깅용 가게 ID 플로팅 뷰. 개발 환경 + 설정 토글이 켜졌을 때만 생성된다.
     private var storeIdDebugView: StoreIdDebugView?
     private var isBottomActionBarVisible = false
     private var previewItemIndex: Int?
@@ -80,8 +78,6 @@ public final class StoreSectionsViewController: BaseViewController {
         setupStoreIdDebugViewIfNeeded(in: containerView)
     }
 
-    /// 개발 환경에서 설정 토글이 켜져 있을 때만 가게 ID 플로팅 뷰를 붙인다.
-    /// 프로덕션 빌드는 `isDebugToolAvailable` 이 false 라 뷰가 생성되지 않는다.
     private func setupStoreIdDebugViewIfNeeded(in containerView: UIView) {
         guard AppEnvironment.isDebugToolAvailable,
               Preference.shared.isShowStoreIdDebugView else { return }
@@ -95,7 +91,6 @@ public final class StoreSectionsViewController: BaseViewController {
         containerView.addSubview(debugView)
         debugView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
-            // 하단 액션바(chip) 위에 떠 있도록 바 높이만큼 띄운다.
             $0.bottom.equalTo(containerView.safeAreaLayoutGuide)
                 .offset(-(StoreBottomActionBarView.Layout.contentHeight + 8))
         }
@@ -292,11 +287,6 @@ public final class StoreSectionsViewController: BaseViewController {
         view.setNeedsLayout()
     }
 
-    /// 바텀 액션바에 컨텐츠가 가리지 않도록 컬렉션뷰 하단 inset 을 맞춘다.
-    ///
-    /// 홈 바텀시트 호스트에서는 FloatingPanel 이 레이아웃/safe area 갱신마다
-    /// tracking scrollView 의 contentInset 을 자기 값으로 덮어쓰므로 한 번만 설정하면 유지되지 않는다.
-    /// 레이아웃·스크롤 패스마다 다시 맞춰 두 호스트 모두에서 같은 결과가 되게 한다. (TH-1336)
     private func updateCollectionViewBottomInset() {
         let coveringHeight = bottomActionBarView.isHidden ? 0 : bottomActionBarView.coveringHeight
         let appliedAdjustment = collectionView.adjustedContentInset.bottom - collectionView.contentInset.bottom
@@ -508,7 +498,6 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
         onScrollOffsetChanged?(scrollView.contentOffset.y)
         updateSelectedTabIfNeeded(scrollView)
         updateBottomActionBarVisibility()
-        // FloatingPanel 이 레이아웃 패스 이후에 inset 을 덮어쓰는 경우가 있어 스크롤 중에도 보정한다.
         updateCollectionViewBottomInset()
     }
 

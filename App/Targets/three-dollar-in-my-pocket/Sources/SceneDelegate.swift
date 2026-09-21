@@ -25,7 +25,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = SplashViewController(nibName: nil, bundle: nil)
         window?.makeKeyAndVisible()
 
-        // 개발 환경에서만 디버깅 플로팅 버튼을 띄운다(흔들기 제스처 대체).
         DebugOverlay.attachIfNeeded(to: windowScene)
 
         self.reserveUniversialLinkIfExisted(connectionOptions: connectionOptions)

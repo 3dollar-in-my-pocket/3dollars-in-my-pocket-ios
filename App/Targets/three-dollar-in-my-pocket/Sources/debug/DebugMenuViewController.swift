@@ -5,10 +5,7 @@ import DesignSystem
 
 import SnapKit
 
-/// 디버깅 플로팅 버튼을 눌렀을 때 뜨는 메뉴 바텀시트.
-/// 개발 환경에서만 진입할 수 있으므로 현지화하지 않는다.
 final class DebugMenuViewController: BaseViewController {
-    /// "네트워크 보기" 를 눌렀을 때 실행할 동작. netfox 호출은 호스트가 넘겨준다.
     var onSelectNetworkLog: (() -> Void)?
 
     private let titleLabel: UILabel = {
@@ -65,7 +62,6 @@ final class DebugMenuViewController: BaseViewController {
 
         networkRow.onTap = { [weak self] in
             guard let self else { return }
-            // 시트를 먼저 닫아야 netfox 화면이 가려지지 않는다.
             dismiss(animated: true) { [weak self] in
                 self?.onSelectNetworkLog?()
             }

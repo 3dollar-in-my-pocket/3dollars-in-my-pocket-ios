@@ -2,16 +2,9 @@ import XCTest
 
 @testable import Store
 
-/// 가게 상세 하단 액션바(방문 인증·리뷰 작성·공유·길안내 chip)가 컨텐츠를 가리지 않는지 검증한다.
-///
-/// TH-1336: 바는 superview 하단(safe area 바깥)까지 깔리는데 컬렉션뷰 하단 inset 은
-/// safe area 를 뺀 높이(64)만 잡고 있었다. 게다가 홈 바텀시트 호스트에서는 FloatingPanel 이
-/// tracking scrollView 의 `contentInsetAdjustmentBehavior` 를 `.never` 로 바꾸고
-/// contentInset 을 자기 값으로 덮어써서, safe area 보정이 붙는지가 호스트마다 달랐다.
 final class StoreDetailBottomActionBarTests: XCTestCase {
     private typealias Layout = StoreBottomActionBarView.Layout
 
-    /// 홈 인디케이터가 있는 기기(safe area 하단 34)에서 실제로 컨텐츠를 가리는 높이.
     private let safeAreaBottom: CGFloat = 34
 
     // MARK: TC1
@@ -67,8 +60,6 @@ final class StoreDetailBottomActionBarTests: XCTestCase {
         XCTAssertEqual(inset, coveringHeight)
     }
 
-    /// FloatingPanel 이 contentInset 을 safe area 하단으로 덮어쓴 직후에도
-    /// 다음 레이아웃 패스에서 같은 값으로 복구돼야 한다.
     func test_TC3_FloatingPanel이_inset을덮어써도_계산결과는동일하다() {
         // Given
         let coveringHeight = Layout.coveringHeight(safeAreaBottom: safeAreaBottom)

@@ -2,10 +2,6 @@ import XCTest
 
 import Common
 
-/// 설정 > "[디버그] 가게 ID 표시" 토글의 저장/복원.
-///
-/// 토글은 UserDefaults 에 남아서 앱을 다시 켜도 유지돼야 하고,
-/// 한 번도 켠 적 없으면 기본값은 꺼짐이어야 한다.
 final class StoreIdDebugPreferenceTests: XCTestCase {
     private var suiteName: String!
     private var preference: Preference!
@@ -35,8 +31,6 @@ final class StoreIdDebugPreferenceTests: XCTestCase {
 
         // Then
         XCTAssertTrue(preference.isShowStoreIdDebugView)
-        // UserDefaults 에 실제로 기록됐는지 확인한다.
-        // (Preference(name:) 는 init 에서 도메인을 지우므로 새 인스턴스로 검증하면 안 된다)
         XCTAssertEqual(UserDefaults(suiteName: suiteName)?.bool(forKey: "KEY_DEBUG_SHOW_STORE_ID"), true)
     }
 

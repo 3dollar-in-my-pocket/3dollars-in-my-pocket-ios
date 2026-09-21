@@ -4,11 +4,6 @@ import XCTest
 import Model
 @testable import Store
 
-/// 가게 신고 바텀시트(신고 사유 선택 → 신고하기) 화면 로직.
-///
-/// TH-1337: 신고에 성공해도 시트를 닫으라는 이벤트를 아무도 구독하지 않아 모달이 그대로 떠 있었다.
-/// 또 서버가 내려주는 `isDeleted`(신고 누적 자동 삭제 여부)를 버리고 있어
-/// 상세 화면이 사라진 가게를 계속 보여줬다.
 final class ReportBottomSheetViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
 
@@ -37,7 +32,6 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         // Then
         await fulfillment(of: [expectation], timeout: 1)
         guard case .dismiss = receivedRoute else { return XCTFail("dismiss route가 아님") }
-        // 선택한 사유가 그대로 서버로 나갔는지 확인한다.
         XCTAssertEqual(repository.lastReportStoreArguments?.storeId, 1)
         XCTAssertEqual(repository.lastReportStoreArguments?.reportReason, "NOSTORE")
     }
@@ -111,7 +105,6 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertFalse(didRoute, "신고에 실패하면 시트를 닫지 않는다")
     }
 
-    /// 사유를 고르지 않으면 신고 요청 자체가 나가지 않는다.
     func test_TC3_사유를고르지않고_신고하면_요청이나가지않는다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))

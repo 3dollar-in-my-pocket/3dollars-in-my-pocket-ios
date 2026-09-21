@@ -545,7 +545,6 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         detailViewController.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         detailViewController.didMove(toParent: self)
         self.detailViewController = detailViewController
-        // 삭제된 가게면 상세만 닫을 수 없으므로 미리보기 시트까지 함께 닫는다. (TH-1337)
         (detailViewController as? StoreDetailSectionsLoadable)?.onRequestClose = { [weak self] in
             self?.viewModel.input.didTapClose.send(())
         }

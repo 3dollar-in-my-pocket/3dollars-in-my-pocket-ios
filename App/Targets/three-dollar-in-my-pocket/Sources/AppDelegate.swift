@@ -79,7 +79,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
         Log.addDestination(console)
         
-        // netfox 는 디버깅 메뉴 > "네트워크 보기" 로만 연다(흔들기 제스처는 제거).
         if AppEnvironment.isDebugToolAvailable {
             NFX.sharedInstance().setGesture(.custom)
             NFX.sharedInstance().start()

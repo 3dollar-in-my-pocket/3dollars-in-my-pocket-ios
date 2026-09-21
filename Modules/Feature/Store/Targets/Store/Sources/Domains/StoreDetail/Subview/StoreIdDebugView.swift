@@ -5,10 +5,6 @@ import DesignSystem
 
 import SnapKit
 
-/// 디버깅용으로 가게 상세 위에 떠서 현재 가게 ID를 보여주는 플로팅 뷰.
-///
-/// 개발 환경에서 설정 > "[디버그] 가게 ID 표시" 를 켰을 때만 붙는다.
-/// 프로덕션 빌드에서는 `AppEnvironment.isDebugToolAvailable` 이 false 라 절대 생성되지 않는다.
 final class StoreIdDebugView: UIView {
     enum Layout {
         static let height: CGFloat = 36

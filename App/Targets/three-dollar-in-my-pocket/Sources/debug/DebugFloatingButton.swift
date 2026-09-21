@@ -3,12 +3,9 @@ import UIKit
 import Common
 import DesignSystem
 
-/// 개발 환경에서 앱 전역에 떠 있는 디버깅 진입 버튼.
-/// 드래그로 위치를 옮길 수 있고, 탭하면 디버깅 메뉴 바텀시트를 연다.
 final class DebugFloatingButton: UIView {
     enum Layout {
         static let size: CGFloat = 48
-        /// 화면 가장자리에서 최소한 띄울 여백.
         static let edgeInset: CGFloat = 8
     }
 
@@ -23,7 +20,6 @@ final class DebugFloatingButton: UIView {
         return label
     }()
 
-    /// 드래그 시작 시점의 중심. 팬 제스처의 누적 translation 과 합쳐 위치를 계산한다.
     private var panStartCenter: CGPoint = .zero
 
     init() {
@@ -73,7 +69,6 @@ final class DebugFloatingButton: UIView {
         }
     }
 
-    /// 버튼이 화면(세이프 에어리어) 밖으로 나가 다시 못 잡는 상황을 막는다.
     private func clamped(_ point: CGPoint, in superview: UIView) -> CGPoint {
         let insets = superview.safeAreaInsets
         let half = Layout.size / 2
@@ -88,7 +83,6 @@ final class DebugFloatingButton: UIView {
         )
     }
 
-    /// 저장된 위치가 있으면 복원하고, 없으면 우측 하단 기본 위치에 놓는다.
     func applyInitialPosition(in superview: UIView) {
         let insets = superview.safeAreaInsets
         let defaultCenter = CGPoint(

@@ -31,7 +31,6 @@ public protocol StoreSectionScrollable: AnyObject {
 
 public protocol StoreDetailSectionsLoadable: AnyObject {
     var sectionsScrollView: UIScrollView { get }
-    /// 삭제된 가게 등으로 상세를 더 보여줄 수 없을 때 호스트가 화면을 닫도록 요청한다.
     var onRequestClose: (() -> Void)? { get set }
     func loadSectionsIfNeeded()
     func reloadSections()

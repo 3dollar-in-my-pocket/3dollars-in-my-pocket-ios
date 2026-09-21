@@ -76,8 +76,6 @@ final class StoreSectionsViewModelTests: XCTestCase {
 
     // MARK: TH-1337 — 삭제된 가게 처리
 
-    /// 신고 누적으로 삭제된 가게는 서버가 NF002(not_exists_store, "삭제된 가게입니다")로 내려준다.
-    /// 사라진 가게 화면에 계속 머무르지 않도록 서버 메시지를 보여주고 상세를 닫아야 한다.
     func test_TC1_삭제된가게면_서버메시지와함께_상세를닫는Route가발행된다() async {
         // Given
         let error = NetworkError.errorContainer(.init(message: "삭제된 가게입니다", resultCode: "NF002"))
@@ -101,7 +99,6 @@ final class StoreSectionsViewModelTests: XCTestCase {
         XCTAssertEqual(message, "삭제된 가게입니다")
     }
 
-    /// 삭제가 아닌 일반 에러는 기존처럼 에러 알럿만 띄우고 상세를 닫지 않는다.
     func test_TC2_삭제가아닌에러면_상세를닫지않고_에러만발행된다() async {
         // Given
         let error = NetworkError.errorContainer(.init(message: "일시적인 문제가 발생하였습니다", resultCode: "IS000"))

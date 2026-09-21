@@ -144,8 +144,6 @@ public final class Preference {
         }
     }
     
-    /// 디버깅: 가게 상세에서 가게 ID 플로팅 뷰를 띄울지 여부.
-    /// `AppEnvironment.isDebugToolAvailable` 이 false 면 값과 무관하게 노출하지 않는다.
     public var isShowStoreIdDebugView: Bool {
         get {
             return instance.bool(forKey: "KEY_DEBUG_SHOW_STORE_ID")
@@ -155,7 +153,6 @@ public final class Preference {
         }
     }
 
-    /// 디버깅: 드래그로 옮긴 플로팅 버튼 위치. 한 번도 옮기지 않았으면 nil.
     public var debugFloatingButtonCenter: CGPoint? {
         get {
             guard instance.object(forKey: "KEY_DEBUG_BUTTON_CENTER_X") != nil else { return nil }

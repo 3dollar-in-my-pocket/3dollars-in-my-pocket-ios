@@ -9,7 +9,6 @@ final class MockStoreRepository: StoreRepository {
     var fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error> = .failure(MockError.notStubbed())
     var reportStoreResult: Result<StoreDeleteResponse, Error> = .failure(MockError.notStubbed())
     private(set) var reportStoreCallCount = 0
-    /// 마지막 신고 요청 인자. 어떤 사유로 신고했는지 검증할 때 쓴다.
     private(set) var lastReportStoreArguments: (storeId: Int, reportReason: String)?
 
     init(
