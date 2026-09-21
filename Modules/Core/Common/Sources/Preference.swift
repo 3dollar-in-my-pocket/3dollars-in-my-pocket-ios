@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 import Model
 import CoreLocation
@@ -151,6 +152,22 @@ public final class Preference {
         }
         set {
             instance.set(newValue, forKey: "KEY_DEBUG_SHOW_STORE_ID")
+        }
+    }
+
+    /// 디버깅: 드래그로 옮긴 플로팅 버튼 위치. 한 번도 옮기지 않았으면 nil.
+    public var debugFloatingButtonCenter: CGPoint? {
+        get {
+            guard instance.object(forKey: "KEY_DEBUG_BUTTON_CENTER_X") != nil else { return nil }
+            return CGPoint(
+                x: instance.double(forKey: "KEY_DEBUG_BUTTON_CENTER_X"),
+                y: instance.double(forKey: "KEY_DEBUG_BUTTON_CENTER_Y")
+            )
+        }
+        set {
+            guard let newValue else { return }
+            instance.set(newValue.x, forKey: "KEY_DEBUG_BUTTON_CENTER_X")
+            instance.set(newValue.y, forKey: "KEY_DEBUG_BUTTON_CENTER_Y")
         }
     }
 
