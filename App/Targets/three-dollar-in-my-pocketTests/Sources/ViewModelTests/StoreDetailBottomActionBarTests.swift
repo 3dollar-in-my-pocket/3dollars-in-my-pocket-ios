@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 
 @testable import Store
 
@@ -6,6 +7,7 @@ final class StoreDetailBottomActionBarTests: XCTestCase {
     private typealias Layout = StoreBottomActionBarView.Layout
 
     private let safeAreaBottom: CGFloat = 34
+    private let staleTabBarInset: CGFloat = 49
 
     // MARK: TC1
 
@@ -92,5 +94,74 @@ final class StoreDetailBottomActionBarTests: XCTestCase {
 
         // Then
         XCTAssertEqual(inset, 0)
+    }
+
+    // MARK: TC6
+
+    func test_TC6_윈도우에붙어있으면_상속된safeArea대신_윈도우값을쓴다() {
+        // Given / When
+        let inset = Layout.bottomSafeAreaInset(windowSafeAreaBottom: 34, inheritedSafeAreaBottom: 83)
+
+        // Then
+        XCTAssertEqual(inset, 34)
+    }
+
+    func test_TC6_윈도우에붙기전이면_상속된safeArea를쓴다() {
+        // Given / When
+        let inset = Layout.bottomSafeAreaInset(windowSafeAreaBottom: nil, inheritedSafeAreaBottom: 34)
+
+        // Then
+        XCTAssertEqual(inset, 34)
+    }
+
+    // MARK: TC7
+
+    func test_TC7_탭바가숨겨져_상속된safeArea가커져도_바높이는윈도우기준이다() {
+        // Given
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 402, height: 874))
+        let viewController = UIViewController()
+        let bar = StoreBottomActionBarView()
+        window.rootViewController = viewController
+        window.makeKeyAndVisible()
+
+        bar.translatesAutoresizingMaskIntoConstraints = false
+        viewController.view.addSubview(bar)
+        NSLayoutConstraint.activate([
+            bar.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
+            bar.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+            bar.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor)
+        ])
+        viewController.additionalSafeAreaInsets.bottom = staleTabBarInset
+
+        // When
+        window.layoutIfNeeded()
+
+        // Then
+        let windowSafeAreaBottom = window.safeAreaInsets.bottom
+        XCTAssertEqual(
+            viewController.view.safeAreaInsets.bottom,
+            windowSafeAreaBottom + staleTabBarInset,
+            accuracy: 0.5
+        )
+        XCTAssertEqual(bar.frame.height, Layout.contentHeight + windowSafeAreaBottom, accuracy: 0.5)
+        XCTAssertEqual(bar.coveringHeight, Layout.contentHeight + windowSafeAreaBottom, accuracy: 0.5)
+    }
+
+    // MARK: TC8
+
+    func test_TC8_탭바높이만큼_보정된호스트에서도_총보정은_가리는높이와같다() {
+        // Given
+        let coveringHeight = Layout.coveringHeight(safeAreaBottom: safeAreaBottom)
+        let appliedAdjustment = safeAreaBottom + staleTabBarInset
+
+        // When
+        let inset = Layout.bottomContentInset(
+            coveringHeight: coveringHeight,
+            appliedAdjustment: appliedAdjustment
+        )
+
+        // Then
+        XCTAssertEqual(inset, 15)
+        XCTAssertEqual(inset + appliedAdjustment, coveringHeight)
     }
 }

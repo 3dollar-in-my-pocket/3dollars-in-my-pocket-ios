@@ -91,8 +91,7 @@ public final class StoreSectionsViewController: BaseViewController {
         containerView.addSubview(debugView)
         debugView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
-            $0.bottom.equalTo(containerView.safeAreaLayoutGuide)
-                .offset(-(StoreBottomActionBarView.Layout.contentHeight + 8))
+            $0.bottom.equalTo(bottomActionBarView.snp.top).offset(-8)
         }
         storeIdDebugView = debugView
     }

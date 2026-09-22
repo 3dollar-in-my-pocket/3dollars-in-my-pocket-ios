@@ -22,11 +22,28 @@ final class StoreBottomActionBarView: UIView {
         static func bottomContentInset(coveringHeight: CGFloat, appliedAdjustment: CGFloat) -> CGFloat {
             max(0, coveringHeight - appliedAdjustment)
         }
+
+        static func bottomSafeAreaInset(
+            windowSafeAreaBottom: CGFloat?,
+            inheritedSafeAreaBottom: CGFloat
+        ) -> CGFloat {
+            windowSafeAreaBottom ?? inheritedSafeAreaBottom
+        }
     }
 
     var coveringHeight: CGFloat {
-        Layout.coveringHeight(safeAreaBottom: safeAreaInsets.bottom)
+        Layout.coveringHeight(safeAreaBottom: bottomSafeAreaInset)
     }
+
+    private var bottomSafeAreaInset: CGFloat {
+        Layout.bottomSafeAreaInset(
+            windowSafeAreaBottom: window?.safeAreaInsets.bottom,
+            inheritedSafeAreaBottom: safeAreaInsets.bottom
+        )
+    }
+
+    private var appliedBottomSafeAreaInset: CGFloat = .nan
+    private var scrollViewBottomConstraint: Constraint?
 
     var onAction: ((StoreSectionAction) -> Void)?
 
@@ -71,6 +88,30 @@ final class StoreBottomActionBarView: UIView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        updateBottomSafeAreaInsetIfNeeded()
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        updateBottomSafeAreaInsetIfNeeded()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateBottomSafeAreaInsetIfNeeded()
+    }
+
+    private func updateBottomSafeAreaInsetIfNeeded() {
+        let inset = bottomSafeAreaInset
+        guard abs(appliedBottomSafeAreaInset - inset) > 0.5 || appliedBottomSafeAreaInset.isNaN else { return }
+
+        appliedBottomSafeAreaInset = inset
+        scrollViewBottomConstraint?.update(inset: Layout.bottomInset + inset)
+        setNeedsLayout()
+    }
+
     private func setupViews() {
         backgroundColor = Colors.systemWhite.color
         addSubViews([borderView, scrollView])
@@ -86,7 +127,7 @@ final class StoreBottomActionBarView: UIView {
             $0.top.equalToSuperview().offset(Layout.topInset)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(Layout.buttonHeight)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-Layout.bottomInset)
+            scrollViewBottomConstraint = $0.bottom.equalToSuperview().inset(Layout.bottomInset).constraint
         }
         stackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
