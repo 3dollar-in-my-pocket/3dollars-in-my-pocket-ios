@@ -12,6 +12,13 @@ final class HomeListView: BaseView {
         static let dragIndicatorTopInset: CGFloat = 8
         static let dragIndicatorSize = CGSize(width: 36, height: 4)
         static let collectionTopInset: CGFloat = 12
+
+        static func mapButtonBottomInset(
+            safeAreaBottom: CGFloat,
+            bottomBarCoveringHeight: CGFloat
+        ) -> CGFloat {
+            max(safeAreaBottom, bottomBarCoveringHeight) + MapViewButton.Layout.bottomInset
+        }
     }
 
     private let dragIndicatorView: UIView = {
@@ -28,6 +35,10 @@ final class HomeListView: BaseView {
         button.isHidden = true
         return button
     }()
+
+    private var bottomBarCoveringHeight: CGFloat = 0
+    private var appliedMapButtonBottomInset: CGFloat = .nan
+    private var mapViewButtonBottomConstraint: Constraint?
 
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -63,14 +74,43 @@ final class HomeListView: BaseView {
 
         mapViewButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-MapViewButton.Layout.bottomInset)
+            mapViewButtonBottomConstraint = $0.bottom.equalToSuperview()
+                .inset(MapViewButton.Layout.bottomInset).constraint
         }
     }
 
-    func updateMapButton(progress: CGFloat) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateMapButtonBottomInset()
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        updateMapButtonBottomInset()
+    }
+
+    func updateMapButton(progress: CGFloat, bottomBarCoveringHeight: CGFloat) {
         let clamped = min(max(progress, 0), 1)
         mapViewButton.alpha = clamped
         mapViewButton.isHidden = clamped <= 0
+        updateBottomBarCoveringHeight(bottomBarCoveringHeight)
+    }
+
+    func updateBottomBarCoveringHeight(_ height: CGFloat) {
+        bottomBarCoveringHeight = height
+        updateMapButtonBottomInset()
+    }
+
+    private func updateMapButtonBottomInset() {
+        let inset = Layout.mapButtonBottomInset(
+            safeAreaBottom: safeAreaInsets.bottom,
+            bottomBarCoveringHeight: bottomBarCoveringHeight
+        )
+        guard abs(appliedMapButtonBottomInset - inset) > 0.5 || appliedMapButtonBottomInset.isNaN else { return }
+
+        appliedMapButtonBottomInset = inset
+        mapViewButtonBottomConstraint?.update(inset: inset)
+        setNeedsLayout()
     }
 
     private func createLayout() -> UICollectionViewLayout {

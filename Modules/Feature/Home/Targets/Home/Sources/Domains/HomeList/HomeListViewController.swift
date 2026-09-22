@@ -63,8 +63,20 @@ final class HomeListViewController: BaseViewController {
             .store(in: &cancellables)
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        homeListView.updateBottomBarCoveringHeight(bottomBarCoveringHeight)
+    }
+
     func updateMapButton(progress: CGFloat) {
-        homeListView.updateMapButton(progress: progress)
+        homeListView.updateMapButton(progress: progress, bottomBarCoveringHeight: bottomBarCoveringHeight)
+    }
+
+    private var bottomBarCoveringHeight: CGFloat {
+        guard let tabBar = tabBarController?.tabBar, tabBar.isHidden.isNot else {
+            return view.window?.safeAreaInsets.bottom ?? 0
+        }
+        return tabBar.frame.height
     }
 
     func updateCards(_ cards: [any HomeListCardComponent]) {
