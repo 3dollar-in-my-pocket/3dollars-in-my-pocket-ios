@@ -302,6 +302,10 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
+        if let tab = TabBarTag(rawValue: viewController.tabBarItem.tag) {
+            viewModel.input.didTapTab.send(tab)
+        }
+
         if let navigationViewController = tabBarController.selectedViewController as? UINavigationController,
            navigationViewController.topViewController is HomeViewController,
            let presentedViewController = navigationViewController.presentedViewController {

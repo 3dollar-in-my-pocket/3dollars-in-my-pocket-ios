@@ -1,7 +1,8 @@
 import UIKit
 
-import Model
 import DesignSystem
+import Log
+import Model
 
 struct MainTabBarItem {
     static let iconSize: CGFloat = 24
@@ -16,4 +17,15 @@ struct MainTabBarItem {
         MainTabBarItem(tag: .community, title: Strings.TabBar.community, icon: DesignSystemAsset.Icons.communitySolid.image),
         MainTabBarItem(tag: .my, title: Strings.TabBar.myPage, icon: DesignSystemAsset.Icons.mySolid.image)
     ]
+}
+
+extension TabBarTag {
+    var logObjectId: LogObjectId {
+        switch self {
+        case .home: return .tabHome
+        case .write: return .tabWrite
+        case .community: return .tabCommunity
+        case .my: return .tabMyPage
+        }
+    }
 }
