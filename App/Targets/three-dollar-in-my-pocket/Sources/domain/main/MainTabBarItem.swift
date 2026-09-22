@@ -22,10 +22,10 @@ struct MainTabBarItem {
 extension TabBarTag {
     var logObjectId: LogObjectId {
         switch self {
-        case .home: return .tabHome
-        case .write: return .tabWrite
-        case .community: return .tabCommunity
-        case .my: return .tabMyPage
+        case .home: return .home
+        case .write: return .write
+        case .community: return .community
+        case .my: return .myPage
         }
     }
 }

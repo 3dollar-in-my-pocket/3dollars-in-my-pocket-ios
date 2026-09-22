@@ -30,10 +30,10 @@ final class MainTabBarViewModelTests: XCTestCase {
         let logManager = MockLogManager()
         let viewModel = makeViewModel(logManager: logManager)
         let expected: [TabBarTag: String] = [
-            .home: "tab_home",
-            .write: "tab_write",
-            .community: "tab_community",
-            .my: "tab_my_page"
+            .home: "home",
+            .write: "write",
+            .community: "community",
+            .my: "my_page"
         ]
 
         // When
@@ -55,8 +55,8 @@ final class MainTabBarViewModelTests: XCTestCase {
         let objectIds = [TabBarTag.home, .write, .community, .my].map { $0.logObjectId.rawValue }
 
         // Then
+        XCTAssertEqual(objectIds, ["home", "write", "community", "my_page"])
         XCTAssertEqual(Set(objectIds).count, 4)
-        XCTAssertTrue(objectIds.allSatisfy { $0.hasPrefix("tab_") })
     }
 
     private func makeViewModel(logManager: MockLogManager) -> MainTabBarViewModel {
