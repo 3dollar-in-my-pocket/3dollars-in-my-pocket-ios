@@ -332,3 +332,9 @@
 // 메인 배너 팝업
 "main_banner_popup.close" = "닫기";
 "main_banner_popup.disable_today" = "오늘 하루 보지않기";
+
+// 하단 GNB 탭 타이틀
+"tab_bar.home" = "홈";
+"tab_bar.write" = "가게 제보";
+"tab_bar.community" = "커뮤니티";
+"tab_bar.my_page" = "마이페이지";

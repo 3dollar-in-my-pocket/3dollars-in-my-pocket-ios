@@ -17,6 +17,14 @@ import StoreInterface
 import MyPageInterface
 
 final class MainTabBarViewController: UITabBarController {
+    private enum Layout {
+        static let iconSize: CGFloat = 24
+        static let titleFontSize: CGFloat = 12
+        static let titleLineHeight: CGFloat = 18
+        static let titleKern: CGFloat = -0.12
+        static let titleOffset: CGFloat = -2
+    }
+
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     private lazy var dimView: UIView = {
         let dimView = UIView(frame: self.view.frame)
@@ -84,17 +92,7 @@ final class MainTabBarViewController: UITabBarController {
         self.addKakaoLinkObserver()
         self.feedbackGenerator.prepare()
         self.delegate = self
-        if #available(iOS 15, *) {
-            let appearance = UITabBarAppearance()
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = .white
-            self.tabBar.standardAppearance = appearance
-            self.tabBar.scrollEdgeAppearance = appearance
-        }
-        UITabBarItem.appearance().setTitleTextAttributes(
-            [.font: Fonts.bold.font(size: 10) as Any],
-            for: .normal
-        )
+        self.applyTabBarAppearance(backgroundColor: .white)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -173,26 +171,59 @@ final class MainTabBarViewController: UITabBarController {
         case .my:
             guard !Preference.shared.isAnonymousUser else { return }
             self.tabBar.barTintColor = Colors.gray100.color
-            if #available(iOS 15, *) {
-                let appearance = UITabBarAppearance()
-                appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = Colors.gray100.color
-                self.tabBar.standardAppearance = appearance
-                self.tabBar.scrollEdgeAppearance = appearance
-            }
+            self.applyTabBarAppearance(backgroundColor: Colors.gray100.color)
         case .home, .community:
             self.tabBar.barTintColor = .white
-            if #available(iOS 15, *) {
-                let appearance = UITabBarAppearance()
-                appearance.configureWithOpaqueBackground()
-                appearance.backgroundColor = .white
-                self.tabBar.standardAppearance = appearance
-                self.tabBar.scrollEdgeAppearance = appearance
-            }
-
+            self.applyTabBarAppearance(backgroundColor: .white)
         case .write:
             break
         }
+    }
+
+    private func applyTabBarAppearance(backgroundColor: UIColor) {
+        let appearance = Self.makeTabBarAppearance(backgroundColor: backgroundColor)
+
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = appearance
+        tabBar.tintColor = Colors.mainRed.color
+        tabBar.unselectedItemTintColor = Colors.gray40.color
+
+        // iOS 26+ 의 새 탭바는 컨트롤러 레벨 appearance 를 일부만 반영해서
+        // 아이템별 appearance 로도 같은 값을 지정해야 비선택 색이 적용된다.
+        contentViewControllers.forEach { viewController in
+            viewController.tabBarItem.standardAppearance = appearance
+            viewController.tabBarItem.scrollEdgeAppearance = appearance
+        }
+    }
+
+    private static func makeTabBarAppearance(backgroundColor: UIColor) -> UITabBarAppearance {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = backgroundColor
+        appearance.shadowColor = Colors.gray20.color
+
+        [appearance.stackedLayoutAppearance,
+         appearance.inlineLayoutAppearance,
+         appearance.compactInlineLayoutAppearance].forEach { itemAppearance in
+            itemAppearance.normal.iconColor = Colors.gray40.color
+            itemAppearance.normal.titleTextAttributes = titleAttributes(color: Colors.gray40.color)
+            itemAppearance.selected.iconColor = Colors.mainRed.color
+            itemAppearance.selected.titleTextAttributes = titleAttributes(color: Colors.mainRed.color)
+        }
+        return appearance
+    }
+
+    private static func titleAttributes(color: UIColor) -> [NSAttributedString.Key: Any] {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.minimumLineHeight = Layout.titleLineHeight
+        paragraphStyle.maximumLineHeight = Layout.titleLineHeight
+
+        return [
+            .font: Fonts.medium.font(size: Layout.titleFontSize) as Any,
+            .foregroundColor: color,
+            .kern: Layout.titleKern,
+            .paragraphStyle: paragraphStyle
+        ]
     }
 
     private func setupTabBarController() {
@@ -202,6 +233,21 @@ final class MainTabBarViewController: UITabBarController {
         self.tabBar.layer.borderColor = UIColor.clear.cgColor
         self.tabBar.clipsToBounds = true
         self.tabBar.barTintColor = .white
+        self.applyTabBarItems()
+    }
+
+    private func applyTabBarItems() {
+        for (index, item) in MainTabBarItem.all.enumerated() {
+            guard let viewController = contentViewControllers[safe: index] else { continue }
+            let tabBarItem = UITabBarItem(
+                title: item.title,
+                image: item.icon.resizeImage(scaledTo: MainTabBarItem.iconSize).withRenderingMode(.alwaysTemplate),
+                tag: item.tag.rawValue
+            )
+            tabBarItem.imageInsets = .zero
+            tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: Layout.titleOffset)
+            viewController.tabBarItem = tabBarItem
+        }
     }
 
     private func addKakaoLinkObserver() {
@@ -256,6 +302,10 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
+        if let tab = TabBarTag(rawValue: viewController.tabBarItem.tag) {
+            viewModel.input.didTapTab.send(tab)
+        }
+
         if let navigationViewController = tabBarController.selectedViewController as? UINavigationController,
            navigationViewController.topViewController is HomeViewController,
            let presentedViewController = navigationViewController.presentedViewController {
