@@ -1,4 +1,3 @@
-#if DEBUG
 import UIKit
 
 import netfox
@@ -10,4 +9,3 @@ struct NetfoxDebugMenuItem: DebugMenuItem {
         NFX.sharedInstance().show()
     }
 }
-#endif

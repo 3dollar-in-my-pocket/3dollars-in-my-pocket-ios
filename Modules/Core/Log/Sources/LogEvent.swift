@@ -211,4 +211,8 @@ public enum LogObjectId: String {
     case visitInducementModal = "visit_inducement_modal"
     case selectReason = "select_reason"
     case mapView = "map_view"
+    case home
+    case write
+    case community
+    case myPage = "my_page"
 }
