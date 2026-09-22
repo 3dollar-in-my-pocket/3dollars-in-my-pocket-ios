@@ -46,6 +46,13 @@ final class HomeListViewController: BaseViewController {
         _ = dataSource
     }
 
+    override func bindViewModelInput() {
+        homeListView.mapViewButton.controlPublisher(for: .touchUpInside)
+            .map { _ in () }
+            .subscribe(viewModel.input.didTapMapView)
+            .store(in: &cancellables)
+    }
+
     override func bindViewModelOutput() {
         viewModel.output.dataSource
             .main
@@ -54,6 +61,22 @@ final class HomeListViewController: BaseViewController {
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        homeListView.updateBottomBarCoveringHeight(bottomBarCoveringHeight)
+    }
+
+    func updateMapButton(progress: CGFloat) {
+        homeListView.updateMapButton(progress: progress, bottomBarCoveringHeight: bottomBarCoveringHeight)
+    }
+
+    private var bottomBarCoveringHeight: CGFloat {
+        guard let tabBar = tabBarController?.tabBar, tabBar.isHidden.isNot else {
+            return view.window?.safeAreaInsets.bottom ?? 0
+        }
+        return tabBar.frame.height
     }
 
     func updateCards(_ cards: [any HomeListCardComponent]) {

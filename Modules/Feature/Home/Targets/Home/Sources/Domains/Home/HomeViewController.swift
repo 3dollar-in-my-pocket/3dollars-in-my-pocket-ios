@@ -341,6 +341,13 @@ public final class HomeViewController: BaseViewController {
         bottomSheetVM.output.willLoadMore
             .subscribe(viewModel.input.bottomSheetWillLoadMore)
             .store(in: &cancellables)
+        bottomSheetVM.output.didTapMapView
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, _) in
+                owner.bottomSheetController?.move(to: .tip, animated: true)
+            }
+            .store(in: &cancellables)
 
         let fpc = FloatingPanelController()
         fpc.layout = HomeListLayout()
@@ -564,6 +571,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             return
         }
         homeView.updateTopBackground(progress: progress)
+        bottomSheetViewController?.updateMapButton(progress: progress)
     }
 
     public func floatingPanelDidChangeState(_ fpc: FloatingPanelController) {
@@ -583,8 +591,10 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         switch fpc.state {
         case .full:
             homeView.updateTopBackground(progress: 1)
+            bottomSheetViewController?.updateMapButton(progress: 1)
         case .tip:
             homeView.updateTopBackground(progress: 0)
+            bottomSheetViewController?.updateMapButton(progress: 0)
         default:
             break
         }

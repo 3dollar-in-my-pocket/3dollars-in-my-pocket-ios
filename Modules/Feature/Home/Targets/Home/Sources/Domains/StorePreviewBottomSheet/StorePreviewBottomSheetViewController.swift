@@ -14,6 +14,26 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     private enum Layout {
         static let grabberAreaHeight: CGFloat = 12
         static let contentTop: CGFloat = grabberAreaHeight + 16
+        static let imageSpacing: CGFloat = 8
+        static let horizontalMargin: CGFloat = 20
+        static let defaultImageSize = CGSize(width: 158, height: 158)
+        static var imageAvailableWidth: CGFloat {
+            return UIUtils.windowBounds.width - horizontalMargin * 2
+        }
+
+        static func imageRowHeight(images: [SDImage]) -> CGFloat {
+            return PreviewImageLayout.rowHeight(images: images, defaultHeight: defaultImageSize.height)
+        }
+
+        static func imageSize(images: [SDImage], at index: Int) -> CGSize {
+            return PreviewImageLayout.itemSize(
+                style: images[safe: index]?.style,
+                count: images.count,
+                availableWidth: imageAvailableWidth,
+                spacing: imageSpacing,
+                defaultSize: defaultImageSize
+            )
+        }
     }
 
     private let titleStack: UIStackView = {
@@ -94,9 +114,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     private let imagesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 158, height: 158)
-        layout.minimumLineSpacing = 8
-        layout.minimumInteritemSpacing = 8
+        layout.minimumLineSpacing = Layout.imageSpacing
+        layout.minimumInteritemSpacing = Layout.imageSpacing
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
@@ -594,9 +613,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         // 액션바
         height += 16 + 36
 
-        // 이미지 (있을 때만 158pt + 12pt 간격)
         if section.images.isEmpty.isNot {
-            height += 12 + 158
+            height += 12 + Layout.imageRowHeight(images: section.images)
         }
 
         // 바디 (있을 때만 58pt + 8pt 간격)
@@ -621,10 +639,10 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     private func configureImages(_ images: [SDImage]) {
         imageItems = images
 
-        // 이미지가 없으면 영역을 숨기고, 1개 이상이면 158pt 고정 셀 + 마지막 "사진 추가" 셀을 가로 스크롤로 노출한다.
         let hasImages = images.isEmpty.isNot
-        imagesContainerHeight?.update(offset: hasImages ? 158 : 0)
+        imagesContainerHeight?.update(offset: hasImages ? Layout.imageRowHeight(images: images) : 0)
         imagesCollectionView.isHidden = hasImages.isNot
+        imagesCollectionView.collectionViewLayout.invalidateLayout()
         imagesCollectionView.reloadData()
         if hasImages {
             imagesCollectionView.setContentOffset(.zero, animated: false)
@@ -736,7 +754,21 @@ extension StorePreviewBottomSheetViewController: UIGestureRecognizerDelegate {
 }
 
 // MARK: UICollectionViewDataSource & Delegate
-extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let rowHeight = Layout.imageRowHeight(images: imageItems)
+
+        guard imageItems[safe: indexPath.item] != nil else {
+            return CGSize(width: rowHeight, height: rowHeight)
+        }
+
+        return Layout.imageSize(images: imageItems, at: indexPath.item)
+    }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard imageItems.isEmpty.isNot else { return 0 }
         // 이미지가 1개 이상이고 사진 추가가 가능한 가게(일반 가게)일 때만 마지막에 "사진 추가" 셀(+1)을 노출한다.

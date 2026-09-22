@@ -30,20 +30,28 @@ xcodebuild build \
   -workspace 3dollar-in-my-pocket.xcworkspace \
   -scheme three-dollar-in-my-pocket-debug \
   -configuration Debug \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 
 # Release 빌드
 xcodebuild build \
   -workspace 3dollar-in-my-pocket.xcworkspace \
   -scheme three-dollar-in-my-pocket \
   -configuration Release \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
 **주의사항**:
 - 빌드 전 `make project`를 실행할 필요 없습니다. Buildable Folders 구조라 바로 `xcodebuild`로 빌드합니다 (Tuist 매니페스트인 `Project.swift`/`Tuist/` 변경 시에만 `make project` 재실행)
 - **three-dollar-in-my-pocket-debug** 스키마 사용 (Debug 빌드)
 - **three-dollar-in-my-pocket** 스키마 사용 (Release 빌드)
+- `-destination`의 기기명은 **머신마다 다릅니다.** 설치된 기기를 먼저 확인하세요. 기기명이 틀리면 빌드가 시작조차 못 합니다
+  ```bash
+  xcrun simctl list devices available | grep iPhone
+  ```
+- 기기명을 고정하고 싶지 않으면 시뮬레이터 지정 없이 빌드할 수 있습니다
+  ```bash
+  -destination 'generic/platform=iOS Simulator'
+  ```
 
 ### 테스트
 ```bash
@@ -440,31 +448,41 @@ public struct MyRepositoryImpl: MyRepository {
 
 ## Skills (자동화 도구)
 
-프로젝트에는 반복적인 작업을 자동화하는 여러 Skills가 정의되어 있습니다. 각 Skill은 `/skill-name` 형태로 호출할 수 있습니다.
+반복적인 작업을 자동화하는 여러 Skills가 정의되어 있습니다. 각 Skill은 `/skill-name` 형태로 호출할 수 있습니다.
+
+- **프로젝트 스킬** (`.claude/skills/`, 저장소에 포함): `ios-viewmodel-pattern`, `ios-repository-pattern`, `ios-viewmodel-test-generator`, `server-schema`
+- **3dollars 플러그인** (`~/.claude/skills/3dollars/`, 개인 환경): `3dollars:feature-implementer`, `3dollars:bug-fix`, `3dollars:code-cleanup`, `3dollars:pr-code-review`, `3dollars:simulator-test`, `3dollars:deploy-dev-build` 등 11개 — **호출 시 `3dollars:` 접두어가 필요**합니다. 저장소에 없으므로 다른 팀원 환경에는 존재하지 않을 수 있습니다
 
 ### feature-implementer
-테크스펙 문서를 기반으로 새로운 피처를 구현하는 전체 파이프라인을 자동화합니다.
+JIRA 피처 티켓을 받아 구현부터 PR 생성까지 전체 파이프라인을 자동화합니다.
 
 **기능**:
-- 테크스펙 문서 분석 및 피그마 디자인 확인
-- 워크트리 기반 안전한 작업 환경 구성
-- Model, API, Repository, ViewModel, ViewController, 테스트 코드 자동 생성
-- 빌드/테스트/SwiftLint 검증 및 자동 수정
-- Git 커밋 (논리적 흐름으로 분리)
+- JIRA 티켓 분석 + 프롬프트 추가 요구사항 병합 → 요구사항 체크리스트 확정
+- 서버 OpenAPI 스키마 대조, 피그마 디자인 확인
+- Model, API, Repository, ViewModel, ViewController, (조건부) 테스트 코드 생성
+- 빌드/SwiftLint/테스트 검증
+- 자체 코드리뷰(`/code-review`) 및 반영 후 재검증
+- 시뮬레이터 Before/After 스크린샷·영상 검증 (`simulator-test`)
+- Draft PR 생성 — 변경사항 요약 + Before/After 비교표 첨부
 
 **사용법**:
 ```bash
-# 마크다운 파일로 제공
-/feature-implementer /path/to/TH-XXX-spec.md
+# JIRA 티켓 URL
+/3dollars:feature-implementer https://3dollarinmypocket.atlassian.net/browse/TH-1234
 
-# 파일 경로 + 피그마 URL
-/feature-implementer /path/to/spec.md https://figma.com/design/...
+# 티켓 키 + 프롬프트 추가 요구사항 (충돌 시 프롬프트 우선)
+/3dollars:feature-implementer TH-1234 정렬은 최신순 기본, 빈 상태 문구는 "아직 없어요"로
+
+# 티켓 + 피그마 URL
+/3dollars:feature-implementer TH-1234 https://figma.com/design/...
 
 # 대화형 (인자 없이 호출)
-/feature-implementer
+/3dollars:feature-implementer
 ```
 
-**참고**: 테크스펙 문서 또는 파일 경로가 필요합니다. GitHub 권한도 필요합니다.
+**참고**: JIRA(Atlassian) MCP 연결과 GitHub 권한이 필요합니다. JIRA 미연결 시 티켓 본문을 직접 붙여넣는 폴백으로 진행합니다. 버그 티켓은 이 스킬 대신 `/3dollars:bug-fix`를 사용하세요.
+
+**정의 위치**: `~/.claude/skills/3dollars/skills/feature-implementer/SKILL.md` (3dollars 플러그인)
 
 ### ios-viewmodel-pattern
 Combine 기반 MVVM 패턴의 ViewModel 구조를 정의합니다.

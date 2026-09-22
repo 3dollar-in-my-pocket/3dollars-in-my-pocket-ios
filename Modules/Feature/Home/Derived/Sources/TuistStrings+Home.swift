@@ -62,7 +62,9 @@ public enum HomeStrings: Sendable {
   }
 
   public enum HomeList: Sendable {
-  
+    /// 지도 보기
+    public static let mapViewButton = HomeStrings.tr("Localization", "home_list.map_view_button")
+
     public enum Empty: Sendable {
       /// 다른 주소로 검색하거나 직접 제보해보세요!
       public static let description = HomeStrings.tr("Localization", "home_list.empty.description")

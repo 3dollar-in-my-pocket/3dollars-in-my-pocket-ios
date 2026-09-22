@@ -11,6 +11,7 @@ extension HomeListViewModel {
         let willDisplay = PassthroughSubject<Int, Never>()
         let didTapCard = PassthroughSubject<Int, Never>()
         let didTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
+        let didTapMapView = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -21,6 +22,7 @@ extension HomeListViewModel {
         /// 부모(HomeViewModel) 가 카드 탭 라우팅을 처리하도록 인덱스 를 전달한다.
         let didTapCardAt = PassthroughSubject<Int, Never>()
         let didTapImageAt = PassthroughSubject<(images: [SDImage], index: Int), Never>()
+        let didTapMapView = PassthroughSubject<Void, Never>()
     }
 
     struct State {
@@ -74,6 +76,15 @@ final class HomeListViewModel: BaseViewModel {
         input.didTapImage
             .subscribe(output.didTapImageAt)
             .store(in: &cancellables)
+
+        input.didTapMapView
+            .withUnretained(self)
+            .handleEvents(receiveOutput: { (owner: HomeListViewModel, _) in
+                owner.sendClickMapViewLog()
+            })
+            .map { _ in () }
+            .subscribe(output.didTapMapView)
+            .store(in: &cancellables)
     }
 
     private func emitDataSource() {
@@ -116,5 +127,16 @@ final class HomeListViewModel: BaseViewModel {
         if index >= state.cards.count - 1 {
             output.willLoadMore.send(())
         }
+    }
+}
+
+// MARK: Log
+extension HomeListViewModel {
+    private func sendClickMapViewLog() {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .mapView
+        ))
     }
 }
