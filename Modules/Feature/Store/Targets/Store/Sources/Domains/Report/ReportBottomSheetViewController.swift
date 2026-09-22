@@ -62,6 +62,11 @@ final class ReportBottomSheetViewController: BaseViewController {
             .assign(to: \.isEnabled, on: reportBottomSheet.reportButton)
             .store(in: &cancellables)
         
+        viewModel.output.showLoading
+            .receive(on: DispatchQueue.main)
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
+            .store(in: &cancellables)
+
         viewModel.output.route
             .receive(on: DispatchQueue.main)
             .withUnretained(self)

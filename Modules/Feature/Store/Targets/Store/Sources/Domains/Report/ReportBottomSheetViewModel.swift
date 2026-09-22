@@ -15,6 +15,7 @@ final class ReportBottomSheetViewModel: BaseViewModel {
         let screenName: ScreenName = .reportStore
         let reportReasons: [ReportReason]
         let isEnableReport = CurrentValueSubject<Bool, Never>(false)
+        let showLoading = PassthroughSubject<Bool, Never>()
         let onSuccessReport = PassthroughSubject<Bool, Never>()
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
@@ -76,8 +77,10 @@ final class ReportBottomSheetViewModel: BaseViewModel {
     
     private func reportStore(reason: ReportReason) {
         Task {
+            output.showLoading.send(true)
             let reportResult = await storeRepository.reportStore(storeId: config.storeId, reportReason: reason.type)
-            
+            output.showLoading.send(false)
+
             switch reportResult {
             case .success(let response):
                 output.onSuccessReport.send(response.isDeleted)

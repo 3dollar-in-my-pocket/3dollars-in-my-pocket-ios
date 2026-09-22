@@ -1,6 +1,7 @@
 import Combine
 import XCTest
 
+import AppInterface
 import Log
 import Model
 import Networking
@@ -127,11 +128,102 @@ final class StoreSectionsViewModelTests: XCTestCase {
         XCTAssertNil(StoreSectionsViewModel.deletedStoreMessage(from: NSError(domain: "offline", code: -1009)))
     }
 
-    private func makeViewModel(repository: MockStoreRepository) -> StoreSectionsViewModel {
+    private func makeViewModel(
+        repository: MockStoreRepository,
+        reportRepository: MockReportRepository = MockReportRepository(),
+        globalEventBus: MockGlobalEventBus = MockGlobalEventBus()
+    ) -> StoreSectionsViewModel {
         StoreSectionsViewModel(
             config: .init(storeId: 1, latitude: 37.5, longitude: 127.0),
-            dependency: .init(storeRepository: repository, logManager: MockLogManager())
+            dependency: .init(
+                storeRepository: repository,
+                reportRepository: reportRepository,
+                logManager: MockLogManager(),
+                globalEventBus: globalEventBus
+            )
         )
+    }
+
+    private func makeReportReasonResponse() throws -> ReportReasonApiResponse {
+        let json = """
+        { "reasons": [{ "type": "NOSTORE", "description": "없어진 가게에요", "hasReasonDetail": false }] }
+        """
+        return try JSONDecoder().decode(ReportReasonApiResponse.self, from: Data(json.utf8))
+    }
+
+    // MARK: TC3
+
+    func test_TC3_신고에성공하면_토스트와함께_상세를닫는Route가발행된다() async throws {
+        // Given
+        let globalEventBus = MockGlobalEventBus()
+        let viewModel = try makeReportedViewModel(globalEventBus: globalEventBus)
+        let routeExpectation = expectation(description: "closeAfterReport")
+        var receivedRoute: StoreSectionsViewModel.Route?
+        viewModel.output.route.sink { route in
+            if case .closeAfterReport = route {
+                receivedRoute = route
+                routeExpectation.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        // When
+        let reportViewModel = try await presentReportViewModel(from: viewModel)
+        reportViewModel.output.onSuccessReport.send(false)
+
+        // Then
+        await fulfillment(of: [routeExpectation], timeout: 1)
+        guard case .closeAfterReport(let message) = receivedRoute else {
+            return XCTFail("closeAfterReport route가 아님")
+        }
+        XCTAssertFalse(message.isEmpty)
+    }
+
+    func test_TC3_신고에성공하면_홈이재조회하도록_전역이벤트를발행한다() async throws {
+        // Given
+        let globalEventBus = MockGlobalEventBus()
+        let viewModel = try makeReportedViewModel(globalEventBus: globalEventBus)
+        let eventExpectation = expectation(description: "onReportStore")
+        var reportedStoreId: Int?
+        globalEventBus.onReportStore.sink {
+            reportedStoreId = $0
+            eventExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        // When
+        let reportViewModel = try await presentReportViewModel(from: viewModel)
+        reportViewModel.output.onSuccessReport.send(false)
+
+        // Then
+        await fulfillment(of: [eventExpectation], timeout: 1)
+        XCTAssertEqual(reportedStoreId, 1)
+    }
+
+    private func makeReportedViewModel(globalEventBus: MockGlobalEventBus) throws -> StoreSectionsViewModel {
+        makeViewModel(
+            repository: MockStoreRepository(fetchStoreScreenV2Result: .failure(MockError.notStubbed())),
+            reportRepository: MockReportRepository(fetchReportReasonsResult: .success(try makeReportReasonResponse())),
+            globalEventBus: globalEventBus
+        )
+    }
+
+    private func presentReportViewModel(
+        from viewModel: StoreSectionsViewModel
+    ) async throws -> ReportBottomSheetViewModel {
+        let expectation = expectation(description: "presentStoreReport")
+        var reportViewModel: ReportBottomSheetViewModel?
+        let cancellable = viewModel.output.route.sink { route in
+            if case .presentStoreReport(let presented) = route {
+                reportViewModel = presented
+                expectation.fulfill()
+            }
+        }
+        viewModel.input.didSelectAction.send(.custom(
+            .init(actionType: .storeEditReport, extraParams: ["STORE_ID": .string("1")]),
+            clickLog: nil
+        ))
+        await fulfillment(of: [expectation], timeout: 1)
+        cancellable.cancel()
+        return try XCTUnwrap(reportViewModel)
     }
 
     /// INFO_V1 의 informationCard.rows 는 서버가 `type` 으로 구분하는 3종 행이다.

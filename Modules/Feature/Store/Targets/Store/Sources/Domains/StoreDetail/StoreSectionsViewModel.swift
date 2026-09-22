@@ -51,6 +51,7 @@ extension StoreSectionsViewModel {
         case presentDeleteReviewAlert(reviewId: Int)
         case presentUseCouponAlert(issuedKey: String)
         case closeWithDeletedStore(message: String)
+        case closeAfterReport(message: String)
     }
 
     struct NavigationTarget {
@@ -70,19 +71,22 @@ extension StoreSectionsViewModel {
         let reviewRepository: ReviewRepository
         let couponRepository: CouponRepository
         let logManager: LogManagerProtocol
+        let globalEventBus: GlobalEventBusProtocol
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
             reportRepository: ReportRepository = ReportRepositoryImpl(),
             reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
             couponRepository: CouponRepository = CouponRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            logManager: LogManagerProtocol = LogManager.shared,
+            globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
         ) {
             self.storeRepository = storeRepository
             self.reportRepository = reportRepository
             self.reviewRepository = reviewRepository
             self.couponRepository = couponRepository
             self.logManager = logManager
+            self.globalEventBus = globalEventBus
         }
     }
 
@@ -472,7 +476,7 @@ final class StoreSectionsViewModel: BaseViewModel {
                 viewModel.output.onSuccessReport
                     .withUnretained(self)
                     .sink { (owner: StoreSectionsViewModel, _) in
-                        owner.input.load.send(())
+                        owner.handleSuccessReport(storeId: storeId)
                     }
                     .store(in: &cancellables)
                 output.route.send(.presentStoreReport(viewModel))
@@ -480,6 +484,11 @@ final class StoreSectionsViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
+    }
+
+    private func handleSuccessReport(storeId: Int) {
+        dependency.globalEventBus.onReportStore.send(storeId)
+        output.route.send(.closeAfterReport(message: Strings.ReportModal.successToast))
     }
 
     private func presentReviewReport(storeId: Int, reviewId: Int) {

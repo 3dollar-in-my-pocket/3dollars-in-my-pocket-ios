@@ -593,6 +593,9 @@ private extension StoreSectionsViewController {
             ) { [weak self] in
                 self?.onRequestClose?()
             }
+        case .closeAfterReport(let message):
+            ToastManager.shared.show(message: message)
+            onRequestClose?()
         }
     }
 

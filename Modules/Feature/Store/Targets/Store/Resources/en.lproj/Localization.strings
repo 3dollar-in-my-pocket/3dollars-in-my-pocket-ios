@@ -62,6 +62,7 @@
 "report_modal.description" = "3건 이상의 요청이 들어오면 자동 삭제됩니다";
 "report_modal.description_bold" = "3건 이상";
 "report_modal.button" = "신고하기";
+"report_modal.success_toast" = "신고가 접수되었어요";
 
 // 사라진 가게 확인 모달
 "disappearance_inquiry_modal.title" = "혹시... 이 가게 사라졌나요?";

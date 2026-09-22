@@ -119,6 +119,50 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.output.isEnableReport.value)
     }
 
+    // MARK: TC4
+
+    func test_TC4_신고요청동안_공용로딩뷰가_켜졌다_꺼진다() async throws {
+        // Given
+        let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
+        let viewModel = makeViewModel(repository: repository)
+        let expectation = expectation(description: "showLoading")
+        expectation.expectedFulfillmentCount = 2
+        var loadingStates: [Bool] = []
+        viewModel.output.showLoading.sink {
+            loadingStates.append($0)
+            expectation.fulfill()
+        }.store(in: &cancellables)
+
+        // When
+        viewModel.input.didTapReason.send(0)
+        viewModel.input.didTapReport.send(())
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 1)
+        XCTAssertEqual(loadingStates, [true, false])
+    }
+
+    func test_TC4_신고에실패해도_로딩뷰는_꺼진다() async {
+        // Given
+        let repository = MockStoreRepository(reportStoreResult: .failure(NSError(domain: "ReportStore", code: -1)))
+        let viewModel = makeViewModel(repository: repository)
+        let expectation = expectation(description: "showLoading")
+        expectation.expectedFulfillmentCount = 2
+        var loadingStates: [Bool] = []
+        viewModel.output.showLoading.sink {
+            loadingStates.append($0)
+            expectation.fulfill()
+        }.store(in: &cancellables)
+
+        // When
+        viewModel.input.didTapReason.send(0)
+        viewModel.input.didTapReport.send(())
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 1)
+        XCTAssertEqual(loadingStates, [true, false])
+    }
+
     // MARK: Helpers
 
     private func makeViewModel(repository: MockStoreRepository) -> ReportBottomSheetViewModel {
