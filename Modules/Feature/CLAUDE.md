@@ -21,7 +21,7 @@ Feature는 화면 단위 모듈이다. 각 모듈은 `Targets/{Feature}`(구현)
 
 ## 새 화면을 만들 때 순서
 
-1. 테크스펙(노션)의 TC 확인 → 2. Model/API/Repository(Core) → 3. ViewModel(+ Input/Output/Route) → 4. ViewController/View → 5. 테스트(`App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`) → 6. `make lint`
+1. 테크스펙(노션)의 TC 확인 + 계층 배정(유닛/자동화/수동, `docs/process/testing.md`) → 2. Model/API/Repository(Core) → 3. ViewModel(+ Input/Output/Route) → 4. ViewController/View → 5. 유닛 테스트(`App/Targets/three-dollar-in-my-pocketTests/Sources/ViewModelTests/`, 메서드명 `test_{티켓}_TC{n}_`) → 6. 자동화 TC 는 `3dollars:simulator-test` 로 증거 캡처 → 7. `make lint`
 
 ## 검증
 

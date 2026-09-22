@@ -71,6 +71,8 @@ xcodebuild test \
 
 **테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/` 아래 `ViewModelTests/`(화면 로직) · `ServiceTests/`(서비스·매니저) · `DecodingTests/`(응답 파싱) · `Support/`(공용 목·픽스처 로더)
 
+**테스트는 세 계층입니다** — ① **유닛 테스트 코드**(ViewModel/Service/Decoding, XCTest, CI가 돌림) ② **자동화 테스트 TC**(`3dollars:simulator-test`가 시뮬레이터를 조작하는 E2E, PR 전 실행 후 스크린샷·영상 증거) ③ **수동 테스트 TC**(시뮬레이터로 상황을 만들 수 없어 실기기·사람이 필요한 것). 테크스펙 TC는 반드시 셋 중 하나 이상에 배정되고, 위 계층을 먼저 씁니다. 분류 기준은 [docs/process/e2e-and-manual-tests.md](docs/process/e2e-and-manual-tests.md).
+
 **테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_{티켓}_TC{n}_{조건}_{기대결과}()` (예: `test_TH1340_TC8_탭을누르면_클릭로그가_한건전송된다`). **TC 번호는 노션 테크스펙의 `TC-n`을 그대로 쓰고 티켓 안에서 유일**합니다 — 파일이 갈라져도 1부터 다시 시작하지 않습니다. 스펙에 없는 케이스는 테크스펙에 TC를 먼저 추가하고 그 번호를 씁니다. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/3dollars:test-cases`
 
 ### 린트 검증 (SwiftLint + 모듈 의존성)
