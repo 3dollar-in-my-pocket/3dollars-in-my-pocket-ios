@@ -6,9 +6,9 @@ import Model
 
 final class MainTabBarViewModelTests: XCTestCase {
 
-    // MARK: TC1
+    // MARK: TH-1340 TC8
 
-    func test_TC1_탭을누르면_클릭로그가_한건전송된다() {
+    func test_TH1340_TC8_탭을누르면_클릭로그가_한건전송된다() {
         // Given
         let logManager = MockLogManager()
         let viewModel = makeViewModel(logManager: logManager)
@@ -23,9 +23,9 @@ final class MainTabBarViewModelTests: XCTestCase {
         XCTAssertEqual(event.screen.rawValue, "main_tab_bar")
     }
 
-    // MARK: TC2
+    // MARK: TH-1340 TC9
 
-    func test_TC2_탭마다_고유한objectId가_전송된다() {
+    func test_TH1340_TC9_탭마다_고유한objectId가_전송된다() {
         // Given
         let logManager = MockLogManager()
         let viewModel = makeViewModel(logManager: logManager)
@@ -48,9 +48,9 @@ final class MainTabBarViewModelTests: XCTestCase {
         }
     }
 
-    // MARK: TC3
+    // MARK: TH-1340 TC10
 
-    func test_TC3_TabBarTag는_모두_서로다른_logObjectId를갖는다() {
+    func test_TH1340_TC10_TabBarTag는_모두_서로다른_logObjectId를갖는다() {
         // Given / When
         let objectIds = [TabBarTag.home, .write, .community, .my].map { $0.logObjectId.rawValue }
 

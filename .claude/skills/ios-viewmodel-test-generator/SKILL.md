@@ -1,6 +1,6 @@
 ---
 name: ios-viewmodel-test-generator
-description: iOS ViewModel 테스트 코드 생성 템플릿. TC(테스트 케이스) 목록을 받아 Given-When-Then XCTest 코드를 이 레포 관례(@testable import Feature, Support 공용 목, test_TC{n}_ 네이밍)로 만든다. 보통 /test-cases 스킬이 승인된 TC 표를 넘겨 호출한다.
+description: iOS ViewModel 테스트 코드 생성 템플릿. TC(테스트 케이스) 목록을 받아 Given-When-Then XCTest 코드를 이 레포 관례(@testable import Feature, Support 공용 목, test_{티켓}_TC{n}_ 네이밍)로 만든다. 보통 /test-cases 스킬이 승인된 TC 표를 넘겨 호출한다.
 ---
 
 # iOS ViewModel 테스트 생성
@@ -9,7 +9,8 @@ description: iOS ViewModel 테스트 코드 생성 템플릿. TC(테스트 케�
 
 ## 입력
 - 대상 ViewModel 이름과 모듈 (예: `StoreSectionsViewModel`, `Store`)
-- 승인된 테스트 케이스 표 (TC 번호 / Given / When / Then / 메서드명)
+- 승인된 테스트 케이스 표 (티켓 키 / 테크스펙 TC 번호 / Given / When / Then / 메서드명)
+- TC 번호는 **테크스펙의 `TC-n` 을 그대로** 쓴다. 파일이 갈라져도 1부터 다시 시작하지 않는다
 
 ## 파일
 
@@ -32,9 +33,9 @@ final class StoreSectionsViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - TC-1
+    // MARK: TH-1337 TC5
 
-    func test_TC1_로드하면_섹션이전달된다() async throws {
+    func test_TH1337_TC5_로드하면_섹션이전달된다() async throws {
         // Given
         let repository = MockStoreRepository(fetchStoreScreenV2Result: .success(try makeResponse()))
         let viewModel = makeViewModel(repository: repository)
@@ -52,9 +53,9 @@ final class StoreSectionsViewModelTests: XCTestCase {
         XCTAssertEqual(received.count, 1)
     }
 
-    // MARK: - TC-2 (동기 Input → Route)
+    // MARK: TH-1337 TC6 (동기 Input → Route)
 
-    func test_TC2_리뷰작성액션이면_리뷰작성Route가발행된다() {
+    func test_TH1337_TC6_리뷰작성액션이면_리뷰작성Route가발행된다() {
         // Given
         let viewModel = makeViewModel(repository: MockStoreRepository())
         let expectation = expectation(description: "route")

@@ -71,7 +71,7 @@ xcodebuild test \
 
 **테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/` 아래 `ViewModelTests/`(화면 로직) · `ServiceTests/`(서비스·매니저) · `DecodingTests/`(응답 파싱) · `Support/`(공용 목·픽스처 로더)
 
-**테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_TC{n}_{조건}_{기대결과}()`. **TC 번호는 테스트 파일(클래스) 단위로 유일**하며 파일마다 TC1부터 다시 시작합니다 — PR·CI 표는 `테스트 클래스 - TC{n}` 조합으로 읽습니다. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/3dollars:test-cases`
+**테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_{티켓}_TC{n}_{조건}_{기대결과}()` (예: `test_TH1340_TC8_탭을누르면_클릭로그가_한건전송된다`). **TC 번호는 노션 테크스펙의 `TC-n`을 그대로 쓰고 티켓 안에서 유일**합니다 — 파일이 갈라져도 1부터 다시 시작하지 않습니다. 스펙에 없는 케이스는 테크스펙에 TC를 먼저 추가하고 그 번호를 씁니다. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/3dollars:test-cases`
 
 ### 린트 검증 (SwiftLint + 모듈 의존성)
 ```bash
