@@ -18,10 +18,12 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onStoreInformationChanged: ((SDText?, CLLocationCoordinate2D?) -> Void)?
     public var onSectionsLoaded: (() -> Void)?
     public var onFavoriteChanged: ((Bool) -> Void)?
+    public var onRequestClose: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
     private let collectionView: UICollectionView
     private let bottomActionBarView = StoreBottomActionBarView()
+    private var storeIdDebugView: StoreIdDebugView?
     private var isBottomActionBarVisible = false
     private var previewItemIndex: Int?
     private var placeholderPreview: StoreScreenPreviewSection?
@@ -73,6 +75,25 @@ public final class StoreSectionsViewController: BaseViewController {
         collectionView.snp.makeConstraints { $0.edges.equalToSuperview() }
         bottomActionBarView.snp.makeConstraints { $0.leading.trailing.bottom.equalToSuperview() }
         view = containerView
+        setupStoreIdDebugViewIfNeeded(in: containerView)
+    }
+
+    private func setupStoreIdDebugViewIfNeeded(in containerView: UIView) {
+        guard AppEnvironment.isDebugToolAvailable,
+              Preference.shared.isShowStoreIdDebugView else { return }
+
+        let debugView = StoreIdDebugView()
+        debugView.bind(storeId: viewModel.storeId)
+        debugView.onCopy = { storeId in
+            UIPasteboard.general.string = storeId
+            ToastManager.shared.show(message: "가게 ID \(storeId) 복사됨")
+        }
+        containerView.addSubview(debugView)
+        debugView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(16)
+            $0.bottom.equalTo(bottomActionBarView.snp.top).offset(-8)
+        }
+        storeIdDebugView = debugView
     }
 
     public override func viewDidLoad() {
@@ -111,6 +132,11 @@ public final class StoreSectionsViewController: BaseViewController {
         } else {
             applyPlaceholder()
         }
+    }
+
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateCollectionViewBottomInset()
     }
 
     public func loadSectionsIfNeeded() {
@@ -257,7 +283,19 @@ public final class StoreSectionsViewController: BaseViewController {
             .actionBars ?? []
         bottomActionBarView.bind(actionBars)
         bottomActionBarView.isHidden = actionBars.isEmpty
-        collectionView.contentInset.bottom = actionBars.isEmpty ? 0 : StoreBottomActionBarView.Layout.contentHeight
+        view.setNeedsLayout()
+    }
+
+    private func updateCollectionViewBottomInset() {
+        let coveringHeight = bottomActionBarView.isHidden ? 0 : bottomActionBarView.coveringHeight
+        let appliedAdjustment = collectionView.adjustedContentInset.bottom - collectionView.contentInset.bottom
+        let inset = StoreBottomActionBarView.Layout.bottomContentInset(
+            coveringHeight: coveringHeight,
+            appliedAdjustment: appliedAdjustment
+        )
+
+        guard abs(collectionView.contentInset.bottom - inset) > 0.5 else { return }
+        collectionView.contentInset.bottom = inset
     }
 
     private func updateBottomActionBarVisibility() {
@@ -459,6 +497,7 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
         onScrollOffsetChanged?(scrollView.contentOffset.y)
         updateSelectedTabIfNeeded(scrollView)
         updateBottomActionBarVisibility()
+        updateCollectionViewBottomInset()
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -547,6 +586,16 @@ private extension StoreSectionsViewController {
                 self?.viewModel.input.didConfirmUseCoupon.send(issuedKey)
             }
             present(alertViewController, animated: true)
+        case .closeWithDeletedStore(let message):
+            AlertUtils.showWithAction(
+                viewController: self,
+                message: message
+            ) { [weak self] in
+                self?.onRequestClose?()
+            }
+        case .closeAfterReport(let message):
+            ToastManager.shared.show(message: message)
+            onRequestClose?()
         }
     }
 

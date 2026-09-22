@@ -1,4 +1,3 @@
-#if DEBUG
 import UIKit
 
 import GoogleMobileAds
@@ -20,4 +19,3 @@ struct AdInspectorDebugMenuItem: DebugMenuItem {
         }
     }
 }
-#endif

@@ -62,6 +62,19 @@ final class ReportBottomSheetViewController: BaseViewController {
             .assign(to: \.isEnabled, on: reportBottomSheet.reportButton)
             .store(in: &cancellables)
         
+        viewModel.output.showLoading
+            .receive(on: DispatchQueue.main)
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: ReportBottomSheetViewController, route: ReportBottomSheetViewModel.Route) in
+                owner.handleRoute(route)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.showErrorAlert
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -69,6 +82,16 @@ final class ReportBottomSheetViewController: BaseViewController {
                 owner.showErrorAlert(error: error)
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: Route
+extension ReportBottomSheetViewController {
+    private func handleRoute(_ route: ReportBottomSheetViewModel.Route) {
+        switch route {
+        case .dismiss:
+            dismiss(animated: true)
+        }
     }
 }
 

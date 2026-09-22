@@ -179,6 +179,7 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        bindGlobalEvent()
         let getCurrentLocation = input.onMapLoad
             .withUnretained(self)
             .handleEvents(receiveOutput: { owner, distance in
@@ -1000,6 +1001,17 @@ extension HomeViewModel {
             objectType: .button,
             objectId: .feed
         ))
+    }
+}
+
+extension HomeViewModel {
+    private func bindGlobalEvent() {
+        dependency.appModuleInterface.globalEventBus.onReportStore
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                owner.fetchInitialCards()
+            }
+            .store(in: &cancellables)
     }
 }
 

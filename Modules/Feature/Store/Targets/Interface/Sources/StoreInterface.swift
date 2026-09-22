@@ -31,6 +31,7 @@ public protocol StoreSectionScrollable: AnyObject {
 
 public protocol StoreDetailSectionsLoadable: AnyObject {
     var sectionsScrollView: UIScrollView { get }
+    var onRequestClose: (() -> Void)? { get set }
     func loadSectionsIfNeeded()
     func reloadSections()
     func updatePlaceholderPreview(_ preview: StoreScreenPreviewSection)

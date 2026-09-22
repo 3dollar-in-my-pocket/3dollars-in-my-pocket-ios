@@ -50,6 +50,10 @@ App/Targets/three-dollar-in-my-pocketTests/
   - `test_TC3_네트워크실패하면_error가전달된다()`
   - TC 하나를 여러 메서드로 나누면 전부 같은 접두: `test_TC2_...`, `test_TC2_...`
   - TC와 무관한 회귀 테스트는 `test_회귀_...` 접두 (예: 예전 버그 재발 방지)
+- **TC 번호는 테스트 파일(클래스) 안에서만 유일하다.** 파일마다 TC1 부터 다시 시작한다.
+  - 번호만으로는 어느 화면인지 알 수 없으므로, PR·CI 표는 항상 **`테스트 클래스 - TC{n}`** 조합으로 읽는다.
+  - 전역 연번을 쓰면 PR 이 쌓일수록 "TC-9" 가 무엇이었는지 히스토리에서 추적이 안 된다.
+  - 테크스펙 TC 와의 대응은 번호가 아니라 PR 본문의 "요구사항 → 구현 → 상태" 표(`/3dollars:drift`)로 남긴다.
 - Given / When / Then 주석 3개를 반드시 쓴다.
 
 ## 실행
@@ -75,7 +79,7 @@ Buildable Folders 구조라 테스트 파일·픽스처를 추가해도 `make pr
 - `tests.xcresult`를 아티팩트로 올린다(14일)
 - 실패한 테스트가 있으면 체크가 빨간불
 
-TC 커버리지 표는 메서드명 `test_TC{n}_` 접두로 뽑는다. 그래서 네이밍 규칙이 곧 증거 규칙이다.
+TC 커버리지 표는 메서드명 `test_TC{n}_` 접두 + 테스트 클래스명으로 뽑는다. 그래서 네이밍 규칙이 곧 증거 규칙이다.
 UI 회귀는 스냅샷 테스트 대신 `3dollars:simulator-test` 스킬로 시나리오별 스크린샷/영상을 찍어 PR 본문 Before/After 표에 첨부한다.
 
 ## ViewModel 테스트 작성법
@@ -157,8 +161,8 @@ final class StoreSectionsViewModelTests: XCTestCase {
 
 `/3dollars:test-cases`가 아래 표를 만들어 PR 본문에 넣는다. 사람은 이 표만 본다.
 
-| TC | 테스트 | 결과 |
-|---|---|---|
-| TC-1 | `test_TC1_로드하면_섹션이전달된다` | ✅ |
-| TC-2 | 수동 — 지도 마커 애니메이션 | ☐ 체크리스트 |
-| TC-3 | `test_TC3_네트워크실패하면_error가전달된다` | ✅ |
+| 테스트 클래스 | TC | 테스트 | 결과 |
+|---|---|---|---|
+| StoreSectionsViewModelTests | TC1 | `test_TC1_로드하면_섹션이전달된다` | ✅ |
+| StoreSectionsViewModelTests | TC3 | `test_TC3_네트워크실패하면_error가전달된다` | ✅ |
+| — | 수동 | 지도 마커 애니메이션 | ☐ 체크리스트 |

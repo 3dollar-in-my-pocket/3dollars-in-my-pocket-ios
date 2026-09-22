@@ -155,6 +155,8 @@ public enum StoreStrings: Sendable {
     public static let description = StoreStrings.tr("Localization", "report_modal.description")
     /// 3건 이상
     public static let descriptionBold = StoreStrings.tr("Localization", "report_modal.description_bold")
+    /// 신고가 접수되었어요
+    public static let successToast = StoreStrings.tr("Localization", "report_modal.success_toast")
     /// 삭제 요청 하시는 이유가 궁금해요!
     public static let title = StoreStrings.tr("Localization", "report_modal.title")
   }

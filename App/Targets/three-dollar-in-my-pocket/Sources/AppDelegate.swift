@@ -79,11 +79,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
         Log.addDestination(console)
         
-        #if DEBUG
-        // netfox
-        NFX.sharedInstance().setGesture(.custom)
-        NFX.sharedInstance().start()
-        #endif
+        if AppEnvironment.isDebugToolAvailable {
+            NFX.sharedInstance().setGesture(.custom)
+            NFX.sharedInstance().start()
+        }
     }
     
     private func initializeFonts() {

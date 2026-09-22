@@ -19,25 +19,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        #if DEBUG
-        let shakeDetectingWindow = ShakeDetectingWindow(frame: windowScene.coordinateSpace.bounds)
-        shakeDetectingWindow.onShake = { [weak shakeDetectingWindow] in
-            guard let shakeDetectingWindow else { return }
-            DebugMenuPresenter(items: [
-                NetfoxDebugMenuItem(),
-                AdInspectorDebugMenuItem(),
-                AdvertisingIdentifierDebugMenuItem()
-            ]).present(in: shakeDetectingWindow)
-        }
-        window = shakeDetectingWindow
-        #else
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        #endif
-
         window?.windowScene = windowScene
         window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         window?.rootViewController = SplashViewController(nibName: nil, bundle: nil)
         window?.makeKeyAndVisible()
+
+        DebugOverlay.attachIfNeeded(to: windowScene)
 
         self.reserveUniversialLinkIfExisted(connectionOptions: connectionOptions)
         self.reserveDeepLinkIfExisted(connectionOptions: connectionOptions)
