@@ -14,6 +14,7 @@ public extension ScreenName {
     static let splash = ScreenName(rawValue: "splash")
 
     static let markerPopup = ScreenName(rawValue: "marker_popup")
+    static let mainTabBar = ScreenName(rawValue: "main_tab_bar")
 
     // Membership
     static let signIn = ScreenName(rawValue: "sign_in")

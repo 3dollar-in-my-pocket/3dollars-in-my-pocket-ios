@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 import Model
 import CoreLocation
@@ -143,6 +144,30 @@ public final class Preference {
         }
     }
     
+    public var isShowStoreIdDebugView: Bool {
+        get {
+            return instance.bool(forKey: "KEY_DEBUG_SHOW_STORE_ID")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_DEBUG_SHOW_STORE_ID")
+        }
+    }
+
+    public var debugFloatingButtonCenter: CGPoint? {
+        get {
+            guard instance.object(forKey: "KEY_DEBUG_BUTTON_CENTER_X") != nil else { return nil }
+            return CGPoint(
+                x: instance.double(forKey: "KEY_DEBUG_BUTTON_CENTER_X"),
+                y: instance.double(forKey: "KEY_DEBUG_BUTTON_CENTER_Y")
+            )
+        }
+        set {
+            guard let newValue else { return }
+            instance.set(newValue.x, forKey: "KEY_DEBUG_BUTTON_CENTER_X")
+            instance.set(newValue.y, forKey: "KEY_DEBUG_BUTTON_CENTER_Y")
+        }
+    }
+
     public func clear() {
         instance.removeObject(forKey: "KEY_USER_ID")
         instance.removeObject(forKey: "KEY_TOKEN")

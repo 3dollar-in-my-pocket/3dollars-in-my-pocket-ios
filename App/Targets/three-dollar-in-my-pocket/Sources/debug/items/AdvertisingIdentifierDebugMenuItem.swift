@@ -1,4 +1,3 @@
-#if DEBUG
 import UIKit
 import AdSupport
 import AppTrackingTransparency
@@ -32,4 +31,3 @@ struct AdvertisingIdentifierDebugMenuItem: DebugMenuItem {
         }
     }
 }
-#endif

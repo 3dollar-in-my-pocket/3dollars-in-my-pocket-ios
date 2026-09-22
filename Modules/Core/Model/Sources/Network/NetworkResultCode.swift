@@ -4,6 +4,7 @@ public enum NetworkResultCode: String {
     case unauthorized = "UA000"
     case serviceUnavailable = "SU000"
     case forbidden = "FB000"
+    case notExistsStore = "NF002"
     case unknown
     
     public init(value: String?) {

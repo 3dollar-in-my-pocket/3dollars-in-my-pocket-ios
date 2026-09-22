@@ -545,6 +545,9 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         detailViewController.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         detailViewController.didMove(toParent: self)
         self.detailViewController = detailViewController
+        (detailViewController as? StoreDetailSectionsLoadable)?.onRequestClose = { [weak self] in
+            self?.viewModel.input.didTapClose.send(())
+        }
         (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 

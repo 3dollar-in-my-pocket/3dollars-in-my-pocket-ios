@@ -114,6 +114,9 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
         closeButton.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
+        sectionsViewController.onRequestClose = { [weak self] in
+            self?.didTapBackButton()
+        }
     }
 
     @objc private func didTapBackButton() {

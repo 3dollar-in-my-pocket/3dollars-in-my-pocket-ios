@@ -613,6 +613,17 @@ public enum ThreeDollarInMyPocketStrings: Sendable {
     /// 일시적인 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.
     public static let defaultError = ThreeDollarInMyPocketStrings.tr("Localization", "splash.default_error")
   }
+
+  public enum TabBar: Sendable {
+    /// Community
+    public static let community = ThreeDollarInMyPocketStrings.tr("Localization", "tab_bar.community")
+    /// Home
+    public static let home = ThreeDollarInMyPocketStrings.tr("Localization", "tab_bar.home")
+    /// My Page
+    public static let myPage = ThreeDollarInMyPocketStrings.tr("Localization", "tab_bar.my_page")
+    /// Add Store
+    public static let write = ThreeDollarInMyPocketStrings.tr("Localization", "tab_bar.write")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

@@ -50,6 +50,8 @@ extension StoreSectionsViewModel {
         case presentBossStorePhoto(BossStorePhotoViewModel)
         case presentDeleteReviewAlert(reviewId: Int)
         case presentUseCouponAlert(issuedKey: String)
+        case closeWithDeletedStore(message: String)
+        case closeAfterReport(message: String)
     }
 
     struct NavigationTarget {
@@ -69,19 +71,22 @@ extension StoreSectionsViewModel {
         let reviewRepository: ReviewRepository
         let couponRepository: CouponRepository
         let logManager: LogManagerProtocol
+        let globalEventBus: GlobalEventBusProtocol
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
             reportRepository: ReportRepository = ReportRepositoryImpl(),
             reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
             couponRepository: CouponRepository = CouponRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            logManager: LogManagerProtocol = LogManager.shared,
+            globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
         ) {
             self.storeRepository = storeRepository
             self.reportRepository = reportRepository
             self.reviewRepository = reviewRepository
             self.couponRepository = couponRepository
             self.logManager = logManager
+            self.globalEventBus = globalEventBus
         }
     }
 
@@ -211,8 +216,19 @@ final class StoreSectionsViewModel: BaseViewModel {
                 scrollToSectionIfPossible(fragment: fragment)
             }
         case .failure(let error):
-            output.error.send(error)
+            if let message = Self.deletedStoreMessage(from: error) {
+                output.route.send(.closeWithDeletedStore(message: message))
+            } else {
+                output.error.send(error)
+            }
         }
+    }
+
+    static func deletedStoreMessage(from error: Error) -> String? {
+        guard case .errorContainer(let container) = error as? NetworkError,
+              NetworkResultCode(value: container.resultCode) == .notExistsStore else { return nil }
+
+        return container.message
     }
 
     private func handle(_ action: StoreSectionAction) {
@@ -453,14 +469,26 @@ final class StoreSectionsViewModel: BaseViewModel {
             let result = await dependency.reportRepository.fetchReportReasons(group: .store)
             switch result {
             case .success(let response):
-                output.route.send(.presentStoreReport(.init(config: .init(
+                let viewModel = ReportBottomSheetViewModel(config: .init(
                     storeId: storeId,
                     reportReasons: response.reasons.map(ReportReason.init)
-                ))))
+                ))
+                viewModel.output.onSuccessReport
+                    .withUnretained(self)
+                    .sink { (owner: StoreSectionsViewModel, _) in
+                        owner.handleSuccessReport(storeId: storeId)
+                    }
+                    .store(in: &cancellables)
+                output.route.send(.presentStoreReport(viewModel))
             case .failure(let error):
                 output.error.send(error)
             }
         }
+    }
+
+    private func handleSuccessReport(storeId: Int) {
+        dependency.globalEventBus.onReportStore.send(storeId)
+        output.route.send(.closeAfterReport(message: Strings.ReportModal.successToast))
     }
 
     private func presentReviewReport(storeId: Int, reviewId: Int) {
