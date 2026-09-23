@@ -53,19 +53,19 @@ final class MainTabBarViewController: UITabBarController {
     }
 
     init(viewModel: MainTabBarViewModel = MainTabBarViewModel()) {
-        guard let membershipInterface = DIContainer.shared.container.resolve(MembershipInterface.self) else {
+        guard let membershipInterface = DIContainer.shared.resolver.resolve(MembershipInterface.self) else {
             fatalError("⚠️ MembershipInterface가 등록되지 않았습니다.")
         }
 
-        guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
+        guard let writeInterface = DIContainer.shared.resolver.resolve(WriteInterface.self) else {
             fatalError("⚠️ WriteInterface가 등록되지 않았습니다.")
         }
 
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {
+        guard let storeInterface = DIContainer.shared.resolver.resolve(StoreInterface.self) else {
             fatalError("⚠️ StoreInterface가 등록되지 않았습니다.")
         }
 
-        guard let myPageInterface = DIContainer.shared.container.resolve(MyPageInterface.self) else {
+        guard let myPageInterface = DIContainer.shared.resolver.resolve(MyPageInterface.self) else {
             fatalError("⚠️ MyPageInterface가 등록되지 않았습니다.")
         }
 

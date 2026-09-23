@@ -348,7 +348,7 @@ final class StoreSectionsViewModel: BaseViewModel {
 
     private func goToNavigationApplication(type: NavigationAppType) {
         guard let target = state.navigationTarget,
-              let appInformation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
+              let appInformation = DIContainer.shared.resolver.resolve(AppInformation.self) else { return }
         let location = target.location
         let storeName = target.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 

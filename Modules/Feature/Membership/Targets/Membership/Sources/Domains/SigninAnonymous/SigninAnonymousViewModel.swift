@@ -31,7 +31,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     private var preference = Preference.shared
     
     init(userRepository: UserRepository = UserRepositoryImpl()) {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
+        self.appInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self)
         self.userRepository = userRepository
         
         super.init()

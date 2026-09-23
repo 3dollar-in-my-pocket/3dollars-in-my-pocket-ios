@@ -27,7 +27,7 @@ public final class PolicyViewController: Common.BaseViewController {
     }
     
     init() {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
+        self.appInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self)
         super.init(nibName: nil, bundle: nil)
     }
     

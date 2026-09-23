@@ -152,7 +152,7 @@ extension WriteNavigationController {
                     AlertUtils.showWithAction(
                         viewController: self,
                         message: "세션이 만료되었습니다.\n다시 로그인해주세요.") {
-                            guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else { return }
+                            guard let appModuleInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self) else { return }
                             
                             appModuleInterface.onClearSession()
                         }
