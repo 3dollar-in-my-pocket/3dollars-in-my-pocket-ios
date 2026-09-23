@@ -42,7 +42,6 @@ public final class SigninViewController: BaseViewController {
         super.viewDidLoad()
         
         appInterface.deepLinkHandler.handleReservedDeepLink()
-        appInterface.requestATTIfNeeded()
     }
     
     public override func bindViewModelInput() {
