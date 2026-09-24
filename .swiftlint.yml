@@ -19,16 +19,16 @@ excluded:
 # ---- 기본 룰 임계값 ----
 line_length: 200
 
-type_body_length:          # R8
-  warning: 300
+type_body_length:          # R8 — 줄 수는 신호일 뿐. 500 초과는 disable:next + 사유로 예외 (warning 을 생략하면 기본값 250 이 살아나서 같이 적는다)
+  warning: 500
   error: 500
 
 function_body_length:
   warning: 100
 
-file_length:
-  warning: 500
-  error: 1200
+file_length:               # R8 — 같은 파일 extension 으로 옮겨 type_body_length 를 피하는 우회를 막는다. 800 초과는 disable + 사유
+  warning: 800
+  error: 800
 
 large_tuple:
   error: 5
@@ -148,6 +148,13 @@ custom_rules:
     name: "R7 then 금지"
     regex: "^import Then\\b|\\.then\\s*\\{"
     message: "R7: then 대신 클로저 초기화를 사용한다 (let v: UILabel = { ... }())."
+    severity: error
+
+  length_disable_reason:                    # R8
+    name: "R8 길이 예외는 사유 필수"
+    regex: "swiftlint:disable(:next|:this|:previous)?\\s+(type_body_length|file_length)\\s*$"
+    match_kinds: comment
+    message: "R8: 길이 예외(type_body_length 500 / file_length 800)는 책임이 하나인 이유를 적는다. 예) // swiftlint:disable:next type_body_length - 셀 레이아웃만 담당"
     severity: error
 
   no_print:                                 # R9

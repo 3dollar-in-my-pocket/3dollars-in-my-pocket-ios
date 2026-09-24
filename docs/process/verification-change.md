@@ -17,6 +17,7 @@
 ## 코멘트 (`.github/workflows/labeler.yml`)
 
 `verification-change`가 붙으면 바뀐 장치 파일 목록을 PR 코멘트 하나에 갱신형으로 남긴다. 작성자는 각 파일을 왜 바꿨는지 본문에 적는다.
+목(`Sources/Support/Mock*.swift`)은 테스트를 받쳐 주는 부품일 뿐이라 목록에서 뺀다 (라벨은 그대로 붙는다). 리뷰어가 볼 것은 테스트 코드 자체의 변경이다.
 
 ## 경로 목록을 바꿀 때
 

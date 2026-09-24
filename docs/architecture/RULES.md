@@ -23,7 +23,7 @@ AI가 코드를 많이 쓰는 환경에서 사람은 diff 전체가 아니라 **
 | R5 | ViewModel은 UI를 모르고, 의존은 주입받는다 | 린트 `viewmodel_*` 3개 | 18건 동결 |
 | R6 | ViewController/Cell은 Base 클래스를 상속 | 린트 `vc_inherits_base`, `cell_inherits_base`, `no_register_id` | 5건 동결 |
 | R7 | UI 표현은 DesignSystem·leading/trailing·클로저 초기화 | 린트 `no_uicolor_literal`, `snapkit_leading_trailing`, `no_then` | 736건 동결 |
-| R8 | 타입 하나는 300줄을 넘기지 않는다 | 린트 기본 룰 `type_body_length` | 7건 동결 |
+| R8 | 타입은 책임 하나만 진다 (타입 500·파일 800줄 초과는 사유 필수) | 린트 기본 룰 `type_body_length`·`file_length` + `length_disable_reason` | 5건 동결 |
 | R9 | 로그는 Log 모듈로, `print`·`as!`·`try!` 금지 | 린트 `no_print` + 기본 룰 error 승격 | 6건 동결 |
 | R10 | ViewModel 구조·Route 분리·서버 네이밍 통일 | 문서 + AI 리뷰 | — |
 
@@ -269,19 +269,24 @@ titleLabel.snp.makeConstraints { $0.left.equalToSuperview() }   // ❌ left
 
 ---
 
-## R8. 타입 하나는 300줄을 넘기지 않는다
+## R8. 타입은 책임 하나만 진다
 
-**규칙** — 클래스·구조체·enum 본문은 300줄(warning), 500줄(error)을 넘기지 않는다.
+**규칙** — 클래스·구조체·enum은 책임 하나만 진다. 줄 수는 규칙이 아니라 **점검 신호**다. 타입 본문 500줄 또는 파일 800줄을 넘기면 린트가 멈추고, 그래도 책임이 하나라면 사유를 달아 예외로 둔다.
 
-**이유** — 단일 책임(SRP)의 근사 지표. 1,032줄짜리 `HomeViewModel`은 사람도 AI도 한 번에 못 읽고, 테스트 케이스 하나가 수십 개의 상태에 얽힌다. 길어지면 화면 안의 섹션·기능 단위로 ViewModel을 쪼갠다(예: `StoreSectionsViewModel`).
+**이유** — 길이 자체가 문제가 아니라 **변경 하나가 건드리는 상태가 많아지는 것**이 문제다. 상태가 얽히면 TC 하나를 검증하려고 무관한 상태까지 세팅해야 하고, AI의 수정 범위도 넓어진다. 한편 AI는 기존 파일에 덧붙이지 먼저 쪼개자고 하지 않으므로(`HomeViewModel`이 1,032줄까지 자란 경로), 사람이 diff를 안 보는 이 프로세스에선 기계적인 멈춤 지점이 하나는 있어야 한다. 반대로 코드 UI(SnapKit)는 책임이 하나여도 300줄을 쉽게 넘기므로, 낮은 임계값은 가짜 분리(같은 파일 `extension`으로 옮기기 — `type_body_length`는 extension을 세지 않는다)만 부른다.
 
-**좋은 예** — 화면이 커지면 하위 ViewModel로 분리하고 상위는 조합만 한다.
+**좋은 예** — 화면이 여러 기능을 가지면 섹션·기능 단위 하위 ViewModel로 나누고 상위는 조합만 한다(`StoreSectionsViewModel`). 셀 하나의 레이아웃이 길어 500줄을 넘으면 사유를 단다.
 
-**나쁜 예** — 한 ViewModel이 지도·리스트·필터·광고·딥링크를 전부 처리.
+```swift
+// swiftlint:disable:next type_body_length - 셀 하나의 레이아웃만 담당(서브뷰 선언·제약이 길 뿐 상태 없음)
+final class XxxCell: BaseCollectionViewCell {
+```
 
-**강제 수단** — SwiftLint 기본 룰 `type_body_length: warning 300 / error 500`. (현재 `.swiftlint.yml`이 중복 키로 파싱 실패해 기본값이 적용되고 있었다. 설정 수정 후 살아난다.)
+**나쁜 예** — 한 ViewModel이 지도·리스트·필터·광고·딥링크를 전부 처리. 줄 수를 맞추려고 메서드를 같은 파일 `extension`으로 옮기기. 사유 없는 `disable`.
 
-**예외(베이스라인)** — 7건 동결. `HomeViewModel`은 별도 리팩터링 티켓 대상.
+**강제 수단** — SwiftLint 기본 룰 `type_body_length: 500`, `file_length: 800`(둘 다 warning·error 같은 값. warning을 생략하면 기본값이 살아나고, CI는 `--strict`라 warning도 실패다) + 커스텀 룰 `length_disable_reason`(사유 없는 `disable` 금지). `file_length`는 extension으로 옮겨 타입 길이만 맞추는 우회를 막는다.
+
+**예외(베이스라인)** — 타입 2건(`HomeViewModel`, `StorePreviewBottomSheetViewController`), 파일 3건(위 둘 + `HomeViewController`) 동결. 모두 책임이 여러 개라 사유 예외가 아니라 분리 대상이다.
 
 ---
 
