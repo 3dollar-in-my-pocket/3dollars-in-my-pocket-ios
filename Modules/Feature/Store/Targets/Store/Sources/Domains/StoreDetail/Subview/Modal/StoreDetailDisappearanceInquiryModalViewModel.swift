@@ -6,7 +6,7 @@
 //  Copyright © 2025 macgongmon. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import Combine
 
 import Common

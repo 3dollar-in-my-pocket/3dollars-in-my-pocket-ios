@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Combine
 
-import Then
 import Common
 import DesignSystem
 import Log
@@ -24,37 +23,47 @@ final class ReportPollViewController: BaseViewController {
 
     private let backgroundButton = UIButton()
 
-    private let containerView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
-        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .white
+        containerView.layer.cornerRadius = 16
+        containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        return containerView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.text = "신고 사유"
-        $0.textColor = Colors.gray100.color
-        $0.font = Fonts.semiBold.font(size: 20)
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.text = "신고 사유"
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.font = Fonts.semiBold.font(size: 20)
+        return titleLabel
+    }()
 
-    private lazy var collectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
-    ).then {
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-        $0.delegate = self
-    }
+    )
+        collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        return collectionView
+    }()
 
-    private let reportButton = Button.Normal(size: .h48, text: "신고하기").then {
-        $0.isEnabled = false
-    }
+    private let reportButton: Button.Normal = {
+        let reportButton = Button.Normal(size: .h48, text: "신고하기")
+        reportButton.isEnabled = false
+        return reportButton
+    }()
 
-    private let closeButton = UIButton().then {
-        $0.setImage(Icons.close.image.resizeImage(scaledTo: 16).withTintColor(.white), for: .normal)
-        $0.backgroundColor = Colors.gray40.color
-        $0.layer.cornerRadius = 12
-    }
+    private let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.setImage(Icons.close.image.resizeImage(scaledTo: 16).withTintColor(.white), for: .normal)
+        closeButton.backgroundColor = Colors.gray40.color
+        closeButton.layer.cornerRadius = 12
+        return closeButton
+    }()
 
     private lazy var dataSource = ReportPollDataSource(viewModel: viewModel, collectionView: collectionView)
 
@@ -95,7 +104,7 @@ final class ReportPollViewController: BaseViewController {
         view.backgroundColor = .clear
         view.addSubViews([
             backgroundButton,
-            containerView,
+            containerView
         ])
 
         containerView.addSubViews([
@@ -155,7 +164,7 @@ final class ReportPollViewController: BaseViewController {
             )
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)

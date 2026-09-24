@@ -22,7 +22,7 @@ extension FeedListViewModel {
     }
     
     struct State {
-        var cursor: CursorString? = nil
+        var cursor: CursorString?
         var feeds: [FeedResponse] = []
         var mapLatitude: Double?
         var mapLongitude: Double?

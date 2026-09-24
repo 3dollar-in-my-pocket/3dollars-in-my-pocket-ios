@@ -20,14 +20,14 @@ public final class PolicyViewController: Common.BaseViewController {
         let viewController = PolicyViewController()
         
         viewController.delegate = delegate
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.modalPresentationStyle = .overCurrentContext
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overCurrentContext
+        return navigationController
     }
     
     init() {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
+        self.appInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self)
         super.init(nibName: nil, bundle: nil)
     }
     

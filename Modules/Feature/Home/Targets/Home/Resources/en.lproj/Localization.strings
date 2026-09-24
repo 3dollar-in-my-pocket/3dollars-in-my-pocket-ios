@@ -26,6 +26,7 @@
 "home_list_is_only_certified" = "방문 인증 가게";
 "home_list.empty.title" = "주변 2km 이내에 가게가 없어요.";
 "home_list.empty.description" = "다른 주소로 검색하거나 직접 제보해보세요!";
+"home_list.map_view_button" = "지도 보기";
 
 // 주소 검색 화면
 "search_address.title" = "위치 검색";

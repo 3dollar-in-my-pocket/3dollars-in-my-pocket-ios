@@ -10,6 +10,7 @@ import Store
 import Write
 import Community
 import MyPage
+import Feed
 
 import SnapKit
 import Firebase
@@ -78,11 +79,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         console.format = "$DHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
         Log.addDestination(console)
         
-        #if DEBUG
-        // netfox
-        NFX.sharedInstance().setGesture(.custom)
-        NFX.sharedInstance().start()
-        #endif
+        if AppEnvironment.isDebugToolAvailable {
+            NFX.sharedInstance().setGesture(.custom)
+            NFX.sharedInstance().start()
+        }
     }
     
     private func initializeFonts() {
@@ -110,7 +110,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
+
+                Task { @MainActor in
+                    await self.requestTrackingAuthorizationIfNeeded()
+                }
             }
+    }
+
+    @MainActor
+    private func requestTrackingAuthorizationIfNeeded() async {
+        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
+
+        if UIApplication.shared.applicationState != .active {
+            let activations = NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
+            for await _ in activations { break }
+        }
+
+        _ = await ATTrackingManager.requestTrackingAuthorization()
     }
     
     private func initializeDI() {
@@ -120,6 +136,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         WriteInterfaceImpl.registerStoreInterface()
         CommunityInterfaceImpl.registerCommunityInterface()
         MyPageInterfaceImpl.registerMyPageInterface()
+        FeedInterfaceImpl.registerFeedInterface()
         AppModuleInterfaceImpl.registerAppModuleInterface()
         AppInformationImpl.registerAppInformation()
     }

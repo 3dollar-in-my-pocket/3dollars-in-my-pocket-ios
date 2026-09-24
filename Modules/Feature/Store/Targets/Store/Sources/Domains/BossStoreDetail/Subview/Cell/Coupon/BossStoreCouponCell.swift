@@ -19,7 +19,7 @@ final class BossStoreCouponCell: BaseCollectionViewCell {
         backgroundColor = .clear
         
         contentView.addSubViews([
-            couponView,
+            couponView
         ])
     }
     

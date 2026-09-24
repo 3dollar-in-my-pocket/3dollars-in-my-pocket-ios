@@ -6,15 +6,19 @@ import PanModal
 
 final class CouponListViewController: BaseViewController {
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.delegate = self
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        return collectionView
+    }()
     
-    private let emptyView = CouponEmptyView().then {
-        $0.isHidden = false
-        $0.bind(title: "아직 쿠폰이 없어요")
-    }
+    private let emptyView: CouponEmptyView = {
+        let emptyView = CouponEmptyView()
+        emptyView.isHidden = false
+        emptyView.bind(title: "아직 쿠폰이 없어요")
+        return emptyView
+    }()
 
     private lazy var dataSource = CouponListDataSource(collectionView: collectionView)
 

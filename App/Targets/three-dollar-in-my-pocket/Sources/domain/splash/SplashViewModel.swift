@@ -243,7 +243,7 @@ final class SplashViewModel: BaseViewModel {
             case .forbidden:
                 let alertContent = AlertContent(title: nil, message: Strings.httpErrorForbidden)
                 output.route.send(.goToSignInWithAlert(alertContent))
-            case .unknown:
+            case .notExistsStore, .unknown:
                 showRetryOrDefaultAlert(context: context)
             }
         } else {

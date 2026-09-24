@@ -10,8 +10,11 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
     enum Layout {
         static let imageSpacing: CGFloat = 8
         static let actionBarSpacing: CGFloat = 4
-        static let defaultImageSize: CGFloat = 120
+        static let defaultImageSize = CGSize(width: 120, height: 120)
         static let horizontalMargin: CGFloat = 20
+        static var imageAvailableWidth: CGFloat {
+            return UIUtils.windowBounds.width - horizontalMargin * 2
+        }
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -223,18 +226,22 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         self.images = images
 
         let isEmpty = images.isEmpty
-        let height = images.map { imageSize(for: $0).height }.max() ?? 0
+        let height = PreviewImageLayout.rowHeight(images: images, defaultHeight: Layout.defaultImageSize.height)
         imageHeightConstraint?.update(offset: isEmpty ? 0 : height)
         imageCollectionView.isHidden = isEmpty
+        imageCollectionView.isScrollEnabled = images.count > PreviewImageLayout.fillMaxCount
         imageCollectionView.collectionViewLayout.invalidateLayout()
         imageCollectionView.reloadData()
     }
 
-    private func imageSize(for image: SDImage) -> CGSize {
-        let width = image.style.width > 0 ? image.style.width : Layout.defaultImageSize
-        let height = image.style.height > 0 ? image.style.height : Layout.defaultImageSize
-
-        return CGSize(width: width, height: height)
+    private func imageSize(at index: Int) -> CGSize {
+        return PreviewImageLayout.itemSize(
+            style: images[safe: index]?.style,
+            count: images.count,
+            availableWidth: Layout.imageAvailableWidth,
+            spacing: Layout.imageSpacing,
+            defaultSize: Layout.defaultImageSize
+        )
     }
 
     private func bindContributorActionBar(_ actionBar: SDActionBar?) {
@@ -323,9 +330,9 @@ extension StoreScreenPreviewCell: UICollectionViewDelegateFlowLayout {
             return StoreScreenPreviewActionCell.Layout.size(for: actionBar)
         }
 
-        guard let image = images[safe: indexPath.item] else { return .zero }
+        guard images[safe: indexPath.item] != nil else { return .zero }
 
-        return imageSize(for: image)
+        return imageSize(at: indexPath.item)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

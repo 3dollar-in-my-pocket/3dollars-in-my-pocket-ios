@@ -1,8 +1,8 @@
-//import UIKit
+// import UIKit
 //
-//import Model
+// import Model
 //
-//final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetailSection, WriteDetailSectionItem> {
+// final class WriteDetailDataSource: UICollectionViewDiffableDataSource<WriteDetailSection, WriteDetailSectionItem> {
 //    let viewModel: WriteDetailViewModel
 //    
 //    init(collectionView: UICollectionView, viewModel: WriteDetailViewModel) {
@@ -150,9 +150,9 @@
 //        
 //        collectionView.delegate = self
 //    }
-//}
+// }
 //
-//struct WriteDetailSection: Hashable {
+// struct WriteDetailSection: Hashable {
 //    enum SectionType: Hashable {
 //        case map
 //        case address
@@ -194,9 +194,9 @@
 //    
 //    let type: SectionType
 //    var items: [WriteDetailSectionItem]
-//}
+// }
 //
-//enum WriteDetailSectionItem: Hashable {
+// enum WriteDetailSectionItem: Hashable {
 //    case map(LocationResponse)
 //    case address(String?)
 //    case name(String)
@@ -237,10 +237,10 @@
 //            return WriteDetailMenuGroupCell.Layout.size(count: viewModel.output.menus.count)
 //        }
 //    }
-//}
+// }
 //
 //
-//extension WriteDetailDataSource: UICollectionViewDelegateFlowLayout {
+// extension WriteDetailDataSource: UICollectionViewDelegateFlowLayout {
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 //        guard let item = itemIdentifier(for: indexPath) else { return .zero }
 //        
@@ -261,4 +261,4 @@
 //            return WriteDetailCategoryHeaderView.Layout.size
 //        }
 //    }
-//}
+// }

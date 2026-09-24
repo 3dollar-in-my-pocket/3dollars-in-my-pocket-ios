@@ -75,12 +75,12 @@ extension LocationManager {
         public typealias Output = CLLocation
         public typealias Failure = Error
         
-        public func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
+        public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
             let subscription = LocationSubscription(subscriber: subscriber)
             subscriber.receive(subscription: subscription)
         }
         
-        final class LocationSubscription<S: Subscriber> : NSObject, CLLocationManagerDelegate, Subscription where S.Input == Output, S.Failure == Failure{
+        final class LocationSubscription<S: Subscriber>: NSObject, CLLocationManagerDelegate, Subscription where S.Input == Output, S.Failure == Failure {
             var subscriber: S
             var locationManager = CLLocationManager()
             

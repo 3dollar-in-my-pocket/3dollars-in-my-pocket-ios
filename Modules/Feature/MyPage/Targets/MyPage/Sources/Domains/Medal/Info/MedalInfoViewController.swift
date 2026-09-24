@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -21,7 +20,7 @@ final class MedalInfoViewController: BaseViewController {
         
         super.init(nibName: nil, bundle: nil)
         
-        modalPresentationStyle = .overCurrentContext    
+        modalPresentationStyle = .overCurrentContext
     }
     
     required init?(coder: NSCoder) {
@@ -44,7 +43,7 @@ final class MedalInfoViewController: BaseViewController {
             .controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
-            .sink { owner, index in
+            .sink { owner, _ in
                 owner.dismiss(animated: true)
             }
             .store(in: &cancellables)
@@ -62,7 +61,7 @@ extension MedalInfoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let medal = viewModel.output.medals[safe: indexPath.item] else { return UITableViewCell() }
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MedalInfoTableViewCell.registerId, for: indexPath) as? MedalInfoTableViewCell else { return UITableViewCell() }
+        let cell: MedalInfoTableViewCell = tableView.dequeueReusableCell(indexPath: indexPath)
         cell.bind(medal: medal)
         return cell
     }

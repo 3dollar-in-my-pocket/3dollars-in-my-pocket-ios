@@ -25,7 +25,7 @@ final class StoreReviewListViewModel: BaseViewModel {
     }
 
     struct State {
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
         var items: [MyStoreReview] = []
@@ -65,9 +65,9 @@ final class StoreReviewListViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.reviewRepository.fetchMyStoreReview(
-                    input:  CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
+                    input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
             }
             .withUnretained(self)
@@ -97,9 +97,9 @@ final class StoreReviewListViewModel: BaseViewModel {
 
         state.loadMore
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.reviewRepository.fetchMyStoreReview(
-                    input:  CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
+                    input: CursorRequestInput(size: Self.size, cursor: owner.state.nextCursor)
                 )
             }
             .withUnretained(self)

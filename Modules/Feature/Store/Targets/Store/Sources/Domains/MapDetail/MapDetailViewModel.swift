@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 import CoreLocation
 import Combine
 
@@ -31,6 +31,7 @@ public final class MapDetailViewModel: BaseViewModel {
     enum Route {
         case presentNavigationActionSheet
         case navigateAppleMap(LocationResponse)
+        case openURL(URL)
     }
     
     let input = Input()
@@ -62,7 +63,7 @@ public final class MapDetailViewModel: BaseViewModel {
     }
     
     private func goToNavigationApplication(type: NavigationAppType) {
-        guard let appInfomation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
+        guard let appInfomation = DIContainer.shared.resolver.resolve(AppInformation.self) else { return }
         let location = state.location
         let storeName = state.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
@@ -71,11 +72,11 @@ public final class MapDetailViewModel: BaseViewModel {
         case .kakao:
             urlScheme = "kakaomap://look?p=\(location.latitude),\(location.longitude)"
             guard let url = URL(string: urlScheme) else { return }
-            UIApplication.shared.open(url)
+            output.route.send(.openURL(url))
         case .naver:
             urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)&name=\(storeName)&zoom=20&appname=\(appInfomation.bundleId)"
             guard let url = URL(string: urlScheme) else { return }
-            UIApplication.shared.open(url)
+            output.route.send(.openURL(url))
         case .apple:
             output.route.send(.navigateAppleMap(state.location))
         }

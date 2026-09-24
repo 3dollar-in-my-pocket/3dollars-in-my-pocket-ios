@@ -181,7 +181,7 @@ final class CategoryFilterViewModel: BaseViewModel {
             
             if let exposureIndex = categoryAdvertisement.metadata?.exposureIndex {
                 let index = min(sectionItems.count, exposureIndex)
-                sections[1].items.insert(.categoryAdvertisement(categoryAdvertisement), at:  index)
+                sections[1].items.insert(.categoryAdvertisement(categoryAdvertisement), at: index)
             } else {
                 sections[1].items.append(.categoryAdvertisement(categoryAdvertisement))
             }

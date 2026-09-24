@@ -4,14 +4,14 @@ import Combine
 public final class MockTokenService {
     public init() { }
     
-    public func generateTestToken(completion: @escaping ((MockAuth) -> Void))  {
+    public func generateTestToken(completion: @escaping ((MockAuth) -> Void)) {
         let urlString = "https://dev.threedollars.co.kr/api/test-token"
         guard let url = URL(string: urlString) else { return }
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "get"
         
-        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+        URLSession.shared.dataTask(with: urlRequest) { data, _, _ in
             guard let data else { return }
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase

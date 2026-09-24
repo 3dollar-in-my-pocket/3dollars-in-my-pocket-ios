@@ -30,7 +30,7 @@ final class CouponListViewModel: BaseViewModel {
     }
 
     struct State {
-        var nextCursor: String? = nil
+        var nextCursor: String?
         var hasMore: Bool = false
         let loadMore = PassthroughSubject<Void, Never>()
         var items: [StoreCouponSimpleResponse] = []
@@ -73,9 +73,9 @@ final class CouponListViewModel: BaseViewModel {
                 owner.output.showLoading.send(true)
             })
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.couponRepository.getMyIssuedCoupons(
-                    input:  GetMyIssuedCouponsInput(cursor: owner.state.nextCursor, size: Self.size, statuses: owner.config.statuses)
+                    input: GetMyIssuedCouponsInput(cursor: owner.state.nextCursor, size: Self.size, statuses: owner.config.statuses)
                 )
             }
             .withUnretained(self)
@@ -105,9 +105,9 @@ final class CouponListViewModel: BaseViewModel {
 
         state.loadMore
             .withUnretained(self)
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.couponRepository.getMyIssuedCoupons(
-                    input:  GetMyIssuedCouponsInput(cursor: owner.state.nextCursor, size: Self.size, statuses: owner.config.statuses)
+                    input: GetMyIssuedCouponsInput(cursor: owner.state.nextCursor, size: Self.size, statuses: owner.config.statuses)
                 )
             }
             .withUnretained(self)
@@ -154,7 +154,7 @@ final class CouponListViewModel: BaseViewModel {
         
         viewModel.output.moveToStoreDetail
             .withUnretained(self)
-            .map { owner, storeId in
+            .map { _, storeId in
                 return .bossStoreDetail(storeId)
             }
             .subscribe(output.route)

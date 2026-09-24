@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -13,23 +12,29 @@ final class MedalCollectionCell: BaseCollectionViewCell {
         height: 161
     )
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.gray95.color
-        $0.layer.cornerRadius = 8
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = Colors.gray95.color
+        containerView.layer.cornerRadius = 8
+        return containerView
+    }()
     
     private let medalImage = UIImageView()
     
-    private let nameContainerView = UIView().then {
-        $0.layer.cornerRadius = 8
-        $0.layer.borderWidth = 1
-        $0.backgroundColor = .clear
-    }
+    private let nameContainerView: UIView = {
+        let nameContainerView = UIView()
+        nameContainerView.layer.cornerRadius = 8
+        nameContainerView.layer.borderWidth = 1
+        nameContainerView.backgroundColor = .clear
+        return nameContainerView
+    }()
     
-    private let nameLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.mainPink.color
-    }
+    private let nameLabel: UILabel = {
+        let nameLabel = UILabel()
+        nameLabel.font = Fonts.semiBold.font(size: 14)
+        nameLabel.textColor = Colors.mainPink.color
+        return nameLabel
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -50,9 +55,9 @@ final class MedalCollectionCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         self.containerView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
+            make.leading.equalToSuperview()
             make.top.equalToSuperview()
-            make.right.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.bottom.equalTo(self.medalImage).offset(15)
         }
         
@@ -63,8 +68,8 @@ final class MedalCollectionCell: BaseCollectionViewCell {
         }
         
         self.nameContainerView.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.top.equalTo(self.containerView.snp.bottom).offset(9)
             make.bottom.equalToSuperview()
         }

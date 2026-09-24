@@ -1,7 +1,6 @@
 import UIKit
 
 import DesignSystem
-import Then
 
 final class RegisteredStoreHeaderView: UICollectionReusableView {
 
@@ -9,10 +8,12 @@ final class RegisteredStoreHeaderView: UICollectionReusableView {
         static let height: CGFloat = 64
     }
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 24)
+        titleLabel.textColor = Colors.systemWhite.color
+        return titleLabel
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -68,25 +68,25 @@ final class PhotoDetailView: BaseView {
     override func bindConstraints() {
         closeButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
-            $0.right.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.size.equalTo(24)
         }
         
         collectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(closeButton.snp.bottom).offset(16)
             $0.bottom.equalTo(leftButton.snp.top).offset(-16)
         }
         
         leftButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
         }
         
         rightButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
         }

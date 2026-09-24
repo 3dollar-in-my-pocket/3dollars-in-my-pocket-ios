@@ -10,10 +10,9 @@ typealias Assets = CommunityAsset
 typealias Strings = CommunityStrings
 
 
-
 final class Environment {
     static var storeInterface: StoreInterface {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {
+        guard let storeInterface = DIContainer.shared.resolver.resolve(StoreInterface.self) else {
             fatalError("StoreInterface가 정의되지 않았습니다.")
         }
         
@@ -21,7 +20,7 @@ final class Environment {
     }
     
     static var appModuleInterface: AppModuleInterface {
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
+        guard let appModuleInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self) else {
             fatalError("AppModuleInterface가 정의되지 않았습니다.")
         }
         

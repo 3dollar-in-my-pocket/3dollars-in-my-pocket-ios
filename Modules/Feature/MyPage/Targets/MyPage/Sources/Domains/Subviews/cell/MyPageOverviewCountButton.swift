@@ -16,17 +16,21 @@ final class MyPageOverviewCountButton: UIButton {
         case title
     }
     
-    private let countLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray80.color
-        $0.textAlignment = .center
-    }
+    private let countLabel: UILabel = {
+        let countLabel = UILabel()
+        countLabel.font = Fonts.bold.font(size: 16)
+        countLabel.textColor = Colors.gray80.color
+        countLabel.textAlignment = .center
+        return countLabel
+    }()
     
-    private let nameLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray30.color
-        $0.textAlignment = .center
-    }
+    private let nameLabel: UILabel = {
+        let nameLabel = UILabel()
+        nameLabel.font = Fonts.medium.font(size: 12)
+        nameLabel.textColor = Colors.gray30.color
+        nameLabel.textAlignment = .center
+        return nameLabel
+    }()
     
     init(type: CountType) {
         super.init(frame: .zero)
@@ -72,8 +76,8 @@ final class MyPageOverviewCountButton: UIButton {
         }
         
         self.nameLabel.snp.makeConstraints { make in
-            make.left.equalTo(self.countLabel)
-            make.right.equalTo(self.countLabel)
+            make.leading.equalTo(self.countLabel)
+            make.trailing.equalTo(self.countLabel)
             make.top.equalTo(self.countLabel.snp.bottom).offset(2)
         }
     }

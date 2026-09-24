@@ -35,4 +35,3 @@ public enum StoreContributorCardData {
     case callout(CalloutCard)
     case iconText(IconTextCard)
 }
-

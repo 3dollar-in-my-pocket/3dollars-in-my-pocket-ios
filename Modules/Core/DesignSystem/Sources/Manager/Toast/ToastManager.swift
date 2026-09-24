@@ -31,7 +31,7 @@ public class ToastManager {
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 toastView.alpha = 1
             } completion: { _ in
-                let _ = Timer.scheduledTimer(
+                _ = Timer.scheduledTimer(
                     withTimeInterval: 2,
                     repeats: false
                 ) { [weak self] timer in
@@ -59,7 +59,7 @@ public class ToastManager {
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 toastView.alpha = 1
             } completion: { _ in
-                let _ = Timer.scheduledTimer(
+                _ = Timer.scheduledTimer(
                     withTimeInterval: 2,
                     repeats: false
                 ) { [weak self] timer in

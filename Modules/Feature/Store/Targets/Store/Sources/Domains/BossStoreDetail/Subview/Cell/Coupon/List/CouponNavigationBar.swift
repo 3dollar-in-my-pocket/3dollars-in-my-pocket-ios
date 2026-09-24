@@ -3,7 +3,6 @@ import UIKit
 import Common
 import DesignSystem
 import SnapKit
-import Then
 
 final class CouponNavigationBar: BaseView {
 
@@ -11,22 +10,28 @@ final class CouponNavigationBar: BaseView {
         static let height: CGFloat = 56
     }
 
-    let backButton = UIButton().then {
-        $0.setImage(
+    let backButton: UIButton = {
+        let backButton = UIButton()
+        backButton.setImage(
             Icons.arrowLeft.image
                 .resizeImage(scaledTo: 24)
                 .withTintColor(Colors.systemWhite.color), for: .normal)
-        $0.contentEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
-    }
+        backButton.contentEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
+        return backButton
+    }()
 
-    let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 16)
-        $0.textColor = Colors.systemWhite.color
-    }
+    let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 16)
+        titleLabel.textColor = Colors.systemWhite.color
+        return titleLabel
+    }()
 
-    let rightStackView = UIStackView().then {
-        $0.axis = .horizontal
-    }
+    let rightStackView: UIStackView = {
+        let rightStackView = UIStackView()
+        rightStackView.axis = .horizontal
+        return rightStackView
+    }()
 
     init(title: String? = nil, rightButtons: [UIButton] = []) {
         super.init(frame: .zero)

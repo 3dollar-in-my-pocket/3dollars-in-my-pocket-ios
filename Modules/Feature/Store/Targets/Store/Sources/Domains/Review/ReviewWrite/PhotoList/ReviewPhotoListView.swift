@@ -16,16 +16,18 @@ final class ReviewPhotoListView: BaseView {
         let canEdit: Bool
     }
     
-    private lazy var collectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: generateLayout()
-    ).then {
-        $0.backgroundColor = .clear
-        $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
-        $0.delegate = self
-        $0.dataSource = self
-    }
+    )
+        collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        return collectionView
+    }()
     
     private let photoAddButtonView = ReviewPhotoAddButtonView()
     
@@ -62,7 +64,7 @@ final class ReviewPhotoListView: BaseView {
         ])
 
         collectionView.registerSectionHeader([
-            ReviewPhotoListHeaderView.self,
+            ReviewPhotoListHeaderView.self
         ])
         
         photoAddButtonView.snp.makeConstraints {
@@ -154,27 +156,35 @@ extension ReviewPhotoListView: UICollectionViewDelegateFlowLayout {
 
 // MARK: - EmptyView
 final class ReviewPhotoAddButtonView: UIControl {
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.gray10.color
-        $0.layer.cornerRadius = 10
-        $0.isUserInteractionEnabled = false
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = Colors.gray10.color
+        containerView.layer.cornerRadius = 10
+        containerView.isUserInteractionEnabled = false
+        return containerView
+    }()
     
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .center
-        $0.spacing = 4
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 4
+        return stackView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.gray60.color
-        $0.text = "사진 추가하기"
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.regular.font(size: 14)
+        titleLabel.textColor = Colors.gray60.color
+        titleLabel.text = "사진 추가하기"
+        return titleLabel
+    }()
     
-    private let imageView = UIImageView().then {
-        $0.image = Icons.camera.image.resizeImage(scaledTo: 21).withTintColor(Colors.gray60.color)
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = Icons.camera.image.resizeImage(scaledTo: 21).withTintColor(Colors.gray60.color)
+        return imageView
+    }()
     
     init() {
         super.init(frame: .zero)

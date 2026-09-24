@@ -2,10 +2,12 @@ import UIKit
 
 final class SearchTransition: NSObject {
     let duration = 0.3
-    var maskView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
-    }
+    var maskView: UIView = {
+        let maskView = UIView()
+        maskView.backgroundColor = .white
+        maskView.layer.cornerRadius = 16
+        return maskView
+    }()
     var maskOriginalFrame = CGRect.zero
     var transitionMode: PresentTransitionMode = .present
     

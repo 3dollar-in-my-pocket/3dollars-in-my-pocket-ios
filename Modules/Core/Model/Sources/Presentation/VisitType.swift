@@ -11,4 +11,3 @@ public enum VisitType: String, Hashable, Codable {
         self = try VisitType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }
 }
-

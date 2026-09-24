@@ -1,7 +1,6 @@
 import UIKit
 
 import DesignSystem
-import Then
 
 final class PollHeaderView: UICollectionReusableView {
 
@@ -9,15 +8,19 @@ final class PollHeaderView: UICollectionReusableView {
         static let height: CGFloat = 98
     }
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
-        $0.textColor = Colors.gray100.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 24)
+        titleLabel.textColor = Colors.gray100.color
+        return titleLabel
+    }()
 
-    private let descriptionLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray60.color
-    }
+    private let descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = Fonts.medium.font(size: 12)
+        descriptionLabel.textColor = Colors.gray60.color
+        return descriptionLabel
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -30,54 +30,73 @@ xcodebuild build \
   -workspace 3dollar-in-my-pocket.xcworkspace \
   -scheme three-dollar-in-my-pocket-debug \
   -configuration Debug \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 
 # Release 빌드
 xcodebuild build \
   -workspace 3dollar-in-my-pocket.xcworkspace \
   -scheme three-dollar-in-my-pocket \
   -configuration Release \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
 **주의사항**:
 - 빌드 전 `make project`를 실행할 필요 없습니다. Buildable Folders 구조라 바로 `xcodebuild`로 빌드합니다 (Tuist 매니페스트인 `Project.swift`/`Tuist/` 변경 시에만 `make project` 재실행)
 - **three-dollar-in-my-pocket-debug** 스키마 사용 (Debug 빌드)
 - **three-dollar-in-my-pocket** 스키마 사용 (Release 빌드)
+- `-destination`의 기기명은 **머신마다 다릅니다.** 설치된 기기를 먼저 확인하세요. 기기명이 틀리면 빌드가 시작조차 못 합니다
+  ```bash
+  xcrun simctl list devices available | grep iPhone
+  ```
+- 기기명을 고정하고 싶지 않으면 시뮬레이터 지정 없이 빌드할 수 있습니다
+  ```bash
+  -destination 'generic/platform=iOS Simulator'
+  ```
 
 ### 테스트
 ```bash
-# 전체 테스트 실행
+# 전체 테스트 실행 (스킴은 three-dollar-in-my-pocketTests. -debug 스킴에는 test action이 없습니다)
 xcodebuild test \
   -workspace 3dollar-in-my-pocket.xcworkspace \
-  -scheme three-dollar-in-my-pocket-debug \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
+  -scheme three-dollar-in-my-pocketTests \
+  -destination 'platform=iOS Simulator,id=<xcrun simctl list devices available 로 확인한 UDID>'
 
-# 특정 테스트 파일 실행
+# 특정 테스트 클래스만
 xcodebuild test \
   -workspace 3dollar-in-my-pocket.xcworkspace \
-  -scheme three-dollar-in-my-pocket-debug \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
-  -only-testing:three-dollar-in-my-pocketTests/ViewModelTests/{TestClassName}
+  -scheme three-dollar-in-my-pocketTests \
+  -destination 'platform=iOS Simulator,id=<UDID>' \
+  -only-testing:three-dollar-in-my-pocketTests/{TestClassName}
 ```
 
-**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
+**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/` 아래 `ViewModelTests/`(화면 로직) · `ServiceTests/`(서비스·매니저) · `DecodingTests/`(응답 파싱) · `Support/`(공용 목·픽스처 로더)
 
-### SwiftLint 검증
+**테스트는 세 계층입니다** — ① **유닛 테스트 코드**(ViewModel/Service/Decoding, XCTest, CI가 돌림) ② **자동화 테스트 TC**(`3dollars:simulator-test`가 시뮬레이터를 조작하는 E2E, PR 전 실행 후 스크린샷·영상 증거) ③ **수동 테스트 TC**(시뮬레이터로 상황을 만들 수 없어 실기기·사람이 필요한 것). 테크스펙 TC는 반드시 셋 중 하나 이상에 배정되고, 위 계층을 먼저 씁니다. 분류 기준은 [docs/process/e2e-and-manual-tests.md](docs/process/e2e-and-manual-tests.md).
+
+**테스트는 diff가 아니라 테크스펙의 TC에서 도출합니다.** 메서드명은 `test_{티켓}_TC{n}_{조건}_{기대결과}()` (예: `test_TH1340_TC8_탭을누르면_클릭로그가_한건전송된다`). **TC 번호는 노션 테크스펙의 `TC-n`을 그대로 쓰고 티켓 안에서 유일**합니다 — 파일이 갈라져도 1부터 다시 시작하지 않습니다. 스펙에 없는 케이스는 테크스펙에 TC를 먼저 추가하고 그 번호를 씁니다. 가이드: [docs/process/testing.md](docs/process/testing.md), 자동화: `/3dollars:test-cases`
+
+### 린트 검증 (SwiftLint + 모듈 의존성)
 ```bash
-# 전체 검증
-swiftlint lint
+# 전체 검증 (SwiftLint + scripts/check-module-deps.sh)
+make lint
 
-# 자동 수정
-swiftlint --fix
-
-# 특정 디렉토리 검증
-swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
+# SwiftLint 자동 수정
+make lint-fix
 ```
 
 **주의사항**:
-- SwiftLint 오류가 있으면 빌드 실패
-- 코드 작성 후 반드시 SwiftLint 검증 수행
+- SwiftLint는 Xcode 빌드 페이즈에 없습니다. 로컬은 `make lint`, PR은 GitHub Actions `lint.yml`에서 검사합니다
+- 기존 위반은 `.swiftlint-baseline.json` / `scripts/module-deps-baseline.txt`에 동결되어 있습니다. **새 위반만** 실패로 처리되며, 베이스라인에 항목을 추가하는 PR은 사유가 필요합니다
+- 코드 작성 후 반드시 `make lint`를 실행합니다
+
+## PR 프로세스
+
+전체 흐름(테크스펙 → 규칙 → 테스트 → 증거 → PR)과 위험도(경량/풀코스) 기준은 **[docs/process/pr-process.md](docs/process/pr-process.md)** 한 장에 있습니다. PR은 `/3dollars:pr-body`로 만듭니다.
+
+## 아키텍처 규칙
+
+경계에 관한 규칙 10개는 **[docs/architecture/RULES.md](docs/architecture/RULES.md)** 에 있습니다 (규칙 / 이유 / 예시 / 강제 수단 / 예외).
+`Modules/Core/CLAUDE.md`, `Modules/Feature/CLAUDE.md`는 각 디렉터리에서 지켜야 할 규칙 번호만 요약합니다. 규칙을 바꿀 때는 RULES.md·`.swiftlint.yml`·디렉터리별 CLAUDE.md를 함께 수정합니다.
 
 ## 프로젝트 구조
 
@@ -99,6 +118,7 @@ swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
 - **Network**: API 정의, 리포지토리, 네트워킹 레이어
 - **DependencyInjection**: DI 컨테이너 및 서비스 등록
 - **Log**: 분석 및 로깅 시스템
+- **SDU**: 서버 주도 UI(Server-Driven UI) 렌더링 컴포넌트
 
 ### Feature 모듈 (`Modules/Feature/`)
 - **Home**: 지도 뷰, 가게 목록, 검색 기능
@@ -107,13 +127,14 @@ swiftlint lint --path Modules/Feature/Store/Targets/Store/Sources/
 - **Community**: 소셜 기능, 투표, 인기 가게
 - **MyPage**: 사용자 프로필, 북마크, 설정
 - **Membership**: 인증 및 사용자 온보딩
+- **Feed**: 우리 동네 소식(지역 피드)
 
 각 피처 모듈 구성:
 - `Targets/{FeatureName}/Sources/`: 메인 구현부
 - `Targets/Interface/Sources/`: 모듈 간 통신을 위한 공개 인터페이스
 - `Targets/Demo/`: 해당 피처의 독립 실행형 데모 앱
 
-### SDU (Server-Driven UI) 모듈 (`Modules/Feature/SDU/`)
+### SDU (Server-Driven UI) 모듈 (`Modules/Core/SDU/`)
 
 SDU 모듈은 서버에서 전달하는 데이터 구조에 따라 동적으로 UI를 렌더링하는 시스템입니다.
 
@@ -144,7 +165,7 @@ viewModel.output.items
 
 **참고 파일**:
 - `Modules/Feature/Store/Targets/Store/Sources/Domains/Contributors/ContributorsViewController.swift`
-- `Modules/Feature/SDU/Targets/SDU/Sources/Cells/SDUCalloutCell.swift`
+- `Modules/Core/SDU/Sources/Cells/SDUCalloutCell.swift`
 
 ## 주요 개발 패턴
 
@@ -383,7 +404,7 @@ public struct MyRepositoryImpl: MyRepository {
 
 ## 코드 스타일/네이밍/구조 규칙
 
-- SwiftLint 규칙(.swiftlint.yml) 및 Swift 표준 컨벤션을 따릅니다
+- SwiftLint 규칙(.swiftlint.yml), 아키텍처 규칙(docs/architecture/RULES.md) 및 Swift 표준 컨벤션을 따릅니다
 - Import 순서: 표준 → 내부모듈 → 서드파티. 각 분류 사이에는 한 줄 띄어서 사용합니다
 - 클래스/구조체/enum: PascalCase, 변수/함수/상수: camelCase
 - 파일 구성: Import → 선언 → Nested Types → Properties → Initializers → Public Methods → Private Methods → Extensions
@@ -429,31 +450,41 @@ public struct MyRepositoryImpl: MyRepository {
 
 ## Skills (자동화 도구)
 
-프로젝트에는 반복적인 작업을 자동화하는 여러 Skills가 정의되어 있습니다. 각 Skill은 `/skill-name` 형태로 호출할 수 있습니다.
+반복적인 작업을 자동화하는 여러 Skills가 정의되어 있습니다. 각 Skill은 `/skill-name` 형태로 호출할 수 있습니다.
+
+- **프로젝트 스킬** (`.claude/skills/`, 저장소에 포함): `ios-viewmodel-pattern`, `ios-repository-pattern`, `ios-viewmodel-test-generator`, `server-schema`
+- **3dollars 플러그인** (`~/.claude/skills/3dollars/`, 개인 환경): `3dollars:feature-implementer`, `3dollars:bug-fix`, `3dollars:code-cleanup`, `3dollars:pr-code-review`, `3dollars:simulator-test`, `3dollars:deploy-dev-build` 등 11개 — **호출 시 `3dollars:` 접두어가 필요**합니다. 저장소에 없으므로 다른 팀원 환경에는 존재하지 않을 수 있습니다
 
 ### feature-implementer
-테크스펙 문서를 기반으로 새로운 피처를 구현하는 전체 파이프라인을 자동화합니다.
+JIRA 피처 티켓을 받아 구현부터 PR 생성까지 전체 파이프라인을 자동화합니다.
 
 **기능**:
-- 테크스펙 문서 분석 및 피그마 디자인 확인
-- 워크트리 기반 안전한 작업 환경 구성
-- Model, API, Repository, ViewModel, ViewController, 테스트 코드 자동 생성
-- 빌드/테스트/SwiftLint 검증 및 자동 수정
-- Git 커밋 (논리적 흐름으로 분리)
+- JIRA 티켓 분석 + 프롬프트 추가 요구사항 병합 → 요구사항 체크리스트 확정
+- 서버 OpenAPI 스키마 대조, 피그마 디자인 확인
+- Model, API, Repository, ViewModel, ViewController, (조건부) 테스트 코드 생성
+- 빌드/SwiftLint/테스트 검증
+- 자체 코드리뷰(`/code-review`) 및 반영 후 재검증
+- 시뮬레이터 Before/After 스크린샷·영상 검증 (`simulator-test`)
+- Draft PR 생성 — 변경사항 요약 + Before/After 비교표 첨부
 
 **사용법**:
 ```bash
-# 마크다운 파일로 제공
-/feature-implementer /path/to/TH-XXX-spec.md
+# JIRA 티켓 URL
+/3dollars:feature-implementer https://3dollarinmypocket.atlassian.net/browse/TH-1234
 
-# 파일 경로 + 피그마 URL
-/feature-implementer /path/to/spec.md https://figma.com/design/...
+# 티켓 키 + 프롬프트 추가 요구사항 (충돌 시 프롬프트 우선)
+/3dollars:feature-implementer TH-1234 정렬은 최신순 기본, 빈 상태 문구는 "아직 없어요"로
+
+# 티켓 + 피그마 URL
+/3dollars:feature-implementer TH-1234 https://figma.com/design/...
 
 # 대화형 (인자 없이 호출)
-/feature-implementer
+/3dollars:feature-implementer
 ```
 
-**참고**: 테크스펙 문서 또는 파일 경로가 필요합니다. GitHub 권한도 필요합니다.
+**참고**: JIRA(Atlassian) MCP 연결과 GitHub 권한이 필요합니다. JIRA 미연결 시 티켓 본문을 직접 붙여넣는 폴백으로 진행합니다. 버그 티켓은 이 스킬 대신 `/3dollars:bug-fix`를 사용하세요.
+
+**정의 위치**: `~/.claude/skills/3dollars/skills/feature-implementer/SKILL.md` (3dollars 플러그인)
 
 ### ios-viewmodel-pattern
 Combine 기반 MVVM 패턴의 ViewModel 구조를 정의합니다.
@@ -477,6 +508,33 @@ Protocol + Impl 구조 및 API enum + RequestType 확장 패턴으로 네트워�
 
 **참고 파일**: `.claude/skills/ios-repository-pattern/SKILL.md`
 
+### pr-body (3dollars 플러그인)
+브랜치의 지라 티켓 → 테크스펙 → diff → 테스트·드리프트·증거를 모아 `.github/PULL_REQUEST_TEMPLATE.md` 형식의 간단명료한 본문을 채우고 PR 생성/갱신까지 합니다. 이 레포의 PR은 이 스킬로 만듭니다.
+
+**사용법**: `/3dollars:pr-body`
+
+### drift (3dollars 플러그인)
+테크스펙 요구사항·TC와 diff를 대조해 "요구사항 → 구현 → 상태" 표와 스펙 밖 변경 목록을 냅니다.
+
+**사용법**: `/3dollars:drift` 또는 `/3dollars:drift TH-1234`
+
+### ask-author (3dollars 플러그인)
+diff에서 설명이 필요한 결정 최대 3개를 뽑아 작성자에게 묻고 Q/A를 PR 본문 형식으로 냅니다. `/3dollars:pr-body`가 호출합니다.
+
+**사용법**: `/3dollars:ask-author`
+
+### review-digest (3dollars 플러그인)
+최근 머지 PR의 리뷰 코멘트를 모아 3회 이상 반복된 지적을 린트 > 스크립트 > 문서 순으로 규칙 승격 제안합니다. 적용은 승인 후 별도.
+
+**사용법**: `/3dollars:review-digest` 또는 `/3dollars:review-digest 50`
+
+### test-cases (3dollars 플러그인)
+현재 브랜치의 지라 티켓 → 노션 테크스펙 TC 목록을 읽어 TC별 테스트 케이스 표를 제안하고, 승인 후 테스트 코드 생성·실행·PR용 커버리지 표까지 만듭니다. 레포가 아니라 `3dollars` 플러그인에 있습니다.
+
+**사용법**: `/3dollars:test-cases` (브랜치명에서 티켓 키 추출) 또는 `/3dollars:test-cases TH-1234`
+
+**참고 파일**: `docs/process/testing.md`
+
 ### ios-viewmodel-test-generator
 ViewModel의 유저 플로우를 기반으로 XCTest 테스트 코드를 자동 생성합니다.
 
@@ -488,7 +546,7 @@ ViewModel의 유저 플로우를 기반으로 XCTest 테스트 코드를 자동 
 
 **참고 파일**: `.claude/skills/ios-viewmodel-test-generator/SKILL.md`
 
-**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`
+**테스트 파일 위치**: `App/Targets/three-dollar-in-my-pocketTests/Sources/ViewModelTests/`
 
 ### server-schema
 서버 OpenAPI 스키마(`https://dev.threedollars.co.kr/api/v3/api-docs`)를 조회해 API 요청/응답 모델 구조를 확인합니다.

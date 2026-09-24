@@ -62,7 +62,7 @@ final class MyMedalDataSource: UICollectionViewDiffableDataSource<MyMedalSection
             }
         }
         
-        supplementaryViewProvider = { [weak self, weak viewModel] collectionView, kind, indexPath -> UICollectionReusableView? in
+        supplementaryViewProvider = { [weak self, weak viewModel] collectionView, _, indexPath -> UICollectionReusableView? in
             guard let section = self?.sectionIdentifier(section: indexPath.section) else {
                 return nil
             }
@@ -94,4 +94,3 @@ final class MyMedalDataSource: UICollectionViewDiffableDataSource<MyMedalSection
         apply(snapshot, animatingDifferences: false)
     }
 }
-

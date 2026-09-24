@@ -44,12 +44,6 @@ final class CommunityPollListAdCellViewModel: BaseViewModel {
 
         super.init()
     }
-
-    override func bind() {
-        super.bind()
-
-    
-    }
 }
 
 extension CommunityPollListAdCellViewModel: Hashable {

@@ -7,39 +7,51 @@ import Model
 final class MarkerPopupView: BaseView {
     let backgroundButton = UIButton()
     
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 30
-        $0.backgroundColor = Colors.systemWhite.color
-        $0.layer.masksToBounds = true
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 30
+        containerView.backgroundColor = Colors.systemWhite.color
+        containerView.layer.masksToBounds = true
+        return containerView
+    }()
     
-    private let imageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-        $0.clipsToBounds = true
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
     
-    let closeButton = UIButton().then {
-        $0.setImage(Icons.deleteX.image, for: .normal)
-    }
+    let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.setImage(Icons.deleteX.image, for: .normal)
+        return closeButton
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 18)
-        $0.textColor = Colors.gray100.color
-        $0.textAlignment = .center
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 18)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.textAlignment = .center
+        return titleLabel
+    }()
     
-    private let descriptionLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 16)
-        $0.textColor = Colors.gray50.color
-        $0.numberOfLines = 0
-        $0.textAlignment = .center
-    }
+    private let descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = Fonts.regular.font(size: 16)
+        descriptionLabel.textColor = Colors.gray50.color
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.textAlignment = .center
+        return descriptionLabel
+    }()
     
-    let bottomButton = UIButton().then {
-        $0.layer.cornerRadius = 24
-        $0.backgroundColor = Colors.mainRed.color
-        $0.titleLabel?.font = Fonts.bold.font(size: 16)
-    }
+    let bottomButton: UIButton = {
+        let bottomButton = UIButton()
+        bottomButton.layer.cornerRadius = 24
+        bottomButton.backgroundColor = Colors.mainRed.color
+        bottomButton.titleLabel?.font = Fonts.bold.font(size: 16)
+        return bottomButton
+    }()
     
     override func setup() {
         containerView.addSubViews([
@@ -61,41 +73,41 @@ final class MarkerPopupView: BaseView {
         }
         
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
-            $0.right.equalToSuperview().offset(-16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().offset(-16)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-22)
             $0.top.equalTo(imageView)
         }
         
         bottomButton.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(24)
-            $0.right.equalTo(containerView).offset(-24)
+            $0.leading.equalTo(containerView).offset(24)
+            $0.trailing.equalTo(containerView).offset(-24)
             $0.bottom.equalTo(containerView).offset(-24)
             $0.height.equalTo(48)
         }
         
         descriptionLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView).offset(24)
-            $0.right.equalTo(containerView).offset(-24)
+            $0.leading.equalTo(containerView).offset(24)
+            $0.trailing.equalTo(containerView).offset(-24)
             $0.bottom.equalTo(bottomButton.snp.top).offset(-24)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalTo(containerView)
-            $0.right.equalTo(containerView)
+            $0.leading.equalTo(containerView)
+            $0.trailing.equalTo(containerView)
             $0.bottom.equalTo(descriptionLabel.snp.top).offset(-4)
         }
         
         imageView.snp.makeConstraints {
-            $0.left.equalTo(containerView)
-            $0.right.equalTo(containerView)
+            $0.leading.equalTo(containerView)
+            $0.trailing.equalTo(containerView)
             $0.bottom.equalTo(titleLabel.snp.top).offset(-24)
             $0.height.equalTo(160)
         }
         
         closeButton.snp.makeConstraints {
             $0.top.equalTo(imageView).offset(24)
-            $0.right.equalTo(imageView).offset(-24)
+            $0.trailing.equalTo(imageView).offset(-24)
             $0.width.equalTo(24)
             $0.height.equalTo(24)
         }

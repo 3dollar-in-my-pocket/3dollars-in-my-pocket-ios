@@ -1,13 +1,15 @@
-import UIKit
+import Foundation
 import Combine
 
 import Common
+import Log
 import Networking
 import Model
 
 final class MainTabBarViewModel: Common.BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
+        let didTapTab = PassthroughSubject<TabBarTag, Never>()
     }
     
     struct Output {
@@ -22,15 +24,18 @@ final class MainTabBarViewModel: Common.BaseViewModel {
         let advertisementRepository: AdvertisementRepository
         var preference: Preference
         let deeplinkHandler: DeepLinkHandler
-        
+        let logManager: LogManagerProtocol
+
         init(
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
             preference: Preference = .shared,
-            deeplinkHandler: DeepLinkHandler = .shared
+            deeplinkHandler: DeepLinkHandler = .shared,
+            logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.advertisementRepository = advertisementRepository
             self.preference = preference
             self.deeplinkHandler = deeplinkHandler
+            self.logManager = logManager
         }
     }
     
@@ -49,6 +54,21 @@ final class MainTabBarViewModel: Common.BaseViewModel {
                 owner.checkIfBannerExisted()
             }
             .store(in: &cancellables)
+
+        input.didTapTab
+            .withUnretained(self)
+            .sink { (owner: MainTabBarViewModel, tab: TabBarTag) in
+                owner.sendTabClickLog(tab)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func sendTabClickLog(_ tab: TabBarTag) {
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: .mainTabBar,
+            objectType: .tab,
+            objectId: tab.logObjectId
+        ))
     }
     
     private func checkIfBannerExisted() {

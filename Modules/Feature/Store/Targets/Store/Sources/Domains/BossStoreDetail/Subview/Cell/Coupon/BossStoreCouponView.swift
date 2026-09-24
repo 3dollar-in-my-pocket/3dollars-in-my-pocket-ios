@@ -39,59 +39,79 @@ final class BossStoreCouponView: BaseView {
     }
     private let contentView = UIView()
     
-    private let backgroundImageView = UIImageView().then {
-        $0.image = Assets.couponBackground.image
-    }
+    private let backgroundImageView: UIImageView = {
+        let backgroundImageView = UIImageView()
+        backgroundImageView.image = Assets.couponBackground.image
+        return backgroundImageView
+    }()
     
-    private let stackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        return stackView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.gray80.color
-        $0.numberOfLines = 2
-        $0.lineBreakMode = .byTruncatingTail
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 16)
+        titleLabel.textColor = Colors.gray80.color
+        titleLabel.numberOfLines = 2
+        titleLabel.lineBreakMode = .byTruncatingTail
+        return titleLabel
+    }()
 
-    private let dateLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.gray70.color
-    }
+    private let dateLabel: UILabel = {
+        let dateLabel = UILabel()
+        dateLabel.font = Fonts.regular.font(size: 14)
+        dateLabel.textColor = Colors.gray70.color
+        return dateLabel
+    }()
 
-    private let rightIconImageView = UIImageView().then {
-        $0.image = Assets.arrowRight.image
-    }
+    private let rightIconImageView: UIImageView = {
+        let rightIconImageView = UIImageView()
+        rightIconImageView.image = Assets.arrowRight.image
+        return rightIconImageView
+    }()
     
-    private let rightTextLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 14)
-        $0.textColor = Colors.gray60.color
-        $0.numberOfLines = 2
-        $0.textAlignment = .center
-    }
+    private let rightTextLabel: UILabel = {
+        let rightTextLabel = UILabel()
+        rightTextLabel.font = Fonts.semiBold.font(size: 14)
+        rightTextLabel.textColor = Colors.gray60.color
+        rightTextLabel.numberOfLines = 2
+        rightTextLabel.textAlignment = .center
+        return rightTextLabel
+    }()
     
-    private let rightButton = UIButton().then {
-        $0.setTitle(nil, for: .normal)
-        $0.backgroundColor = .clear
-    }
+    private let rightButton: UIButton = {
+        let rightButton = UIButton()
+        rightButton.setTitle(nil, for: .normal)
+        rightButton.backgroundColor = .clear
+        return rightButton
+    }()
     
-    private let dashedBorderLineView = UIImageView().then {
-        $0.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
-    }
+    private let dashedBorderLineView: UIImageView = {
+        let dashedBorderLineView = UIImageView()
+        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+        // swiftlint:disable:next no_uicolor_literal
+        dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
+        return dashedBorderLineView
+    }()
 
-    private let deadlineLabel = PaddingLabel(
+    private let deadlineLabel: PaddingLabel = {
+        let deadlineLabel = PaddingLabel(
         topInset: 4,
         bottomInset: 4,
         leftInset: 8,
         rightInset: 8
-    ).then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.mainPink.color
-        $0.backgroundColor = Colors.gray90.color
-        $0.layer.cornerRadius = 13
-        $0.clipsToBounds = true
-    }
+    )
+        deadlineLabel.font = Fonts.medium.font(size: 12)
+        deadlineLabel.textColor = Colors.mainPink.color
+        deadlineLabel.backgroundColor = Colors.gray90.color
+        deadlineLabel.layer.cornerRadius = 13
+        deadlineLabel.clipsToBounds = true
+        return deadlineLabel
+    }()
     
     private var contentViewTopConstraints: Constraint?
     
@@ -217,6 +237,8 @@ final class BossStoreCouponView: BaseView {
                         owner.backgroundImageView.image = Assets.couponBackgroundBlack.image
                     } else {
                         owner.backgroundImageView.image = Assets.couponBackground.image
+                        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+                        // swiftlint:disable:next no_uicolor_literal
                         owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
                     }
                 case .expired:
@@ -234,6 +256,8 @@ final class BossStoreCouponView: BaseView {
                         owner.backgroundImageView.image = Assets.couponBackgroundBlack.image
                     } else {
                         owner.backgroundImageView.image = Assets.couponBackground.image
+                        // 쿠폰 디자인 지정 보라, DesignSystem 토큰 없음
+                        // swiftlint:disable:next no_uicolor_literal
                         owner.dashedBorderLineView.image = Assets.couponDot.image.withTintColor(UIColor(hex: "#BC4BD6")!)
                     }
                 }

@@ -10,26 +10,32 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         static let size = CGSize(width: width, height: width - 14 + 22)
     }
     
-    let categoryButton = UIButton().then {
-        $0.layer.cornerRadius = (Layout.width - 14) / 2
-        $0.layer.masksToBounds = true
-        $0.layer.borderColor = Colors.mainPink.color.cgColor
-        $0.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-    }
+    let categoryButton: UIButton = {
+        let categoryButton = UIButton()
+        categoryButton.layer.cornerRadius = (Layout.width - 14) / 2
+        categoryButton.layer.masksToBounds = true
+        categoryButton.layer.borderColor = Colors.mainPink.color.cgColor
+        categoryButton.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
+        return categoryButton
+    }()
     
-    let closeButton = UIButton().then {
-        $0.backgroundColor = Colors.mainRed.color
-        $0.layer.cornerRadius = 8
-        $0.setImage(Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = Colors.gray0.color
-        $0.contentEdgeInsets = .init(top: 3, left: 3, bottom: 3, right: 3)
-    }
+    let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.backgroundColor = Colors.mainRed.color
+        closeButton.layer.cornerRadius = 8
+        closeButton.setImage(Icons.close.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        closeButton.tintColor = Colors.gray0.color
+        closeButton.contentEdgeInsets = .init(top: 3, left: 3, bottom: 3, right: 3)
+        return closeButton
+    }()
     
-    let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray80.color
-        $0.textAlignment = .center
-    }
+    let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 12)
+        titleLabel.textColor = Colors.gray80.color
+        titleLabel.textAlignment = .center
+        return titleLabel
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -56,13 +62,13 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         
         closeButton.snp.makeConstraints {
             $0.top.equalTo(categoryButton)
-            $0.right.equalTo(categoryButton)
+            $0.trailing.equalTo(categoryButton)
             $0.width.height.equalTo(16)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(categoryButton.snp.bottom).offset(4)
         }
     }

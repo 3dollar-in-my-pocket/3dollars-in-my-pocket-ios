@@ -11,7 +11,7 @@ typealias Strings = StoreStrings
 
 final class Environment {
     static var appModuleInterface: AppModuleInterface {
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
+        guard let appModuleInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self) else {
             fatalError("AppModuleInterface가 정의되지 않았습니다.")
         }
         
@@ -19,7 +19,7 @@ final class Environment {
     }
     
     static var writeInterface: WriteInterface {
-        guard let writeInterface = DIContainer.shared.container.resolve(WriteInterface.self) else {
+        guard let writeInterface = DIContainer.shared.resolver.resolve(WriteInterface.self) else {
             fatalError("WriteInterface가 정의되지 않았습니다.")
         }
         

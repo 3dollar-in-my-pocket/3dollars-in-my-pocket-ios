@@ -5,4 +5,3 @@ public struct CursorAndTotalCountString: Decodable {
     public let nextCursor: String?
     public let hasMore: Bool
 }
-

@@ -138,7 +138,7 @@ final class SigninBottomSheetViewModel: BaseViewModel {
                 self.output.route.send(.showLoading(isShow: false))
                 
                 switch refreshDevice {
-                case .success(_):
+                case .success:
                     self.output.route.send(.goToMain)
                     
                 case .failure(let error):

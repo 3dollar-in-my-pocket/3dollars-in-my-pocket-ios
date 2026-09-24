@@ -38,21 +38,21 @@ final class SigninView: BaseView {
     
     override func bindConstraints() {
         logoButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(32)
-            $0.right.equalToSuperview().offset(-32)
+            $0.leading.equalToSuperview().offset(32)
+            $0.trailing.equalToSuperview().offset(-32)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-72)
         }
         
         kakaoButton.snp.makeConstraints {
             $0.centerY.equalToSuperview().offset(48)
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(48)
         }
         
         appleButton.snp.makeConstraints {
-            $0.left.equalTo(kakaoButton)
-            $0.right.equalTo(kakaoButton)
+            $0.leading.equalTo(kakaoButton)
+            $0.trailing.equalTo(kakaoButton)
             $0.top.equalTo(kakaoButton.snp.bottom).offset(12)
             $0.height.equalTo(48)
         }

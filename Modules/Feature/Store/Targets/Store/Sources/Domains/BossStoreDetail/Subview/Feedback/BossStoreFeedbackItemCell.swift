@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
 
@@ -10,22 +9,28 @@ final class BossStoreFeedbackItemCell: BaseCollectionViewCell {
         static let height: CGFloat = 44
     }
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 12
-        $0.clipsToBounds = true
-        $0.layer.borderColor = Colors.gray20.color.cgColor
-        $0.layer.borderWidth = 1
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 12
+        containerView.clipsToBounds = true
+        containerView.layer.borderColor = Colors.gray20.color.cgColor
+        containerView.layer.borderWidth = 1
+        return containerView
+    }()
 
-    private let emojiLabel = UILabel().then {
-        $0.font = Fonts.semiBold.font(size: 12)
-        $0.textColor = Colors.gray95.color
-    }
+    private let emojiLabel: UILabel = {
+        let emojiLabel = UILabel()
+        emojiLabel.font = Fonts.semiBold.font(size: 12)
+        emojiLabel.textColor = Colors.gray95.color
+        return emojiLabel
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 12)
-        $0.textColor = Colors.gray95.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 12)
+        titleLabel.textColor = Colors.gray95.color
+        return titleLabel
+    }()
 
     override func setup() {
         super.setup()

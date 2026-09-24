@@ -19,7 +19,7 @@ public final class MapRepositoryImpl: MapRepository {
         urlComponents?.path = "/map-reversegeocode/v2/gc"
         urlComponents?.queryItems = [
             URLQueryItem(name: "request", value: "coordsToaddr"),
-            URLQueryItem(name: "coords", value:  "\(longitude),\(latitude)"),
+            URLQueryItem(name: "coords", value: "\(longitude),\(latitude)"),
             URLQueryItem(name: "orders", value: "legalcode,admcode,addr,roadaddr"),
             URLQueryItem(name: "output", value: "json")
         ]
@@ -56,7 +56,7 @@ public final class MapRepositoryImpl: MapRepository {
         urlComponents?.path = "/v2/local/search/keyword.json"
         urlComponents?.queryItems = [
             URLQueryItem(name: "query", value: keyword),
-            URLQueryItem(name: "size", value:  String(10))
+            URLQueryItem(name: "size", value: String(10))
         ]
         
         guard let url = urlComponents?.url else {
@@ -89,7 +89,7 @@ public final class MapRepositoryImpl: MapRepository {
         urlComponents?.path = "/v2/local/geo/coord2address.json"
         urlComponents?.queryItems = [
             URLQueryItem(name: "x", value: String(latitude)),
-            URLQueryItem(name: "y", value:  String(longitude))
+            URLQueryItem(name: "y", value: String(longitude))
         ]
         
         guard let url = urlComponents?.url else {

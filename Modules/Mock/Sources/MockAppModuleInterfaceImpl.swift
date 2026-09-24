@@ -7,6 +7,8 @@ import DependencyInjection
 import DesignSystem
 
 public final class MockAppModuleInterfaceImpl: AppModuleInterface {
+    public var remoteConfigService: RemoteConfigProtocol = MockRemoteConfigService()
+
     public var kakaoSigninManager: SigninManagerProtocol = MockSigninManager()
 
     public var appleSigninManager: SigninManagerProtocol = MockSigninManager()
@@ -51,10 +53,6 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
 
     public func shareKakao(storeId: Int, storeName: String, latitude: Double, longitude: Double) {
         ToastManager.shared.show(message: "shareKakao")
-    }
-
-    public func requestATTIfNeeded() {
-        ToastManager.shared.show(message: "requestATTIfNeeded")
     }
 
     public func sendPageView(screenName: String, type: AnyObject.Type) { }

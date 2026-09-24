@@ -1,6 +1,5 @@
 import UIKit
 
-import Then
 import SnapKit
 
 import Model
@@ -10,19 +9,25 @@ import Common
 final class MedalHeaderView: BaseCollectionViewReusableView {
     static let size = CGSize(width: UIScreen.main.bounds.width, height: 28 + 8 + 54)
     
-    private let dividorView = UIView().then {
-        $0.backgroundColor = Colors.gray80.color
-    }
+    private let dividorView: UIView = {
+        let dividorView = UIView()
+        dividorView.backgroundColor = Colors.gray80.color
+        return dividorView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = .white
-        $0.text = "내 칭호"
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 12)
+        titleLabel.textColor = .white
+        titleLabel.text = "내 칭호"
+        return titleLabel
+    }()
     
-    let infoButton = UIButton().then {
-        $0.setImage(UIImage(named: "ic_info"), for: .normal)
-    }
+    let infoButton: UIButton = {
+        let infoButton = UIButton()
+        infoButton.setImage(UIImage(named: "ic_info"), for: .normal)
+        return infoButton
+    }()
     
     override func setup() {
         self.backgroundColor = .clear
@@ -47,7 +52,7 @@ final class MedalHeaderView: BaseCollectionViewReusableView {
         
         self.infoButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.titleLabel)
-            make.left.equalTo(self.titleLabel.snp.right).offset(8)
+            make.leading.equalTo(self.titleLabel.snp.trailing).offset(8)
         }
     }
     

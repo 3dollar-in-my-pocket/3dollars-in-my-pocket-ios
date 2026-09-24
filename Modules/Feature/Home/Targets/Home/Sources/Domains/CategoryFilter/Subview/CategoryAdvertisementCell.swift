@@ -42,8 +42,8 @@ final class CategoryAdvertisementCell: BaseCollectionViewCell {
         
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(imageView.snp.bottom)
             $0.bottom.equalToSuperview()
         }

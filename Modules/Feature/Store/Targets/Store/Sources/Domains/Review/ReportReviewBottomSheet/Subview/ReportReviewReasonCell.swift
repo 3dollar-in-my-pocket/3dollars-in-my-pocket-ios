@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 
 final class ReportReviewReasonCell: BaseCollectionViewCell {
 
@@ -10,24 +9,30 @@ final class ReportReviewReasonCell: BaseCollectionViewCell {
         static let size = CGSize(width: UIUtils.windowBounds.width - 40, height: 44)
     }
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 12
-        $0.clipsToBounds = true
-        $0.layer.borderColor = Colors.gray40.color.cgColor
-        $0.layer.borderWidth = 1
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 12
+        containerView.clipsToBounds = true
+        containerView.layer.borderColor = Colors.gray40.color.cgColor
+        containerView.layer.borderWidth = 1
+        return containerView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.gray60.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.regular.font(size: 14)
+        titleLabel.textColor = Colors.gray60.color
+        return titleLabel
+    }()
 
-    private let checkImageView = UIImageView().then {
-        $0.image = Icons.check.image
+    private let checkImageView: UIImageView = {
+        let checkImageView = UIImageView()
+        checkImageView.image = Icons.check.image
             .resizeImage(scaledTo: 20)
             .withTintColor(Colors.mainRed.color)
-        $0.isHidden = true
-    }
+        checkImageView.isHidden = true
+        return checkImageView
+    }()
     
     override var isSelected: Bool {
         didSet {

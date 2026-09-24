@@ -66,8 +66,4 @@ final class ReviewTabViewModel: BaseViewModel {
 
         super.init()
     }
-
-    override func bind() {
-        super.bind()
-    }
 }

@@ -274,14 +274,16 @@ private final class BossStorePostImageCell: BaseCollectionViewCell {
         static let height: CGFloat = 208
     }
     
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = Colors.gray70.color
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
-        $0.layer.borderColor = Colors.gray20.color.cgColor
-        $0.layer.borderWidth = 0.5
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = Colors.gray70.color
+        imageView.layer.cornerRadius = 16
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.borderColor = Colors.gray20.color.cgColor
+        imageView.layer.borderWidth = 0.5
+        return imageView
+    }()
     
     override func prepareForReuse() {
         super.prepareForReuse()

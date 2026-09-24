@@ -1,18 +1,19 @@
 import Foundation
 import UIKit
 import Combine
-import Then
 import Common
 
 /// 커뮤니티/구 선택 팝업
 final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController {
     private let backgroundButton = UIButton()
 
-    private let containerView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
-        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .white
+        containerView.layer.cornerRadius = 16
+        containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        return containerView
+    }()
     
     private let headerView = CommunityPopularStoreNeighborhoodsHeaderView()
     private let contentViewController = CommunityPopularStoreNeighborhoodsContentViewController()
@@ -49,7 +50,7 @@ final class CommunityPopularStoreNeighborhoodsViewController: BaseViewController
         
         view.addSubViews([
             backgroundButton,
-            containerView,
+            containerView
         ])
         
         containerView.addSubViews([

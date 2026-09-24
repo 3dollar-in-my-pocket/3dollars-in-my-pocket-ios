@@ -119,35 +119,35 @@ final class ReviewListCell: BaseCollectionViewCell {
     override func bindConstraints() {
         nameLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(16)
-            $0.left.equalToSuperview().offset(20)
-            $0.right.lessThanOrEqualTo(dateLabel.snp.left)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.lessThanOrEqualTo(dateLabel.snp.leading)
         }
         
         rightButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.centerY.equalTo(nameLabel)
         }
         
         dotView.snp.makeConstraints {
             $0.centerY.equalTo(rightButton)
             $0.size.equalTo(2)
-            $0.right.equalTo(rightButton.snp.left).offset(-4)
+            $0.trailing.equalTo(rightButton.snp.leading).offset(-4)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.right.equalTo(dotView.snp.left).offset(-4)
+            $0.trailing.equalTo(dotView.snp.leading).offset(-4)
             $0.centerY.equalTo(dotView)
         }
         
         medalBadge.snp.makeConstraints {
-            $0.left.equalTo(nameLabel)
+            $0.leading.equalTo(nameLabel)
             $0.top.equalTo(nameLabel.snp.bottom).offset(2)
             $0.height.equalTo(StoreDetailMedalBadgeView.Layout.height)
         }
 
         starBadge.snp.makeConstraints {
             $0.centerY.equalTo(medalBadge)
-            $0.left.equalTo(medalBadge.snp.right).offset(4)
+            $0.leading.equalTo(medalBadge.snp.trailing).offset(4)
         }
         
         photoStackView.snp.makeConstraints {
@@ -156,8 +156,8 @@ final class ReviewListCell: BaseCollectionViewCell {
         }
 
         contentLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(photoStackView.snp.bottom).offset(8)
         }
         

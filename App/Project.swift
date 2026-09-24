@@ -45,13 +45,13 @@ struct BuildSetting {
             "GCC_WARN_UNUSED_VARIABLE": "YES",
             "IPHONEOS_DEPLOYMENT_TARGET": "18.0",
             "MTL_FAST_MATH": "YES",
-            "SDKROOT": "iphoneos",
+            "SDKROOT": "iphoneos"
         ]
         
         static let debug: SettingsDictionary = [
             "DEBUG_INFORMATION_FORMAT": "dwarf",
             "ENABLE_TESTABILITY": "YES",
-            "GCC_DYNAMIC_NO_PIC" :"NO",
+            "GCC_DYNAMIC_NO_PIC": "NO",
             "GCC_OPTIMIZATION_LEVEL": "0",
             "GCC_PREPROCESSOR_DEFINITIONS": "DEBUG=1 $(inherited)",
             "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
@@ -97,6 +97,7 @@ struct BuildSetting {
         ]
         
         static let debug: SettingsDictionary = [
+            "ADMOB_APP_ID": "ca-app-pub-5385646520024289~4792901724",
             "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-3940256099942544/2435281174",
             "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-3940256099942544/2435281174",
             "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-3940256099942544/2435281174",
@@ -123,17 +124,18 @@ struct BuildSetting {
         ]
         
         static let release: SettingsDictionary = [
-            "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-1527951560812478/5573281913",
-            "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-1527951560812478/4059484724",
-            "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-1527951560812478/5036908137",
-            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-1527951560812478/4152389037",
-            "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-1527951560812478/9021572333",
-            "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-1527951560812478/3327283605",
-            "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-1527951560812478/5208914863",
-            "ADMOB_UNIT_ID_FRONT_BANNER": "ca-app-pub-1527951560812478/1135797704",
-            "ADMOB_UNIT_ID_SEARCH_ADDRESS": "ca-app-pub-1527951560812478/1646012090",
-            "ADMOB_UNIT_ID_POLL_LIST_ITEM": "ca-app-pub-1527951560812478/1682406500",
-            "ADMOB_UNIT_ID_LOCAL_NEWS_FEED": "ca-app-pub-1527951560812478/9272500765",
+            "ADMOB_APP_ID": "ca-app-pub-5385646520024289~4792901724",
+            "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-5385646520024289/2322085549",
+            "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-5385646520024289/6832176196",
+            "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-5385646520024289/5480575233",
+            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-5385646520024289/1530466795",
+            "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-5385646520024289/3715058263",
+            "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-5385646520024289/4463007033",
+            "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-5385646520024289/7518571901",
+            "ADMOB_UNIT_ID_FRONT_BANNER": "ca-app-pub-5385646520024289/1579849512",
+            "ADMOB_UNIT_ID_SEARCH_ADDRESS": "ca-app-pub-5385646520024289/9408956811",
+            "ADMOB_UNIT_ID_POLL_LIST_ITEM": "ca-app-pub-5385646520024289/2843548462",
+            "ADMOB_UNIT_ID_LOCAL_NEWS_FEED": "ca-app-pub-5385646520024289/9458339538",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars",
             "API_URL": "https://threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원",
@@ -311,8 +313,8 @@ let project = Project(
                 .Feature.store,
                 .Feature.write,
                 .Feature.myPage,
+                .Feature.feed,
                 .SPM.snapKit,
-                .SPM.then,
                 .SPM.kingfisher,
                 .SPM.lottie,
                 .Package.cameraPermission,
@@ -339,7 +341,7 @@ let project = Project(
                 .Package.naverMap,
                 .Package.lookinServer,
                 .target(name: "service-extension"),
-                .target(name: "content-extension"),
+                .target(name: "content-extension")
             ],
             settings: .settings(
                 base: BuildSetting.App.base,
@@ -362,6 +364,7 @@ let project = Project(
             dependencies: [
                 .target(name: "three-dollar-in-my-pocket"),
                 .Feature.store,
+                .Feature.home
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,

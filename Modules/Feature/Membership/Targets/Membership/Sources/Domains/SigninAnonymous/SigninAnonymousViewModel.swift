@@ -31,7 +31,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
     private var preference = Preference.shared
     
     init(userRepository: UserRepository = UserRepositoryImpl()) {
-        self.appInterface = DIContainer.shared.container.resolve(AppModuleInterface.self)
+        self.appInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self)
         self.userRepository = userRepository
         
         super.init()
@@ -110,7 +110,7 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
             let connectAccount = await userRepository.connectAccount(input: input)
             
             switch connectAccount {
-            case .success(_):
+            case .success:
                 preference.isAnonymousUser = false
                 output.route.send(.showLoading(isShow: false))
                 output.route.send(.dismiss)

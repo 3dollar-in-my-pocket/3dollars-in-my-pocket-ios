@@ -77,30 +77,30 @@ final class ReportBottomSheet: BaseView {
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(24)
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
         }
         
         closeButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.size.equalTo(30)
             $0.centerY.equalTo(titleLabel)
         }
         
         descriptionLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
         }
         
         collectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(16)
             $0.height.equalTo(0)
         }
         
         reportButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20).priority(.high)
-            $0.right.equalToSuperview().offset(-20).priority(.high)
+            $0.leading.equalToSuperview().offset(20).priority(.high)
+            $0.trailing.equalToSuperview().offset(-20).priority(.high)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
         }
     }

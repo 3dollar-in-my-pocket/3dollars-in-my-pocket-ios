@@ -96,7 +96,7 @@ public final class NicknameViewController: Common.BaseViewController {
         viewModel.output.clearNameField
             .main
             .withUnretained(self)
-            .sink { owner, text in
+            .sink { owner, _ in
                 owner.nicknameView.nicknameField.text = nil
             }
             .store(in: &cancellables)

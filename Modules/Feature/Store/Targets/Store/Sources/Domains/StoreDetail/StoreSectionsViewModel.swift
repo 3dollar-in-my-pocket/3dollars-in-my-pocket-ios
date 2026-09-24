@@ -1,5 +1,5 @@
 import Combine
-import UIKit
+import Foundation
 
 import AppInterface
 import Common
@@ -45,9 +45,13 @@ extension StoreSectionsViewModel {
         case presentNavigationActionSheet
         case navigateAppleMap(LocationResponse)
         case presentShareSheet(URL)
+        case openURL(URL)
+        case copyToPasteboard(String)
         case presentBossStorePhoto(BossStorePhotoViewModel)
         case presentDeleteReviewAlert(reviewId: Int)
         case presentUseCouponAlert(issuedKey: String)
+        case closeWithDeletedStore(message: String)
+        case closeAfterReport(message: String)
     }
 
     struct NavigationTarget {
@@ -67,19 +71,22 @@ extension StoreSectionsViewModel {
         let reviewRepository: ReviewRepository
         let couponRepository: CouponRepository
         let logManager: LogManagerProtocol
+        let globalEventBus: GlobalEventBusProtocol
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
             reportRepository: ReportRepository = ReportRepositoryImpl(),
             reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
             couponRepository: CouponRepository = CouponRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            logManager: LogManagerProtocol = LogManager.shared,
+            globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
         ) {
             self.storeRepository = storeRepository
             self.reportRepository = reportRepository
             self.reviewRepository = reviewRepository
             self.couponRepository = couponRepository
             self.logManager = logManager
+            self.globalEventBus = globalEventBus
         }
     }
 
@@ -209,8 +216,19 @@ final class StoreSectionsViewModel: BaseViewModel {
                 scrollToSectionIfPossible(fragment: fragment)
             }
         case .failure(let error):
-            output.error.send(error)
+            if let message = Self.deletedStoreMessage(from: error) {
+                output.route.send(.closeWithDeletedStore(message: message))
+            } else {
+                output.error.send(error)
+            }
         }
+    }
+
+    static func deletedStoreMessage(from error: Error) -> String? {
+        guard case .errorContainer(let container) = error as? NetworkError,
+              NetworkResultCode(value: container.resultCode) == .notExistsStore else { return nil }
+
+        return container.message
     }
 
     private func handle(_ action: StoreSectionAction) {
@@ -240,7 +258,7 @@ final class StoreSectionsViewModel: BaseViewModel {
         switch action.actionType {
         case .storeEditCopyAddress:
             guard let address = action.extraParams["ADDRESS"]?.stringValue else { return }
-            UIPasteboard.general.string = address
+            output.route.send(.copyToPasteboard(address))
             output.toast.send(Strings.StoreDetail.Toast.copyToAddress)
         case .storeEditMapEnlarge:
             output.route.send(.presentMapDetail(makeMapDetailViewModel()))
@@ -330,19 +348,19 @@ final class StoreSectionsViewModel: BaseViewModel {
 
     private func goToNavigationApplication(type: NavigationAppType) {
         guard let target = state.navigationTarget,
-              let appInformation = DIContainer.shared.container.resolve(AppInformation.self) else { return }
+              let appInformation = DIContainer.shared.resolver.resolve(AppInformation.self) else { return }
         let location = target.location
         let storeName = target.storeName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 
         switch type {
         case .kakao:
             guard let url = URL(string: "kakaomap://look?p=\(location.latitude),\(location.longitude)") else { return }
-            UIApplication.shared.open(url)
+            output.route.send(.openURL(url))
         case .naver:
             let urlScheme = "nmap://place?lat=\(location.latitude)&lng=\(location.longitude)"
                 + "&name=\(storeName)&zoom=20&appname=\(appInformation.bundleId)"
             guard let url = URL(string: urlScheme) else { return }
-            UIApplication.shared.open(url)
+            output.route.send(.openURL(url))
         case .apple:
             output.route.send(.navigateAppleMap(location))
         }
@@ -451,14 +469,26 @@ final class StoreSectionsViewModel: BaseViewModel {
             let result = await dependency.reportRepository.fetchReportReasons(group: .store)
             switch result {
             case .success(let response):
-                output.route.send(.presentStoreReport(.init(config: .init(
+                let viewModel = ReportBottomSheetViewModel(config: .init(
                     storeId: storeId,
                     reportReasons: response.reasons.map(ReportReason.init)
-                ))))
+                ))
+                viewModel.output.onSuccessReport
+                    .withUnretained(self)
+                    .sink { (owner: StoreSectionsViewModel, _) in
+                        owner.handleSuccessReport(storeId: storeId)
+                    }
+                    .store(in: &cancellables)
+                output.route.send(.presentStoreReport(viewModel))
             case .failure(let error):
                 output.error.send(error)
             }
         }
+    }
+
+    private func handleSuccessReport(storeId: Int) {
+        dependency.globalEventBus.onReportStore.send(storeId)
+        output.route.send(.closeAfterReport(message: Strings.ReportModal.successToast))
     }
 
     private func presentReviewReport(storeId: Int, reviewId: Int) {

@@ -5,12 +5,14 @@ import Common
 
 final class PollListViewController: BaseViewController {
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.delegate = self
-        $0.contentInset.top = 20
-        $0.contentInset.bottom = 80
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        collectionView.contentInset.top = 20
+        collectionView.contentInset.bottom = 80
+        return collectionView
+    }()
 
     private lazy var dataSource = PollListDataSource(collectionView: collectionView)
 

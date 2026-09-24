@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 import Model
 
 final class PollDetailCommentCell: BaseCollectionViewCell {
@@ -16,15 +15,19 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
     weak var containerVC: UIViewController?
 
-    private let userNameLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray80.color
-    }
+    private let userNameLabel: UILabel = {
+        let userNameLabel = UILabel()
+        userNameLabel.font = Fonts.medium.font(size: 12)
+        userNameLabel.textColor = Colors.gray80.color
+        return userNameLabel
+    }()
  
-    private let badgeStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let badgeStackView: UIStackView = {
+        let badgeStackView = UIStackView()
+        badgeStackView.axis = .horizontal
+        badgeStackView.spacing = 4
+        return badgeStackView
+    }()
 
     private let medalView = CommunityUserMedalView()
 
@@ -32,38 +35,50 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
     private let pollOptionBadge = BadgeView(text: "")
 
-    private let contentLabel = UILabel().then {
-        $0.font = Fonts.regular.font(size: 14)
-        $0.textColor = Colors.gray80.color
-        $0.numberOfLines = 0
-    }
+    private let contentLabel: UILabel = {
+        let contentLabel = UILabel()
+        contentLabel.font = Fonts.regular.font(size: 14)
+        contentLabel.textColor = Colors.gray80.color
+        contentLabel.numberOfLines = 0
+        return contentLabel
+    }()
 
-    private let dateStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-        $0.alignment = .center
-    }
+    private let dateStackView: UIStackView = {
+        let dateStackView = UIStackView()
+        dateStackView.axis = .horizontal
+        dateStackView.spacing = 4
+        dateStackView.alignment = .center
+        return dateStackView
+    }()
 
-    private let dateSideDotView = UIView().then {
-        $0.backgroundColor = Colors.gray40.color
-    }
+    private let dateSideDotView: UIView = {
+        let dateSideDotView = UIView()
+        dateSideDotView.backgroundColor = Colors.gray40.color
+        return dateSideDotView
+    }()
 
-    private let dateLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray40.color
-    }
+    private let dateLabel: UILabel = {
+        let dateLabel = UILabel()
+        dateLabel.font = Fonts.medium.font(size: 12)
+        dateLabel.textColor = Colors.gray40.color
+        return dateLabel
+    }()
 
-    private let reportOrUpdateButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.bold.font(size: 12)
-        $0.setTitleColor(Colors.gray60.color, for: .normal)
-        $0.contentEdgeInsets = .zero
-    }
+    private let reportOrUpdateButton: UIButton = {
+        let reportOrUpdateButton = UIButton()
+        reportOrUpdateButton.titleLabel?.font = Fonts.bold.font(size: 12)
+        reportOrUpdateButton.setTitleColor(Colors.gray60.color, for: .normal)
+        reportOrUpdateButton.contentEdgeInsets = .zero
+        return reportOrUpdateButton
+    }()
     
     let likeButton = LikeButton()
 
-    private let lineView = UIView().then {
-        $0.backgroundColor = Colors.gray10.color
-    }
+    private let lineView: UIView = {
+        let lineView = UIView()
+        lineView.backgroundColor = Colors.gray10.color
+        return lineView
+    }()
 
     private var viewModel: PollDetailCommentCellViewModel?
 
@@ -232,25 +247,33 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
 
 private final class BadgeView: BaseView {
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 4
-        $0.backgroundColor = Colors.gray10.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 4
+        containerView.backgroundColor = Colors.gray10.color
+        return containerView
+    }()
 
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 4
+        return stackView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 10)
-        $0.textColor = Colors.gray80.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 10)
+        titleLabel.textColor = Colors.gray80.color
+        return titleLabel
+    }()
 
-    private let suffixLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 10)
-        $0.textColor = Colors.gray60.color
-    }
+    private let suffixLabel: UILabel = {
+        let suffixLabel = UILabel()
+        suffixLabel.font = Fonts.medium.font(size: 10)
+        suffixLabel.textColor = Colors.gray60.color
+        return suffixLabel
+    }()
 
     init(text: String) {
         super.init(frame: .zero)

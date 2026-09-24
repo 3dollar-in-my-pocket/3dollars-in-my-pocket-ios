@@ -1,0 +1,21 @@
+name: Lint
+
+# 모든 PR에서 실행 (스택 PR처럼 base가 feature 브랜치여도)
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: SwiftLint + 모듈 의존성
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SwiftLint (새 위반만, 베이스라인 제외)
+        uses: docker://ghcr.io/realm/swiftlint:0.63.2
+        with:
+          args: lint --strict --reporter github-actions-logging
+
+      - name: 모듈 의존성 규칙 (R1·R2)
+        run: scripts/check-module-deps.sh

@@ -3,7 +3,6 @@ import Combine
 
 import Common
 import DesignSystem
-import Then
 
 final class CommunityPollListCell: BaseCollectionViewCell {
 
@@ -12,32 +11,40 @@ final class CommunityPollListCell: BaseCollectionViewCell {
         static let sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
     }
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 24)
-        $0.textColor = Colors.gray100.color
-        $0.numberOfLines = 2
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 24)
+        titleLabel.textColor = Colors.gray100.color
+        titleLabel.numberOfLines = 2
+        return titleLabel
+    }()
 
-    private let categoryButton = UIButton().then {
-        $0.titleLabel?.font = Fonts.bold.font(size: 18)
-        $0.setTitleColor(Colors.gray80.color, for: .normal)
-        $0.setImage(Icons.fireSolid.image
+    private let categoryButton: UIButton = {
+        let categoryButton = UIButton()
+        categoryButton.titleLabel?.font = Fonts.bold.font(size: 18)
+        categoryButton.setTitleColor(Colors.gray80.color, for: .normal)
+        categoryButton.setImage(Icons.fireSolid.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.mainRed.color), for: .normal)
-    }
+        return categoryButton
+    }()
 
-    private let arrowImageView = UIImageView().then {
-        $0.image = Icons.arrowRight.image
+    private let arrowImageView: UIImageView = {
+        let arrowImageView = UIImageView()
+        arrowImageView.image = Icons.arrowRight.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray80.color)
-    }
+        return arrowImageView
+    }()
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.backgroundColor = .clear
-        $0.showsHorizontalScrollIndicator = false
-        $0.delegate = self
-        $0.decelerationRate = .fast
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.decelerationRate = .fast
+        return collectionView
+    }()
     
     private lazy var dataSource = CommunityPollListCellDataSource(
         collectionView: collectionView,
@@ -140,8 +147,8 @@ final class CommunityPollListCell: BaseCollectionViewCell {
     }
     
     private func openUrl(with urlString: String?) {
-        guard let urlString, 
-                let url = URL(string: urlString), 
+        guard let urlString,
+                let url = URL(string: urlString),
                 UIApplication.shared.canOpenURL(url) else { return }
         
         UIApplication.shared.open(url, options: [:], completionHandler: nil)

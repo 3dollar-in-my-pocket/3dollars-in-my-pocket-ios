@@ -86,7 +86,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
             .handleEvents(receiveOutput: { owner, _ in
                 owner.output.showLoading.send(true)
             })
-            .asyncMap { owner, input in
+            .asyncMap { owner, _ in
                 await owner.communityRepository.deletePollComment(
                     pollId: owner.config.pollId,
                     commentId: owner.commentId
@@ -134,7 +134,7 @@ final class PollDetailCommentCellViewModel: BaseViewModel {
             let result = await communityRepository.toggleReviewSticker(pollId: config.pollId, commentId: config.commentId, input: input)
             
             switch result {
-            case .success(_):
+            case .success:
                 if output.item.stickers[0].reactedByMe == true {
                     output.item.stickers[0].count -= 1
                 } else {

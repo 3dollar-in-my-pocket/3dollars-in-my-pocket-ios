@@ -130,7 +130,7 @@ extension WriteDetailTimeCell {
         }()
         
         private let datePicker = UIDatePicker()
-        var didTapDone: ((String?) -> Void)? = nil
+        var didTapDone: ((String?) -> Void)?
         
         init(placeholder: String) {
             super.init(frame: .zero)

@@ -1,20 +1,20 @@
-//import UIKit
+// import UIKit
 //
-//import NMapsMap
-//import Common
-//import DesignSystem
-//import Model
-//import Log
+// import NMapsMap
+// import Common
+// import DesignSystem
+// import Model
+// import Log
 //
-//typealias WriteDetailSanpshot = NSDiffableDataSourceSnapshot<WriteDetailSection, WriteDetailSectionItem>
+// typealias WriteDetailSanpshot = NSDiffableDataSourceSnapshot<WriteDetailSection, WriteDetailSectionItem>
 //
-//protocol WriteDetailDelegate: AnyObject {
+// protocol WriteDetailDelegate: AnyObject {
 //    func onSuccessWrite(storeId: Int)
 //    
 //    func onSuccessEdit(storeCreateResponse: UserStoreCreateResponse)
-//}
+// }
 //
-//final class WriteDetailViewController: BaseViewController {
+// final class WriteDetailViewController: BaseViewController {
 //    override var screenName: ScreenName {
 //        return viewModel.output.screenName
 //    }
@@ -192,4 +192,4 @@
 //    @objc func onHideKeyboard(notification: NSNotification) {
 //        writeDetailView.updateCollectionViewLayout(keyboardHeight: 0)
 //    }
-//}
+// }

@@ -32,9 +32,9 @@ final class CategoryFilterView: BaseView {
         }
         
         collectionView.snp.makeConstraints {
-            $0.left.equalToSuperview()
+            $0.leading.equalToSuperview()
             $0.top.equalTo(indicatorView.snp.bottom).offset(8)
-            $0.right.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }

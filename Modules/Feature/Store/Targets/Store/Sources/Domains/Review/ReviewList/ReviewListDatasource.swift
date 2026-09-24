@@ -15,7 +15,7 @@ final class ReviewListDatasource: UICollectionViewDiffableDataSource<ReviewListS
             FilteredReviewCell.self
         ])
         
-        super.init(collectionView: collection) { collectionView, indexPath, itemIdentifier in
+        super.init(collectionView: collection) { _, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .review(let review):
                 let cell: ReviewListCell = collection.dequeueReusableCell(indexPath: indexPath)

@@ -24,7 +24,7 @@ public extension UILabel {
             let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
 
             if let existingStyle = mutableAttributedString.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle {
-                style = existingStyle.mutableCopy() as! NSMutableParagraphStyle
+                style = (existingStyle.mutableCopy() as? NSMutableParagraphStyle) ?? NSMutableParagraphStyle()
             } else {
                 style = NSMutableParagraphStyle()
             }

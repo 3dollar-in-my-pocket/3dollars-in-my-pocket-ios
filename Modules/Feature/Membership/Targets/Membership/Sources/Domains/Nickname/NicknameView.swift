@@ -10,82 +10,102 @@ final class NicknameView: BaseView {
         NotificationCenter.default.removeObserver(self)
     }
     
-    let backButton = UIButton().then {
-        $0.setImage(
+    let backButton: UIButton = {
+        let backButton = UIButton()
+        backButton.setImage(
             Icons.arrowLeft.image.withTintColor(Colors.systemWhite.color),
             for: .normal
         )
-    }
+        return backButton
+    }()
     
-    private let imageView = UIImageView(image: Assets.imageBungeoppang.image).then {
-        $0.contentMode = .scaleAspectFit
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView(image: Assets.imageBungeoppang.image)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
     
-    private let nicknameLabel1 = UILabel().then {
-        $0.text = Strings.nicknameLabel1
-        $0.font = Fonts.bold.font(size: 30)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let nicknameLabel1: UILabel = {
+        let nicknameLabel1 = UILabel()
+        nicknameLabel1.text = Strings.nicknameLabel1
+        nicknameLabel1.font = Fonts.bold.font(size: 30)
+        nicknameLabel1.textColor = Colors.systemWhite.color
+        return nicknameLabel1
+    }()
     
-    let nicknameField = UITextField().then {
-        $0.textAlignment = .center
-        $0.font = Fonts.bold.font(size: 30)
-        $0.textColor = Colors.mainPink.color
-        $0.returnKeyType = .done
-        $0.attributedPlaceholder = NSAttributedString(
+    let nicknameField: UITextField = {
+        let nicknameField = UITextField()
+        nicknameField.textAlignment = .center
+        nicknameField.font = Fonts.bold.font(size: 30)
+        nicknameField.textColor = Colors.mainPink.color
+        nicknameField.returnKeyType = .done
+        nicknameField.attributedPlaceholder = NSAttributedString(
             string: Strings.nicknamePlaceholder,
             attributes: [
                 .foregroundColor: Colors.gray80.color as Any
             ]
         )
-        $0.tintColor = Colors.mainPink.color
-    }
+        nicknameField.tintColor = Colors.mainPink.color
+        return nicknameField
+    }()
     
-    private let nicknameLabel2 = UILabel().then {
-        $0.text = Strings.nicknameLabel2
-        $0.font = Fonts.bold.font(size: 30)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let nicknameLabel2: UILabel = {
+        let nicknameLabel2 = UILabel()
+        nicknameLabel2.text = Strings.nicknameLabel2
+        nicknameLabel2.font = Fonts.bold.font(size: 30)
+        nicknameLabel2.textColor = Colors.systemWhite.color
+        return nicknameLabel2
+    }()
     
-    let refreshButton = UIButton().then {
-        $0.setImage(Icons.refresh.image, for: .normal)
-        $0.layer.borderColor = Colors.gray80.color.cgColor
-        $0.layer.borderWidth = 1
-        $0.layer.cornerRadius = 5
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray90.color
-        $0.snp.makeConstraints {
+    let refreshButton: UIButton = {
+        let refreshButton = UIButton()
+        refreshButton.setImage(Icons.refresh.image, for: .normal)
+        refreshButton.layer.borderColor = Colors.gray80.color.cgColor
+        refreshButton.layer.borderWidth = 1
+        refreshButton.layer.cornerRadius = 5
+        refreshButton.clipsToBounds = true
+        refreshButton.backgroundColor = Colors.gray90.color
+        refreshButton.snp.makeConstraints {
             $0.size.equalTo(32)
         }
-    }
+        return refreshButton
+    }()
     
-    private let warningImage = UIImageView().then {
-        $0.image = Icons.infomation.image.withTintColor(Colors.mainRed.color)
-        $0.isHidden = true
-    }
+    private let warningImage: UIImageView = {
+        let warningImage = UIImageView()
+        warningImage.image = Icons.infomation.image.withTintColor(Colors.mainRed.color)
+        warningImage.isHidden = true
+        return warningImage
+    }()
     
-    private let warningLabel = PaddingLabel(topInset: 8, bottomInset: 8, leftInset: 12, rightInset: 12).then {
-        $0.text = Strings.nicknameAlreayExisted
-        $0.textColor = Colors.mainRed.color
-        $0.backgroundColor = Colors.mainRed.color.withAlphaComponent(0.1)
-        $0.layer.cornerRadius = 16
-        $0.layer.masksToBounds = true
-        $0.isHidden = true
-    }
+    private let warningLabel: PaddingLabel = {
+        let warningLabel = PaddingLabel(topInset: 8, bottomInset: 8, leftInset: 12, rightInset: 12)
+        warningLabel.text = Strings.nicknameAlreayExisted
+        warningLabel.textColor = Colors.mainRed.color
+        warningLabel.backgroundColor = Colors.mainRed.color.withAlphaComponent(0.1)
+        warningLabel.layer.cornerRadius = 16
+        warningLabel.layer.masksToBounds = true
+        warningLabel.isHidden = true
+        return warningLabel
+    }()
     
-    let signupButton = UIButton().then {
-        $0.setTitle(Strings.nicknameSignup, for: .normal)
-        $0.titleLabel?.font = Fonts.bold.font(size: 16)
-        $0.setTitleColor(Colors.gray60.color, for: .disabled)
-        $0.setTitleColor(Colors.systemWhite.color, for: .normal)
-        $0.setBackgroundColor(Colors.gray80.color, for: .disabled)
-        $0.setBackgroundColor(Colors.mainPink.color, for: .normal)
-        $0.isEnabled = false
-    }
+    let signupButton: UIButton = {
+        let signupButton = UIButton()
+        signupButton.setTitle(Strings.nicknameSignup, for: .normal)
+        signupButton.titleLabel?.font = Fonts.bold.font(size: 16)
+        signupButton.setTitleColor(Colors.gray60.color, for: .disabled)
+        signupButton.setTitleColor(Colors.systemWhite.color, for: .normal)
+        signupButton.setBackgroundColor(Colors.gray80.color, for: .disabled)
+        signupButton.setBackgroundColor(Colors.mainPink.color, for: .normal)
+        signupButton.isEnabled = false
+        return signupButton
+    }()
     
-    private let bottomBackground = UIView().then {
-        $0.backgroundColor = Colors.gray80.color
-    }
+    private let bottomBackground: UIView = {
+        let bottomBackground = UIView()
+        bottomBackground.backgroundColor = Colors.gray80.color
+        return bottomBackground
+    }()
     
     
     override func setup() {
@@ -112,7 +132,7 @@ final class NicknameView: BaseView {
     
     override func bindConstraints() {
         backButton.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.width.height.equalTo(24)
         }
@@ -151,20 +171,20 @@ final class NicknameView: BaseView {
         
         warningImage.snp.makeConstraints {
             $0.centerY.equalTo(nicknameField)
-            $0.left.equalTo(nicknameField.snp.right).offset(4)
+            $0.leading.equalTo(nicknameField.snp.trailing).offset(4)
             $0.width.height.equalTo(20)
         }
 
         bottomBackground.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
 
         signupButton.snp.makeConstraints {
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
             $0.bottom.equalTo(bottomBackground.snp.top)
             $0.height.equalTo(64)
         }

@@ -36,6 +36,11 @@ public extension TargetDependency {
             target: "DesignSystem",
             path: .relativeToRoot("./Modules/Core/DesignSystem")
         )
+
+        public static let sdu = TargetDependency.project(
+            target: "SDU",
+            path: .relativeToRoot("./Modules/Core/SDU")
+        )
     }
     
     class Feature {
@@ -72,11 +77,6 @@ public extension TargetDependency {
         public static let feed = TargetDependency.project(
             target: "Feed",
             path: .relativeToRoot("./Modules/Feature/Feed")
-        )
-
-        public static let sdu = TargetDependency.project(
-            target: "SDU",
-            path: .relativeToRoot("./Modules/Feature/SDU")
         )
     }
     
@@ -115,11 +115,6 @@ public extension TargetDependency {
             target: "FeedInterface",
             path: .relativeToRoot("./Modules/Feature/Feed")
         )
-
-        public static let sduInterface = TargetDependency.project(
-            target: "SDUInterface",
-            path: .relativeToRoot("./Modules/Feature/SDU")
-        )
     }
     
     class SPM {
@@ -127,7 +122,6 @@ public extension TargetDependency {
         public static let swinject = TargetDependency.external(name: "Swinject")
         public static let kingfisher = TargetDependency.external(name: "Kingfisher")
         public static let snapKit = TargetDependency.external(name: "SnapKit")
-        public static let then = TargetDependency.external(name: "Then")
         public static let panModal = TargetDependency.external(name: "PanModal")
         public static let combineCocoa = TargetDependency.external(name: "CombineCocoa")
         public static let zMarkupParser = TargetDependency.external(name: "ZMarkupParser")

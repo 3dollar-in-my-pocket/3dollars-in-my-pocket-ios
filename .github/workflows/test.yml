@@ -1,0 +1,121 @@
+name: Test
+
+# 모든 PR에서 실행 (스택 PR처럼 base가 feature 브랜치여도)
+on:
+  pull_request:
+
+# 같은 PR에 새 푸시가 오면 이전 실행은 취소 (macOS 러너 분 절약)
+concurrency:
+  group: test-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write   # 결과 코멘트
+
+jobs:
+  unit-test:
+    name: 유닛 테스트 (three-dollar-in-my-pocketTests)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # 러너 이미지(macos-26)의 기본 Xcode 사용. 특정 버전이 필요하면 /Applications/Xcode_<ver>.app 로 xcode-select
+      # (사용 가능한 버전: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md)
+      - name: Xcode 버전
+        run: xcodebuild -version
+
+      - name: mise (mise.toml의 tuist 설치)
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4 — SonarCloud: 외부 액션은 SHA 고정
+        with:
+          install: true
+          cache: true
+
+      - name: Tuist 의존성 캐시
+        uses: actions/cache@v4
+        with:
+          path: Tuist/.build
+          key: tuist-deps-${{ runner.os }}-${{ hashFiles('Tuist/Package.resolved') }}
+          restore-keys: tuist-deps-${{ runner.os }}-
+
+      - name: tuist install / generate
+        run: |
+          mise exec -- tuist install
+          mise exec -- tuist generate --no-open
+
+      - name: 시뮬레이터 선택
+        id: sim
+        run: |
+          UDID="$(xcrun simctl list devices available -j | python3 -c '
+          import json,sys
+          for rt, devs in json.load(sys.stdin)["devices"].items():
+              if "iOS" not in rt: continue
+              for d in devs:
+                  if d["name"].startswith("iPhone") and "Pro" in d["name"]:
+                      print(d["udid"]); sys.exit()
+          ')"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+
+      - name: xcodebuild test
+        run: |
+          set -o pipefail
+          mkdir -p build
+          xcodebuild test \
+            -workspace 3dollar-in-my-pocket.xcworkspace \
+            -scheme three-dollar-in-my-pocketTests \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -resultBundlePath build/tests.xcresult \
+            -quiet 2>&1 | tee build/xcodebuild.log | grep -E "error:|Executed|Test Suite|BUILD" || true
+          test -d build/tests.xcresult
+
+      - name: 결과 요약 (Job Summary)
+        if: always()
+        run: |
+          mkdir -p build
+          if [ -d build/tests.xcresult ]; then
+            scripts/test-summary.sh build/tests.xcresult > build/summary.md
+          else
+            printf '### ❌ 테스트를 실행하지 못했습니다\n\n빌드 로그를 확인하세요.\n' > build/summary.md
+          fi
+          cat build/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 결과 코멘트 (PR, 갱신형)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          MARK="<!-- test-evidence -->"
+          { echo "$MARK"; cat build/summary.md; echo; echo "_[워크플로 실행](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_"; } > build/comment.md
+          ID="$(gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARK\")) | .id" | head -1)"
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$ID" -F body=@build/comment.md > /dev/null
+          else
+            gh pr comment "$PR" --body-file build/comment.md
+          fi
+
+      - name: xcresult 아티팩트
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests.xcresult
+          path: build/tests.xcresult
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: 실패 판정
+        if: always()
+        run: |
+          if [ ! -d build/tests.xcresult ]; then
+            echo "::error::테스트가 실행되지 않았습니다 (빌드 실패 또는 이전 스텝 실패). 위 스텝 로그를 확인하세요."
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json,subprocess,sys
+          s=json.loads(subprocess.check_output(["xcrun","xcresulttool","get","test-results","summary","--path","build/tests.xcresult"]))
+          ok = s.get("result")=="Passed" and s.get("failedTests",0)==0
+          print("passed" if ok else f"failed: {s.get('failedTests')} failed tests")
+          sys.exit(0 if ok else 1)
+          PY

@@ -1,13 +1,13 @@
-//import UIKit
+// import UIKit
 //
-//import Common
-//import Model
-//import DesignSystem
-//import Log
+// import Common
+// import Model
+// import DesignSystem
+// import Log
 //
-//import PanModal
+// import PanModal
 //
-//final class CategorySelectionViewController: BaseViewController {
+// final class CategorySelectionViewController: BaseViewController {
 //    override var screenName: ScreenName {
 //        return .categorySelection
 //    }
@@ -119,9 +119,9 @@
 //        DimManager.shared.hideDim()
 //        super.dismiss(animated: flag, completion: completion)
 //    }
-//}
+// }
 //
-//extension CategorySelectionViewController: PanModalPresentable {
+// extension CategorySelectionViewController: PanModalPresentable {
 //    var panScrollable: UIScrollView? {
 //        categorySelectionView.categoryCollectionView
 //    }
@@ -149,4 +149,4 @@
 //    var showDragIndicator: Bool {
 //        return false
 //    }
-//}
+// }

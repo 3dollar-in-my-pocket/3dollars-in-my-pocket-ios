@@ -16,7 +16,6 @@ let project = Project.makeFeatureModule(
         .Interface.membershipInterface,
         .Interface.myPageInterface,
         .SPM.snapKit,
-        .SPM.then,
         .SPM.combineCocoa
     ],
     includeInterface: true,

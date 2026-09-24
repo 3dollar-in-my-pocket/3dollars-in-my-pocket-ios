@@ -5,13 +5,12 @@ import Common
 import DesignSystem
 import Model
 import StoreInterface
+import FeedInterface
 
 import NMapsMap
-import Then
 import PanModal
 import Log
 import Kingfisher
-import Feed
 import CombineCocoa
 import FloatingPanel
 
@@ -68,10 +67,10 @@ public final class HomeViewController: BaseViewController {
     public static func instance() -> UINavigationController {
         let viewController = HomeViewController()
 
-        return UINavigationController(rootViewController: viewController).then {
-            $0.isNavigationBarHidden = true
-            $0.interactivePopGestureRecognizer?.delegate = nil
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.interactivePopGestureRecognizer?.delegate = nil
+        return navigationController
     }
 
     public override func loadView() {
@@ -93,12 +92,7 @@ public final class HomeViewController: BaseViewController {
         if isFirstLoad {
             isFirstLoad = false
 
-            let distance = homeView.mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: homeView.mapView.contentBounds.boundsLatLngs[1])
-
-            viewModel.input.onMapLoad.send(distance / 3)
+            viewModel.input.onMapLoad.send(())
         }
     }
 
@@ -196,6 +190,20 @@ public final class HomeViewController: BaseViewController {
                     location: cameraPosition.0,
                     zoomLevel: cameraPosition.1
                 )
+            }
+            .store(in: &cancellables)
+
+        // 초기 줌 레벨이 적용된 뒤의 실제 조회 반경을 측정해 첫 조회에 사용한다.
+        viewModel.output.initialCameraPosition
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, cameraPosition in
+                owner.homeView.moveCamera(
+                    location: cameraPosition.0,
+                    zoomLevel: cameraPosition.1,
+                    animated: false
+                )
+                owner.viewModel.input.onInitialMapDistanceReady.send(owner.homeView.mapMaxDistance)
             }
             .store(in: &cancellables)
 
@@ -300,8 +308,8 @@ public final class HomeViewController: BaseViewController {
 
                 case .deepLink(let link):
                     Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
-                case .presentFeedList(let viewModel):
-                    owner.presentFeedList(viewModel: viewModel)
+                case .presentFeedList(let config):
+                    owner.presentFeedList(config: config)
                 case .presentPhotoViewer(let imageUrls, let selectedIndex):
                     owner.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: selectedIndex)
                 }
@@ -332,6 +340,13 @@ public final class HomeViewController: BaseViewController {
             .store(in: &cancellables)
         bottomSheetVM.output.willLoadMore
             .subscribe(viewModel.input.bottomSheetWillLoadMore)
+            .store(in: &cancellables)
+        bottomSheetVM.output.didTapMapView
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, _) in
+                owner.bottomSheetController?.move(to: .tip, animated: true)
+            }
             .store(in: &cancellables)
 
         let fpc = FloatingPanelController()
@@ -500,8 +515,8 @@ public final class HomeViewController: BaseViewController {
         tabBarController?.present(viewController, animated: true)
     }
 
-    private func presentFeedList(viewModel: FeedListViewModel) {
-        let viewController = FeedListViewController(viewModel: viewModel)
+    private func presentFeedList(config: FeedListViewModelConfig) {
+        let viewController = Environment.feedInterface.createFeedListViewController(config: config)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .overCurrentContext
         navigationController.isNavigationBarHidden = true
@@ -521,12 +536,7 @@ extension HomeViewController: NMFMapViewCameraDelegate {
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             )
-            let distance = mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: mapView.contentBounds.boundsLatLngs[1])
-
-            viewModel.input.changeMaxDistance.send(distance / 3)
+            viewModel.input.changeMaxDistance.send(homeView.mapMaxDistance)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
     }
@@ -537,12 +547,7 @@ extension HomeViewController: NMFMapViewCameraDelegate {
                 latitude: mapView.cameraPosition.target.lat,
                 longitude: mapView.cameraPosition.target.lng
             )
-            let distance = mapView
-                .contentBounds
-                .boundsLatLngs[0]
-                .distance(to: mapView.contentBounds.boundsLatLngs[1])
-
-            viewModel.input.changeMaxDistance.send(distance / 3)
+            viewModel.input.changeMaxDistance.send(homeView.mapMaxDistance)
             viewModel.input.changeMapLocation.send(mapLocation)
         }
     }
@@ -566,6 +571,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             return
         }
         homeView.updateTopBackground(progress: progress)
+        bottomSheetViewController?.updateMapButton(progress: progress)
     }
 
     public func floatingPanelDidChangeState(_ fpc: FloatingPanelController) {
@@ -585,8 +591,10 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         switch fpc.state {
         case .full:
             homeView.updateTopBackground(progress: 1)
+            bottomSheetViewController?.updateMapButton(progress: 1)
         case .tip:
             homeView.updateTopBackground(progress: 0)
+            bottomSheetViewController?.updateMapButton(progress: 0)
         default:
             break
         }

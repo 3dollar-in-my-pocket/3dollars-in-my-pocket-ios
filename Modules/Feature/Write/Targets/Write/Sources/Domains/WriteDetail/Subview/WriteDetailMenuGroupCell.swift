@@ -23,30 +23,38 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     
     private var viewModel: WriteDetailMenuGroupViewModel?
     
-    private let containerView = UIView().then {
-        $0.backgroundColor = Colors.systemWhite.color
-        $0.layer.cornerRadius = 16
-        $0.layer.masksToBounds = true
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = Colors.systemWhite.color
+        containerView.layer.cornerRadius = 16
+        containerView.layer.masksToBounds = true
+        return containerView
+    }()
     
     private let categoryImageView = UIImageView()
     
-    private let categoryNameLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 14)
-        $0.textColor = Colors.gray90.color
-    }
+    private let categoryNameLabel: UILabel = {
+        let categoryNameLabel = UILabel()
+        categoryNameLabel.font = Fonts.bold.font(size: 14)
+        categoryNameLabel.textColor = Colors.gray90.color
+        return categoryNameLabel
+    }()
     
-    let closeButton = UIButton().then {
-        $0.backgroundColor = Colors.mainRed.color
-        $0.layer.cornerRadius = 10
-        $0.setImage(Icons.close.image.withTintColor(Colors.gray0.color), for: .normal)
-        $0.contentEdgeInsets = .init(top: 4, left: 4, bottom: 4, right: 4)
-    }
+    let closeButton: UIButton = {
+        let closeButton = UIButton()
+        closeButton.backgroundColor = Colors.mainRed.color
+        closeButton.layer.cornerRadius = 10
+        closeButton.setImage(Icons.close.image.withTintColor(Colors.gray0.color), for: .normal)
+        closeButton.contentEdgeInsets = .init(top: 4, left: 4, bottom: 4, right: 4)
+        return closeButton
+    }()
     
-    lazy var menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout()).then {
-        $0.register([WriteDetailMenuItemCell.self])
-        $0.dataSource = self
-    }
+    lazy var menuCollectionView: UICollectionView = {
+        let menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
+        menuCollectionView.register([WriteDetailMenuItemCell.self])
+        menuCollectionView.dataSource = self
+        return menuCollectionView
+    }()
     
     override func setup() {
         backgroundColor = Colors.gray0.color
@@ -61,32 +69,32 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     
     override func bindConstraints() {
         containerView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().offset(-20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-Layout.topOffset)
         }
         
         categoryImageView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(12)
             $0.top.equalToSuperview().offset(12)
             $0.width.height.equalTo(24)
         }
         
         categoryNameLabel.snp.makeConstraints {
             $0.centerY.equalTo(categoryImageView)
-            $0.left.equalTo(categoryImageView.snp.right).offset(4)
+            $0.leading.equalTo(categoryImageView.snp.trailing).offset(4)
         }
         
         closeButton.snp.makeConstraints {
-            $0.right.equalToSuperview().offset(-12)
+            $0.trailing.equalToSuperview().offset(-12)
             $0.centerY.equalTo(categoryImageView)
             $0.width.height.equalTo(20)
         }
         
         menuCollectionView.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(12)
-            $0.right.equalToSuperview().offset(-12)
+            $0.leading.equalToSuperview().offset(12)
+            $0.trailing.equalToSuperview().offset(-12)
             $0.top.equalTo(categoryImageView.snp.bottom).offset(16)
             $0.bottom.equalToSuperview()
         }

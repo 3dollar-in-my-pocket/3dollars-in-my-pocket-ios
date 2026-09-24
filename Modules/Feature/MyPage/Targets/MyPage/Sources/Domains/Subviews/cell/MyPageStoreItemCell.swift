@@ -2,7 +2,6 @@ import UIKit
 
 import Common
 import DesignSystem
-import Then
 import Model
 
 final class MyPageStoreItemCell: BaseCollectionViewCell {
@@ -15,44 +14,58 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
         }
     }
 
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 16
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray95.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 16
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray95.color
+        return containerView
+    }()
     
-    private let stackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 16
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        return stackView
+    }()
     
     private let visitDateView = MyPageStoreVisitDateView()
     private let couponView = MyPageStoreCouponView()
     private let storeView = UIView()
 
-    private let titleStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
-    }
+    private let titleStackView: UIStackView = {
+        let titleStackView = UIStackView()
+        titleStackView.axis = .vertical
+        titleStackView.spacing = 4
+        return titleStackView
+    }()
 
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.bold.font(size: 16)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.bold.font(size: 16)
+        titleLabel.textColor = Colors.systemWhite.color
+        return titleLabel
+    }()
 
-    private let tagStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let tagStackView: UIStackView = {
+        let tagStackView = UIStackView()
+        tagStackView.axis = .horizontal
+        tagStackView.spacing = 4
+        return tagStackView
+    }()
 
-    private let tagLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.gray40.color
-    }
+    private let tagLabel: UILabel = {
+        let tagLabel = UILabel()
+        tagLabel.font = Fonts.medium.font(size: 12)
+        tagLabel.textColor = Colors.gray40.color
+        return tagLabel
+    }()
 
-    private let imageView = UIImageView().then {
-        $0.backgroundColor = .clear
-    }
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .clear
+        return imageView
+    }()
 
     override func setup() {
         super.setup()
@@ -64,7 +77,7 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
         ])
 
         containerView.addSubViews([
-            stackView,
+            stackView
         ])
         
         storeView.addSubViews([
@@ -132,25 +145,33 @@ final class MyPageStoreItemCell: BaseCollectionViewCell {
 }
 
 final private class MyPageStoreVisitDateView: BaseView {
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 13
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray90.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 13
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray90.color
+        return containerView
+    }()
     
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 4
+        return stackView
+    }()
     
-    private let iconView = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-    }
+    private let iconView: UIImageView = {
+        let iconView = UIImageView()
+        iconView.contentMode = .scaleAspectFill
+        return iconView
+    }()
     
-    private let dateLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let dateLabel: UILabel = {
+        let dateLabel = UILabel()
+        dateLabel.font = Fonts.medium.font(size: 12)
+        dateLabel.textColor = Colors.systemWhite.color
+        return dateLabel
+    }()
     
     override func setup() {
         super.setup()
@@ -200,26 +221,34 @@ final private class MyPageStoreVisitDateView: BaseView {
 
 // MARK: - Coupon
 final private class MyPageStoreCouponView: BaseView {
-    private let containerView = UIView().then {
-        $0.layer.cornerRadius = 13
-        $0.clipsToBounds = true
-        $0.backgroundColor = Colors.gray90.color
-    }
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 13
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = Colors.gray90.color
+        return containerView
+    }()
     
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 4
-    }
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 4
+        return stackView
+    }()
     
-    private let iconView = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-        $0.image = MyPageAsset.iconCouponSolid.image
-    }
+    private let iconView: UIImageView = {
+        let iconView = UIImageView()
+        iconView.contentMode = .scaleAspectFill
+        iconView.image = MyPageAsset.iconCouponSolid.image
+        return iconView
+    }()
     
-    private let titleLabel = UILabel().then {
-        $0.font = Fonts.medium.font(size: 12)
-        $0.textColor = Colors.systemWhite.color
-    }
+    private let titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.font = Fonts.medium.font(size: 12)
+        titleLabel.textColor = Colors.systemWhite.color
+        return titleLabel
+    }()
     
     override func setup() {
         super.setup()
@@ -261,4 +290,3 @@ final private class MyPageStoreCouponView: BaseView {
         titleLabel.text = item.name
     }
 }
-

@@ -3,9 +3,9 @@ import Foundation
 import Model
 
 public protocol LogEventType {
-    var screen: ScreenName { set get }
-    var name: EventName { set get }
-    var extraParameters: [ParameterName: Any]? { set get }
+    var screen: ScreenName { get set }
+    var name: EventName { get set }
+    var extraParameters: [ParameterName: Any]? { get set }
 }
 
 public extension LogEventType {
@@ -32,13 +32,13 @@ public extension LogEventType {
 public struct ClickEvent: LogEventType {
     public var screen: ScreenName
     public var name: EventName = .click
-    public var extraParameters: [ParameterName : Any]?
+    public var extraParameters: [ParameterName: Any]?
 
     public init(
         screen: ScreenName,
         objectType: LogObjectType,
         objectId: LogObjectId,
-        extraParameters: [ParameterName : Any]? = nil
+        extraParameters: [ParameterName: Any]? = nil
     ) {
         self.screen = screen
 
@@ -75,13 +75,13 @@ public struct ClickEvent: LogEventType {
 public struct ImpressionEvent: LogEventType {
     public var screen: ScreenName
     public var name: EventName = .impression
-    public var extraParameters: [ParameterName : Any]?
+    public var extraParameters: [ParameterName: Any]?
 
     public init(
         screen: ScreenName,
         objectType: LogObjectType,
         objectId: LogObjectId,
-        extraParameters: [ParameterName : Any]? = nil
+        extraParameters: [ParameterName: Any]? = nil
     ) {
         self.screen = screen
 
@@ -118,12 +118,12 @@ public struct ImpressionEvent: LogEventType {
 public struct CustomEvent: LogEventType {
     public var screen: ScreenName
     public var name: EventName
-    public var extraParameters: [ParameterName : Any]?
+    public var extraParameters: [ParameterName: Any]?
     
     public init(
         screen: ScreenName,
         name: EventName,
-        extraParameters: [ParameterName : Any]? = nil
+        extraParameters: [ParameterName: Any]? = nil
     ) {
         self.screen = screen
         self.name = name
@@ -210,4 +210,9 @@ public enum LogObjectId: String {
     case disappearanceInquiryModal = "disappearance_inquiry_modal"
     case visitInducementModal = "visit_inducement_modal"
     case selectReason = "select_reason"
+    case mapView = "map_view"
+    case home
+    case write
+    case community
+    case myPage = "my_page"
 }
