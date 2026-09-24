@@ -14,7 +14,7 @@ typealias Strings = HomeStrings
 
 final class Environment {
     static var appModuleInterface: AppModuleInterface {
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
+        guard let appModuleInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self) else {
             fatalError("AppModuleInterface가 정의되지 않았습니다.")
         }
         
@@ -22,7 +22,7 @@ final class Environment {
     }
     
     static var membershipInterface: MembershipInterface {
-        guard let membershipInterface = DIContainer.shared.container.resolve(MembershipInterface.self) else {
+        guard let membershipInterface = DIContainer.shared.resolver.resolve(MembershipInterface.self) else {
             fatalError("MembershipInterface가 정의되지 않았습니다.")
         }
         
@@ -30,7 +30,7 @@ final class Environment {
     }
     
     static var storeInterface: StoreInterface {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {
+        guard let storeInterface = DIContainer.shared.resolver.resolve(StoreInterface.self) else {
             fatalError("StoreInterface가 정의되지 않았습니다.")
         }
         
@@ -38,7 +38,7 @@ final class Environment {
     }
 
     static var feedInterface: FeedInterface {
-        guard let feedInterface = DIContainer.shared.container.resolve(FeedInterface.self) else {
+        guard let feedInterface = DIContainer.shared.resolver.resolve(FeedInterface.self) else {
             fatalError("FeedInterface가 정의되지 않았습니다.")
         }
 

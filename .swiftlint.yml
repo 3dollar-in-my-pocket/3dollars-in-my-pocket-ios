@@ -75,6 +75,12 @@ custom_rules:
     message: "R4: 서버 호출은 Core/Network 의 Repository(Protocol+Impl)에서만. ViewModel 은 Dependency 로 주입받는다."
     severity: error
 
+  di_resolve_via_resolver:                  # R4
+    name: "R4 DI 조회는 resolver 로"
+    regex: "DIContainer\\.shared\\.container\\.resolve"
+    message: "R4: DI 조회는 DIContainer.shared.resolver.resolve 로 한다. container 는 동기화되지 않아 동시 조회 시 크래시한다. 등록만 container.register 를 쓴다."
+    severity: error
+
   viewmodel_no_uikit_import:                # R5
     name: "R5 ViewModel 에서 UIKit import 금지"
     included: ".*ViewModel\\.swift"

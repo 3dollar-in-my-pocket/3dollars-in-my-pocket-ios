@@ -12,9 +12,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: TC1
+    // MARK: TH-1337 TC1
 
-    func test_TC1_신고에성공하면_dismissRoute가발행된다() async throws {
+    func test_TH1337_TC1_신고에성공하면_dismissRoute가발행된다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
@@ -36,9 +36,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(repository.lastReportStoreArguments?.reportReason, "NOSTORE")
     }
 
-    // MARK: TC2
+    // MARK: TH-1337 TC2
 
-    func test_TC2_신고누적으로삭제되면_onSuccessReport로_isDeleted_true가전달된다() async throws {
+    func test_TH1337_TC2_신고누적으로삭제되면_onSuccessReport로_isDeleted_true가전달된다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: true)))
         let viewModel = makeViewModel(repository: repository)
@@ -58,7 +58,7 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(isDeleted, true)
     }
 
-    func test_TC2_삭제되지않으면_onSuccessReport로_isDeleted_false가전달된다() async throws {
+    func test_TH1337_TC2_삭제되지않으면_onSuccessReport로_isDeleted_false가전달된다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
@@ -78,9 +78,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(isDeleted, false)
     }
 
-    // MARK: TC3
+    // MARK: TH-1337 TC3
 
-    func test_TC3_신고에실패하면_에러가발행되고_시트는닫히지않는다() async {
+    func test_TH1337_TC3_신고에실패하면_에러가발행되고_시트는닫히지않는다() async {
         // Given
         let expectedError = NSError(domain: "ReportStore", code: -1)
         let repository = MockStoreRepository(reportStoreResult: .failure(expectedError))
@@ -105,7 +105,7 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertFalse(didRoute, "신고에 실패하면 시트를 닫지 않는다")
     }
 
-    func test_TC3_사유를고르지않고_신고하면_요청이나가지않는다() async throws {
+    func test_TH1337_TC3_사유를고르지않고_신고하면_요청이나가지않는다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
@@ -119,9 +119,9 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.output.isEnableReport.value)
     }
 
-    // MARK: TC4
+    // MARK: TH-1337 TC4
 
-    func test_TC4_신고요청동안_공용로딩뷰가_켜졌다_꺼진다() async throws {
+    func test_TH1337_TC4_신고요청동안_공용로딩뷰가_켜졌다_꺼진다() async throws {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .success(try makeDeleteResponse(isDeleted: false)))
         let viewModel = makeViewModel(repository: repository)
@@ -142,7 +142,7 @@ final class ReportBottomSheetViewModelTests: XCTestCase {
         XCTAssertEqual(loadingStates, [true, false])
     }
 
-    func test_TC4_신고에실패해도_로딩뷰는_꺼진다() async {
+    func test_TH1337_TC4_신고에실패해도_로딩뷰는_꺼진다() async {
         // Given
         let repository = MockStoreRepository(reportStoreResult: .failure(NSError(domain: "ReportStore", code: -1)))
         let viewModel = makeViewModel(repository: repository)

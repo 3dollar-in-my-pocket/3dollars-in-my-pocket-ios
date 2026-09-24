@@ -1,8 +1,9 @@
 #!/bin/sh
 # xcresult 번들을 PR용 마크다운 요약으로 변환한다.
 #   사용: scripts/test-summary.sh <path.xcresult>  > summary.md
-# 출력: 전체 결과 / 실패 목록 / TC 커버리지 표(test_TC{n}_ 접두 메서드 → 테스트 클래스별 TC 번호 집계)
-# TC 번호는 테스트 파일(클래스) 안에서만 유일하므로 항상 `클래스 - TC{n}` 으로 묶어서 보여준다.
+# 출력: 전체 결과 / 실패 목록 / TC 커버리지 표(test_{TICKET}_TC{n}_ 접두 메서드 → 티켓별 TC 번호 집계)
+# TC 번호는 테크스펙(티켓) 안에서 유일하므로 `TH-1234 TC{n}` 으로 묶어서 스펙 순서대로 보여준다.
+# 티켓 접두가 없는 레거시 메서드(test_TC{n}_)는 티켓 칸을 "—" 로 두고 클래스 단위로 표시한다.
 # docs/process/testing.md 의 "PR에 남기는 것" 형식과 맞춘다.
 
 set -eu
@@ -48,28 +49,33 @@ if fails:
         print(f"- `{suite}.{name}` — {result}")
     print()
 
-# TC 커버리지: test_TC{n}_ 접두. TC 번호는 클래스 안에서만 유일하다.
+# TC 커버리지: test_{TICKET}_TC{n}_ 접두. TC 번호는 티켓(테크스펙) 안에서 유일하다.
 by_tc = collections.defaultdict(list)
 for suite, name, result in cases:
-    m = re.match(r"test_TC(\d+)_", name)
+    m = re.match(r"test_(?:(TH\d+)_)?TC(\d+)_", name)
     if m:
-        by_tc[(suite or "", int(m.group(1)))].append((name, result))
+        ticket = m.group(1) or ""
+        by_tc[(ticket, int(m.group(2)), suite or "")].append((name, result))
 
 if by_tc:
-    print("**TC 커버리지** (메서드명 `test_TC{n}_` 기준, TC 번호는 테스트 클래스 단위)")
+    print("**TC 커버리지** (메서드명 `test_{TICKET}_TC{n}_` 기준, TC 번호는 테크스펙 단위)")
     print()
-    print("| 테스트 클래스 | TC | 테스트 | 결과 |")
-    print("|---|---|---|---|")
-    prev_suite = None
-    for suite, tc in sorted(by_tc):
-        for name, result in by_tc[(suite, tc)]:
+    print("| 티켓 | TC | 테스트 클래스 | 테스트 | 결과 |")
+    print("|---|---|---|---|---|")
+    prev_key, prev_triple = None, None
+    for ticket, tc, suite in sorted(by_tc):
+        for name, result in by_tc[(ticket, tc, suite)]:
             mark = "✅" if result == "Passed" else "❌"
-            shown = suite if suite != prev_suite else ""
-            print(f"| {shown} | TC{tc} | `{name}` | {mark} |")
-            prev_suite = suite
+            key, triple = (ticket, tc), (ticket, tc, suite)
+            label = f"{ticket[:2]}-{ticket[2:]}" if ticket else "—"
+            shown_ticket = "" if key == prev_key else label
+            shown_tc = "" if key == prev_key else f"TC{tc}"
+            shown_suite = "" if triple == prev_triple else suite
+            print(f"| {shown_ticket} | {shown_tc} | {shown_suite} | `{name}` | {mark} |")
+            prev_key, prev_triple = key, triple
     print()
 else:
-    print("_TC 접두(`test_TC{n}_`)가 붙은 테스트가 없습니다. 이 PR에 테크스펙 TC가 있다면 `/3dollars:test-cases`로 테스트를 도출하세요._")
+    print("_TC 접두(`test_{TICKET}_TC{n}_`)가 붙은 테스트가 없습니다. 이 PR에 테크스펙 TC가 있다면 `/3dollars:test-cases`로 테스트를 도출하세요._")
     print()
 
 print("<details><summary>전체 테스트 목록</summary>")

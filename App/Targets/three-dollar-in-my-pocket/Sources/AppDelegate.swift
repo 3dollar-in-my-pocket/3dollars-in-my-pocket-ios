@@ -110,7 +110,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
+
+                Task { @MainActor in
+                    await self.requestTrackingAuthorizationIfNeeded()
+                }
             }
+    }
+
+    @MainActor
+    private func requestTrackingAuthorizationIfNeeded() async {
+        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
+
+        if UIApplication.shared.applicationState != .active {
+            let activations = NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification)
+            for await _ in activations { break }
+        }
+
+        _ = await ATTrackingManager.requestTrackingAuthorization()
     }
     
     private func initializeDI() {

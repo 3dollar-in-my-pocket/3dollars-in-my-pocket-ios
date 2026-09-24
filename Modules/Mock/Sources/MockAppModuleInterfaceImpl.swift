@@ -55,10 +55,6 @@ public final class MockAppModuleInterfaceImpl: AppModuleInterface {
         ToastManager.shared.show(message: "shareKakao")
     }
 
-    public func requestATTIfNeeded() {
-        ToastManager.shared.show(message: "requestATTIfNeeded")
-    }
-
     public func sendPageView(screenName: String, type: AnyObject.Type) { }
 
     public func sendPageView(screenName: String, type: any AnyObject.Type, parameters: [String: Any]?) { }

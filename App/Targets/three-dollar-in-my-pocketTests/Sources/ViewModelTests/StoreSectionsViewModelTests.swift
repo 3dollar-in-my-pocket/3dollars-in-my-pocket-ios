@@ -77,7 +77,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
 
     // MARK: TH-1337 — 삭제된 가게 처리
 
-    func test_TC1_삭제된가게면_서버메시지와함께_상세를닫는Route가발행된다() async {
+    func test_TH1337_TC5_삭제된가게면_서버메시지와함께_상세를닫는Route가발행된다() async {
         // Given
         let error = NetworkError.errorContainer(.init(message: "삭제된 가게입니다", resultCode: "NF002"))
         let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(error))
@@ -100,7 +100,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
         XCTAssertEqual(message, "삭제된 가게입니다")
     }
 
-    func test_TC2_삭제가아닌에러면_상세를닫지않고_에러만발행된다() async {
+    func test_TH1337_TC6_삭제가아닌에러면_상세를닫지않고_에러만발행된다() async {
         // Given
         let error = NetworkError.errorContainer(.init(message: "일시적인 문제가 발생하였습니다", resultCode: "IS000"))
         let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(error))
@@ -119,7 +119,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
         XCTAssertFalse(didRoute, "삭제가 아닌 에러로는 상세를 닫지 않는다")
     }
 
-    func test_TC2_네트워크에러면_상세를닫지않는다() {
+    func test_TH1337_TC6_네트워크에러면_상세를닫지않는다() {
         // Given / When
         let error = NetworkError.errorContainer(.init(message: "세션이 만료되었습니다", resultCode: "UA000"))
 
@@ -151,9 +151,9 @@ final class StoreSectionsViewModelTests: XCTestCase {
         return try JSONDecoder().decode(ReportReasonApiResponse.self, from: Data(json.utf8))
     }
 
-    // MARK: TC3
+    // MARK: TH-1337 TC7
 
-    func test_TC3_신고에성공하면_토스트와함께_상세를닫는Route가발행된다() async throws {
+    func test_TH1337_TC7_신고에성공하면_토스트와함께_상세를닫는Route가발행된다() async throws {
         // Given
         let globalEventBus = MockGlobalEventBus()
         let viewModel = try makeReportedViewModel(globalEventBus: globalEventBus)
@@ -178,7 +178,7 @@ final class StoreSectionsViewModelTests: XCTestCase {
         XCTAssertFalse(message.isEmpty)
     }
 
-    func test_TC3_신고에성공하면_홈이재조회하도록_전역이벤트를발행한다() async throws {
+    func test_TH1337_TC7_신고에성공하면_홈이재조회하도록_전역이벤트를발행한다() async throws {
         // Given
         let globalEventBus = MockGlobalEventBus()
         let viewModel = try makeReportedViewModel(globalEventBus: globalEventBus)

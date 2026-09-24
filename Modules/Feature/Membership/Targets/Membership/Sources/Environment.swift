@@ -11,7 +11,7 @@ typealias Strings = MembershipStrings
 
 final class Environment {
     static var appModuleInterface: AppModuleInterface {
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
+        guard let appModuleInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self) else {
             fatalError("AppModuleInterface가 정의되지 않았습니다.")
         }
         
@@ -19,7 +19,7 @@ final class Environment {
     }
     
     static var myPageInterface: MyPageInterface {
-        guard let myPageInterface = DIContainer.shared.container.resolve(MyPageInterface.self) else {
+        guard let myPageInterface = DIContainer.shared.resolver.resolve(MyPageInterface.self) else {
             fatalError("MyPageInterface가 정의되지 않았습니다.")
         }
         

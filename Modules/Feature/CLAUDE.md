@@ -5,8 +5,8 @@ Feature는 화면 단위 모듈이다. 각 모듈은 `Targets/{Feature}`(구현)
 
 ## 여기서 반드시 지킬 것
 
-- **R2** 다른 Feature는 `.Interface.xxxInterface`로만 의존한다. `Project.swift`에 `.Feature.xxx`를 넣지 않는다. 화면 이동은 `Environment.xxxInterface` 또는 `container.resolve(XxxInterface.self)`로 해소한다. 다른 Feature의 화면이 필요하면 그 Feature의 Interface에 `createXxxViewController(config:)`를 추가하고 `XxxInterfaceImpl`에서 구현한다(예: `FeedInterface.createFeedListViewController`).
-- **R4** ViewModel에서 `NetworkManager.shared`를 부르지 않는다. Repository는 `Core/Network`에 만들고 `Dependency`로 주입받는다.
+- **R2** 다른 Feature는 `.Interface.xxxInterface`로만 의존한다. `Project.swift`에 `.Feature.xxx`를 넣지 않는다. 화면 이동은 `Environment.xxxInterface` 또는 `DIContainer.shared.resolver.resolve(XxxInterface.self)`로 해소한다. 다른 Feature의 화면이 필요하면 그 Feature의 Interface에 `createXxxViewController(config:)`를 추가하고 `XxxInterfaceImpl`에서 구현한다(예: `FeedInterface.createFeedListViewController`).
+- **R4** ViewModel에서 `NetworkManager.shared`를 부르지 않는다. Repository는 `Core/Network`에 만들고 `Dependency`로 주입받는다. DI 조회는 `DIContainer.shared.resolver.resolve(...)`만 쓴다(`container`는 등록 전용).
 - **R5** `*ViewModel.swift`는 `import UIKit` 금지, `UIApplication.shared` 금지, `BaseViewModel` 상속, `Dependency` 프로퍼티는 protocol 타입. URL 열기·알럿 같은 UI 동작은 `Route`로 VC에 넘긴다.
 - **R6** VC는 `BaseViewController`, Cell은 `BaseCollectionViewCell` 상속. `registerId` 같은 static 식별자 금지.
 - **R7** 색/폰트/아이콘은 `Colors`/`Fonts`/`Icons`만. SnapKit은 `leading/trailing`. `then` 금지, 클로저 초기화 사용.
@@ -21,7 +21,7 @@ Feature는 화면 단위 모듈이다. 각 모듈은 `Targets/{Feature}`(구현)
 
 ## 새 화면을 만들 때 순서
 
-1. 테크스펙(노션)의 TC 확인 → 2. Model/API/Repository(Core) → 3. ViewModel(+ Input/Output/Route) → 4. ViewController/View → 5. 테스트(`App/Targets/three-dollar-in-my-pocketTests/ViewModelTests/`) → 6. `make lint`
+1. 테크스펙(노션)의 TC 확인 + 계층 배정(유닛/자동화/수동, `docs/process/testing.md`) → 2. Model/API/Repository(Core) → 3. ViewModel(+ Input/Output/Route) → 4. ViewController/View → 5. 유닛 테스트(`App/Targets/three-dollar-in-my-pocketTests/Sources/ViewModelTests/`, 메서드명 `test_{티켓}_TC{n}_`) → 6. 자동화 TC 는 `3dollars:simulator-test` 로 증거 캡처 → 7. `make lint`
 
 ## 검증
 

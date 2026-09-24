@@ -21,7 +21,7 @@ Jira 티켓 (TH-xxxx)
 |---|---|
 | 1. 요약 | 배경 · 목표(있으면) · 디자인 가이드(피그마 링크) |
 | 2. 요구사항 | 이 티켓을 처리하기 위한 요구사항 |
-| 3. 테스트 케이스 (TC) | 사용자 관점의 케이스를 한 줄씩. `TC-1`, `TC-2`… **ID는 바꾸지 않는다** (테스트 코드·PR 본문이 참조) |
+| 3. 테스트 케이스 (TC) | 사용자 관점의 케이스를 한 줄씩. `TC-1`, `TC-2`… **ID는 바꾸지 않는다.** 각 TC는 나중에 유닛 / 자동화 / 수동 세 계층 중 하나에 배정된다(`docs/process/testing.md`) — 스펙 작성 시점에는 계층을 적지 않아도 되고, `/3dollars:test-cases` 가 제안해 승인받는다. 테스트 코드가 `test_{티켓}_TC{n}_…` 으로 이 번호를 그대로 쓴다 (`docs/process/testing.md`). 구현하다 케이스가 늘면 코드에 임의 번호를 만들지 말고 **여기에 TC를 먼저 추가**한다 |
 | 기타 | 범위 밖, 참고 링크, 열린 질문 |
 
 ## 생성 방법
@@ -121,7 +121,7 @@ Custom data에 아래 JSON을 그대로 붙여넣는다. 제목은 `[iOS/유저�
     { "object": "block", "type": "bulleted_list_item", "bulleted_list_item": { "rich_text": [ { "text": { "content": "배경: " } } ] } },
     { "object": "block", "type": "bulleted_list_item", "bulleted_list_item": { "rich_text": [ { "text": { "content": "목표: " } } ] } },
     { "object": "block", "type": "heading_2", "heading_2": { "rich_text": [ { "text": { "content": "테스트 케이스 (TC)" } } ] } },
-    { "object": "block", "type": "paragraph", "paragraph": { "rich_text": [ { "text": { "content": "사용자 관점에서 \"이게 되면 완료\"인 조건을 한 줄씩. ID는 바꾸지 말고 유지해줘 — 테스트 코드와 PR 본문이 이 ID를 참조해." } } ] } },
+    { "object": "block", "type": "paragraph", "paragraph": { "rich_text": [ { "text": { "content": "사용자 관점에서 \"이게 되면 완료\"인 조건을 한 줄씩. ID는 바꾸지 말고 유지해줘 — 테스트 코드 메서드명이 test_TH1234_TC1_… 처럼 이 번호를 그대로 쓰고, PR 본문 커버리지 표도 이 ID로 묶여. 구현하다 케이스가 늘면 코드에 새 번호를 만들지 말고 여기에 TC를 추가해." } } ] } },
     { "object": "block", "type": "to_do", "to_do": { "checked": false, "rich_text": [ { "text": { "content": "TC-1" }, "annotations": { "bold": true } }, { "text": { "content": " — Given … / When … / Then …" } } ] } },
     { "object": "block", "type": "to_do", "to_do": { "checked": false, "rich_text": [ { "text": { "content": "TC-2" }, "annotations": { "bold": true } }, { "text": { "content": " — " } } ] } },
     { "object": "block", "type": "to_do", "to_do": { "checked": false, "rich_text": [ { "text": { "content": "TC-3" }, "annotations": { "bold": true } }, { "text": { "content": " — " } } ] } },

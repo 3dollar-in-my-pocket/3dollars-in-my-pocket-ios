@@ -19,13 +19,13 @@ final class StoreIdDebugPreferenceTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: TC1
+    // MARK: TH-1336 TC12
 
-    func test_TC1_한번도켠적없으면_기본값은꺼짐이다() {
+    func test_TH1336_TC12_한번도켠적없으면_기본값은꺼짐이다() {
         XCTAssertFalse(preference.isShowStoreIdDebugView)
     }
 
-    func test_TC1_토글을켜면_값이유지된다() {
+    func test_TH1336_TC12_토글을켜면_값이유지된다() {
         // When
         preference.isShowStoreIdDebugView = true
 
@@ -34,7 +34,7 @@ final class StoreIdDebugPreferenceTests: XCTestCase {
         XCTAssertEqual(UserDefaults(suiteName: suiteName)?.bool(forKey: "KEY_DEBUG_SHOW_STORE_ID"), true)
     }
 
-    func test_TC1_토글을껐다가다시읽으면_꺼짐이다() {
+    func test_TH1336_TC12_토글을껐다가다시읽으면_꺼짐이다() {
         // Given
         preference.isShowStoreIdDebugView = true
 

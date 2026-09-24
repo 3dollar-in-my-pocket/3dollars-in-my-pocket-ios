@@ -8,7 +8,7 @@ final class RequestProvider {
     private let sesseion: URLSession
 
     init() {
-        guard let config = DIContainer.shared.container.resolve(NetworkConfigurable.self) else {
+        guard let config = DIContainer.shared.resolver.resolve(NetworkConfigurable.self) else {
             fatalError("⚠️ NetworkConfigurable가 등록되지 않았습니다.")
         }
         self.config = config

@@ -15,7 +15,7 @@ typealias Strings = MyPageStrings
 
 final class Environment {
     static var appModuleInterface: AppModuleInterface {
-        guard let appModuleInterface = DIContainer.shared.container.resolve(AppModuleInterface.self) else {
+        guard let appModuleInterface = DIContainer.shared.resolver.resolve(AppModuleInterface.self) else {
             fatalError("AppModuleInterface가 정의되지 않았습니다.")
         }
         
@@ -23,7 +23,7 @@ final class Environment {
     }
     
     static var storeInterface: StoreInterface {
-        guard let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self) else {
+        guard let storeInterface = DIContainer.shared.resolver.resolve(StoreInterface.self) else {
             fatalError("StoreInterface가 정의되지 않았습니다.")
         }
         
@@ -31,7 +31,7 @@ final class Environment {
     }
     
     static var myPageInterface: MyPageInterface {
-        guard let myPageInterface = DIContainer.shared.container.resolve(MyPageInterface.self) else {
+        guard let myPageInterface = DIContainer.shared.resolver.resolve(MyPageInterface.self) else {
             fatalError("MyPageInterface가 정의되지 않았습니다.")
         }
         
@@ -39,7 +39,7 @@ final class Environment {
     }
     
     static var communityInterface: CommunityInterface {
-        guard let communityInterface = DIContainer.shared.container.resolve(CommunityInterface.self) else {
+        guard let communityInterface = DIContainer.shared.resolver.resolve(CommunityInterface.self) else {
             fatalError("CommunityInterface가 정의되지 않았습니다.")
         }
         
@@ -47,7 +47,7 @@ final class Environment {
     }
     
     static var membershipInterface: MembershipInterface {
-        guard let membershipInterface = DIContainer.shared.container.resolve(MembershipInterface.self) else {
+        guard let membershipInterface = DIContainer.shared.resolver.resolve(MembershipInterface.self) else {
             fatalError("MembershipInterface가 정의되지 않았습니다.")
         }
         

@@ -19,7 +19,7 @@ AI가 코드를 많이 쓰는 환경에서 사람은 diff 전체가 아니라 **
 | R1 | 의존 방향은 App → Feature → Core 한 방향 | 스크립트 `check-module-deps` | 0건 (AppInterface 예외) |
 | R2 | Feature끼리는 Interface 타깃으로만 통신 | 스크립트 `check-module-deps` | 0건 |
 | R3 | Interface 타깃엔 protocol·enum·값 타입만 | 린트 `interface_no_class` | 0건 |
-| R4 | 서버 호출은 Core/Network의 Repository에서만 | 린트 `no_network_manager_outside_network` | 0건 |
+| R4 | 서버 호출은 Repository에서만, DI 조회는 `resolver`로 | 린트 `no_network_manager_outside_network`, `di_resolve_via_resolver` | 0건 |
 | R5 | ViewModel은 UI를 모르고, 의존은 주입받는다 | 린트 `viewmodel_*` 3개 | 18건 동결 |
 | R6 | ViewController/Cell은 Base 클래스를 상속 | 린트 `vc_inherits_base`, `cell_inherits_base`, `no_register_id` | 5건 동결 |
 | R7 | UI 표현은 DesignSystem·leading/trailing·클로저 초기화 | 린트 `no_uicolor_literal`, `snapkit_leading_trailing`, `no_then` | 736건 동결 |
@@ -125,11 +125,13 @@ public final class StoreRouter {          // ❌ 구현체가 Interface에
 
 ---
 
-## R4. 서버 호출은 Core/Network의 Repository에서만 한다
+## R4. 서버 호출은 Repository에서만, DI 조회는 `resolver`로만 한다
 
 **규칙** — HTTP 요청은 `Modules/Core/Network`의 `XxxApi`(enum + `RequestType`) + `XxxRepository`(protocol) + `XxxRepositoryImpl`로만 한다. `NetworkManager.shared`를 Network 모듈 밖에서 호출하지 않는다.
+DI 조회는 `DIContainer.shared.resolver.resolve(...)`로만 한다. `DIContainer.shared.container`는 등록(`register`) 전용이다.
 
 **이유** — 단일 책임(SRP). 네트워크를 목으로 바꿀 수 있는 지점이 Repository 하나여야 ViewModel 테스트가 서버 없이 돈다. 또한 서버 스키마 변경 시 고칠 곳이 한 곳으로 모인다.
+DI 쪽은 스레드 안전성 문제다. Swinject `Container`는 기본이 비동기화라 내부 `syncIfEnabled`가 락 없이 통과한다. 콜드 런치마다 메인 스레드(`BaseViewController.viewWillAppear` → `sendPageView` → 조회)와 백그라운드(`SplashViewModel`의 동시 Task → `NetworkManager.shared` 최초 생성 → 조회)가 겹쳐 `GraphStorage`의 Dictionary를 동시 변조하고, 확률적으로 `EXC_BAD_ACCESS`로 죽는다. v4.43.0이 이 크래시로 앱스토어 심사에서 반려됐다. `resolver`는 `container.synchronize()` 결과라 부모 락을 공유해 등록·조회가 같은 락으로 직렬화된다.
 
 **좋은 예**
 ```swift
@@ -143,17 +145,24 @@ public struct StoreRepositoryImpl: StoreRepository {
         await NetworkManager.shared.request(requestType: StoreApi.fetchStore(id: id))
     }
 }
+
+// 조회는 resolver, 등록은 container
+guard let storeInterface = DIContainer.shared.resolver.resolve(StoreInterface.self) else { ... }
+
+DIContainer.shared.container.register(StoreInterface.self) { _ in StoreInterfaceImpl() }
 ```
 
 **나쁜 예**
 ```swift
 // Modules/Feature/Store/.../StoreDetailViewModel.swift
 let result = await NetworkManager.shared.request(requestType: StoreApi.fetchStore(id: id))  // ❌
+
+let storeInterface = DIContainer.shared.container.resolve(StoreInterface.self)  // ❌ 동기화 안 됨
 ```
 
-**강제 수단** — SwiftLint custom_rule `no_network_manager_outside_network` (`Modules/Core/Network/` 외 경로에서 `NetworkManager.shared` 금지).
+**강제 수단** — SwiftLint custom_rule `no_network_manager_outside_network` (`Modules/Core/Network/` 외 경로에서 `NetworkManager.shared` 금지), `di_resolve_via_resolver` (`DIContainer.shared.container.resolve` 금지).
 
-**예외** — 없음.
+**예외** — 없음. 등록(`DIContainer.shared.container.register`)은 App의 `initializeDI()`에서 메인 스레드에 모여 있어 규칙 대상이 아니다.
 
 ---
 

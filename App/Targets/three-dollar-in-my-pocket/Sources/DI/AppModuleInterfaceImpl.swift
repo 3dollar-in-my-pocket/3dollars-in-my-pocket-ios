@@ -1,5 +1,4 @@
 import UIKit
-import AppTrackingTransparency
 
 import AppInterface
 import DependencyInjection
@@ -136,13 +135,6 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
                     return
                 }
                 UIApplication.shared.open(linkResult.url, options: [:], completionHandler: nil)
-            }
-        }
-    }
-
-    func requestATTIfNeeded() {
-        if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
-            ATTrackingManager.requestTrackingAuthorization { _ in
             }
         }
     }
