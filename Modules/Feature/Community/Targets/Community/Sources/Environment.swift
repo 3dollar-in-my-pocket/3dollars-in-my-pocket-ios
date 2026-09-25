@@ -2,6 +2,7 @@ import DesignSystem
 import DependencyInjection
 import StoreInterface
 import AppInterface
+import FeedInterface
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
 typealias Colors = DesignSystemAsset.Colors
@@ -25,5 +26,13 @@ final class Environment {
         }
         
         return appModuleInterface
+    }
+
+    static var feedInterface: FeedInterface {
+        guard let feedInterface = DIContainer.shared.resolver.resolve(FeedInterface.self) else {
+            fatalError("FeedInterface가 정의되지 않았습니다.")
+        }
+
+        return feedInterface
     }
 }
