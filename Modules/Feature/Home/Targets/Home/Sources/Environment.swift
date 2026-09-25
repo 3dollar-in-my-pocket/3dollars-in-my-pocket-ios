@@ -2,7 +2,7 @@ import DesignSystem
 import AppInterface
 import MembershipInterface
 import StoreInterface
-import FeedInterface
+import WriteInterface
 import DependencyInjection
 
 typealias Fonts = DesignSystemFontFamily.Pretendard
@@ -37,11 +37,11 @@ final class Environment {
         return storeInterface
     }
 
-    static var feedInterface: FeedInterface {
-        guard let feedInterface = DIContainer.shared.resolver.resolve(FeedInterface.self) else {
-            fatalError("FeedInterface가 정의되지 않았습니다.")
+    static var writeInterface: WriteInterface {
+        guard let writeInterface = DIContainer.shared.resolver.resolve(WriteInterface.self) else {
+            fatalError("WriteInterface가 정의되지 않았습니다.")
         }
 
-        return feedInterface
+        return writeInterface
     }
 }
