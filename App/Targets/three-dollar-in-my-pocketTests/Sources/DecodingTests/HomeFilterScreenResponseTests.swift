@@ -3,6 +3,74 @@ import XCTest
 import Model
 
 final class HomeFilterScreenResponseTests: XCTestCase {
+    // MARK: TH-1348 TC1
+
+    func test_TH1348_TC1_HOME_MAP_CONTROL섹션이_controls순서대로_디코딩된다() throws {
+        // Given & When
+        let response = try FixtureLoader.decode(
+            HomeFilterScreenResponse.self,
+            from: "HomeFilterScreenWithMapControl"
+        )
+
+        // Then
+        XCTAssertEqual(response.sections.map(\.type), [.homeFilter, .homeMapControl])
+        let section = try XCTUnwrap(response.sections.compactMap { $0 as? HomeMapControlSection }.first)
+        XCTAssertEqual(section.controls.map(\.type), [.filter, .action])
+
+        let filter = try XCTUnwrap(section.controls[0] as? HomeMapStoreFilterControl)
+        XCTAssertEqual(filter.paramKey, "focusFavoriteStores")
+        XCTAssertEqual(filter.options.map(\.paramValue), [true, false])
+        XCTAssertEqual(filter.options[0].button.image?.style.width, 28)
+        XCTAssertEqual(filter.options[0].button.style.border?.color, "#E2E2E2")
+
+        let action = try XCTUnwrap(section.controls[1] as? HomeMapActionControl)
+        XCTAssertEqual(action.button.customAction?.actionType, .homeMapControlMoveToCurrentLocation)
+        XCTAssertEqual(action.button.customAction?.extraParams["MAP_ZOOM_LEVEL"]?.doubleValue, 13.0)
+        XCTAssertEqual(action.button.clickLog?.objectId, "current_location")
+    }
+
+    // MARK: TH-1348 TC6
+
+    func test_TH1348_TC6_모르는컨트롤타입은_무시하고_나머지가디코딩된다() throws {
+        // Given
+        let json = """
+        {
+            "sections": [{
+                "type": "HOME_MAP_CONTROL",
+                "controls": [
+                    { "type": "SOMETHING_NEW", "foo": 1 },
+                    {
+                        "type": "ACTION",
+                        "button": {
+                            "image": { "url": "https://x/location.png", "style": { "width": 28.0, "height": 28.0 } },
+                            "style": { "backgroundColor": "#FFFFFF" }
+                        }
+                    }
+                ]
+            }]
+        }
+        """
+
+        // When
+        let response = try JSONDecoder().decode(HomeFilterScreenResponse.self, from: Data(json.utf8))
+
+        // Then
+        let section = try XCTUnwrap(response.sections.first as? HomeMapControlSection)
+        XCTAssertEqual(section.controls.map(\.type), [.action])
+    }
+
+    func test_TH1348_TC6_HOME_MAP_CONTROL섹션이없는응답도_기존대로디코딩된다() throws {
+        // Given & When
+        let response = try FixtureLoader.decode(
+            HomeFilterScreenResponse.self,
+            from: "HomeFilterScreenWithBoolParamValue"
+        )
+
+        // Then
+        XCTAssertTrue(response.sections.compactMap { $0 as? HomeMapControlSection }.isEmpty)
+        XCTAssertEqual(response.sections.map(\.type), [.homeFilter])
+    }
+
     func test_paramValue가불리언인라디오바가있어도_필터응답전체가디코딩된다() throws {
         // Given & When
         let response = try FixtureLoader.decode(
