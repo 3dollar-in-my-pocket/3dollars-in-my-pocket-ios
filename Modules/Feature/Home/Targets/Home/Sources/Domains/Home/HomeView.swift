@@ -56,19 +56,22 @@ final class HomeView: BaseView {
         let button = UIButton()
         button.setTitle(Strings.Home.writeButton, for: .normal)
         button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        button.titleLabel?.font = Fonts.semiBold.font(size: 16)
         button.setImage(
-            Icons.plus.image.resizeImage(scaledTo: 16).withTintColor(Colors.systemWhite.color),
+            Icons.plus.image.resizeImage(scaledTo: 24).withTintColor(Colors.systemWhite.color),
             for: .normal
         )
-        button.contentEdgeInsets = .init(top: 12, left: 12, bottom: 12, right: 16)
+        button.contentEdgeInsets = .init(top: 10, left: 12, bottom: 10, right: 16)
         button.titleEdgeInsets = .init(top: 0, left: 4, bottom: 0, right: -4)
         button.imageEdgeInsets = .init(top: 0, left: -4, bottom: 0, right: 4)
         button.backgroundColor = Colors.mainPink.color
         button.layer.cornerRadius = 22
-        button.layer.shadowColor = Colors.mainPink.color.cgColor
+        button.layer.borderWidth = 1
+        button.layer.borderColor = Colors.systemBlack.color.withAlphaComponent(0.08).cgColor
+        button.layer.shadowColor = Colors.systemBlack.color.cgColor
         button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowRadius = 3
+        button.layer.shadowOffset = .zero
         return button
     }()
     
@@ -132,7 +135,7 @@ final class HomeView: BaseView {
         
         mapControlView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 12)
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 16)
         }
 
         writeButton.snp.makeConstraints {

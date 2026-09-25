@@ -6,7 +6,7 @@ import SnapKit
 
 final class CommunityView: BaseView {
     enum Layout {
-        static let feedButtonHeight: CGFloat = 40
+        static let feedButtonHeight: CGFloat = 44
         static let feedButtonTrailing: CGFloat = 20
         static let feedButtonBottom: CGFloat = 16
         static let feedButtonSpacing: CGFloat = 8
@@ -36,8 +36,16 @@ final class CommunityView: BaseView {
         )
         button.semanticContentAttribute = .forceRightToLeft
         button.contentEdgeInsets = .init(top: 10, left: 16, bottom: 10, right: 12)
+        button.titleEdgeInsets = .init(top: 0, left: -4, bottom: 0, right: 4)
+        button.imageEdgeInsets = .init(top: 0, left: 4, bottom: 0, right: -4)
         button.backgroundColor = Colors.mainPink.color
         button.layer.cornerRadius = Layout.feedButtonHeight / 2
+        button.layer.borderWidth = 1
+        button.layer.borderColor = Colors.systemBlack.color.withAlphaComponent(0.08).cgColor
+        button.layer.shadowColor = Colors.systemBlack.color.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowRadius = 3
+        button.layer.shadowOffset = .zero
         return button
     }()
 

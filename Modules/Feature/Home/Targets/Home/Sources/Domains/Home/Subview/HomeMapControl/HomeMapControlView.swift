@@ -10,8 +10,10 @@ import SnapKit
 
 final class HomeMapControlView: BaseView {
     enum Layout {
-        static let buttonSize: CGFloat = 44
-        static let contentInset: CGFloat = 8
+        static let buttonSize: CGFloat = 48
+        /// 서버 이미지는 28pt, 폴백 아이콘은 24pt 라 버튼 48pt 를 맞추기 위한 inset 이 다르다.
+        static let serverImageInset: CGFloat = 10
+        static let fallbackIconInset: CGFloat = 12
         static let spacing: CGFloat = 8
     }
 
@@ -65,15 +67,10 @@ final class HomeMapControlView: BaseView {
 
     private func makeButton() -> UIButton {
         let button = UIButton()
-        button.contentEdgeInsets = UIEdgeInsets(
-            top: Layout.contentInset,
-            left: Layout.contentInset,
-            bottom: Layout.contentInset,
-            right: Layout.contentInset
-        )
         button.layer.cornerRadius = Layout.buttonSize / 2
         button.layer.shadowColor = Colors.systemBlack.color.cgColor
         button.layer.shadowOffset = CGSize(width: 2, height: 2)
+        button.layer.shadowRadius = 1
         button.layer.shadowOpacity = 0.1
         button.addTarget(self, action: #selector(didTapControlButton(_:)), for: .touchUpInside)
         return button
@@ -82,11 +79,13 @@ final class HomeMapControlView: BaseView {
     private func configure(_ button: UIButton, with item: HomeMapControlButton) {
         switch item {
         case .serverDriven(let sdButton):
+            button.contentEdgeInsets = uniformInsets(Layout.serverImageInset)
             button.setSDButton(sdButton)
             button.imageEdgeInsets = .zero
             button.titleEdgeInsets = .zero
             button.imageView?.alpha = (sdButton.image?.style.dimmed ?? false) ? 0.5 : 1
         case .fallbackCurrentLocation:
+            button.contentEdgeInsets = uniformInsets(Layout.fallbackIconInset)
             button.kf.cancelImageDownloadTask()
             button.setImage(Icons.locationCurrent.image.withTintColor(Colors.systemBlack.color), for: .normal)
             button.imageView?.alpha = 1
@@ -94,6 +93,10 @@ final class HomeMapControlView: BaseView {
             button.layer.borderWidth = 1
             button.layer.borderColor = Colors.gray20.color.cgColor
         }
+    }
+
+    private func uniformInsets(_ value: CGFloat) -> UIEdgeInsets {
+        UIEdgeInsets(top: value, left: value, bottom: value, right: value)
     }
 
     @objc private func didTapControlButton(_ sender: UIButton) {
