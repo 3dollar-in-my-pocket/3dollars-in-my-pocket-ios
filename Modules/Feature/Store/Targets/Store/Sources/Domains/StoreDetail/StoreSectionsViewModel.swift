@@ -304,7 +304,7 @@ final class StoreSectionsViewModel: BaseViewModel {
         case .storePreviewShare:
             guard let urlString = action.stringParam("URL"), let url = URL(string: urlString) else { return }
             output.route.send(.presentShareSheet(url))
-        case .unknown:
+        case .homeMapControlMoveToCurrentLocation, .unknown:
             break
         }
     }

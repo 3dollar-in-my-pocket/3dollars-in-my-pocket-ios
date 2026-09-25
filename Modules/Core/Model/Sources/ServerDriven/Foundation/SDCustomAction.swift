@@ -40,6 +40,7 @@ public enum SDCustomActionType: String, Decodable, Equatable, Hashable {
     case storeReviewCancelLike = "STORE_REVIEW_SECTION_CANCEL_LIKE"
     case storeEditCopyAddress = "STORE_EDIT_SECTION_COPY_ADDRESS"
     case storeEditMapEnlarge = "STORE_EDIT_SECTION_MAP_ENLARGE"
+    case homeMapControlMoveToCurrentLocation = "HOME_MAP_CONTROL_SECTION_MOVE_TO_CURRENT_LOCATION"
     case unknown
 
     public init(from decoder: Decoder) throws {
