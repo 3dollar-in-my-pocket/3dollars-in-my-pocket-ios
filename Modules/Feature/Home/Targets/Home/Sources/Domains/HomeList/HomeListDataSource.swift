@@ -29,6 +29,10 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 cell.onTapImage = { [weak viewModel] images, index in
                     viewModel?.input.didTapImage.send((images: images, index: index))
                 }
+                cell.onTapBody = { [weak viewModel, weak collectionView, weak cell] in
+                    guard let cell, let indexPath = collectionView?.indexPath(for: cell) else { return }
+                    viewModel?.input.didTapCard.send(indexPath.item)
+                }
                 return cell
             case .admobCard:
                 let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -49,6 +53,17 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
             snapshot.appendSections([section])
             snapshot.appendItems(section.items, toSection: section)
         }
+        apply(snapshot, animatingDifferences: false)
+    }
+
+    func reloadAdmobCards() {
+        var snapshot = snapshot()
+        let admobItems = snapshot.itemIdentifiers.filter {
+            if case .admobCard = $0 { return true }
+            return false
+        }
+        guard admobItems.isNotEmpty else { return }
+        snapshot.reconfigureItems(admobItems)
         apply(snapshot, animatingDifferences: false)
     }
 }

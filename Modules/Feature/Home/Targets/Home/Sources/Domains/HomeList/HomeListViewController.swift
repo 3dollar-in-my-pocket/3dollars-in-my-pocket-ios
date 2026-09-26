@@ -61,6 +61,15 @@ final class HomeListViewController: BaseViewController {
                 owner.dataSource.reload(sections)
             }
             .store(in: &cancellables)
+
+        viewModel.output.resetList
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, _) in
+                owner.dataSource.reloadAdmobCards()
+                owner.scrollToTop()
+            }
+            .store(in: &cancellables)
     }
 
     override func viewDidLayoutSubviews() {
@@ -81,6 +90,18 @@ final class HomeListViewController: BaseViewController {
 
     func updateCards(_ cards: [any HomeListCardComponent]) {
         viewModel.input.updateCards.send(cards)
+    }
+
+    func didReplaceCards() {
+        viewModel.input.didReplaceCards.send(())
+    }
+
+    private func scrollToTop() {
+        let collectionView = homeListView.collectionView
+        collectionView.setContentOffset(
+            CGPoint(x: collectionView.contentOffset.x, y: -collectionView.adjustedContentInset.top),
+            animated: false
+        )
     }
 
     func scrollToCard(at index: Int) {

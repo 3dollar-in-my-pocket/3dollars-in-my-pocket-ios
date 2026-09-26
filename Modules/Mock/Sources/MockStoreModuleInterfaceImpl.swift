@@ -62,7 +62,9 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         itemType: StoreDisplayItemType,
         trigger: StoreDisplayTrigger?,
         onDisplayed: @escaping () -> Void
-    ) { }
+    ) -> UIView? {
+        return nil
+    }
 }
 
 extension MockStoreModuleInterfaceImpl {
