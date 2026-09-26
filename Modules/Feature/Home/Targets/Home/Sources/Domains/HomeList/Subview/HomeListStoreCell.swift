@@ -9,10 +9,15 @@ import SnapKit
 
 final class HomeListStoreCell: BaseCollectionViewCell {
     var onTapImage: (([SDImage], Int) -> Void)?
+    var onTapBody: (() -> Void)?
 
     enum Layout {
         static let defaultImageSize = CGSize(width: 120, height: 120)
         static let imageSpacing: CGFloat = 4
+        static let bodySpacing: CGFloat = 4
+        static let multipleBodyWidth: CGFloat = 300
+        static let bodyTrailingInset: CGFloat = 20
+        static let bodyLabelInset: CGFloat = 12
         static var imageAvailableWidth: CGFloat {
             return UIUtils.windowBounds.width - 40
         }
@@ -56,31 +61,47 @@ final class HomeListStoreCell: BaseCollectionViewCell {
                 height += imageRowHeight(images: response.images)
             }
 
-            if let body = response.bodies.first, body.text.text.isNotEmpty {
+            let bodies = visibleBodies(response.bodies)
+            if bodies.isNotEmpty {
                 if hasHeader || hasPrimary || hasSecondary || response.images.isNotEmpty {
                     height += 8
                 }
-                height += bodyHeight(body: body)
+                height += bodiesHeight(bodies: bodies)
             }
 
             height += 16 // bottom padding
             return height
         }
         
-        static func bodyHeight(body: HomeListCardBody) -> CGFloat {
+        static func visibleBodies(_ bodies: [HomeListCardBody]) -> [HomeListCardBody] {
+            return bodies.filter { $0.text.text.isNotEmpty }
+        }
+
+        static func bodyWidth(bodyCount: Int) -> CGFloat {
+            guard bodyCount > 1 else {
+                return imageAvailableWidth
+            }
+            return multipleBodyWidth
+        }
+
+        static func bodiesHeight(bodies: [HomeListCardBody]) -> CGFloat {
+            let labelWidth = bodyWidth(bodyCount: bodies.count) - bodyLabelInset * 2
+            return bodies.map { bodyHeight(body: $0, labelWidth: labelWidth) }.max() ?? 0
+        }
+
+        static func bodyHeight(body: HomeListCardBody, labelWidth: CGFloat) -> CGFloat {
             let font = Fonts.medium.font(size: 12)
             let lineHeight: CGFloat = 18
             let maxLines: CGFloat = 2
-            let bodyLabelWidth = UIUtils.windowBounds.width - 64
             let maxHeight = ceil(lineHeight * maxLines)
 
             let textHeight: CGFloat
             if body.text.isHtml {
                 let label = UILabel()
                 label.setSDText(body.text, customFont: font, lineHeight: lineHeight)
-                textHeight = label.attributedText?.height(width: bodyLabelWidth) ?? 0
+                textHeight = label.attributedText?.height(width: labelWidth) ?? 0
             } else {
-                textHeight = body.text.text.height(font: font, width: bodyLabelWidth, lineHeight: lineHeight)
+                textHeight = body.text.text.height(font: font, width: labelWidth, lineHeight: lineHeight)
             }
 
             return min(ceil(textHeight), maxHeight) + 22
@@ -156,28 +177,22 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     private var images: [SDImage] = []
     private var imagesHeightConstraint: Constraint?
 
-    private let bodyHorizontalStackView: UIStackView = {
+    private let bodiesScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.bounces = false
+        return scrollView
+    }()
+
+    private let bodiesStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
-        stackView.spacing = 0
+        stackView.spacing = Layout.bodySpacing
         return stackView
     }()
 
-    private let bodyContainerView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 12
-        view.layer.masksToBounds = true
-        return view
-    }()
-
-    private let bodyLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.medium.font(size: 13)
-        label.textColor = Colors.gray70.color
-        label.numberOfLines = 2
-        return label
-    }()
+    private var bodiesHeightConstraint: Constraint?
     
     private let bottomBorderView: UIView = {
         let view = UIView()
@@ -193,21 +208,14 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         contentStackView.addArrangedSubview(primaryMetadataStackView, previousSpace: 4)
         contentStackView.addArrangedSubview(secondaryMetadataStackView, previousSpace: 4)
         contentStackView.addArrangedSubview(imagesCollectionView, previousSpace: 8)
-        contentStackView.addArrangedSubview(bodyHorizontalStackView, previousSpace: 8)
+        contentStackView.addArrangedSubview(bodiesScrollView, previousSpace: 8)
 
         headerStackView.addArrangedSubview(titleLabel)
         headerStackView.addArrangedSubview(badgeImageView)
         headerStackView.addArrangedSubview(UIView())
 
-        let bodyRightPaddingView = UIView()
-        bodyRightPaddingView.snp.makeConstraints {
-            $0.width.equalTo(20)
-        }
-        
-        bodyHorizontalStackView.addArrangedSubview(bodyContainerView)
-        bodyHorizontalStackView.addArrangedSubview(bodyRightPaddingView)
-
-        bodyContainerView.addSubview(bodyLabel)
+        bodiesScrollView.addSubview(bodiesStackView)
+        bodiesScrollView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapBodies)))
     }
 
     override func bindConstraints() {
@@ -232,14 +240,16 @@ final class HomeListStoreCell: BaseCollectionViewCell {
             make.height.equalTo(20)
         }
 
-        bodyContainerView.snp.makeConstraints {
-            $0.height.lessThanOrEqualTo(58)
+        bodiesScrollView.snp.makeConstraints {
+            self.bodiesHeightConstraint = $0.height.equalTo(0).constraint
         }
-        
-        bodyLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(12)
+
+        bodiesStackView.snp.makeConstraints {
+            $0.top.bottom.leading.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(Layout.bodyTrailingInset)
+            $0.height.equalTo(bodiesScrollView.frameLayoutGuide)
         }
-        
+
         imagesCollectionView.snp.makeConstraints {
             self.imagesHeightConstraint = $0.height.equalTo(Layout.defaultImageSize.height).constraint
         }
@@ -250,10 +260,12 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         primaryMetadataStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         secondaryMetadataStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         images = []
-        bodyHorizontalStackView.isHidden = true
+        bodiesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        bodiesScrollView.isHidden = true
         badgeImageView.kf.cancelDownloadTask()
         badgeImageView.image = nil
         onTapImage = nil
+        onTapBody = nil
     }
 
     func bind(_ card: HomeListBasicCardResponse) {
@@ -370,13 +382,49 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }
 
     private func bindBodies(_ bodies: [HomeListCardBody]) {
-        guard let body = bodies.first, !body.text.text.isEmpty else {
-            bodyHorizontalStackView.isHidden = true
+        bodiesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        let visibleBodies = Layout.visibleBodies(bodies)
+        guard visibleBodies.isNotEmpty else {
+            bodiesScrollView.isHidden = true
             return
         }
-        bodyHorizontalStackView.isHidden = false
-        bodyLabel.setSDText(body.text)
-        bodyContainerView.setSDSurfaceStyle(body.style)
+        bodiesScrollView.isHidden = false
+        bodiesHeightConstraint?.update(offset: Layout.bodiesHeight(bodies: visibleBodies))
+
+        let bodyWidth = Layout.bodyWidth(bodyCount: visibleBodies.count)
+        for body in visibleBodies {
+            let bodyView = makeBodyView(body: body)
+            bodyView.snp.makeConstraints {
+                $0.width.equalTo(bodyWidth)
+            }
+            bodiesStackView.addArrangedSubview(bodyView)
+        }
+        bodiesScrollView.setContentOffset(.zero, animated: false)
+    }
+
+    @objc private func didTapBodies() {
+        onTapBody?()
+    }
+
+    private func makeBodyView(body: HomeListCardBody) -> UIView {
+        let containerView = UIView()
+        containerView.layer.cornerRadius = 12
+        containerView.layer.masksToBounds = true
+        containerView.setSDSurfaceStyle(body.style)
+
+        let label = UILabel()
+        label.font = Fonts.medium.font(size: 13)
+        label.textColor = Colors.gray70.color
+        label.numberOfLines = 2
+        label.setSDText(body.text)
+
+        containerView.addSubview(label)
+        label.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview().inset(Layout.bodyLabelInset)
+            $0.bottom.lessThanOrEqualToSuperview().inset(Layout.bodyLabelInset)
+        }
+        return containerView
     }
 }
 
