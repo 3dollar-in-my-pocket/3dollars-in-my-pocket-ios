@@ -1,3 +1,4 @@
+// swiftlint:disable file_length - HomeViewModel 한 타입의 Input/Output/State 정의와 로그·SDUI 필터 extension 이 같은 파일에 있어야 흐름을 따라갈 수 있다
 import Foundation
 import Combine
 import CoreLocation
@@ -8,7 +9,6 @@ import Common
 import Log
 import AppInterface
 import MembershipInterface
-import FeedInterface
 
 import Kingfisher
 
@@ -37,11 +37,10 @@ extension HomeViewModel {
         let onTapSearchAddress = PassthroughSubject<Void, Never>()
         let searchByAddress = PassthroughSubject<PlaceDocument, Never>()
         let onTapResearch = PassthroughSubject<Void, Never>()
-        let onTapCurrentLocation = PassthroughSubject<Void, Never>()
         let onTapListView = PassthroughSubject<Void, Never>()
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
-        let didTapFeedButton = PassthroughSubject<Void, Never>()
+        let didTapWriteButton = PassthroughSubject<Void, Never>()
         let applyPreset = PassthroughSubject<String, Never>()
 
         // From bottom sheet
@@ -108,7 +107,8 @@ extension HomeViewModel {
         case showErrorAlert(Error)
         case deepLink(SDLink)
         case presentAccountInfo(BaseViewModel)
-        case presentFeedList(FeedListViewModelConfig)
+        case presentWriteStore(address: String, location: CLLocation)
+        case presentSigninDialog
         case presentPhotoViewer(imageUrls: [String], selectedIndex: Int)
     }
 
@@ -144,6 +144,7 @@ extension HomeViewModel {
     }
 }
 
+// swiftlint:disable:next type_body_length - 홈 지도·필터·카드 조회를 한 흐름으로 묶는 화면 ViewModel. 지도 컨트롤은 HomeMapControlViewModel 로 분리했고 이번 변경으로 519→506줄
 final class HomeViewModel: BaseViewModel {
     let input = Input()
     let output = Output()
@@ -158,6 +159,8 @@ final class HomeViewModel: BaseViewModel {
 
     private var state = State()
     private var dependency: Dependency
+    /// 지도 좌측 하단 컨트롤(현재 위치·저장 가게 필터) 은 서버 드리븐 섹션이라 별도 ViewModel 이 상태를 가진다.
+    let mapControlViewModel: HomeMapControlViewModel
     /// 필터 응답이 도착하기 전에 첫 카드 요청이 발사되면 dynamicParams 가 비어버리므로,
     /// 첫 fetch 호출만 위치 + 필터 응답 두 신호가 모두 준비될 때까지 게이팅한다.
     private let filterScreenLoaded = PassthroughSubject<Void, Never>()
@@ -172,11 +175,18 @@ final class HomeViewModel: BaseViewModel {
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
+        self.mapControlViewModel = HomeMapControlViewModel(dependency: .init(
+            locationManager: dependency.locationManager,
+            preference: dependency.preference,
+            logManager: dependency.logManager
+        ))
 
         super.init()
     }
 
+    // swiftlint:disable:next function_body_length - Input 별 구독을 한 곳에 나열하는 bind. 지도 컨트롤·글로벌 이벤트는 별도 메서드로 분리
     override func bind() {
+        bindMapControl()
         input.onMapLoad
             .sink { [weak self] _ in
                 self?.fetchAdvertisementMarker()
@@ -402,24 +412,6 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.onTapCurrentLocation
-            .withUnretained(self)
-            .flatMap { owner, _ in
-                owner.dependency.locationManager.getCurrentLocationPublisher()
-                    .catch { error -> AnyPublisher<CLLocation, Never> in
-                        owner.output.route.send(.showErrorAlert(error))
-                        return Empty().eraseToAnyPublisher()
-                    }
-            }
-            .withUnretained(self)
-            .sink { owner, location in
-                owner.sendClickCurrentLocationLog()
-                owner.dependency.preference.userCurrentLocation = location
-                owner.state.currentLocation = location
-                owner.output.cameraPosition.send((location, nil))
-            }
-            .store(in: &cancellables)
-
         input.onTapMarker
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, index: Int) in
@@ -446,16 +438,12 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.didTapFeedButton
+        input.didTapWriteButton
             .withUnretained(self)
             .sink { (owner: HomeViewModel, _) in
-                let mapLocation = owner.state.newCameraPosition ?? owner.state.currentLocation
-                let config = FeedListViewModelConfig(
-                    mapLatitude: mapLocation?.coordinate.latitude,
-                    mapLongitude: mapLocation?.coordinate.longitude
-                )
-                owner.sendClickFeedButtonLog()
-                owner.output.route.send(.presentFeedList(config))
+                owner.sendClickWriteButtonLog()
+                guard let location = owner.state.newCameraPosition ?? owner.state.currentLocation else { return }
+                owner.output.route.send(.presentWriteStore(address: owner.state.address, location: location))
             }
             .store(in: &cancellables)
 
@@ -662,6 +650,7 @@ final class HomeViewModel: BaseViewModel {
                   let paramValue = option.paramValue else { continue }
             params[radioBar.paramKey] = paramValue
         }
+        params.merge(mapControlViewModel.output.filterParams.value) { _, mapControl in mapControl }
         // sortType 은 서버 required 필드. SDU 응답이 비었거나 sortType 라디오바가 없는 경우 기본값으로 보강.
         if params["sortType"] == nil {
             params["sortType"] = state.sortType.rawValue
@@ -777,12 +766,16 @@ extension HomeViewModel {
                 state.initialMapZoomLevel = response.configuration?.initialMapZoomLevel
                 applyServerSelectionDefaults()
                 output.filterDatasource.send(flattenFilterDatasource())
+                mapControlViewModel.input.setSection.send(
+                    response.sections.compactMap { $0 as? HomeMapControlSection }.first
+                )
 
                 if shouldRefreshCards && state.resultCameraPosition.isNotNil {
                     fetchInitialCards()
                 }
             case .failure:
                 output.filterDatasource.send(makeFallbackFilterDatasource())
+                mapControlViewModel.input.setSection.send(nil)
             }
             // 성공/실패와 무관하게 게이팅을 풀어 첫 fetch 가 진행되도록 한다.
             filterScreenLoaded.send()
@@ -933,14 +926,6 @@ extension HomeViewModel {
         ))
     }
 
-    private func sendClickCurrentLocationLog() {
-        dependency.logManager.sendEvent(event: ClickEvent(
-            screen: output.screenName,
-            objectType: .button,
-            objectId: .currentLocation
-        ))
-    }
-
     private func sendClickAddressLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -1008,16 +993,45 @@ extension HomeViewModel {
         ))
     }
 
-    private func sendClickFeedButtonLog() {
+    private func sendClickWriteButtonLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
             objectType: .button,
-            objectId: .feed
+            objectId: .write
         ))
     }
 }
 
 extension HomeViewModel {
+    private func bindMapControl() {
+        mapControlViewModel.output.moveToCurrentLocation
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, payload) in
+                owner.state.currentLocation = payload.location
+                owner.output.cameraPosition.send((payload.location, payload.zoomLevel))
+            }
+            .store(in: &cancellables)
+
+        mapControlViewModel.output.didChangeFilter
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, _) in
+                owner.fetchInitialCards()
+            }
+            .store(in: &cancellables)
+
+        mapControlViewModel.output.route
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, route: HomeMapControlViewModel.Route) in
+                switch route {
+                case .presentSigninDialog:
+                    owner.output.route.send(.presentSigninDialog)
+                case .showErrorAlert(let error):
+                    owner.output.route.send(.showErrorAlert(error))
+                }
+            }
+            .store(in: &cancellables)
+    }
+
     private func bindGlobalEvent() {
         dependency.appModuleInterface.globalEventBus.onReportStore
             .withUnretained(self)

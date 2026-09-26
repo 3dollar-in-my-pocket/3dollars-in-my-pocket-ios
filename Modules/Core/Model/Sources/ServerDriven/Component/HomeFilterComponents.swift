@@ -2,6 +2,7 @@ import Foundation
 
 public enum HomeScreenSectionType: String, Decodable {
     case homeFilter = "HOME_FILTER"
+    case homeMapControl = "HOME_MAP_CONTROL"
     case unknown
 
     public init(from decoder: Decoder) throws {

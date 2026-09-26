@@ -2,6 +2,7 @@ import UIKit
 
 import Community
 import Networking
+import Mock
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,5 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func initializationNetworkModule() {
         MockNetworkConfiguration.registerNetworkConfiguration()
+        MockFeedInterfaceImpl.registerFeedInterface()
     }
 }
