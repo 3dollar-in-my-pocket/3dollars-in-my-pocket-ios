@@ -62,6 +62,7 @@ extension HomeViewModel {
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
+        let bottomSheetCardsReplaced = PassthroughSubject<Void, Never>()
         /// 지도 마커로 그릴 카드(BasicCard 만 포함). 인덱스는 cards 와 일치하지 않을 수 있다.
         let markerCards = CurrentValueSubject<[HomeListBasicCardResponse], Never>([])
         /// 마커 탭 시 바텀시트가 해당 카드로 스크롤하도록 알려준다.
@@ -511,6 +512,7 @@ final class HomeViewModel: BaseViewModel {
                 state.hasMore = response.cursor?.hasMore ?? false
                 prefetchCardImages(response.cards)
                 emitCards()
+                output.bottomSheetCardsReplaced.send(())
 
                 if let focusBounds = response.focusBounds {
                     output.focusBounds.send(focusBounds)

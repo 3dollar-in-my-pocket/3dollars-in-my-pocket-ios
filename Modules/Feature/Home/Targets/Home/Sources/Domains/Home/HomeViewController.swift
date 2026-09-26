@@ -237,6 +237,14 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.output.bottomSheetCardsReplaced
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, _) in
+                owner.bottomSheetViewController?.didReplaceCards()
+            }
+            .store(in: &cancellables)
+
         viewModel.output.markerCards
             .main
             .withUnretained(self)
