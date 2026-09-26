@@ -66,6 +66,7 @@ final class HomeListViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: HomeListViewController, _) in
+                owner.dataSource.reloadAdmobCards()
                 owner.scrollToTop()
             }
             .store(in: &cancellables)

@@ -55,6 +55,17 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
         }
         apply(snapshot, animatingDifferences: false)
     }
+
+    func reloadAdmobCards() {
+        var snapshot = snapshot()
+        let admobItems = snapshot.itemIdentifiers.filter {
+            if case .admobCard = $0 { return true }
+            return false
+        }
+        guard admobItems.isNotEmpty else { return }
+        snapshot.reconfigureItems(admobItems)
+        apply(snapshot, animatingDifferences: false)
+    }
 }
 
 extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
