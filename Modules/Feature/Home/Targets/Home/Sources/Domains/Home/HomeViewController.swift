@@ -696,6 +696,7 @@ extension HomeViewController {
 
     private func dismissStorePreview() {
         guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        storePreviewBottomSheet?.dismissDisplayItemModals()
         storePreviewBottomSheet?.didReachTipState()
         // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
         unfocusSelectedMarker()
