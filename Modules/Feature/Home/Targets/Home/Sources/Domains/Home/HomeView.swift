@@ -50,39 +50,32 @@ final class HomeView: BaseView {
         return researchButton
     }()
     
-    let currentLocationButton: UIButton = {
-        let currentLocationButton = UIButton()
-        currentLocationButton.setImage(DesignSystemAsset.Icons.locationCurrent.image.withTintColor(DesignSystemAsset.Colors.systemBlack.color), for: .normal)
-        currentLocationButton.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
-        currentLocationButton.backgroundColor = DesignSystemAsset.Colors.systemWhite.color
-        currentLocationButton.layer.borderWidth = 1
-        currentLocationButton.layer.borderColor = DesignSystemAsset.Colors.gray20.color.cgColor
-        currentLocationButton.layer.cornerRadius = 20
-        currentLocationButton.layer.shadowColor = DesignSystemAsset.Colors.systemBlack.color.cgColor
-        currentLocationButton.layer.shadowOffset = CGSize(width: 2, height: 2)
-        currentLocationButton.layer.shadowOpacity = 0.1
-        return currentLocationButton
-    }()
-    
-    let feedButton: UIButton = {
+    let mapControlView = HomeMapControlView()
+
+    let writeButton: UIButton = {
         let button = UIButton()
-        button.setTitle(Strings.Home.feedButton, for: .normal)
-        button.setTitleColor(Colors.mainGreen.color, for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.contentEdgeInsets = .init(top: 12, left: 16, bottom: 12, right: 16)
-        button.backgroundColor = Colors.systemWhite.color
-        button.layer.cornerRadius = 16
+        button.setTitle(Strings.Home.writeButton, for: .normal)
+        button.setTitleColor(Colors.systemWhite.color, for: .normal)
+        button.titleLabel?.font = Fonts.semiBold.font(size: 16)
+        button.setImage(
+            Icons.plus.image.resizeImage(scaledTo: 24).withTintColor(Colors.systemWhite.color),
+            for: .normal
+        )
+        button.contentEdgeInsets = .init(top: 10, left: 12, bottom: 10, right: 16)
+        button.titleEdgeInsets = .init(top: 0, left: 4, bottom: 0, right: -4)
+        button.imageEdgeInsets = .init(top: 0, left: -4, bottom: 0, right: 4)
+        button.backgroundColor = Colors.mainPink.color
+        button.layer.cornerRadius = 22
         button.layer.borderWidth = 1
-        button.layer.borderColor = Colors.mainGreen.color.cgColor
-        button.layer.shadowColor = Colors.mainGreen.color.cgColor
+        button.layer.borderColor = Colors.systemBlack.color.withAlphaComponent(0.08).cgColor
+        button.layer.shadowColor = Colors.systemBlack.color.cgColor
         button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowRadius = 3
+        button.layer.shadowOffset = .zero
         return button
     }()
     
     private var homeFilterTooltip: HomeFilterTooltip?
-    private var feedButtonTimer: Timer?
-    private var buttonStateFlag = true
     
     init(homeFilterSelectable: HomeFilterSelectable) {
         self.homeFilterSelectable = homeFilterSelectable
@@ -106,8 +99,8 @@ final class HomeView: BaseView {
             researchButton,
             addressButton,
             homeFilterCollectionView,
-            currentLocationButton,
-            feedButton
+            mapControlView,
+            writeButton
         ])
     }
     
@@ -140,14 +133,13 @@ final class HomeView: BaseView {
             make.height.equalTo(34)
         }
         
-        currentLocationButton.snp.makeConstraints {
+        mapControlView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 12)
-            $0.width.height.equalTo(40)
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 16)
         }
 
-        feedButton.snp.makeConstraints {
-            $0.centerY.equalTo(currentLocationButton)
+        writeButton.snp.makeConstraints {
+            $0.bottom.equalTo(mapControlView)
             $0.trailing.equalToSuperview().offset(-20)
             $0.height.equalTo(44)
         }
@@ -258,30 +250,4 @@ final class HomeView: BaseView {
         addressButton.updateBorder(progress: clamped)
     }
     
-    func startFeedButtonAnimation() {
-        feedButtonTimer?.invalidate()
-        feedButtonTimer = nil
-        feedButtonTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            
-            if buttonStateFlag {
-                UIView.animate(withDuration: 0.3) {
-                    self.feedButton.setTitle(Strings.Home.feedButton, for: .normal)
-                    self.feedButton.setTitleColor(Colors.mainGreen.color, for: .normal)
-                    self.feedButton.backgroundColor = Colors.systemWhite.color
-                    self.feedButton.layer.borderWidth = 1
-                    self.feedButton.layer.borderColor = Colors.mainGreen.color.cgColor
-                }
-                buttonStateFlag = false
-            } else {
-                UIView.animate(withDuration: 0.3) {
-                    self.feedButton.setTitle(Strings.Home.feedButton2, for: .normal)
-                    self.feedButton.setTitleColor(Colors.systemWhite.color, for: .normal)
-                    self.feedButton.backgroundColor = Colors.mainGreen.color
-                    self.feedButton.layer.borderColor = Colors.systemWhite.color.withAlphaComponent(0.5).cgColor
-                }
-                buttonStateFlag = true
-            }
-        }
-    }
 }

@@ -10,7 +10,7 @@ Feature는 화면 단위 모듈이다. 각 모듈은 `Targets/{Feature}`(구현)
 - **R5** `*ViewModel.swift`는 `import UIKit` 금지, `UIApplication.shared` 금지, `BaseViewModel` 상속, `Dependency` 프로퍼티는 protocol 타입. URL 열기·알럿 같은 UI 동작은 `Route`로 VC에 넘긴다.
 - **R6** VC는 `BaseViewController`, Cell은 `BaseCollectionViewCell` 상속. `registerId` 같은 static 식별자 금지.
 - **R7** 색/폰트/아이콘은 `Colors`/`Fonts`/`Icons`만. SnapKit은 `leading/trailing`. `then` 금지, 클로저 초기화 사용.
-- **R8** 타입 300줄 초과 시 하위 ViewModel/View로 분리.
+- **R8** 타입은 책임 하나. 여러 기능을 맡으면 하위 ViewModel/View로 분리한다. 책임이 하나인데 타입 500줄·파일 800줄을 넘으면 `// swiftlint:disable:next type_body_length - {사유}` / `// swiftlint:disable file_length - {사유}`. 같은 파일 `extension`으로 옮겨 줄 수만 맞추지 않는다.
 - **R10** ViewModel은 `Input / Output / Route / Config / Dependency / State` 구조. Route 처리는 VC의 `// MARK: Route` extension. 템플릿은 루트 [CLAUDE.md](../../CLAUDE.md#viewmodel-구조-규칙).
 
 ## `Targets/Interface/` 안에서는

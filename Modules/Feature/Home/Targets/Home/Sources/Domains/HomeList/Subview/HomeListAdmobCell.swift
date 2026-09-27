@@ -21,6 +21,7 @@ final class HomeListAdmobCell: BaseCollectionViewCell {
     }
 
     func bind(rootViewController: UIViewController) {
+        adBannerView.isLoaded = false
         adBannerView.load(in: rootViewController)
     }
 }

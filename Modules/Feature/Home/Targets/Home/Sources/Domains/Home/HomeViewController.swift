@@ -1,3 +1,4 @@
+// swiftlint:disable file_length - 지도·마커·바텀시트 두 패널(HomeList/StorePreview) 을 한 화면에서 조율하는 ViewController
 import UIKit
 import Combine
 
@@ -5,7 +6,7 @@ import Common
 import DesignSystem
 import Model
 import StoreInterface
-import FeedInterface
+import WriteInterface
 
 import NMapsMap
 import PanModal
@@ -81,7 +82,6 @@ public final class HomeViewController: BaseViewController {
         super.viewDidLoad()
         setupNavigation()
         homeView.mapView.addCameraDelegate(delegate: self)
-        homeView.startFeedButtonAnimation()
         installBottomSheet()
         viewModel.input.viewDidLoad.send(())
     }
@@ -142,10 +142,8 @@ public final class HomeViewController: BaseViewController {
             .subscribe(viewModel.input.onTapResearch)
             .store(in: &cancellables)
 
-        homeView.currentLocationButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.onTapCurrentLocation)
+        homeView.mapControlView.didTapButton
+            .subscribe(viewModel.mapControlViewModel.input.didTapControl)
             .store(in: &cancellables)
 
         homeView.researchButton
@@ -158,14 +156,22 @@ public final class HomeViewController: BaseViewController {
             self?.viewModel.input.onLoadFilter.send(())
         }
 
-        homeView.feedButton
+        homeView.writeButton
             .tapPublisher
             .mapVoid
-            .subscribe(viewModel.input.didTapFeedButton)
+            .subscribe(viewModel.input.didTapWriteButton)
             .store(in: &cancellables)
     }
 
     public override func bindViewModelOutput() {
+        viewModel.mapControlViewModel.output.buttons
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, buttons: [HomeMapControlButton]) in
+                owner.homeView.mapControlView.bind(buttons: buttons)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.address
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -182,6 +188,75 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        bindMapOutput()
+
+        viewModel.output.bottomSheetCards
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, cards: [any HomeListCardComponent]) in
+                owner.bottomSheetViewController?.updateCards(cards)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.bottomSheetCardsReplaced
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, _) in
+                owner.bottomSheetViewController?.didReplaceCards()
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.markerCards
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, cards: [HomeListBasicCardResponse]) in
+                owner.updateMarkers(cards: cards)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.focusMarkerAt
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, index: Int) in
+                owner.focusMarker(at: index)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.scrollBottomSheetToIndex
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, index: Int) in
+                owner.bottomSheetViewController?.scrollToCard(at: index)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.showLoading
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { _, isShow in
+                LoadingManager.shared.showLoading(isShow: isShow)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, route) in
+                owner.handleRoute(route)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.isShowFilterTooltip
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, isShow: Bool) in
+                owner.homeView.showFilterTooltiop(isShow: isShow)
+            }
+            .store(in: &cancellables)
+    }
+
+    /// 카메라 이동·포커스·마커·광고 마커처럼 지도에 직접 반영되는 Output 만 모아 구독한다.
+    private func bindMapOutput() {
         viewModel.output.cameraPosition
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
@@ -226,101 +301,6 @@ public final class HomeViewController: BaseViewController {
                     owner?.viewModel.input.onTapCurrentMarker.send(())
                     return true
                 }
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.bottomSheetCards
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, cards: [any HomeListCardComponent]) in
-                owner.bottomSheetViewController?.updateCards(cards)
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.markerCards
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, cards: [HomeListBasicCardResponse]) in
-                owner.updateMarkers(cards: cards)
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.focusMarkerAt
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, index: Int) in
-                owner.focusMarker(at: index)
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.scrollBottomSheetToIndex
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, index: Int) in
-                owner.bottomSheetViewController?.scrollToCard(at: index)
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.showLoading
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { _, isShow in
-                LoadingManager.shared.showLoading(isShow: isShow)
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.route
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, route) in
-                switch route {
-                case .presentCategoryFilter(let viewModel):
-                    let categoryFilterViewController = CategoryFilterViewController(viewModel: viewModel)
-                    owner.presentPanModal(categoryFilterViewController)
-
-                case .presentVisit(let store):
-                    let storeId = Int(store.storeId) ?? 0
-                    owner.presentVisit(storeId: storeId)
-
-                case .presentPolicy:
-                    owner.presentPolicy()
-
-                case .presentMarkerAdvertisement:
-                    owner.presentMarkerPopup()
-
-                case .presentStorePreview(let storeId, let latitude, let longitude):
-                    owner.presentStorePreview(storeId: storeId, latitude: latitude, longitude: longitude)
-
-                case .dismissStorePreview:
-                    owner.dismissStorePreview()
-
-                case .presentSearchAddress(let viewModel):
-                    owner.presentSearchAddress(viewModel)
-
-                case .presentAccountInfo(let viewModel):
-                    owner.presentAccountInfo(viewModel: viewModel)
-                case .showErrorAlert(let error):
-                    if error is LocationError {
-                        owner.showDenyAlert()
-                    } else {
-                        owner.showErrorAlert(error: error)
-                    }
-
-                case .deepLink(let link):
-                    Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
-                case .presentFeedList(let config):
-                    owner.presentFeedList(config: config)
-                case .presentPhotoViewer(let imageUrls, let selectedIndex):
-                    owner.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: selectedIndex)
-                }
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.isShowFilterTooltip
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, isShow: Bool) in
-                owner.homeView.showFilterTooltiop(isShow: isShow)
             }
             .store(in: &cancellables)
     }
@@ -515,13 +495,78 @@ public final class HomeViewController: BaseViewController {
         tabBarController?.present(viewController, animated: true)
     }
 
-    private func presentFeedList(config: FeedListViewModelConfig) {
-        let viewController = Environment.feedInterface.createFeedListViewController(config: config)
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .overCurrentContext
-        navigationController.isNavigationBarHidden = true
+    private func presentWriteStore(address: String, location: CLLocation) {
+        let config = WriteAddressViewModelConfig(
+            address: address,
+            location: location,
+            shouldSkipCheckingAround: false
+        )
+        let viewController = Environment.writeInterface.getWriteAddressViewController(config: config) { [weak self] storeId in
+            self?.pushStoreDetail(storeId: storeId)
+        }
 
-        tabBarController?.present(navigationController, animated: true)
+        tabBarController?.present(viewController, animated: true)
+    }
+
+    private func pushStoreDetail(storeId: String) {
+        guard let storeId = Int(storeId) else { return }
+        let viewController = Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
+
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    private func presentSigninDialog() {
+        let viewController = Environment.membershipInterface.createSigninBottomSheetViewController()
+
+        present(viewController, animated: true)
+    }
+}
+
+// MARK: Route
+extension HomeViewController {
+    private func handleRoute(_ route: HomeViewModel.Route) {
+        switch route {
+        case .presentCategoryFilter(let viewModel):
+            let categoryFilterViewController = CategoryFilterViewController(viewModel: viewModel)
+            presentPanModal(categoryFilterViewController)
+
+        case .presentVisit(let store):
+            let storeId = Int(store.storeId) ?? 0
+            presentVisit(storeId: storeId)
+
+        case .presentPolicy:
+            presentPolicy()
+
+        case .presentMarkerAdvertisement:
+            presentMarkerPopup()
+
+        case .presentStorePreview(let storeId, let latitude, let longitude):
+            presentStorePreview(storeId: storeId, latitude: latitude, longitude: longitude)
+
+        case .dismissStorePreview:
+            dismissStorePreview()
+
+        case .presentSearchAddress(let viewModel):
+            presentSearchAddress(viewModel)
+
+        case .presentAccountInfo(let viewModel):
+            presentAccountInfo(viewModel: viewModel)
+        case .showErrorAlert(let error):
+            if error is LocationError {
+                showDenyAlert()
+            } else {
+                showErrorAlert(error: error)
+            }
+
+        case .deepLink(let link):
+            Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
+        case .presentWriteStore(let address, let location):
+            presentWriteStore(address: address, location: location)
+        case .presentSigninDialog:
+            presentSigninDialog()
+        case .presentPhotoViewer(let imageUrls, let selectedIndex):
+            presentPhotoViewer(imageUrls: imageUrls, selectedIndex: selectedIndex)
+        }
     }
 }
 
@@ -688,21 +733,22 @@ extension HomeViewController {
         }
         bottomSheetController?.removePanelFromParent(animated: true)
         tabBarController?.tabBar.isHidden = true
-        homeView.currentLocationButton.isHidden = true
-        homeView.feedButton.isHidden = true
+        homeView.mapControlView.isHidden = true
+        homeView.writeButton.isHidden = true
         fpc.addPanel(toParent: self, animated: true)
         fpc.view.isHidden = false
     }
 
     private func dismissStorePreview() {
         guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        storePreviewBottomSheet?.dismissDisplayItemModals()
         storePreviewBottomSheet?.didReachTipState()
         // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
         unfocusSelectedMarker()
         // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.
         // 슬라이드 다운 도중 탭바가 먼저 나타나면 패널이 탭바를 가로지르는 어색한 프레임이 생긴다.
-        homeView.currentLocationButton.isHidden = false
-        homeView.feedButton.isHidden = false
+        homeView.mapControlView.isHidden = false
+        homeView.writeButton.isHidden = false
         fpc.removePanelFromParent(animated: true) { [weak self] in
             guard let self else { return }
             self.tabBarController?.tabBar.isHidden = false

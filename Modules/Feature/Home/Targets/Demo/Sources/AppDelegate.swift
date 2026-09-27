@@ -30,6 +30,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MockAppModuleInterfaceImpl.registerAppModuleInterface()
         MockNetworkConfiguration.registerNetworkConfiguration(networkConfiguration)
         MockStoreModuleInterfaceImpl.registerModuleInterface()
-        MockFeedInterfaceImpl.registerFeedInterface()
     }
 }

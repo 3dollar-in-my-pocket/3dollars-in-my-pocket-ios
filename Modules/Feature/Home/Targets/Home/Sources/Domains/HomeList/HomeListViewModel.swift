@@ -8,6 +8,7 @@ import Log
 extension HomeListViewModel {
     struct Input {
         let updateCards = PassthroughSubject<[any HomeListCardComponent], Never>()
+        let didReplaceCards = PassthroughSubject<Void, Never>()
         let willDisplay = PassthroughSubject<Int, Never>()
         let didTapCard = PassthroughSubject<Int, Never>()
         let didTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
@@ -17,6 +18,7 @@ extension HomeListViewModel {
     struct Output {
         let screenName: ScreenName = .home
         let dataSource = CurrentValueSubject<[HomeListSection], Never>([])
+        let resetList = PassthroughSubject<Void, Never>()
         /// 부모(HomeViewModel) 가 fetchMore 를 트리거하도록 알린다.
         let willLoadMore = PassthroughSubject<Void, Never>()
         /// 부모(HomeViewModel) 가 카드 탭 라우팅을 처리하도록 인덱스 를 전달한다.
@@ -60,6 +62,10 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.cards = cards
                 owner.emitDataSource()
             }
+            .store(in: &cancellables)
+
+        input.didReplaceCards
+            .subscribe(output.resetList)
             .store(in: &cancellables)
 
         input.willDisplay

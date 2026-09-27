@@ -27,6 +27,8 @@ public struct HomeFilterScreenResponse: Decodable {
             switch preview.type {
             case .homeFilter:
                 sections.append(try HomeFilterSection(from: sectionDecoder))
+            case .homeMapControl:
+                sections.append(try HomeMapControlSection(from: sectionDecoder))
             case .unknown:
                 continue
             }

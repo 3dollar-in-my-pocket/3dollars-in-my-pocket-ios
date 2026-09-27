@@ -14,6 +14,11 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 public enum CommunityStrings: Sendable {
 
+  public enum Community: Sendable {
+    /// 이 동네 가게 소식
+    public static let feedButton = CommunityStrings.tr("Localization", "community.feed_button")
+  }
+
   public enum CommunityPopularStore: Sendable {
   
     public enum Tab: Sendable {

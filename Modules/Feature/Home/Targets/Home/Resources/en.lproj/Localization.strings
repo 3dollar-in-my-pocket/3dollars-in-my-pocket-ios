@@ -12,8 +12,7 @@
 "home_recent_activity" = "최근 활동";
 "home_filter_tooltip_title" = "최근 활동이 있는 가게만 볼 수 있어요!";
 "home_filter_tooltip_description" = "· 최근 한 달 내에 방문 인증 성공 내역이 있어요.\n· 신규로 생성된 가게에요.";
-"home.feed_button" = "🍀 이 동네 가게 소식!";
-"home.feed_button_2" = "여기가 바로 핫플 🔥";
+"home.write_button" = "가게 제보";
 
 // 카테고리 필터 화면
 "category_filter_new" = "new";

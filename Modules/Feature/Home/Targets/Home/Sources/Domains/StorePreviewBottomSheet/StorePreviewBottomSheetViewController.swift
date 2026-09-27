@@ -165,6 +165,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     private var previewSection: StorePreviewSection?
     private var isTrackingDetailScroll = false
     private var isPanelAtFull = false
+    private var displayItemModalViews: [UIView] = []
 
     private var previewViews: [UIView] {
         [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
@@ -227,6 +228,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         cancellables.removeAll()
         self.viewModel = viewModel
         let wasShowingDetail = isPanelAtFull
+        dismissDisplayItemModals()
         resetDetail()
         // 새 가게로 교체되면 찜 상태도 초기화한다. (preview 응답엔 찜 여부가 없어 기본 미저장으로 시작)
         setSaveButton(isFavorited: false)
@@ -468,7 +470,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
                     )
                     self.present(viewController, animated: true)
                 case .presentDisplayItemModal(let itemType, let trigger):
-                    Environment.storeInterface.presentStoreDisplayItemModal(
+                    let modalView = Environment.storeInterface.presentStoreDisplayItemModal(
                         from: self,
                         storeId: self.viewModel.storeId,
                         itemType: itemType,
@@ -477,6 +479,9 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
                             self?.viewModel.recordDisplayItemImpression(itemType: itemType)
                         }
                     )
+                    if let modalView {
+                        self.displayItemModalViews.append(modalView)
+                    }
                 case .close:
                     self.onRequestClose?()
                 }
@@ -518,6 +523,11 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         beginExpandingToFull()
         trackDetailScrollIfNeeded()
         viewModel.input.didEnterDetail.send(())
+    }
+
+    func dismissDisplayItemModals() {
+        displayItemModalViews.forEach { $0.removeFromSuperview() }
+        displayItemModalViews.removeAll()
     }
 
     func didReachTipState() {

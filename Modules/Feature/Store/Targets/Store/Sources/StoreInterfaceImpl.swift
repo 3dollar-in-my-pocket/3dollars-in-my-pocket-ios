@@ -156,14 +156,15 @@ public final class StoreInterfaceImpl: StoreInterface {
         return BossStorePhotoViewController(viewModel: viewModel)
     }
 
+    @discardableResult
     public func presentStoreDisplayItemModal(
         from viewController: UIViewController,
         storeId: Int,
         itemType: StoreDisplayItemType,
         trigger: StoreDisplayTrigger?,
         onDisplayed: @escaping () -> Void
-    ) {
-        StoreDisplayItemModalPresenter(
+    ) -> UIView? {
+        return StoreDisplayItemModalPresenter(
             viewController: viewController,
             storeId: storeId,
             itemType: itemType,
@@ -197,8 +198,8 @@ private final class StoreDisplayItemModalPresenter: NSObject {
         self.onDisplayed = onDisplayed
     }
 
-    func present() {
-        guard let viewController else { return }
+    func present() -> UIView? {
+        guard let viewController else { return nil }
 
         switch itemType {
         case .disappearanceInquiryModal:
@@ -237,6 +238,7 @@ private final class StoreDisplayItemModalPresenter: NSObject {
                     .store(in: &viewModel.cancellables)
             }
             attachAndAnimateIn(view, to: viewController.view)
+            return view
         case .visitCertificationInducementModal:
             let viewModel = StoreDetailVisitInducementModalViewModel(config: .init(storeId: storeId))
             let view = StoreDetailVisitInducementModalView()
@@ -255,8 +257,9 @@ private final class StoreDisplayItemModalPresenter: NSObject {
                 }
                 .store(in: &viewModel.cancellables)
             attachAndAnimateIn(view, to: viewController.view)
+            return view
         case .unknown:
-            break
+            return nil
         }
     }
 
