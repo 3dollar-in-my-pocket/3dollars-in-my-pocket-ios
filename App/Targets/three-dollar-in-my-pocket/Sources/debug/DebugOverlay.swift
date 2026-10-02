@@ -13,6 +13,7 @@ final class DebugOverlayWindow: UIWindow {
 
 enum DebugOverlay {
     private static var window: DebugOverlayWindow?
+    private static weak var menuViewController: DebugMenuViewController?
 
     static func attachIfNeeded(to windowScene: UIWindowScene) {
         guard AppEnvironment.isDebugToolAvailable, window == nil else { return }
@@ -37,7 +38,7 @@ enum DebugOverlay {
 
         let button = DebugFloatingButton()
         button.onTap = {
-            presentMenu()
+            toggleMenu()
         }
         rootViewController.view.addSubview(button)
         DispatchQueue.main.async {
@@ -45,6 +46,15 @@ enum DebugOverlay {
         }
 
         window = overlayWindow
+    }
+
+    private static func toggleMenu() {
+        if let menuViewController, menuViewController.presentingViewController != nil {
+            guard menuViewController.isBeingPresented.isNot, menuViewController.isBeingDismissed.isNot else { return }
+            menuViewController.dismiss(animated: true)
+        } else {
+            presentMenu()
+        }
     }
 
     private static func presentMenu() {
@@ -67,6 +77,7 @@ enum DebugOverlay {
             sheet.prefersGrabberVisible = true
         }
         presenter.present(menuViewController, animated: true)
+        self.menuViewController = menuViewController
     }
 
     private static func topViewController() -> UIViewController? {
