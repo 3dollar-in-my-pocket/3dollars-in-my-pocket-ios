@@ -25,7 +25,22 @@ final class RequestProvider {
         
         NetworkLogger.logRequest(request: request)
         
-        return try await sesseion.data(for: request)
+        let session = session(timeoutInterval: requestType.timeoutInterval)
+        defer {
+            if session !== sesseion {
+                session.finishTasksAndInvalidate()
+            }
+        }
+        return try await session.data(for: request)
+    }
+
+    private func session(timeoutInterval: TimeInterval?) -> URLSession {
+        guard let timeoutInterval else { return sesseion }
+
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = timeoutInterval
+        configuration.timeoutIntervalForResource = max(timeoutInterval, config.timeoutForResource)
+        return URLSession(configuration: configuration)
     }
     
     private func generateURLRequest(requestType: RequestType, experimentContext: String? = nil) throws -> URLRequest {
@@ -43,6 +58,9 @@ final class RequestProvider {
         }
         
         var urlRequest = URLRequest(url: url)
+        if let timeoutInterval = requestType.timeoutInterval {
+            urlRequest.timeoutInterval = timeoutInterval
+        }
         urlRequest.httpMethod = requestType.method.rawValue
         urlRequest.allHTTPHeaderFields = generateHeader(type: requestType.header, experimentContext: experimentContext)
         
