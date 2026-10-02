@@ -84,7 +84,6 @@ extension HomeViewModel {
         var filterSections: [any HomeScreenSection] = []
         var radioSelection: [String: Int] = [:]
         var hasLoadedFilterScreen = false
-        var preset: String?
         var initialMapZoomLevel: Double?
         var mapMaxDistance: Double?
         var newCameraPosition: CLLocation?
@@ -254,7 +253,6 @@ final class HomeViewModel: BaseViewModel {
         input.applyPreset
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, preset: String) in
-                owner.state.preset = preset
                 owner.output.preset.send(preset)
                 owner.fetchFilterScreen(shouldRefreshCards: true)
             })
@@ -759,7 +757,7 @@ extension HomeViewModel {
 
     private func fetchFilterScreen(shouldRefreshCards: Bool = false) {
         Task { @MainActor in
-            let input = FetchHomeFilterScreenInput(preset: state.preset)
+            let input = FetchHomeFilterScreenInput(preset: output.preset.value)
             let result = await dependency.screenRepository.fetchHomeFilterScreen(input: input)
             switch result {
             case .success(let response):

@@ -17,9 +17,9 @@ final class SDUILogTests: XCTestCase {
 
     // MARK: TH-1434 TC1
 
-    func test_TH1434_TC1_프리셋을적용하면_홈page_view에실을preset이갱신된다() {
+    func test_TH1434_TC1_프리셋을적용하면_홈page_view에실을preset이갱신된다() throws {
         // Given
-        let viewModel = makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds")
+        let viewModel = try makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds")
 
         // When
         viewModel.input.applyPreset.send("event")
@@ -33,7 +33,7 @@ final class SDUILogTests: XCTestCase {
     func test_TH1434_TC4_홈리스트가게카드를탭하면_storeId와storeType이담긴클릭로그가한건전송된다() throws {
         // Given
         let logManager = MockLogManager()
-        let viewModel = makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds", logManager: logManager)
+        let viewModel = try makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds", logManager: logManager)
         try loadCards(viewModel)
         let sentCount = logManager.sentEvents.count
 
@@ -54,7 +54,7 @@ final class SDUILogTests: XCTestCase {
     func test_TH1434_TC5_지도마커를탭하면_storeId와storeType이담긴클릭로그가한건전송된다() throws {
         // Given
         let logManager = MockLogManager()
-        let viewModel = makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds", logManager: logManager)
+        let viewModel = try makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds", logManager: logManager)
         try loadCards(viewModel)
         let sentCount = logManager.sentEvents.count
 
@@ -75,7 +75,7 @@ final class SDUILogTests: XCTestCase {
     func test_TH1434_TC12_홈리스트애드몹광고가클릭되면_해당카드클릭로그가한건전송된다() throws {
         // Given
         let logManager = MockLogManager()
-        let viewModel = makeHomeViewModel(fixture: "HomeListSectionWithAdmobCard", logManager: logManager)
+        let viewModel = try makeHomeViewModel(fixture: "HomeListSectionWithAdmobCard", logManager: logManager)
         try loadCards(viewModel)
         let admobIndex = try XCTUnwrap(viewModel.output.bottomSheetCards.value.firstIndex { $0 is HomeListAdmobCardResponse })
         let sentCount = logManager.sentEvents.count
@@ -114,9 +114,9 @@ final class SDUILogTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func makeHomeViewModel(fixture: String, logManager: MockLogManager = MockLogManager()) -> HomeViewModel {
-        let response = try? FixtureLoader.decode(HomeListSectionResponse.self, from: fixture)
-        let screenRepository = MockScreenRepository(fetchHomeSectionListResult: response.map { .success($0) })
+    private func makeHomeViewModel(fixture: String, logManager: MockLogManager = MockLogManager()) throws -> HomeViewModel {
+        let response = try FixtureLoader.decode(HomeListSectionResponse.self, from: fixture)
+        let screenRepository = MockScreenRepository(fetchHomeSectionListResult: .success(response))
         return HomeViewModel(dependency: .init(
             screenRepository: screenRepository,
             advertisementRepository: MockAdvertisementRepository(),

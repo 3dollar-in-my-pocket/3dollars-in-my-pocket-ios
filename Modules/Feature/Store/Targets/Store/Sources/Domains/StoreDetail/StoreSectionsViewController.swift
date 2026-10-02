@@ -429,7 +429,7 @@ public final class StoreSectionsViewController: BaseViewController {
                 let cell: StoreAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.bind(section, rootViewController: self, isDisplayed: self.isDisplayed)
                 cell.onClickAd = { [weak self] in
-                    self?.viewModel.sendClickLog(section.cards.first?.clickLog)
+                    self?.viewModel.input.didClickAd.send(section.cards.first?.clickLog)
                 }
                 return cell
             case let section as StoreTabSection:
