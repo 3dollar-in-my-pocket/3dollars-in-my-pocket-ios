@@ -4,11 +4,17 @@ import Common
 import SnapKit
 
 final class SigninView: BaseView {
+    enum Layout {
+        static let logoSize: CGFloat = 254
+    }
+
     let logoButton: UIButton = {
         let button = UIButton()
         
         button.setImage(Assets.imageSplash.image, for: .normal)
-        button.contentMode = .scaleAspectFit
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
         button.adjustsImageWhenHighlighted = false
         return button
     }()
@@ -21,13 +27,13 @@ final class SigninView: BaseView {
         let button = UIButton()
         
         button.setTitle(Strings.signinAnonymous, for: .normal)
-        button.setTitleColor(Colors.systemWhite.color, for: .normal)
+        button.setTitleColor(Colors.gray100.color, for: .normal)
         button.titleLabel?.font = Fonts.regular.font(size: 14)
         return button
     }()
     
     override func setup() {
-        backgroundColor = Colors.mainPink.color
+        backgroundColor = Assets.signinBackground.color
         addSubViews([
             logoButton,
             kakaoButton,
@@ -38,8 +44,8 @@ final class SigninView: BaseView {
     
     override func bindConstraints() {
         logoButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(32)
-            $0.trailing.equalToSuperview().offset(-32)
+            $0.centerX.equalToSuperview()
+            $0.size.equalTo(Layout.logoSize)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-72)
         }
         
