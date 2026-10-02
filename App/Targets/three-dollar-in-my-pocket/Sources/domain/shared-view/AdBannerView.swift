@@ -39,9 +39,17 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     }
     
     func load(in rootViewController: UIViewController) {
+        load(in: rootViewController, adSize: currentOrientationAnchoredAdaptiveBanner(width: frame.width))
+    }
+
+    func load(in rootViewController: UIViewController, size: CGSize) {
+        load(in: rootViewController, adSize: inlineAdaptiveBanner(width: size.width, maxHeight: size.height))
+    }
+
+    private func load(in rootViewController: UIViewController, adSize: AdSize) {
         guard isLoaded.isNot else { return }
         admobView.rootViewController = rootViewController
-        admobView.adSize = currentOrientationAnchoredAdaptiveBanner(width: frame.width)
+        admobView.adSize = adSize
         admobView.delegate = self
         admobView.load(Request())
     }

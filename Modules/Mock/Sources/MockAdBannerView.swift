@@ -5,4 +5,5 @@ import AppInterface
 final class MockAdBannerView: UIView, AdBannerViewProtocol {
     var isLoaded = true
     func load(in rootViewController: UIViewController) { }
+    func load(in rootViewController: UIViewController, size: CGSize) { }
 }
