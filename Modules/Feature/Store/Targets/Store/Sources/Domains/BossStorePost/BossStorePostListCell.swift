@@ -9,7 +9,7 @@ final class BossStorePostListCell: BaseCollectionViewCell {
         static func height(viewModel: BossStorePostListCellViewModel, width: CGFloat) -> CGFloat {
             var totalHeight: CGFloat = 0
             
-            let headerHeight: CGFloat = 72
+            let headerHeight: CGFloat = 16 + 40 + 12 // 상단 패딩 + 카테고리 이미지 + 하단 간격
             totalHeight += headerHeight
             
             if viewModel.output.data.sections.isNotEmpty {
@@ -17,7 +17,7 @@ final class BossStorePostListCell: BaseCollectionViewCell {
                 totalHeight += 12 // 이미지 하단 패딩
             }
             
-            let contentHeight = viewModel.output.data.body.boundingRect(
+            let contentHeight = ceil(viewModel.output.data.body.boundingRect(
                 with: CGSize(
                     width: width - sectionInset.left - sectionInset.right,
                     height: CGFloat.greatestFiniteMagnitude
@@ -27,7 +27,7 @@ final class BossStorePostListCell: BaseCollectionViewCell {
                     .font: Fonts.regular.font(size: 14)
                 ],
                 context: nil
-            ).height
+            ).height)
             
             totalHeight += contentHeight
             totalHeight += 12 // 컨텐츠 하단 패딩
@@ -35,9 +35,6 @@ final class BossStorePostListCell: BaseCollectionViewCell {
             let likeButtonHeight: CGFloat = 16
             totalHeight += likeButtonHeight
             totalHeight += 16 // 좋아요 버튼 하단 패딩
-            
-            let lineHeight: CGFloat = 1
-            totalHeight += lineHeight
             
             return totalHeight
         }
@@ -83,6 +80,7 @@ final class BossStorePostListCell: BaseCollectionViewCell {
         textView.isEditable = false
         textView.isScrollEnabled = false
         textView.textContainer.lineFragmentPadding = 0
+        textView.textContainerInset = .zero
         textView.font = Layout.contentTextFont
         textView.backgroundColor = .clear
         return textView
