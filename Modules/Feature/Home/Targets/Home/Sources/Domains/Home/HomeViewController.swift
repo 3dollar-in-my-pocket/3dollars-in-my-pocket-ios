@@ -26,6 +26,11 @@ public final class HomeViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
+    public override var extraParameters: [ParameterName: Any]? {
+        guard let preset = viewModel.output.preset.value else { return nil }
+        return [.preset: preset]
+    }
+
     public var currentAddress: String {
         viewModel.currentAddress
     }
@@ -164,6 +169,19 @@ public final class HomeViewController: BaseViewController {
     }
 
     public override func bindViewModelOutput() {
+        viewModel.output.preset
+            .dropFirst()
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, _) in
+                guard owner.viewIfLoaded?.window != nil else { return }
+                LogManager.shared.sendPageView(
+                    screen: owner.screenName,
+                    type: HomeViewController.self,
+                    extraParameters: owner.extraParameters
+                )
+            }
+            .store(in: &cancellables)
+
         viewModel.mapControlViewModel.output.buttons
             .main
             .withUnretained(self)

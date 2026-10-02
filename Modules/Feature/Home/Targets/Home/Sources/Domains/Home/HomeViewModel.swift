@@ -69,6 +69,7 @@ extension HomeViewModel {
         let focusMarkerAt = PassthroughSubject<Int, Never>()
         let isShowFilterTooltip = PassthroughSubject<Bool, Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
+        let preset = CurrentValueSubject<String?, Never>(nil)
         let route = PassthroughSubject<Route, Never>()
     }
 
@@ -254,6 +255,7 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, preset: String) in
                 owner.state.preset = preset
+                owner.output.preset.send(preset)
                 owner.fetchFilterScreen(shouldRefreshCards: true)
             })
             .store(in: &cancellables)
@@ -569,7 +571,6 @@ final class HomeViewModel: BaseViewModel {
         guard let card = cards[safe: index], let marker = card.marker else { return }
         guard let storeId = extractStoreId(from: card) else { return }
 
-        sendClickMarkerLog()
         dependency.logManager.sendEvent(event: ClickEvent(clickLog: marker.clickLog))
 
         output.route.send(.presentStorePreview(
@@ -580,7 +581,7 @@ final class HomeViewModel: BaseViewModel {
     }
 
     private func extractStoreId(from card: HomeListBasicCardResponse) -> Int? {
-        if let value = card.clickLog.extraParameters["storeId"]?.anyValue {
+        if let value = (card.clickLog.extraParameters["store_id"] ?? card.clickLog.extraParameters["storeId"])?.anyValue {
             if let int = value as? Int { return int }
             if let str = value as? String, let parsed = Int(str) { return parsed }
         }
@@ -598,7 +599,6 @@ final class HomeViewModel: BaseViewModel {
         guard let card = state.cards[safe: index] else { return }
 
         if let basic = card as? HomeListBasicCardResponse {
-            sendClickHomeCardLog()
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: basic.clickLog))
             if let marker = basic.marker {
                 let cameraPosition = CLLocation(
@@ -920,14 +920,6 @@ extension HomeViewModel {
 
 // MARK: Log
 extension HomeViewModel {
-    private func sendClickHomeCardLog() {
-        dependency.logManager.sendEvent(event: ClickEvent(
-            screen: output.screenName,
-            objectType: .card,
-            objectId: .store
-        ))
-    }
-
     private func sendClickAddressLog() {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
@@ -984,14 +976,6 @@ extension HomeViewModel {
             objectType: .button,
             objectId: .recentActivityFilter,
             extraParameters: [.value: isOn]
-        ))
-    }
-
-    private func sendClickMarkerLog() {
-        dependency.logManager.sendEvent(event: ClickEvent(
-            screen: output.screenName,
-            objectType: .marker,
-            objectId: .store
         ))
     }
 
