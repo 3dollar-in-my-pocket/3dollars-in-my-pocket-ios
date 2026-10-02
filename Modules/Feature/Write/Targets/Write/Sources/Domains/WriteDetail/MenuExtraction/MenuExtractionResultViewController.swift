@@ -203,6 +203,7 @@ final class MenuExtractionResultViewController: BaseViewController {
             .main
             .sink { [weak self] viewModel in
                 self?.contentView.appendMenuView(viewModel)
+                self?.scrollToBottom()
             }
             .store(in: &cancellables)
 
@@ -216,6 +217,13 @@ final class MenuExtractionResultViewController: BaseViewController {
 
     private func updateStickyTab() {
         contentView.updateStickyTabFrame(in: view, stickyTopY: scrollView.frame.minY)
+    }
+
+    private func scrollToBottom() {
+        view.layoutIfNeeded()
+        let inset = scrollView.adjustedContentInset
+        let bottomOffsetY = scrollView.contentSize.height - scrollView.bounds.height + inset.bottom
+        scrollView.setContentOffset(CGPoint(x: 0, y: max(-inset.top, bottomOffsetY)), animated: true)
     }
 
     private func addKeyboardObservers() {
