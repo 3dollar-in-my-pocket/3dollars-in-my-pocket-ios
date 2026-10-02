@@ -8,11 +8,12 @@ import SnapKit
 final class StoreAdmobCell: BaseCollectionViewCell {
     enum Layout {
         static let minimumHeight: CGFloat = 50
+        static let defaultHeight: CGFloat = 200
         static let horizontalInset: CGFloat = 20
 
         static func height(_ section: StoreAdmobSection) -> CGFloat {
-            guard let card = section.cards.first else { return minimumHeight }
-            return max(minimumHeight, CGFloat(card.height))
+            guard let height = section.cards.first?.height else { return defaultHeight }
+            return max(minimumHeight, CGFloat(height))
         }
     }
 

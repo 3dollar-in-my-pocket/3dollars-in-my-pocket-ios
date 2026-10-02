@@ -6,9 +6,11 @@ import Model
 final class HomeListAdmobCell: BaseCollectionViewCell {
     enum Layout {
         static let minimumHeight: CGFloat = 50
+        static let defaultHeight: CGFloat = 172
 
         static func height(_ card: HomeListAdmobCardResponse) -> CGFloat {
-            return max(minimumHeight, CGFloat(card.height))
+            guard let height = card.height else { return defaultHeight }
+            return max(minimumHeight, CGFloat(height))
         }
     }
 
