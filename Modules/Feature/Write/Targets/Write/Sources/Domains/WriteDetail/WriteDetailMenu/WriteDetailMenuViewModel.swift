@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 
 import Common
 import Model
@@ -10,35 +11,36 @@ extension WriteDetailMenuViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<Int, Never>()
         let didTapEditCategory = PassthroughSubject<Void, Never>()
-        let inputMenuName = PassthroughSubject<(index: Int, name: String), Never>()
-        let inputMenuQuantity = PassthroughSubject<(index: Int, quantity: Int?), Never>()
-        let inputMenuPrice = PassthroughSubject<(index: Int, price: Int?), Never>()
         let didTapAddMenu = PassthroughSubject<Void, Never>()
         let didTapSkip = PassthroughSubject<Void, Never>()
         let didTapNext = PassthroughSubject<Void, Never>()
         let editCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
+        let didSelectMenuImage = PassthroughSubject<Data, Never>()
+        let finishMenuExtraction = PassthroughSubject<MenuExtractionResult, Never>()
     }
-    
+
     struct Output {
         let screenName: ScreenName = .writeDetailMenu
         let afterCreatedStore: Bool
-        let categories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
-        let selectedCategoryIndex = CurrentValueSubject<Int, Never>(0)
-        let menus = PassthroughSubject<[MenuInputViewModel], Never>()
-        let addMenus = PassthroughSubject<MenuInputViewModel, Never>()
+        let categories: CurrentValueSubject<[StoreFoodCategoryResponse], Never>
+        let selectedCategoryIndex: CurrentValueSubject<Int, Never>
+        let menus: PassthroughSubject<[MenuInputViewModel], Never>
+        let addMenus: PassthroughSubject<MenuInputViewModel, Never>
         let finishInputMenu = PassthroughSubject<[UserStoreMenuRequestV3], Never>()
         let finishInputCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let didTapSkip = PassthroughSubject<Void, Never>()
         let toast = PassthroughSubject<String, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
-    
+
     enum Route {
         case presentCategoryBottomSheet(WriteDetailCategoryBottomSheetViewModel)
+        case pushMenuExtractionLoading(MenuExtractionLoadingViewModel)
+        case popToSelf
         case showErrorAlert(Error)
         case pop
     }
-    
+
     struct Dependency {
         let categoryRepository: CategoryRepository
         let logManager: LogManagerProtocol
@@ -51,13 +53,11 @@ extension WriteDetailMenuViewModel {
             self.logManager = logManager
         }
     }
-    
+
     struct State {
         var categories: [StoreFoodCategoryResponse] = []
-        var selectedCategories: [StoreFoodCategoryResponse]
-        var menus: [String: [UserStoreMenuRequestV3]] = [:]
     }
-    
+
     struct Config {
         let selectedCategories: [StoreFoodCategoryResponse]
         let menus: [UserStoreMenuRequestV3]
@@ -69,14 +69,19 @@ extension WriteDetailMenuViewModel {
 final class WriteDetailMenuViewModel: BaseViewModel {
     let input = Input()
     let output: Output
-    private var state: State
+    private var state = State()
+    private let editor: MenuFormEditor
     private let dependencies: Dependency
 
     init(config: Config, dependencies: Dependency = Dependency()) {
-        self.output = Output(afterCreatedStore: config.afterCreatedStore)
-        self.state = State(
-            selectedCategories: config.selectedCategories,
-            menus: Dictionary(grouping: config.menus, by: { $0.category })
+        let editor = MenuFormEditor(form: MenuForm(categories: config.selectedCategories, menus: config.menus))
+        self.editor = editor
+        self.output = Output(
+            afterCreatedStore: config.afterCreatedStore,
+            categories: editor.categories,
+            selectedCategoryIndex: editor.selectedCategoryIndex,
+            menus: editor.menus,
+            addMenus: editor.addedMenu
         )
         self.dependencies = dependencies
         super.init()
@@ -84,70 +89,62 @@ final class WriteDetailMenuViewModel: BaseViewModel {
 
     override func bind() {
         input.viewDidLoad
-            .sink { [weak self]  in
-                guard let self else { return }
-                fetchCategories()
-                output.categories.send(state.selectedCategories)
-                fetchCurrentCategoryMenus()
+            .sink { [weak self] in
+                self?.fetchCategories()
+                self?.editor.reloadMenus()
             }
             .store(in: &cancellables)
-        
+
         input.selectCategory
             .sink { [weak self] index in
-                self?.selectCategory(index: index)
+                self?.editor.selectCategory(index: index)
             }
             .store(in: &cancellables)
-        
+
         input.didTapEditCategory
             .sink { [weak self] in
                 self?.presentWriteDetailCategoryBottomSheet()
             }
             .store(in: &cancellables)
-        
-        input.inputMenuName
-            .sink { [weak self] (index: Int, name: String) in
-                self?.inputMenuName(index: index, name: name)
-            }
-            .store(in: &cancellables)
-        
-        input.inputMenuQuantity
-            .sink { [weak self] (index: Int, quantity: Int?) in
-                self?.inputMenuQuantity(index: index, quantity: quantity)
-            }
-            .store(in: &cancellables)
-        
-        input.inputMenuPrice
-            .sink { [weak self] (index: Int, price: Int?) in
-                self?.inputMenuPrice(index: index, price: price)
-            }
-            .store(in: &cancellables)
-        
+
         input.didTapAddMenu
             .sink { [weak self] in
-                self?.addMenu()
+                self?.editor.addMenu()
             }
             .store(in: &cancellables)
-        
+
         input.didTapSkip
             .handleEvents(receiveOutput: { [weak self] _ in
                 self?.sendClickSkipLog()
             })
             .subscribe(output.didTapSkip)
             .store(in: &cancellables)
-        
+
         input.didTapNext
             .sink { [weak self] in
                 self?.finishInputMenu()
             }
             .store(in: &cancellables)
-        
+
         input.editCategory
             .sink { [weak self] selectedCategories in
-                self?.editCategories(categories: selectedCategories)
+                self?.editor.replaceCategories(selectedCategories)
+            }
+            .store(in: &cancellables)
+
+        input.didSelectMenuImage
+            .sink { [weak self] image in
+                self?.pushMenuExtractionLoading(image: image)
+            }
+            .store(in: &cancellables)
+
+        input.finishMenuExtraction
+            .sink { [weak self] result in
+                self?.applyMenuExtraction(result)
             }
             .store(in: &cancellables)
     }
-    
+
     private func fetchCategories() {
         Task { [weak self] in
             guard let self else { return }
@@ -159,154 +156,56 @@ final class WriteDetailMenuViewModel: BaseViewModel {
             }
         }
     }
-    
-    private func fetchCurrentCategoryMenus() {
-        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
-        
-        let currentCategoryMenus: [UserStoreMenuRequestV3]
-        if let menus = state.menus[currentCategory.categoryId] {
-            currentCategoryMenus = menus
-        } else {
-            let menus = [UserStoreMenuRequestV3(category: currentCategory.categoryId)]
-            state.menus[currentCategory.categoryId] = menus
-            currentCategoryMenus = menus
-        }
-        
-        let menuViewModels = currentCategoryMenus.map { MenuInputViewModel(config: .init(menu: $0)) }
-        for (index, viewModel) in menuViewModels.enumerated() {
-            bindMenuViewModel(index: index, viewModel: viewModel)
-        }
-        
-        output.menus.send(menuViewModels)
-    }
-    
-    private func selectCategory(index: Int) {
-        output.selectedCategoryIndex.send(index)
-        fetchCurrentCategoryMenus()
-    }
-    
-    private func inputMenuName(index: Int, name: String) {
-        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
-        
-        state.menus[currentCategory.categoryId]?[index].name = name
-    }
-    
-    private func inputMenuQuantity(index: Int, quantity: Int?) {
-        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
-        
-        state.menus[currentCategory.categoryId]?[index].count = quantity
-    }
-    
-    private func inputMenuPrice(index: Int, price: Int?) {
-        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
-        
-        state.menus[currentCategory.categoryId]?[index].price = price
-    }
-    
+
     private func presentWriteDetailCategoryBottomSheet() {
         let config = WriteDetailCategoryBottomSheetViewModel.Config(
             categories: state.categories,
-            selectedCategories: state.selectedCategories
+            selectedCategories: editor.form.categories
         )
         let viewModel = WriteDetailCategoryBottomSheetViewModel(config: config)
-        
+
         viewModel.output.finishEditCategory
             .subscribe(input.editCategory)
             .store(in: &viewModel.cancellables)
-        
+
         output.route.send(.presentCategoryBottomSheet(viewModel))
     }
-    
-    private func addMenu() {
-        guard let currentCategory = state.selectedCategories[safe: output.selectedCategoryIndex.value] else { return }
-        
-        let newMenu = UserStoreMenuRequestV3(category: currentCategory.categoryId)
-        let index = state.menus[currentCategory.categoryId]?.count ?? 0
-        
-        state.menus[currentCategory.categoryId]?.append(newMenu)
-        
-        let newMenuViewModel = MenuInputViewModel(config: .init(menu: newMenu))
-        bindMenuViewModel(index: index, viewModel: newMenuViewModel)
-        
-        output.addMenus.send(newMenuViewModel)
-    }
-    
-    private func bindMenuViewModel(index: Int, viewModel: MenuInputViewModel) {
-        viewModel.output.name
-            .compactMap { $0 }
-            .map { (index, $0) }
-            .subscribe(input.inputMenuName)
-            .store(in: &viewModel.cancellables)
-        
-        viewModel.output.quantity
-            .map { (index, $0) }
-            .subscribe(input.inputMenuQuantity)
-            .store(in: &viewModel.cancellables)
-        
-        viewModel.output.price
-            .map { (index, $0) }
-            .subscribe(input.inputMenuPrice)
-            .store(in: &viewModel.cancellables)
-    }
-    
-    private func finishInputMenu() {
-        let menus = state.menus.flatMap { $0.value }
 
-        guard validateCount(menus: menus) else {
+    private func pushMenuExtractionLoading(image: Data) {
+        let config = MenuExtractionLoadingViewModel.Config(image: image, afterCreatedStore: output.afterCreatedStore)
+        let viewModel = MenuExtractionLoadingViewModel(config: config)
+
+        viewModel.output.finishExtraction
+            .subscribe(input.finishMenuExtraction)
+            .store(in: &cancellables)
+
+        output.route.send(.pushMenuExtractionLoading(viewModel))
+    }
+
+    private func applyMenuExtraction(_ result: MenuExtractionResult) {
+        editor.replaceForm(MenuForm(categories: result.categories, menus: result.menus))
+        output.route.send(.popToSelf)
+    }
+
+    private func finishInputMenu() {
+        switch editor.form.validate() {
+        case .invalidCount:
             output.toast.send(Strings.WriteDetailMenu.Toast.validateMenu)
             return
-        }
-
-        guard validatePrice(menus: menus) else {
+        case .invalidPrice:
             output.toast.send(Strings.WriteDetailMenu.Toast.validatePrice)
             return
+        case .none:
+            break
         }
 
         sendClickNextLog()
-        output.finishInputMenu.send(menus)
-        output.finishInputCategory.send(state.selectedCategories)
+        output.finishInputMenu.send(editor.form.allMenus)
+        output.finishInputCategory.send(editor.form.categories)
 
         if output.afterCreatedStore {
             output.route.send(.pop)
         }
-    }
-    
-    private func editCategories(categories: [StoreFoodCategoryResponse]) {
-        for oldCategory in state.selectedCategories {
-            if categories.contains(where: { $0.categoryId == oldCategory.categoryId }).isNot {
-                state.menus[oldCategory.categoryId] = nil
-            }
-        }
-        
-        for category in categories {
-            if state.menus.map({ $0.key }).contains(where: { $0 == category.categoryId }).isNot {
-                state.menus[category.categoryId] = [UserStoreMenuRequestV3(name: "", category: category.categoryId)]
-            }
-        }
-        
-        state.selectedCategories = categories
-        
-        output.categories.send(categories)
-        output.selectedCategoryIndex.send(0)
-        fetchCurrentCategoryMenus()
-    }
-    
-    private func validateCount(menus: [UserStoreMenuRequestV3]) -> Bool {
-        for menu in menus {
-            if let count = menu.count, count <= 0 {
-                return false
-            }
-        }
-        return true
-    }
-    
-    private func validatePrice(menus: [UserStoreMenuRequestV3]) -> Bool {
-        for menu in menus {
-            if let price = menu.price, price <= 0 {
-                return false
-            }
-        }
-        return true
     }
 
     private func sendClickSkipLog() {
