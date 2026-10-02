@@ -2,6 +2,8 @@ import UIKit
 
 import Common
 
+import SnapKit
+
 final class DebugOverlayWindow: UIWindow {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event) else { return nil }
@@ -23,6 +25,16 @@ enum DebugOverlay {
         overlayWindow.rootViewController = rootViewController
         overlayWindow.isHidden = false
 
+        let toastContainerView = GALogToastContainerView()
+        toastContainerView.onTapGroup = { groupId in
+            guard let presenter = topViewController() else { return }
+            GALogViewerDebugMenuItem.present(from: presenter, focusGroupId: groupId)
+        }
+        rootViewController.view.addSubview(toastContainerView)
+        toastContainerView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
         let button = DebugFloatingButton()
         button.onTap = {
             presentMenu()
@@ -40,6 +52,7 @@ enum DebugOverlay {
 
         let menuViewController = DebugMenuViewController()
         menuViewController.items = [
+            GALogViewerDebugMenuItem(),
             NetfoxDebugMenuItem(),
             AdInspectorDebugMenuItem(),
             AdvertisingIdentifierDebugMenuItem()
@@ -50,7 +63,7 @@ enum DebugOverlay {
         }
 
         if let sheet = menuViewController.sheetPresentationController {
-            sheet.detents = [.medium()]
+            sheet.detents = [.medium(), .large()]
             sheet.prefersGrabberVisible = true
         }
         presenter.present(menuViewController, animated: true)
