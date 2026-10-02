@@ -183,7 +183,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     }
 
     private func applyMenuExtraction(_ result: MenuExtractionResult) {
-        editor.replaceForm(MenuForm(categories: result.categories, menus: result.menus))
+        editor.merge(result)
         output.route.send(.popToSelf)
     }
 

@@ -60,11 +60,18 @@ final class MenuFormEditor {
         selectCategory(index: 0)
     }
 
-    func replaceForm(_ newForm: MenuForm) {
-        form = newForm
+    func merge(_ result: MenuExtractionResult) {
+        let mergedForm = form.merging(
+            categories: result.categories,
+            menus: result.menus,
+            maximumCategoryCount: WriteDetailCategoryViewModel.Constants.maximumSelectedCategoryCount
+        )
+        let firstExtractedCategoryId = result.menus.first?.category
+        form = mergedForm
         categories.send(form.categories)
-        selectCategory(index: 0)
+        selectCategory(index: form.categories.firstIndex { $0.categoryId == firstExtractedCategoryId } ?? 0)
     }
+
 
     private func makeMenuInputViewModel(index: Int, menu: UserStoreMenuRequestV3, categoryId: String) -> MenuInputViewModel {
         let viewModel = MenuInputViewModel(config: .init(index: index, menu: menu))

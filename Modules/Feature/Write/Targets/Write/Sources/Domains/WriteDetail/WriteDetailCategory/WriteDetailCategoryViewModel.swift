@@ -151,10 +151,27 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
         let viewModel = MenuExtractionLoadingViewModel(config: config)
 
         viewModel.output.finishExtraction
+            .withUnretained(self)
+            .map { (owner: WriteDetailCategoryViewModel, result: MenuExtractionResult) in
+                owner.mergeWithSelectedCategories(result)
+            }
             .subscribe(output.finishMenuExtraction)
             .store(in: &cancellables)
 
         output.route.send(.pushMenuExtractionLoading(viewModel))
+    }
+
+    private func mergeWithSelectedCategories(_ result: MenuExtractionResult) -> MenuExtractionResult {
+        let mergedForm = MenuForm(categories: state.selectedCategories, menus: []).merging(
+            categories: result.categories,
+            menus: result.menus,
+            maximumCategoryCount: Constants.maximumSelectedCategoryCount
+        )
+        return MenuExtractionResult(
+            categories: mergedForm.categories,
+            menus: mergedForm.allMenus,
+            recognizedMenuCount: result.recognizedMenuCount
+        )
     }
 
     private func sendClickNextLog() {

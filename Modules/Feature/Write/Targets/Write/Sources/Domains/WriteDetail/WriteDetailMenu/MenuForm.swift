@@ -70,6 +70,40 @@ struct MenuForm {
         categories = newCategories
     }
 
+    func merging(
+        categories newCategories: [StoreFoodCategoryResponse],
+        menus newMenus: [UserStoreMenuRequestV3],
+        maximumCategoryCount: Int
+    ) -> MenuForm {
+        var merged = self
+        for category in newCategories where merged.categories.count < maximumCategoryCount {
+            guard merged.categories.contains(where: { $0.categoryId == category.categoryId }).isNot else { continue }
+            merged.categories.append(category)
+        }
+
+        let categoryIds = Set(merged.categories.map(\.categoryId))
+        for menu in newMenus where categoryIds.contains(menu.category) {
+            merged.upsert(menu)
+        }
+        return merged
+    }
+
+    private mutating func upsert(_ menu: UserStoreMenuRequestV3) {
+        var menus = menusByCategoryId[menu.category, default: []].filter { $0.isBlank.isNot }
+        let key = Self.normalizedName(menu.name)
+        if let index = menus.firstIndex(where: { Self.normalizedName($0.name) == key }) {
+            menus[index].count = menu.count ?? menus[index].count
+            menus[index].price = menu.price ?? menus[index].price
+        } else {
+            menus.append(menu)
+        }
+        menusByCategoryId[menu.category] = menus
+    }
+
+    private static func normalizedName(_ name: String) -> String {
+        return name.lowercased().filter { $0.isWhitespace.isNot }
+    }
+
     func validate() -> ValidationError? {
         let menus = allMenus
         if menus.contains(where: { ($0.count ?? 1) <= 0 }) {
@@ -79,5 +113,11 @@ struct MenuForm {
             return .invalidPrice
         }
         return nil
+    }
+}
+
+private extension UserStoreMenuRequestV3 {
+    var isBlank: Bool {
+        return name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && count == nil && price == nil
     }
 }
