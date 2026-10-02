@@ -3,8 +3,6 @@ import Foundation
 import Model
 
 struct MenuExtractionResult {
-    static let maximumCategoryCount = 10
-
     let categories: [StoreFoodCategoryResponse]
     let menus: [UserStoreMenuRequestV3]
     let recognizedMenuCount: Int
@@ -20,7 +18,7 @@ struct MenuExtractionResult {
         for menu in response.menus where categories.contains(where: { $0.categoryId == menu.category.categoryId }) == false {
             categories.append(menu.category)
         }
-        let limitedCategories = Array(categories.prefix(Self.maximumCategoryCount))
+        let limitedCategories = Array(categories.prefix(WriteDetailCategoryViewModel.Constants.maximumSelectedCategoryCount))
         let categoryIds = Set(limitedCategories.map(\.categoryId))
 
         self.categories = limitedCategories

@@ -75,8 +75,14 @@ extension MenuPhotoPicker: UIImagePickerControllerDelegate, UINavigationControll
     ) {
         let image = info[.originalImage] as? UIImage
         picker.dismiss(animated: true) { [weak self] in
-            guard let image, let photo = ImageUtils.dataArrayFromImages(photos: [image]).first else { return }
-            self?.onPicked?(photo)
+            guard let image else { return }
+            Task { @MainActor [weak self] in
+                let photo = await Task.detached(priority: .userInitiated) {
+                    ImageUtils.dataArrayFromImages(photos: [image]).first
+                }.value
+                guard let photo else { return }
+                self?.onPicked?(photo)
+            }
         }
     }
 

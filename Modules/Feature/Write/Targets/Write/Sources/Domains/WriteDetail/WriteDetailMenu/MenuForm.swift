@@ -31,7 +31,7 @@ struct MenuForm {
     }
 
     mutating func seedEmptyMenuIfNeeded(categoryId: String) {
-        guard menusByCategoryId[categoryId] == nil else { return }
+        guard menusByCategoryId[categoryId]?.isEmpty ?? true else { return }
         menusByCategoryId[categoryId] = [UserStoreMenuRequestV3(category: categoryId)]
     }
 

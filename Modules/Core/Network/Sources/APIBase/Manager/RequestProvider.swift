@@ -6,6 +6,8 @@ import Model
 final class RequestProvider {
     private var config: NetworkConfigurable
     private let sesseion: URLSession
+    private let extendedSessionLock = NSLock()
+    private var extendedSessions: [TimeInterval: URLSession] = [:]
 
     init() {
         guard let config = DIContainer.shared.resolver.resolve(NetworkConfigurable.self) else {
@@ -25,22 +27,25 @@ final class RequestProvider {
         
         NetworkLogger.logRequest(request: request)
         
-        let session = session(timeoutInterval: requestType.timeoutInterval)
-        defer {
-            if session !== sesseion {
-                session.finishTasksAndInvalidate()
-            }
-        }
-        return try await session.data(for: request)
+        return try await session(timeoutInterval: requestType.timeoutInterval).data(for: request)
     }
 
     private func session(timeoutInterval: TimeInterval?) -> URLSession {
         guard let timeoutInterval else { return sesseion }
 
+        extendedSessionLock.lock()
+        defer { extendedSessionLock.unlock() }
+
+        if let session = extendedSessions[timeoutInterval] {
+            return session
+        }
+
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = timeoutInterval
         configuration.timeoutIntervalForResource = max(timeoutInterval, config.timeoutForResource)
-        return URLSession(configuration: configuration)
+        let session = URLSession(configuration: configuration)
+        extendedSessions[timeoutInterval] = session
+        return session
     }
     
     private func generateURLRequest(requestType: RequestType, experimentContext: String? = nil) throws -> URLRequest {
@@ -58,9 +63,6 @@ final class RequestProvider {
         }
         
         var urlRequest = URLRequest(url: url)
-        if let timeoutInterval = requestType.timeoutInterval {
-            urlRequest.timeoutInterval = timeoutInterval
-        }
         urlRequest.httpMethod = requestType.method.rawValue
         urlRequest.allHTTPHeaderFields = generateHeader(type: requestType.header, experimentContext: experimentContext)
         
