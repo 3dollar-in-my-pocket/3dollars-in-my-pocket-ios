@@ -13,6 +13,7 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     private let adType: AdType
     
     var isLoaded: Bool = false
+    var onClick: (() -> Void)?
     
     required init(adType: AdType) {
         self.adType = adType
@@ -60,5 +61,9 @@ extension AdBannerView: BannerViewDelegate {
             from: bannerView.rootViewController,
             error: error
         )
+    }
+
+    func bannerViewDidRecordClick(_ bannerView: BannerView) {
+        onClick?()
     }
 }

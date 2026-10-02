@@ -8,10 +8,15 @@ final class HomeListAdmobCell: BaseCollectionViewCell {
         static let height: CGFloat = 172
     }
 
+    var onClickAd: (() -> Void)?
+
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .homeCard)
 
     override func setup() {
         contentView.addSubview(adBannerView)
+        adBannerView.onClick = { [weak self] in
+            self?.onClickAd?()
+        }
     }
 
     override func bindConstraints() {

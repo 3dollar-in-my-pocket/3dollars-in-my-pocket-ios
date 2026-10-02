@@ -603,7 +603,7 @@ final class StoreSectionsViewModel: BaseViewModel {
         )
     }
 
-    private func sendClickLog(_ clickLog: SDClickLog?) {
+    func sendClickLog(_ clickLog: SDClickLog?) {
         guard let clickLog else { return }
         dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
     }
