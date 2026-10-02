@@ -15,6 +15,7 @@ extension WriteDetailCategoryViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<StoreFoodCategoryResponse, Never>()
         let didTapNext = PassthroughSubject<Void, Never>()
+        let didSelectMenuImage = PassthroughSubject<Data, Never>()
     }
     
     struct Output {
@@ -24,12 +25,14 @@ extension WriteDetailCategoryViewModel {
         let setErrorCountState = CurrentValueSubject<Bool, Never>(false)
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let fetchedCategories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
+        let finishMenuExtraction = PassthroughSubject<MenuExtractionResult, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
     enum Route {
         case toast(String)
         case showErrorAlert(Error)
+        case pushMenuExtractionLoading(MenuExtractionLoadingViewModel)
     }
     
     private struct State {
@@ -84,6 +87,12 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
                 self?.validateCategory()
             }
             .store(in: &cancellables)
+
+        input.didSelectMenuImage
+            .sink { [weak self] image in
+                self?.pushMenuExtractionLoading(image: image)
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchCategories() {
@@ -135,6 +144,17 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
 
         sendClickNextLog()
         output.finishSelectCategory.send(state.selectedCategories)
+    }
+
+    private func pushMenuExtractionLoading(image: Data) {
+        let config = MenuExtractionLoadingViewModel.Config(image: image, afterCreatedStore: false)
+        let viewModel = MenuExtractionLoadingViewModel(config: config)
+
+        viewModel.output.finishExtraction
+            .subscribe(output.finishMenuExtraction)
+            .store(in: &cancellables)
+
+        output.route.send(.pushMenuExtractionLoading(viewModel))
     }
 
     private func sendClickNextLog() {

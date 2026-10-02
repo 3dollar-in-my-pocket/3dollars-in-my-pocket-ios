@@ -24,6 +24,8 @@ final class WriteDetailCategoryViewController: BaseViewController {
         return label
     }()
     
+    private let menuExtractionBannerView = MenuExtractionBannerView()
+
     private lazy var collectionView: UICollectionView = {
         let layout = LeftAlignedCollectionViewFlowLayout()
         layout.minimumLineSpacing = 8
@@ -55,6 +57,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
     }()
     
     private let viewModel: WriteDetailCategoryViewModel
+    private let photoPicker = MenuPhotoPicker()
     private lazy var datasource = WriteDetailCategoryDatasource(collectionView: collectionView, viewModel: viewModel)
     
     override var screenName: ScreenName {
@@ -88,6 +91,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
         view.addSubViews([
             titleLabel,
             countLabel,
+            menuExtractionBannerView,
             collectionView,
             nextButton,
             buttonBackground
@@ -103,8 +107,13 @@ final class WriteDetailCategoryViewController: BaseViewController {
             $0.centerY.equalTo(titleLabel)
         }
         
-        collectionView.snp.makeConstraints {
+        menuExtractionBannerView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+
+        collectionView.snp.makeConstraints {
+            $0.top.equalTo(menuExtractionBannerView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(nextButton.snp.top)
         }
@@ -142,6 +151,13 @@ final class WriteDetailCategoryViewController: BaseViewController {
     }
     
     private func bind() {
+        menuExtractionBannerView.registerButton.tapPublisher
+            .throttleClick()
+            .sink { [weak self] in
+                self?.presentMenuPhotoPicker()
+            }
+            .store(in: &cancellables)
+
         nextButton.tapPublisher
             .throttleClick()
             .subscribe(viewModel.input.didTapNext)
@@ -196,6 +212,12 @@ final class WriteDetailCategoryViewController: BaseViewController {
         countLabel.attributedText = attributedString
     }
     
+    private func presentMenuPhotoPicker() {
+        photoPicker.present(from: self) { [weak self] image in
+            self?.viewModel.input.didSelectMenuImage.send(image)
+        }
+    }
+    
     @objc private func didTapClose() {
         presentDismissModal()
     }
@@ -209,7 +231,14 @@ extension WriteDetailCategoryViewController {
             ToastManager.shared.show(message: message)
         case .showErrorAlert(let error):
             showErrorAlert(error: error)
+        case .pushMenuExtractionLoading(let viewModel):
+            pushMenuExtractionLoading(viewModel: viewModel)
         }
+    }
+
+    private func pushMenuExtractionLoading(viewModel: MenuExtractionLoadingViewModel) {
+        let viewController = MenuExtractionLoadingViewController(viewModel: viewModel)
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func presentDismissModal() {
