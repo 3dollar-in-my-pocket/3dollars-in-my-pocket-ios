@@ -86,6 +86,11 @@ final class MenuExtractionResultViewController: BaseViewController {
         setupNavigationBar()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateStickyTab()
+    }
+
     private func setupUI() {
         view.backgroundColor = Colors.systemWhite.color
         titleLabel.text = Strings.MenuExtractionResult.titleFormat(viewModel.output.recognizedMenuCount)
@@ -94,6 +99,8 @@ final class MenuExtractionResultViewController: BaseViewController {
             bottomContainerView
         ])
         scrollView.addSubview(stackView)
+        scrollView.delegate = self
+        contentView.attachStickyTab(to: view)
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(contentView)
         bottomContainerView.addSubViews([
@@ -187,13 +194,15 @@ final class MenuExtractionResultViewController: BaseViewController {
             .main
             .sink { [weak self] viewModels in
                 self?.contentView.reloadMenus(viewModels)
+                self?.view.layoutIfNeeded()
+                self?.updateStickyTab()
             }
             .store(in: &cancellables)
 
         viewModel.output.addMenus
             .main
             .sink { [weak self] viewModel in
-                self?.contentView.appendMenu(viewModel)
+                self?.contentView.appendMenuView(viewModel)
             }
             .store(in: &cancellables)
 
@@ -203,6 +212,10 @@ final class MenuExtractionResultViewController: BaseViewController {
                 ToastManager.shared.show(message: message)
             }
             .store(in: &cancellables)
+    }
+
+    private func updateStickyTab() {
+        contentView.updateStickyTabFrame(in: view, stickyTopY: scrollView.frame.minY)
     }
 
     private func addKeyboardObservers() {
@@ -238,5 +251,11 @@ final class MenuExtractionResultViewController: BaseViewController {
             self?.dismiss(animated: true)
         }
         present(viewController, animated: true)
+    }
+}
+
+extension MenuExtractionResultViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateStickyTab()
     }
 }

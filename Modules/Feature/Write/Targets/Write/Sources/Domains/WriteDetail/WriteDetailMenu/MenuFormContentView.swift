@@ -8,6 +8,8 @@ final class MenuFormContentView: BaseView {
     let tabView: MenuCategoryTabView
     let categoryView = MenuCategoryView()
 
+    private let tabPlaceholderView = UIView()
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -32,7 +34,7 @@ final class MenuFormContentView: BaseView {
     override func setup() {
         backgroundColor = Colors.systemWhite.color
         addSubview(stackView)
-        stackView.addArrangedSubview(tabView)
+        stackView.addArrangedSubview(tabPlaceholderView)
         stackView.addArrangedSubview(categoryView)
         stackView.addArrangedSubview(menuStackView)
     }
@@ -41,6 +43,33 @@ final class MenuFormContentView: BaseView {
         stackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+
+        tabPlaceholderView.snp.makeConstraints {
+            $0.height.equalTo(MenuCategoryTabView.Layout.height)
+        }
+    }
+
+    func attachStickyTab(to hostView: UIView) {
+        tabView.snp.removeConstraints()
+        tabView.translatesAutoresizingMaskIntoConstraints = true
+        hostView.addSubview(tabView)
+    }
+
+    func updateStickyTabFrame(in hostView: UIView, stickyTopY: CGFloat) {
+        let placeholderFrame = tabPlaceholderView.convert(tabPlaceholderView.bounds, to: hostView)
+        tabView.frame = CGRect(
+            x: placeholderFrame.minX,
+            y: max(placeholderFrame.minY, stickyTopY),
+            width: placeholderFrame.width,
+            height: MenuCategoryTabView.Layout.height
+        )
+    }
+
+    @discardableResult
+    func appendMenuView(_ viewModel: MenuInputViewModel) -> UIView {
+        let menuView = MenuInputView(viewModel: viewModel)
+        menuStackView.addArrangedSubview(menuView)
+        return menuView
     }
 
     func bind(categories: [StoreFoodCategoryResponse], selectedIndex: Int) {
@@ -52,10 +81,6 @@ final class MenuFormContentView: BaseView {
 
     func reloadMenus(_ viewModels: [MenuInputViewModel]) {
         menuStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        viewModels.forEach(appendMenu)
-    }
-
-    func appendMenu(_ viewModel: MenuInputViewModel) {
-        menuStackView.addArrangedSubview(MenuInputView(viewModel: viewModel))
+        viewModels.forEach { appendMenuView($0) }
     }
 }

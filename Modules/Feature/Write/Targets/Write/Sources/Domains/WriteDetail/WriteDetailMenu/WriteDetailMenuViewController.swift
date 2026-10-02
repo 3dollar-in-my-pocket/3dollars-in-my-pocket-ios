@@ -133,6 +133,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         applyGradientToSkipButton()
+        updateStickyTab()
     }
 
     private func setupUI() {
@@ -144,6 +145,8 @@ final class WriteDetailMenuViewController: BaseViewController {
             buttonBackground
         ])
         scrollView.addSubview(stackView)
+        scrollView.delegate = self
+        contentView.attachStickyTab(to: view)
 
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(imageMenuButtonContainerView)
@@ -264,13 +267,15 @@ final class WriteDetailMenuViewController: BaseViewController {
             .main
             .sink { [weak self] viewModels in
                 self?.contentView.reloadMenus(viewModels)
+                self?.view.layoutIfNeeded()
+                self?.updateStickyTab()
             }
             .store(in: &cancellables)
 
         viewModel.output.addMenus
             .main
             .sink { [weak self] viewModel in
-                self?.contentView.appendMenu(viewModel)
+                self?.contentView.appendMenuView(viewModel)
             }
             .store(in: &cancellables)
 
@@ -318,6 +323,10 @@ final class WriteDetailMenuViewController: BaseViewController {
 
         skipButton.layer.insertSublayer(gradientLayer, at: 0)
         self.gradientLayer = gradientLayer
+    }
+
+    private func updateStickyTab() {
+        contentView.updateStickyTabFrame(in: view, stickyTopY: scrollView.frame.minY)
     }
 
     private func addKeyboardObservers() {
@@ -385,5 +394,11 @@ extension WriteDetailMenuViewController {
     private func pushMenuExtractionLoading(viewModel: MenuExtractionLoadingViewModel) {
         let viewController = MenuExtractionLoadingViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+extension WriteDetailMenuViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateStickyTab()
     }
 }
