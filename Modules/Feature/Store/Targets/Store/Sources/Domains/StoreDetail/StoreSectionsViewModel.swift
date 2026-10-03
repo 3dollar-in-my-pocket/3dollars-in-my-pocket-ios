@@ -20,6 +20,7 @@ extension StoreSectionsViewModel {
         let didTapImageGallery = PassthroughSubject<(images: [SDImage], index: Int), Never>()
         let didConfirmDeleteReview = PassthroughSubject<Int, Never>()
         let didConfirmUseCoupon = PassthroughSubject<String, Never>()
+        let didClickAd = PassthroughSubject<SDClickLog?, Never>()
     }
 
     struct Output {
@@ -168,6 +169,13 @@ final class StoreSectionsViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, issuedKey: String) in
                 owner.useCoupon(issuedKey: issuedKey)
+            }
+            .store(in: &cancellables)
+
+        input.didClickAd
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, clickLog: SDClickLog?) in
+                owner.sendClickLog(clickLog)
             }
             .store(in: &cancellables)
 

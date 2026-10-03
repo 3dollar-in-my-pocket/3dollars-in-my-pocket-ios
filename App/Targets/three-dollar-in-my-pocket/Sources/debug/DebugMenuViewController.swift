@@ -23,6 +23,21 @@ final class DebugMenuViewController: BaseViewController {
     )
 
 
+    private let gaLogRecordingRow = DebugMenuToggleRow(
+        title: "GA 로그 기록",
+        description: "앱이 보내는 GA 로그와 직전 탭(요소·화면 캡처)을 기록합니다. 끄면 기록·알림이 모두 멈춥니다"
+    )
+
+    private let gaLogToastRow = DebugMenuToggleRow(
+        title: "GA 로그 실시간 알림",
+        description: "로그가 나갈 때 화면 상단에 0.3초 단위로 묶어 보여줍니다"
+    )
+
+    private let gaLogImpressionToastRow = DebugMenuToggleRow(
+        title: "GA 로그 알림에 impression 포함",
+        description: "스크롤 중 노출 로그까지 알림에 띄웁니다 (뷰어에는 항상 기록)"
+    )
+
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -40,6 +55,9 @@ final class DebugMenuViewController: BaseViewController {
         view.addSubview(titleLabel)
         view.addSubview(stackView)
         stackView.addArrangedSubview(storeIdRow)
+        stackView.addArrangedSubview(gaLogRecordingRow)
+        stackView.addArrangedSubview(gaLogToastRow)
+        stackView.addArrangedSubview(gaLogImpressionToastRow)
         items.forEach { item in
             let row = DebugMenuLinkRow(title: item.title)
             row.onTap = { [weak self] in
@@ -59,12 +77,33 @@ final class DebugMenuViewController: BaseViewController {
         }
 
         storeIdRow.isOn = Preference.shared.isShowStoreIdDebugView
+        gaLogRecordingRow.isOn = GALogStore.shared.isRecordingEnabled
+        gaLogToastRow.isOn = GALogStore.shared.isToastEnabled
+        gaLogImpressionToastRow.isOn = GALogStore.shared.isImpressionToastEnabled
+        updateGALogToggleAvailability()
     }
 
     override func bindEvent() {
         storeIdRow.onChange = { isOn in
             Preference.shared.isShowStoreIdDebugView = isOn
         }
+        gaLogRecordingRow.onChange = { [weak self] isOn in
+            GALogStore.shared.isRecordingEnabled = isOn
+            self?.updateGALogToggleAvailability()
+        }
+        gaLogToastRow.onChange = { [weak self] isOn in
+            GALogStore.shared.isToastEnabled = isOn
+            self?.updateGALogToggleAvailability()
+        }
+        gaLogImpressionToastRow.onChange = { isOn in
+            GALogStore.shared.isImpressionToastEnabled = isOn
+        }
+    }
+
+    private func updateGALogToggleAvailability() {
+        let isRecordingEnabled = GALogStore.shared.isRecordingEnabled
+        gaLogToastRow.isEnabled = isRecordingEnabled
+        gaLogImpressionToastRow.isEnabled = isRecordingEnabled && GALogStore.shared.isToastEnabled
     }
 
     private func select(_ item: DebugMenuItem) {
@@ -81,6 +120,14 @@ private final class DebugMenuToggleRow: UIView {
     var isOn: Bool {
         get { switchButton.isOn }
         set { switchButton.isOn = newValue }
+    }
+
+    var isEnabled: Bool {
+        get { switchButton.isEnabled }
+        set {
+            switchButton.isEnabled = newValue
+            alpha = newValue ? 1 : 0.4
+        }
     }
 
     private let titleLabel: UILabel = {

@@ -17,6 +17,8 @@ final class StoreAdmobCell: BaseCollectionViewCell {
         }
     }
 
+    var onClickAd: (() -> Void)?
+
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
     private var hasLoadedAd = false
 
@@ -27,6 +29,9 @@ final class StoreAdmobCell: BaseCollectionViewCell {
 
     override func setup() {
         contentView.addSubview(adBannerView)
+        adBannerView.onClick = { [weak self] in
+            self?.onClickAd?()
+        }
     }
 
     override func bindConstraints() {

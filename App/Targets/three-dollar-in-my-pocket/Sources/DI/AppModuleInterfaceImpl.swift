@@ -140,10 +140,12 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
     }
 
     func sendPageView(screenName: String, type: AnyObject.Type) {
-        Analytics.logEvent(AnalyticsEventScreenView, parameters: [
+        let parameters = [
             AnalyticsParameterScreenName: screenName,
             AnalyticsParameterScreenClass: NSStringFromClass(type.self)
-        ])
+        ]
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: parameters)
+        recordDebugGALog(name: GALogStore.pageViewEventName, parameters: parameters)
     }
 
     func sendPageView(screenName: String, type: AnyObject.Type, parameters: [String: Any]?) {
@@ -157,10 +159,17 @@ final class AppModuleInterfaceImpl: NSObject, AppModuleInterface {
         }
 
         Analytics.logEvent(AnalyticsEventScreenView, parameters: pageViewParameters)
+        recordDebugGALog(name: GALogStore.pageViewEventName, parameters: pageViewParameters)
     }
 
     func sendEvent(name: String, parameters: [String: Any]?) {
         Analytics.logEvent(name, parameters: parameters)
+        recordDebugGALog(name: name, parameters: parameters)
+    }
+
+    private func recordDebugGALog(name: String, parameters: [String: Any]?) {
+        guard AppEnvironment.isDebugToolAvailable else { return }
+        GALogStore.shared.record(name: name, parameters: parameters)
     }
 
     func setGender(gender: Gender) {

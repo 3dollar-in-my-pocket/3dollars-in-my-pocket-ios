@@ -19,7 +19,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+        window = AppEnvironment.isDebugToolAvailable
+            ? DebugTapRecordingWindow(frame: windowScene.coordinateSpace.bounds)
+            : UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.backgroundColor = UIColor.init(r: 28, g: 28, b: 28)
         window?.rootViewController = SplashViewController(nibName: nil, bundle: nil)
