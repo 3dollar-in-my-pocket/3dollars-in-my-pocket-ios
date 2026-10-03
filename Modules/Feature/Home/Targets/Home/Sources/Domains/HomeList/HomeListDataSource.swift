@@ -34,9 +34,9 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                     viewModel?.input.didTapCard.send(indexPath.item)
                 }
                 return cell
-            case .admobCard:
+            case .admobCard(let card):
                 let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(rootViewController: rootViewController)
+                cell.bind(card, rootViewController: rootViewController)
                 return cell
             case .emptyCard:
                 let cell: HomeListEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -84,8 +84,8 @@ extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
         case .basicCard(let response):
             let height = HomeListStoreCell.Layout.height(response: response)
             return CGSize(width: width, height: height)
-        case .admobCard:
-            let height = HomeListAdmobCell.Layout.height
+        case .admobCard(let card):
+            let height = HomeListAdmobCell.Layout.height(card)
             return CGSize(width: width, height: height)
         case .emptyCard:
             let height = HomeListEmptyCell.Layout.height

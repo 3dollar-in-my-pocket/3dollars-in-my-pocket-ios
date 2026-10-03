@@ -7,7 +7,14 @@ import SnapKit
 
 final class StoreAdmobCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 200
+        static let minimumHeight: CGFloat = 50
+        static let defaultHeight: CGFloat = 200
+        static let horizontalInset: CGFloat = 20
+
+        static func height(_ section: StoreAdmobSection) -> CGFloat {
+            guard let height = section.cards.first?.height else { return defaultHeight }
+            return max(minimumHeight, CGFloat(height))
+        }
     }
 
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
@@ -25,15 +32,21 @@ final class StoreAdmobCell: BaseCollectionViewCell {
     override func bindConstraints() {
         adBannerView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
-            $0.height.equalTo(Layout.height)
+            $0.leading.equalToSuperview().offset(Layout.horizontalInset)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalInset)
+            $0.height.equalTo(Layout.minimumHeight)
         }
     }
 
     func bind(_ section: StoreAdmobSection, rootViewController: UIViewController, isDisplayed: Bool) {
+        let height = Layout.height(section)
+        adBannerView.snp.updateConstraints {
+            $0.height.equalTo(height)
+        }
+
         guard isDisplayed, hasLoadedAd.isNot else { return }
         hasLoadedAd = true
-        adBannerView.load(in: rootViewController)
+        let size = CGSize(width: UIUtils.windowBounds.width - Layout.horizontalInset * 2, height: height)
+        adBannerView.load(in: rootViewController, size: size)
     }
 }
