@@ -5,14 +5,22 @@ import Common
 import DesignSystem
 
 final class SigninAnonymousView: BaseView {
+    enum Layout {
+        static let logoSize: CGFloat = 254
+    }
+
     let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Icons.close.image.withTintColor(Colors.systemWhite.color), for: .normal)
+        button.setImage(Icons.close.image.withTintColor(Colors.gray100.color), for: .normal)
         
         return button
     }()
     
-    private let logoImage = UIImageView(image: Assets.imageSplash.image)
+    private let logoImage: UIImageView = {
+        let imageView = UIImageView(image: Assets.imageSplash.image)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
     
     let kakaoButton = SigninButton(type: .kakao)
     
@@ -21,7 +29,7 @@ final class SigninAnonymousView: BaseView {
     private let anonymousLabel: UILabel = {
         let anonymousLabel = UILabel()
         anonymousLabel.font = Fonts.regular.font(size: 14)
-        anonymousLabel.textColor = Colors.systemWhite.color
+        anonymousLabel.textColor = Colors.gray100.color
         anonymousLabel.numberOfLines = 0
         anonymousLabel.text = Strings.signinAnonymousDescription
         anonymousLabel.textAlignment = .center
@@ -29,7 +37,7 @@ final class SigninAnonymousView: BaseView {
     }()
     
     override func setup() {
-        backgroundColor = Colors.mainPink.color
+        backgroundColor = Assets.signinBackground.color
         addSubViews([
             closeButton,
             logoImage,
@@ -48,8 +56,8 @@ final class SigninAnonymousView: BaseView {
         }
         
         logoImage.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(32)
-            $0.trailing.equalToSuperview().offset(-32)
+            $0.centerX.equalToSuperview()
+            $0.size.equalTo(Layout.logoSize)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-48)
         }
         
