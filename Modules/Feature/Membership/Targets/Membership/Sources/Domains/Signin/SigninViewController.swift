@@ -14,7 +14,7 @@ public final class SigninViewController: BaseViewController {
     private let appInterface = Environment.appModuleInterface
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return .darkContent
     }
     
     public static func instance() -> UINavigationController {
