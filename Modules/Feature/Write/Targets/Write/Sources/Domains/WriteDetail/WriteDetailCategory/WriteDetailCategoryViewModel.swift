@@ -15,6 +15,7 @@ extension WriteDetailCategoryViewModel {
         let viewDidLoad = PassthroughSubject<Void, Never>()
         let selectCategory = PassthroughSubject<StoreFoodCategoryResponse, Never>()
         let didTapNext = PassthroughSubject<Void, Never>()
+        let didSelectMenuImage = PassthroughSubject<Data, Never>()
     }
     
     struct Output {
@@ -24,14 +25,21 @@ extension WriteDetailCategoryViewModel {
         let setErrorCountState = CurrentValueSubject<Bool, Never>(false)
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let fetchedCategories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
+        let isMenuExtractionAvailable: CurrentValueSubject<Bool, Never>
+        let finishMenuExtraction = PassthroughSubject<MenuExtractionResult, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
     
     enum Route {
         case toast(String)
         case showErrorAlert(Error)
+        case pushMenuExtractionLoading(MenuExtractionLoadingViewModel)
     }
     
+    struct Config {
+        let menuExtractionUsage: MenuExtractionUsage
+    }
+
     private struct State {
         var categories: [StoreFoodCategoryResponse] = []
         var selectedCategories: [StoreFoodCategoryResponse] = []
@@ -54,11 +62,14 @@ extension WriteDetailCategoryViewModel {
 
 final class WriteDetailCategoryViewModel: BaseViewModel {
     let input = Input()
-    let output = Output()
+    let output: Output
+    private let config: Config
     private let dependency: Dependency
     private var state = State()
     
-    init(dependency: Dependency = Dependency()) {
+    init(config: Config, dependency: Dependency = Dependency()) {
+        self.config = config
+        self.output = Output(isMenuExtractionAvailable: config.menuExtractionUsage.isAvailable)
         self.dependency = dependency
         super.init()
     }
@@ -82,6 +93,12 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
         input.didTapNext
             .sink { [weak self] in
                 self?.validateCategory()
+            }
+            .store(in: &cancellables)
+
+        input.didSelectMenuImage
+            .sink { [weak self] image in
+                self?.pushMenuExtractionLoading(image: image)
             }
             .store(in: &cancellables)
     }
@@ -135,6 +152,38 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
 
         sendClickNextLog()
         output.finishSelectCategory.send(state.selectedCategories)
+    }
+
+    private func pushMenuExtractionLoading(image: Data) {
+        let config = MenuExtractionLoadingViewModel.Config(
+            image: image,
+            afterCreatedStore: false,
+            menuExtractionUsage: self.config.menuExtractionUsage
+        )
+        let viewModel = MenuExtractionLoadingViewModel(config: config)
+
+        viewModel.output.finishExtraction
+            .withUnretained(self)
+            .map { (owner: WriteDetailCategoryViewModel, result: MenuExtractionResult) in
+                owner.mergeWithSelectedCategories(result)
+            }
+            .subscribe(output.finishMenuExtraction)
+            .store(in: &cancellables)
+
+        output.route.send(.pushMenuExtractionLoading(viewModel))
+    }
+
+    private func mergeWithSelectedCategories(_ result: MenuExtractionResult) -> MenuExtractionResult {
+        let mergedForm = MenuForm(categories: state.selectedCategories, menus: []).merging(
+            categories: result.categories,
+            menus: result.menus,
+            maximumCategoryCount: Constants.maximumSelectedCategoryCount
+        )
+        return MenuExtractionResult(
+            categories: mergedForm.categories,
+            menus: mergedForm.allMenus,
+            recognizedMenuCount: result.recognizedMenuCount
+        )
     }
 
     private func sendClickNextLog() {
