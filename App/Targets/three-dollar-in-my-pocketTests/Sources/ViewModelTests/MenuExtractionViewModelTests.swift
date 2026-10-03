@@ -174,7 +174,7 @@ final class MenuExtractionViewModelTests: XCTestCase {
         }
     }
 
-    func test_TH1332_TC20_이름이같은메뉴가인식되면_수량과가격만갱신된다() throws {
+    func test_TH1332_TC20_이름이같아도수량이나가격이다르면_별도메뉴로추가된다() throws {
         // Given
         let response = try fixture()
         let americano = try XCTUnwrap(response.menus.first)
@@ -191,9 +191,35 @@ final class MenuExtractionViewModelTests: XCTestCase {
 
         // Then
         let matched = finishedMenus.filter { $0.name.replacingOccurrences(of: " ", with: "") == "아메리카노" }
-        XCTAssertEqual(matched.count, 1)
-        XCTAssertEqual(matched.first?.price, americano.price)
+        XCTAssertEqual(matched.count, 2)
         XCTAssertEqual(matched.first?.count, 2)
+        XCTAssertEqual(matched.first?.price, 3500)
+        XCTAssertEqual(matched.last?.price, americano.price)
+    }
+
+    func test_TH1332_TC20_이름수량가격이모두같으면_하나만남는다() throws {
+        // Given
+        let response = try fixture()
+        let americano = try XCTUnwrap(response.menus.first)
+        let viewModel = makeWriteDetailMenuViewModel(
+            categories: [americano.category],
+            menus: [UserStoreMenuRequestV3(
+                name: "아메 리카노",
+                count: americano.count,
+                price: americano.price,
+                category: americano.category.categoryId
+            )]
+        )
+        var finishedMenus: [UserStoreMenuRequestV3] = []
+        viewModel.output.finishInputMenu.sink { finishedMenus = $0 }.store(in: &cancellables)
+
+        // When
+        viewModel.input.finishMenuExtraction.send(MenuExtractionResult(response: response))
+        viewModel.input.didTapNext.send(())
+
+        // Then
+        let matched = finishedMenus.filter { $0.name.replacingOccurrences(of: " ", with: "") == "아메리카노" }
+        XCTAssertEqual(matched.count, 1)
     }
 
     func test_TH1332_TC21_빈메뉴입력칸은_인식메뉴가들어오면정리된다() throws {
@@ -531,6 +557,35 @@ final class MenuExtractionViewModelTests: XCTestCase {
         XCTAssertEqual(menuViewModels.count, 2)
         XCTAssertFalse(menuViewModels[1].output.isMenuExtractionAvailable.value)
         XCTAssertTrue(try XCTUnwrap(newFlowMenuViewModel).output.isMenuExtractionAvailable.value)
+    }
+
+    // MARK: TH-1332 TC29 (TH-1450)
+
+    func test_TH1332_TC29_한사진에이름이같고수량가격이다른메뉴가있으면_모두등록된다() throws {
+        // Given
+        let category = try makeCategory(id: "SNACK")
+        let viewModel = makeWriteDetailMenuViewModel(categories: [], menus: [])
+        let result = MenuExtractionResult(
+            categories: [category],
+            menus: [
+                UserStoreMenuRequestV3(name: "찹쌀꽈배기", count: 3, price: 2500, category: category.categoryId),
+                UserStoreMenuRequestV3(name: "찹쌀꽈배기", count: 13, price: 10000, category: category.categoryId),
+                UserStoreMenuRequestV3(name: "명품핫도그", count: 1, price: 1800, category: category.categoryId)
+            ],
+            recognizedMenuCount: 3
+        )
+        var finishedMenus: [UserStoreMenuRequestV3] = []
+        viewModel.output.finishInputMenu.sink { finishedMenus = $0 }.store(in: &cancellables)
+
+        // When
+        viewModel.input.finishMenuExtraction.send(result)
+        viewModel.input.didTapNext.send(())
+
+        // Then
+        let twists = finishedMenus.filter { $0.name == "찹쌀꽈배기" }
+        XCTAssertEqual(finishedMenus.count, 3)
+        XCTAssertEqual(twists.map(\.count), [3, 13])
+        XCTAssertEqual(twists.map(\.price), [2500, 10000])
     }
 
     // MARK: - Helpers

@@ -83,21 +83,23 @@ struct MenuForm {
 
         let categoryIds = Set(merged.categories.map(\.categoryId))
         for menu in newMenus where categoryIds.contains(menu.category) {
-            merged.upsert(menu)
+            merged.appendIfNotDuplicated(menu)
         }
         return merged
     }
 
-    private mutating func upsert(_ menu: UserStoreMenuRequestV3) {
+    private mutating func appendIfNotDuplicated(_ menu: UserStoreMenuRequestV3) {
         var menus = menusByCategoryId[menu.category, default: []].filter { $0.isBlank.isNot }
-        let key = Self.normalizedName(menu.name)
-        if let index = menus.firstIndex(where: { Self.normalizedName($0.name) == key }) {
-            menus[index].count = menu.count ?? menus[index].count
-            menus[index].price = menu.price ?? menus[index].price
-        } else {
+        if menus.contains(where: { Self.isSameMenu($0, menu) }).isNot {
             menus.append(menu)
         }
         menusByCategoryId[menu.category] = menus
+    }
+
+    private static func isSameMenu(_ lhs: UserStoreMenuRequestV3, _ rhs: UserStoreMenuRequestV3) -> Bool {
+        return normalizedName(lhs.name) == normalizedName(rhs.name)
+            && lhs.count == rhs.count
+            && lhs.price == rhs.price
     }
 
     private static func normalizedName(_ name: String) -> String {
