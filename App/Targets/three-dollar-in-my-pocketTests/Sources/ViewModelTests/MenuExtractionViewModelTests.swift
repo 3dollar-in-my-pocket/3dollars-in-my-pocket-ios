@@ -5,6 +5,7 @@ import Common
 import Log
 import Model
 @testable import Write
+import WriteInterface
 
 final class MenuExtractionViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
@@ -120,7 +121,10 @@ final class MenuExtractionViewModelTests: XCTestCase {
 
     func test_TH1332_TC12_카테고리선택화면에서인식결과를등록하면_제보흐름으로결과가전달된다() throws {
         // Given
-        let viewModel = WriteDetailCategoryViewModel(dependency: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager()))
+        let viewModel = WriteDetailCategoryViewModel(
+            config: .init(menuExtractionUsage: MenuExtractionUsage()),
+            dependency: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager())
+        )
         var loadingViewModel: MenuExtractionLoadingViewModel?
         var finishedResult: MenuExtractionResult?
         viewModel.output.route
@@ -227,7 +231,10 @@ final class MenuExtractionViewModelTests: XCTestCase {
 
     func test_TH1332_TC23_카테고리선택화면에서인식결과를등록하면_선택한카테고리와합쳐져전달된다() throws {
         // Given
-        let viewModel = WriteDetailCategoryViewModel(dependency: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager()))
+        let viewModel = WriteDetailCategoryViewModel(
+            config: .init(menuExtractionUsage: MenuExtractionUsage()),
+            dependency: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager())
+        )
         let selectedCategory = try makeCategory(id: "SELECTED")
         var loadingViewModel: MenuExtractionLoadingViewModel?
         var finishedResult: MenuExtractionResult?
@@ -255,7 +262,7 @@ final class MenuExtractionViewModelTests: XCTestCase {
     func test_TH1332_TC13_가게정보수정흐름에서인식결과를등록하고완료하면_인식된메뉴로수정정보가갱신된다() throws {
         // Given
         let viewModel = WriteDetailMenuViewModel(
-            config: .init(selectedCategories: [], menus: [], afterCreatedStore: true),
+            config: .init(selectedCategories: [], menus: [], afterCreatedStore: true, menuExtractionUsage: MenuExtractionUsage()),
             dependencies: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager())
         )
         var finishedMenus: [UserStoreMenuRequestV3] = []
@@ -288,7 +295,8 @@ final class MenuExtractionViewModelTests: XCTestCase {
             config: .init(
                 selectedCategories: [category],
                 menus: [UserStoreMenuRequestV3(category: category.categoryId)],
-                afterCreatedStore: false
+                afterCreatedStore: false,
+                menuExtractionUsage: MenuExtractionUsage()
             ),
             dependencies: .init(categoryRepository: MockCategoryRepository(), logManager: logManager)
         )
@@ -318,7 +326,7 @@ final class MenuExtractionViewModelTests: XCTestCase {
         // Given
         let error = NetworkError.errorContainer(ErrorContainer(message: "메뉴를 찾지 못했어요", resultCode: "BR000"))
         let viewModel = MenuExtractionLoadingViewModel(
-            config: .init(image: Data([0x01]), afterCreatedStore: false),
+            config: .init(image: Data([0x01]), afterCreatedStore: false, menuExtractionUsage: MenuExtractionUsage()),
             dependency: .init(storeMenuExtractionRepository: MockStoreMenuExtractionRepository(extractStoreMenusResult: .failure(error)))
         )
         let expectation = expectation(description: "route")
@@ -345,7 +353,7 @@ final class MenuExtractionViewModelTests: XCTestCase {
         // Given
         let emptyResponse = try decode(json: #"{"imageUrl": "https://example.com", "menus": []}"#)
         let viewModel = MenuExtractionLoadingViewModel(
-            config: .init(image: Data([0x01]), afterCreatedStore: false),
+            config: .init(image: Data([0x01]), afterCreatedStore: false, menuExtractionUsage: MenuExtractionUsage()),
             dependency: .init(storeMenuExtractionRepository: MockStoreMenuExtractionRepository(extractStoreMenusResult: .success(emptyResponse)))
         )
         let expectation = expectation(description: "route")
@@ -365,7 +373,7 @@ final class MenuExtractionViewModelTests: XCTestCase {
     func test_TH1332_TC7_인식에성공하면_결과화면으로교체route가발행된다() throws {
         // Given
         let viewModel = MenuExtractionLoadingViewModel(
-            config: .init(image: Data([0x01]), afterCreatedStore: false),
+            config: .init(image: Data([0x01]), afterCreatedStore: false, menuExtractionUsage: MenuExtractionUsage()),
             dependency: .init(storeMenuExtractionRepository: MockStoreMenuExtractionRepository(extractStoreMenusResult: .success(try fixture())))
         )
         let expectation = expectation(description: "route")
@@ -412,16 +420,165 @@ final class MenuExtractionViewModelTests: XCTestCase {
         XCTAssertEqual(result.recognizedMenuCount, 23)
     }
 
+    // MARK: TH-1332 TC26
+
+    func test_TH1332_TC26_인식결과를받으면_같은흐름의카테고리와메뉴화면에서이미지로불러오기가숨겨진다() throws {
+        // Given
+        let usage = MenuExtractionUsage()
+        let categoryViewModel = WriteDetailCategoryViewModel(
+            config: .init(menuExtractionUsage: usage),
+            dependency: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager())
+        )
+        let menuViewModel = makeWriteDetailMenuViewModel(categories: [], menus: [], menuExtractionUsage: usage)
+        let loadingViewModel = MenuExtractionLoadingViewModel(
+            config: .init(image: Data([0x01]), afterCreatedStore: false, menuExtractionUsage: usage),
+            dependency: .init(storeMenuExtractionRepository: MockStoreMenuExtractionRepository(extractStoreMenusResult: .success(try fixture())))
+        )
+        let expectation = expectation(description: "route")
+        loadingViewModel.output.route
+            .sink {
+                if case .replaceWithResult = $0 { expectation.fulfill() }
+            }
+            .store(in: &cancellables)
+        XCTAssertTrue(categoryViewModel.output.isMenuExtractionAvailable.value)
+        XCTAssertTrue(menuViewModel.output.isMenuExtractionAvailable.value)
+
+        // When
+        loadingViewModel.input.viewDidLoad.send(())
+
+        // Then
+        wait(for: [expectation], timeout: 1)
+        XCTAssertFalse(categoryViewModel.output.isMenuExtractionAvailable.value)
+        XCTAssertFalse(menuViewModel.output.isMenuExtractionAvailable.value)
+    }
+
+    // MARK: TH-1332 TC27
+
+    func test_TH1332_TC27_인식요청이실패하면_이미지로불러오기를다시사용할수있다() {
+        // Given
+        let usage = MenuExtractionUsage()
+        let error = NetworkError.errorContainer(ErrorContainer(message: "실패", resultCode: "BR000"))
+        let viewModel = MenuExtractionLoadingViewModel(
+            config: .init(image: Data([0x01]), afterCreatedStore: false, menuExtractionUsage: usage),
+            dependency: .init(storeMenuExtractionRepository: MockStoreMenuExtractionRepository(extractStoreMenusResult: .failure(error)))
+        )
+        let expectation = expectation(description: "route")
+        viewModel.output.route
+            .sink {
+                if case .showErrorAlert = $0 { expectation.fulfill() }
+            }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.viewDidLoad.send(())
+
+        // Then
+        wait(for: [expectation], timeout: 1)
+        XCTAssertTrue(usage.isAvailable.value)
+    }
+
+    func test_TH1332_TC27_인식된메뉴가없으면_이미지로불러오기를다시사용할수있다() throws {
+        // Given
+        let usage = MenuExtractionUsage()
+        let emptyResponse = try decode(json: #"{"imageUrl": "https://example.com", "menus": []}"#)
+        let viewModel = MenuExtractionLoadingViewModel(
+            config: .init(image: Data([0x01]), afterCreatedStore: false, menuExtractionUsage: usage),
+            dependency: .init(storeMenuExtractionRepository: MockStoreMenuExtractionRepository(extractStoreMenusResult: .success(emptyResponse)))
+        )
+        let expectation = expectation(description: "route")
+        viewModel.output.route
+            .sink {
+                if case .showErrorAlert = $0 { expectation.fulfill() }
+            }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.viewDidLoad.send(())
+
+        // Then
+        wait(for: [expectation], timeout: 1)
+        XCTAssertTrue(usage.isAvailable.value)
+    }
+
+    // MARK: TH-1332 TC28
+
+    func test_TH1332_TC28_수정화면에서사용한뒤_메뉴수정에다시들어가면숨겨지고_수정화면에새로진입하면다시보인다() throws {
+        // Given
+        let store = try makeUserStore()
+        let firstEditViewModel = makeEditStoreViewModel(store: store)
+        var menuViewModels: [WriteDetailMenuViewModel] = []
+        firstEditViewModel.output.route
+            .sink {
+                if case .editMenu(let viewModel) = $0 { menuViewModels.append(viewModel) }
+            }
+            .store(in: &cancellables)
+        firstEditViewModel.input.didTapMenu.send(())
+        let firstMenuViewModel = try XCTUnwrap(menuViewModels.first)
+        firstMenuViewModel.output.isMenuExtractionAvailable.send(false)
+
+        // When
+        firstEditViewModel.input.didTapMenu.send(())
+        let secondEditViewModel = makeEditStoreViewModel(store: store)
+        var newFlowMenuViewModel: WriteDetailMenuViewModel?
+        secondEditViewModel.output.route
+            .sink {
+                if case .editMenu(let viewModel) = $0 { newFlowMenuViewModel = viewModel }
+            }
+            .store(in: &cancellables)
+        secondEditViewModel.input.didTapMenu.send(())
+
+        // Then
+        XCTAssertEqual(menuViewModels.count, 2)
+        XCTAssertFalse(menuViewModels[1].output.isMenuExtractionAvailable.value)
+        XCTAssertTrue(try XCTUnwrap(newFlowMenuViewModel).output.isMenuExtractionAvailable.value)
+    }
+
     // MARK: - Helpers
 
     private func makeWriteDetailMenuViewModel(
         categories: [StoreFoodCategoryResponse],
-        menus: [UserStoreMenuRequestV3]
+        menus: [UserStoreMenuRequestV3],
+        menuExtractionUsage: MenuExtractionUsage = MenuExtractionUsage()
     ) -> WriteDetailMenuViewModel {
         WriteDetailMenuViewModel(
-            config: .init(selectedCategories: categories, menus: menus, afterCreatedStore: false),
+            config: .init(
+                selectedCategories: categories,
+                menus: menus,
+                afterCreatedStore: false,
+                menuExtractionUsage: menuExtractionUsage
+            ),
             dependencies: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager())
         )
+    }
+
+    private func makeEditStoreViewModel(store: UserStoreResponse) -> EditStoreViewModel {
+        EditStoreViewModel(
+            config: EditStoreViewModelConfig(store: store, fromScreen: nil),
+            dependency: .init(storeRepository: MockStoreRepository(), logManager: MockLogManager())
+        )
+    }
+
+    private func makeUserStore() throws -> UserStoreResponse {
+        let json = """
+        {
+            "storeId": 1,
+            "isOwner": false,
+            "name": "가게",
+            "rating": 0,
+            "location": { "latitude": 37.5, "longitude": 127.0 },
+            "address": { "fullAddress": "서울" },
+            "categories": [],
+            "appearanceDays": [],
+            "paymentMethods": [],
+            "menus": [],
+            "menusV3": [],
+            "isDeleted": false,
+            "activitiesStatus": "RECENT_ACTIVITY",
+            "createdAt": "",
+            "updatedAt": ""
+        }
+        """
+        return try JSONDecoder().decode(UserStoreResponse.self, from: Data(json.utf8))
     }
 
     private func makeCategory(id: String) throws -> StoreFoodCategoryResponse {

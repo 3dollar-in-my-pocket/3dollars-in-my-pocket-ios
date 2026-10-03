@@ -226,6 +226,14 @@ final class WriteDetailMenuViewController: BaseViewController {
 
         bindAfterCreateStore(viewModel.output.afterCreatedStore)
 
+        viewModel.output.isMenuExtractionAvailable
+            .removeDuplicates()
+            .main
+            .sink { [weak self] isAvailable in
+                self?.imageMenuButtonContainerView.isHidden = isAvailable.isNot
+            }
+            .store(in: &cancellables)
+
         imageMenuButton.tapPublisher
             .throttleClick()
             .sink { [weak self] in

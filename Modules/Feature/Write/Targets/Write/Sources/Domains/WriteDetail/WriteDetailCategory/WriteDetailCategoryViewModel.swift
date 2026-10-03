@@ -25,6 +25,7 @@ extension WriteDetailCategoryViewModel {
         let setErrorCountState = CurrentValueSubject<Bool, Never>(false)
         let finishSelectCategory = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
         let fetchedCategories = PassthroughSubject<[StoreFoodCategoryResponse], Never>()
+        let isMenuExtractionAvailable: CurrentValueSubject<Bool, Never>
         let finishMenuExtraction = PassthroughSubject<MenuExtractionResult, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -35,6 +36,10 @@ extension WriteDetailCategoryViewModel {
         case pushMenuExtractionLoading(MenuExtractionLoadingViewModel)
     }
     
+    struct Config {
+        let menuExtractionUsage: MenuExtractionUsage
+    }
+
     private struct State {
         var categories: [StoreFoodCategoryResponse] = []
         var selectedCategories: [StoreFoodCategoryResponse] = []
@@ -57,11 +62,14 @@ extension WriteDetailCategoryViewModel {
 
 final class WriteDetailCategoryViewModel: BaseViewModel {
     let input = Input()
-    let output = Output()
+    let output: Output
+    private let config: Config
     private let dependency: Dependency
     private var state = State()
     
-    init(dependency: Dependency = Dependency()) {
+    init(config: Config, dependency: Dependency = Dependency()) {
+        self.config = config
+        self.output = Output(isMenuExtractionAvailable: config.menuExtractionUsage.isAvailable)
         self.dependency = dependency
         super.init()
     }
@@ -147,7 +155,11 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
     }
 
     private func pushMenuExtractionLoading(image: Data) {
-        let config = MenuExtractionLoadingViewModel.Config(image: image, afterCreatedStore: false)
+        let config = MenuExtractionLoadingViewModel.Config(
+            image: image,
+            afterCreatedStore: false,
+            menuExtractionUsage: self.config.menuExtractionUsage
+        )
         let viewModel = MenuExtractionLoadingViewModel(config: config)
 
         viewModel.output.finishExtraction

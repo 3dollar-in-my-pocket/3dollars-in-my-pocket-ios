@@ -53,6 +53,7 @@ extension WriteCompleteViewModel {
     
     struct Config {
         let userStoreResponse: UserStoreResponse
+        let menuExtractionUsage: MenuExtractionUsage
     }
 }
 
@@ -61,9 +62,11 @@ final class WriteCompleteViewModel: BaseViewModel {
     let output: Output
 
     private var state: State
+    private let config: Config
     private let dependency: Dependency
     
     init(config: Config, dependency: Dependency = Dependency()) {
+        self.config = config
         self.output = Output(userStoreResponse: .init(config.userStoreResponse))
         self.state = State(
             userStoreResponse: config.userStoreResponse,
@@ -112,7 +115,8 @@ final class WriteCompleteViewModel: BaseViewModel {
         let config = WriteDetailMenuViewModel.Config(
             selectedCategories: state.userStoreResponse.categories,
             menus: [],
-            afterCreatedStore: true
+            afterCreatedStore: true,
+            menuExtractionUsage: self.config.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
         viewModel.output.finishInputMenu

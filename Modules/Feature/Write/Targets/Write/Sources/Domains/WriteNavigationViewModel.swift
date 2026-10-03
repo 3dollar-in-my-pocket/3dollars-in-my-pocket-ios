@@ -66,6 +66,7 @@ extension WriteNavigationViewModel {
         var endTime: Date?
         var afterCreatedStore = false
         var nonceToken: String?
+        let menuExtractionUsage = MenuExtractionUsage()
     }
 }
 
@@ -165,7 +166,8 @@ final class WriteNavigationViewModel: BaseViewModel {
     }
     
     private func pushWriteDetailCategory() {
-        let viewModel = WriteDetailCategoryViewModel()
+        let config = WriteDetailCategoryViewModel.Config(menuExtractionUsage: state.menuExtractionUsage)
+        let viewModel = WriteDetailCategoryViewModel(config: config)
         
         viewModel.output.finishSelectCategory
             .subscribe(input.finishSelectCategory)
@@ -189,7 +191,8 @@ final class WriteNavigationViewModel: BaseViewModel {
         let config = WriteDetailMenuViewModel.Config(
             selectedCategories: state.selectedCategories,
             menus: state.menus,
-            afterCreatedStore: state.afterCreatedStore
+            afterCreatedStore: state.afterCreatedStore,
+            menuExtractionUsage: state.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
         
@@ -216,7 +219,10 @@ final class WriteNavigationViewModel: BaseViewModel {
     }
     
     private func pushWriteComplete(userStoreResponse: UserStoreResponse) {
-        let config = WriteCompleteViewModel.Config(userStoreResponse: userStoreResponse)
+        let config = WriteCompleteViewModel.Config(
+            userStoreResponse: userStoreResponse,
+            menuExtractionUsage: state.menuExtractionUsage
+        )
         let viewModel = WriteCompleteViewModel(config: config)
         viewModel.output.didTapComplete
             .sink(receiveValue: { [weak self] storeId in

@@ -60,6 +60,7 @@ extension EditStoreViewModel {
         var editedMenus: [UserStoreMenuRequestV3]?
         var uploadedPhotos: [Data]?
         var initialImageCount: Int?
+        let menuExtractionUsage = MenuExtractionUsage()
     }
 }
 
@@ -175,7 +176,8 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
         let config = WriteDetailMenuViewModel.Config(
             selectedCategories: state.currentStore.categories,
             menus: menus,
-            afterCreatedStore: true
+            afterCreatedStore: true,
+            menuExtractionUsage: state.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
         

@@ -22,6 +22,7 @@ extension WriteDetailMenuViewModel {
     struct Output {
         let screenName: ScreenName = .writeDetailMenu
         let afterCreatedStore: Bool
+        let isMenuExtractionAvailable: CurrentValueSubject<Bool, Never>
         let categories: CurrentValueSubject<[StoreFoodCategoryResponse], Never>
         let selectedCategoryIndex: CurrentValueSubject<Int, Never>
         let menus: PassthroughSubject<[MenuInputViewModel], Never>
@@ -62,6 +63,7 @@ extension WriteDetailMenuViewModel {
         let selectedCategories: [StoreFoodCategoryResponse]
         let menus: [UserStoreMenuRequestV3]
         let afterCreatedStore: Bool
+        let menuExtractionUsage: MenuExtractionUsage
     }
 }
 
@@ -70,14 +72,17 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     let input = Input()
     let output: Output
     private var state = State()
+    private let config: Config
     private let editor: MenuFormEditor
     private let dependencies: Dependency
 
     init(config: Config, dependencies: Dependency = Dependency()) {
         let editor = MenuFormEditor(form: MenuForm(categories: config.selectedCategories, menus: config.menus))
+        self.config = config
         self.editor = editor
         self.output = Output(
             afterCreatedStore: config.afterCreatedStore,
+            isMenuExtractionAvailable: config.menuExtractionUsage.isAvailable,
             categories: editor.categories,
             selectedCategoryIndex: editor.selectedCategoryIndex,
             menus: editor.menus,
@@ -172,7 +177,11 @@ final class WriteDetailMenuViewModel: BaseViewModel {
     }
 
     private func pushMenuExtractionLoading(image: Data) {
-        let config = MenuExtractionLoadingViewModel.Config(image: image, afterCreatedStore: output.afterCreatedStore)
+        let config = MenuExtractionLoadingViewModel.Config(
+            image: image,
+            afterCreatedStore: output.afterCreatedStore,
+            menuExtractionUsage: self.config.menuExtractionUsage
+        )
         let viewModel = MenuExtractionLoadingViewModel(config: config)
 
         viewModel.output.finishExtraction

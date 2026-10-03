@@ -112,11 +112,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
-        collectionView.snp.makeConstraints {
-            $0.top.equalTo(menuExtractionBannerView.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(nextButton.snp.top)
-        }
+        updateMenuExtractionBanner(isAvailable: true)
         
         buttonBackground.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
@@ -150,7 +146,28 @@ final class WriteDetailCategoryViewController: BaseViewController {
         navigationItem.setAutoInsetRightBarButtonItem(closeButtonItem)
     }
     
+    private func updateMenuExtractionBanner(isAvailable: Bool) {
+        menuExtractionBannerView.isHidden = isAvailable.isNot
+        collectionView.snp.remakeConstraints {
+            if isAvailable {
+                $0.top.equalTo(menuExtractionBannerView.snp.bottom).offset(20)
+            } else {
+                $0.top.equalTo(titleLabel.snp.bottom).offset(16)
+            }
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(nextButton.snp.top)
+        }
+    }
+
     private func bind() {
+        viewModel.output.isMenuExtractionAvailable
+            .removeDuplicates()
+            .main
+            .sink { [weak self] isAvailable in
+                self?.updateMenuExtractionBanner(isAvailable: isAvailable)
+            }
+            .store(in: &cancellables)
+
         menuExtractionBannerView.registerButton.tapPublisher
             .throttleClick()
             .sink { [weak self] in
