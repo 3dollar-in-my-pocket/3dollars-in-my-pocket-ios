@@ -8,6 +8,9 @@ import Networking
 final class MockStoreRepository: StoreRepository {
     var fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error> = .failure(MockError.notStubbed())
     var reportStoreResult: Result<StoreDeleteResponse, Error> = .failure(MockError.notStubbed())
+    var fetchStorePhotosResult: Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> = .failure(MockError.notStubbed())
+    var deletePhotoResult: Result<String?, Error> = .failure(MockError.notStubbed())
+    private(set) var fetchStoreScreenV2CallCount = 0
     private(set) var reportStoreCallCount = 0
     private(set) var lastReportStoreArguments: (storeId: Int, reportReason: String)?
 
@@ -23,7 +26,10 @@ final class MockStoreRepository: StoreRepository {
         }
     }
 
-    func fetchStoreScreenV2(input: FetchStoreScreenInput) async -> Result<StoreScreenV2Response, Error> { fetchStoreScreenV2Result }
+    func fetchStoreScreenV2(input: FetchStoreScreenInput) async -> Result<StoreScreenV2Response, Error> {
+        fetchStoreScreenV2CallCount += 1
+        return fetchStoreScreenV2Result
+    }
     func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> { .failure(MockError.notStubbed()) }
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error> { .failure(MockError.notStubbed()) }
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error> { .failure(MockError.notStubbed()) }
@@ -35,9 +41,9 @@ final class MockStoreRepository: StoreRepository {
     }
     func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> { .failure(MockError.notStubbed()) }
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> { .failure(MockError.notStubbed()) }
-    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { .failure(MockError.notStubbed()) }
+    func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { fetchStorePhotosResult }
     func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> { .failure(MockError.notStubbed()) }
-    func deletePhoto(photoId: Int) async -> Result<String?, Error> { .failure(MockError.notStubbed()) }
+    func deletePhoto(photoId: Int) async -> Result<String?, Error> { deletePhotoResult }
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> { .failure(MockError.notStubbed()) }
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> { .failure(MockError.notStubbed()) }
     func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error> { .failure(MockError.notStubbed()) }

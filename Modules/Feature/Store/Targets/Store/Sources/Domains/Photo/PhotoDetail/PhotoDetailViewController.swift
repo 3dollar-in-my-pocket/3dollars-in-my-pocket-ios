@@ -94,6 +94,14 @@ final class PhotoDetailViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.output.dismiss
+            .main
+            .withUnretained(self)
+            .sink { (owner: PhotoDetailViewController, _) in
+                owner.dismiss(animated: true)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.showLoading
             .main
             .sink { isShow in

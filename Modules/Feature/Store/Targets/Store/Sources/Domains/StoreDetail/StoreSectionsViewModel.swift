@@ -434,7 +434,13 @@ final class StoreSectionsViewModel: BaseViewModel {
                     nextCursor: response.cursor.nextCursor,
                     hasMore: response.cursor.hasMore,
                     currentIndex: currentIndex
-                ))
+                ), storeRepository: dependency.storeRepository)
+                viewModel.output.onSuccessDeletePhoto
+                    .withUnretained(self)
+                    .sink { (owner: StoreSectionsViewModel, _) in
+                        owner.input.load.send(())
+                    }
+                    .store(in: &viewModel.cancellables)
                 output.route.send(.presentPhotoDetail(viewModel))
             case .failure(let error):
                 output.error.send(error)
