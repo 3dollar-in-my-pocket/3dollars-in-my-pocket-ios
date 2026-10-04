@@ -182,6 +182,8 @@ public enum LogObjectId: String {
     case banner
     case menu
     case photo
+    case selectPhoto = "select_photo"
+    case takePhoto = "take_photo"
     case advertisement
     case upload
     case boss

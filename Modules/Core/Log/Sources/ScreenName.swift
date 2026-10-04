@@ -39,6 +39,8 @@ public extension ScreenName {
     static let writeDetailCategoryBottomSheet = ScreenName(rawValue: "write_detail_category_botom_sheet")
     static let writeDetailInfo = ScreenName(rawValue: "write_detail_info")
     static let writeDetailMenu = ScreenName(rawValue: "write_detail_menu")
+    static let writeDetailMenuPhotoPopup = ScreenName(rawValue: "write_detail_menu_photo_popup")
+    static let writeDetailMenuExtractionResult = ScreenName(rawValue: "write_detail_menu_extraction_result")
     static let categorySelection = ScreenName(rawValue: "category_selection")
     static let editStore = ScreenName(rawValue: "edit_store")
     static let editStoreInfo = ScreenName(rawValue: "edit_store_info")
