@@ -94,8 +94,8 @@ final class EditStoreInfoView: BaseView {
         appearanceDaysItemView.bind(value: store.appearanceDays.strings)
         
         
-        let startTime = store.openingHours?.startTime?.toDate(format: "HH:mm")?.toString(format: Strings.WriteAdditionalInfo.OpeningHours.dateFormat) ?? ""
-        let endTime = store.openingHours?.endTime?.toDate(format: "HH:mm")?.toString(format: Strings.WriteAdditionalInfo.OpeningHours.dateFormat) ?? ""
+        let startTime = store.openingHours?.startTime?.toDate(format: "HH:mm").map(OpeningHoursFormatter.string(from:)) ?? ""
+        let endTime = store.openingHours?.endTime?.toDate(format: "HH:mm").map(OpeningHoursFormatter.string(from:)) ?? ""
         let openingHourString = startTime.isNotEmpty || endTime.isNotEmpty ? "\(startTime) ~ \(endTime)" : nil
         openingHoursItemView.bind(value: openingHourString)
     }
