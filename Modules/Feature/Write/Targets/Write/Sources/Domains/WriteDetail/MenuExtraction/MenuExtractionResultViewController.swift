@@ -4,6 +4,7 @@ import Combine
 import Common
 import DesignSystem
 import Model
+import Log
 
 final class MenuExtractionResultViewController: BaseViewController {
     private let scrollView: UIScrollView = {
@@ -59,6 +60,10 @@ final class MenuExtractionResultViewController: BaseViewController {
     private let viewModel: MenuExtractionResultViewModel
     private var currentInset: CGFloat = .zero
     private let tapBackground = UITapGestureRecognizer()
+
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
 
     init(viewModel: MenuExtractionResultViewModel) {
         self.viewModel = viewModel
