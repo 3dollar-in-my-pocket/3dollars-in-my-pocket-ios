@@ -371,9 +371,8 @@ final class HomeViewModel: BaseViewModel {
                 let location = CLLocation(latitude: latitude, longitude: longitude)
                 owner.state.newCameraPosition = location
                 owner.state.resultCameraPosition = location
-                owner.output.cameraPosition.send((location, nil))
-                owner.fetchInitialCards()
                 owner.output.isHiddenResearchButton.send(true)
+                owner.output.initialCameraPosition.send((location, owner.state.initialMapZoomLevel))
             })
             .store(in: &cancellables)
 
