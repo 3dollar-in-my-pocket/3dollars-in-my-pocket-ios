@@ -365,7 +365,8 @@ let project = Project(
                 .target(name: "three-dollar-in-my-pocket"),
                 .Feature.store,
                 .Feature.home,
-                .Feature.community
+                .Feature.community,
+                .Feature.write
             ],
             settings: .settings(
                 base: BuildSetting.AppTest.base,

@@ -14,6 +14,10 @@ public final class ContributorsViewController: BaseViewController {
     public override var screenName: ScreenName {
         viewModel.output.screenName
     }
+
+    public override var extraParameters: [ParameterName: Any]? {
+        [.storeId: String(viewModel.output.storeId)]
+    }
     
     private let viewModel: ContributorsViewModel
     private let sduCollectionView = SDUCollectionView()

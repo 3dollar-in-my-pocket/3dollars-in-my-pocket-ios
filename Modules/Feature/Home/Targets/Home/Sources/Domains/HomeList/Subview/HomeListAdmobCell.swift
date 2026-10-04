@@ -5,13 +5,24 @@ import Model
 
 final class HomeListAdmobCell: BaseCollectionViewCell {
     enum Layout {
-        static let height: CGFloat = 172
+        static let minimumHeight: CGFloat = 50
+        static let defaultHeight: CGFloat = 172
+
+        static func height(_ card: HomeListAdmobCardResponse) -> CGFloat {
+            guard let height = card.height else { return defaultHeight }
+            return max(minimumHeight, CGFloat(height))
+        }
     }
+
+    var onClickAd: (() -> Void)?
 
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .homeCard)
 
     override func setup() {
         contentView.addSubview(adBannerView)
+        adBannerView.onClick = { [weak self] in
+            self?.onClickAd?()
+        }
     }
 
     override func bindConstraints() {
@@ -20,8 +31,9 @@ final class HomeListAdmobCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(rootViewController: UIViewController) {
+    func bind(_ card: HomeListAdmobCardResponse, rootViewController: UIViewController) {
         adBannerView.isLoaded = false
-        adBannerView.load(in: rootViewController)
+        let size = CGSize(width: UIUtils.windowBounds.width, height: Layout.height(card))
+        adBannerView.load(in: rootViewController, size: size)
     }
 }

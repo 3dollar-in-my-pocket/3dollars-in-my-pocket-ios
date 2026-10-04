@@ -10,7 +10,7 @@ final class SigninAnonymousViewController: BaseViewController {
     private let viewModel = SigninAnonymousViewModel()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return .darkContent
     }
     
     static func instance() -> SigninAnonymousViewController {

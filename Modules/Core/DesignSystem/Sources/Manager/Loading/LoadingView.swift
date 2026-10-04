@@ -2,7 +2,7 @@ import UIKit
 
 import Lottie
 
-final class LoadingView: UIView {
+public final class LoadingView: UIView {
     let lottieView: LottieAnimationView = {
         let lottieView = LottieAnimationView(name: "loading", bundle: Bundle.frameworkBundle)
         lottieView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -17,18 +17,18 @@ final class LoadingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
 
         setup()
         bindConstraints()
     }
 
-    func startLoading() {
+    public func startLoading() {
         lottieView.play()
     }
 
-    func stopLoading() {
+    public func stopLoading() {
         lottieView.stop()
     }
 

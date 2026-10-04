@@ -1,0 +1,419 @@
+{
+  "imageUrl": "https://storage.dev.threedollars.co.kr/store-menu/v1/v1-35223d36-0f55-47aa-b3a1-68befec30cff.jpeg",
+  "menus": [
+    {
+      "name": "아메리카노",
+      "price": 4000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "에스프레소",
+      "price": 3000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "레몬에이드",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "자몽에이드",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "딸기에이드",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "카페라떼",
+      "price": 4500,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "바닐라라떼",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "아인슈페너",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "크림라떼",
+      "price": 5500,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "초코라떼",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "햄치즈 샌드위치",
+      "price": 7000,
+      "category": {
+        "category": "TOAST",
+        "categoryId": "TOAST",
+        "name": "토스트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1_toast.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_toast_3x.png?version=1",
+        "description": "너네 사이에 나도 껴주라,\n토스트",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "바질 치즈 파니니",
+      "price": 8000,
+      "category": {
+        "category": "ETC",
+        "categoryId": "ETC",
+        "name": "기타",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+        "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "치즈 버섯 파니니",
+      "price": 8000,
+      "category": {
+        "category": "ETC",
+        "categoryId": "ETC",
+        "name": "기타",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+        "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "크로와상 샌드위치",
+      "price": 7000,
+      "category": {
+        "category": "TOAST",
+        "categoryId": "TOAST",
+        "name": "토스트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1_toast.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_toast_3x.png?version=1",
+        "description": "너네 사이에 나도 껴주라,\n토스트",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "치아바타 샌드위치",
+      "price": 7000,
+      "category": {
+        "category": "TOAST",
+        "categoryId": "TOAST",
+        "name": "토스트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1_toast.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_toast_3x.png?version=1",
+        "description": "너네 사이에 나도 껴주라,\n토스트",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "레몬티",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "자몽티",
+      "price": 5000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "페퍼민트티",
+      "price": 4500,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "히비스커스티",
+      "price": 4500,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "딸기 케이크",
+      "price": 7000,
+      "category": {
+        "category": "ETC",
+        "categoryId": "ETC",
+        "name": "기타",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+        "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "초콜릿 케이크",
+      "price": 7000,
+      "category": {
+        "category": "ETC",
+        "categoryId": "ETC",
+        "name": "기타",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+        "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "치즈 케이크",
+      "price": 6000,
+      "category": {
+        "category": "ETC",
+        "categoryId": "ETC",
+        "name": "기타",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+        "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "얼그레이",
+      "price": 7000,
+      "category": {
+        "category": "CAFE",
+        "categoryId": "CAFE",
+        "name": "카페/디저트",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_cake_3x.png?version=1",
+        "description": "현대인의 필수 영양소 카페인",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    }
+  ]
+}

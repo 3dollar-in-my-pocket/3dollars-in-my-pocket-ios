@@ -110,12 +110,12 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
             route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
         case .home:
-            moveTab(.home)
-
             if let params = url.params(),
                let preset = params["preset"] as? String {
                 mainTabBarViewController?.applyHomePreset(preset)
             }
+
+            moveTab(.home)
         case .medal:
             let targetViewController = Environment.myPageInterface.getMyMedalViewController()
             route(targetViewController)

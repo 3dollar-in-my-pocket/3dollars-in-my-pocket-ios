@@ -167,7 +167,8 @@ extension ContributorsViewModel {
         dependency.logManager.sendEvent(event: ClickEvent(
             screen: output.screenName,
             objectType: .button,
-            objectId: .edit
+            objectId: .edit,
+            extraParameters: [.storeId: String(output.storeId)]
         ))
     }
 }

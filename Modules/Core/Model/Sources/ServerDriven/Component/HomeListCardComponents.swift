@@ -35,6 +35,7 @@ public struct HomeListAdmobCardResponse: Decodable, Hashable, HomeListCardCompon
     public let cardId: String
     public let clickLog: SDClickLog
     public let impressionLog: SDImpressionLog
+    public let height: Int?
 }
 
 public struct HomeListEmptyCardResponse: Decodable, Hashable, HomeListCardComponent {

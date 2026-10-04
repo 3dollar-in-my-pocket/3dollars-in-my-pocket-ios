@@ -77,13 +77,12 @@ final class SplashViewController: BaseViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = Colors.gray100.color
+        view.backgroundColor = Assets.splashBackground.color
 
         view.addSubview(icon)
         icon.snp.makeConstraints {
             $0.center.equalToSuperview()
-            $0.width.equalTo(120)
-            $0.height.equalTo(72)
+            $0.size.equalTo(Assets.icSplash.image.size)
         }
 
         view.addSubview(adView)

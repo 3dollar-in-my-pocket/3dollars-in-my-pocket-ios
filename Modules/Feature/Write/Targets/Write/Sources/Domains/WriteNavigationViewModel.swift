@@ -19,6 +19,7 @@ extension WriteNavigationViewModel {
             endTime: Date?
         ), Never>()
         let didTapSkip = PassthroughSubject<Void, Never>()
+        let finishMenuExtraction = PassthroughSubject<MenuExtractionResult, Never>()
     }
     
     struct Output {
@@ -43,6 +44,7 @@ extension WriteNavigationViewModel {
         case pushWriteDetailInfo(WriteDetailInfoViewModel)
         case pushWriteDetailCategory(WriteDetailCategoryViewModel)
         case pushWriteDetailMenu(WriteDetailMenuViewModel)
+        case pushWriteDetailMenuAfterMenuExtraction(WriteDetailMenuViewModel)
         case pushWriteDetailAdditionalInfo(WriteDetailAdditionalInfoViewModel)
         case pushWriteComplete(WriteCompleteViewModel)
         case toast(String)
@@ -64,6 +66,7 @@ extension WriteNavigationViewModel {
         var endTime: Date?
         var afterCreatedStore = false
         var nonceToken: String?
+        let menuExtractionUsage = MenuExtractionUsage()
     }
 }
 
@@ -140,6 +143,15 @@ final class WriteNavigationViewModel: BaseViewModel {
                 self?.createStore()
             }
             .store(in: &cancellables)
+
+        input.finishMenuExtraction
+            .sink { [weak self] result in
+                guard let self else { return }
+                state.selectedCategories = result.categories
+                state.menus = result.menus
+                output.route.send(.pushWriteDetailMenuAfterMenuExtraction(makeWriteDetailMenuViewModel()))
+            }
+            .store(in: &cancellables)
     }
 
     private func pushWriteDetailInfo() {
@@ -154,7 +166,8 @@ final class WriteNavigationViewModel: BaseViewModel {
     }
     
     private func pushWriteDetailCategory() {
-        let viewModel = WriteDetailCategoryViewModel()
+        let config = WriteDetailCategoryViewModel.Config(menuExtractionUsage: state.menuExtractionUsage)
+        let viewModel = WriteDetailCategoryViewModel(config: config)
         
         viewModel.output.finishSelectCategory
             .subscribe(input.finishSelectCategory)
@@ -163,14 +176,23 @@ final class WriteNavigationViewModel: BaseViewModel {
         viewModel.output.fetchedCategories
             .subscribe(input.fetchedCategories)
             .store(in: &viewModel.cancellables)
+
+        viewModel.output.finishMenuExtraction
+            .subscribe(input.finishMenuExtraction)
+            .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteDetailCategory(viewModel))
     }
     
     private func pushWriteDetailMenu() {
+        output.route.send(.pushWriteDetailMenu(makeWriteDetailMenuViewModel()))
+    }
+
+    private func makeWriteDetailMenuViewModel() -> WriteDetailMenuViewModel {
         let config = WriteDetailMenuViewModel.Config(
             selectedCategories: state.selectedCategories,
             menus: state.menus,
-            afterCreatedStore: state.afterCreatedStore
+            afterCreatedStore: state.afterCreatedStore,
+            menuExtractionUsage: state.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
         
@@ -180,7 +202,7 @@ final class WriteNavigationViewModel: BaseViewModel {
         viewModel.output.didTapSkip
             .subscribe(input.didTapSkip)
             .store(in: &viewModel.cancellables)
-        output.route.send(.pushWriteDetailMenu(viewModel))
+        return viewModel
     }
     
     private func pushWriteDetailAdditionalInfo() {
@@ -197,7 +219,10 @@ final class WriteNavigationViewModel: BaseViewModel {
     }
     
     private func pushWriteComplete(userStoreResponse: UserStoreResponse) {
-        let config = WriteCompleteViewModel.Config(userStoreResponse: userStoreResponse)
+        let config = WriteCompleteViewModel.Config(
+            userStoreResponse: userStoreResponse,
+            menuExtractionUsage: state.menuExtractionUsage
+        )
         let viewModel = WriteCompleteViewModel(config: config)
         viewModel.output.didTapComplete
             .sink(receiveValue: { [weak self] storeId in

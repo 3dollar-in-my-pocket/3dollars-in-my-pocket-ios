@@ -921,6 +921,7 @@
         {
           "type": "ADMOB_CARD",
           "cardId": "ADMOB:1",
+          "height": 100,
           "clickLog": {
             "eventType": "CLICK",
             "screenName": "store_detail",

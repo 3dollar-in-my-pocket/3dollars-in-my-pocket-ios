@@ -118,8 +118,14 @@ public final class StoreInterfaceImpl: StoreInterface {
     }
 
     public func getUploadPhotoViewController(config: UploadPhotoConfig) -> UIViewController {
+        let uploadType: UploadPhotoViewModel.UploadType
+        if let limitOfPhoto = config.limitOfPhoto, config.shouldDeferUpload {
+            uploadType = .reviewImage(limitOfPhoto: limitOfPhoto)
+        } else {
+            uploadType = .storeImage(storeId: config.storeId)
+        }
         let vmConfig = UploadPhotoViewModel.Config(
-            uploadType: .storeImage(storeId: config.storeId),
+            uploadType: uploadType,
             shouldDeferUpload: config.shouldDeferUpload
         )
         let viewModel = UploadPhotoViewModel(config: vmConfig)

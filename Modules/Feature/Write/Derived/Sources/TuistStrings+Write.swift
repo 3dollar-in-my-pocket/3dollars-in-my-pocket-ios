@@ -115,6 +115,41 @@ public enum WriteStrings: Sendable {
     }
   }
 
+  public enum MenuExtractionLoading: Sendable {
+    /// 잠시만 기다려주세요. 곧 등록 결과를 보여드릴게요.
+    public static let description = WriteStrings.tr("Localization", "menu_extraction_loading.description")
+    /// 메뉴를 인식하지 못했어요.\n다른 사진으로 다시 시도해주세요.
+    public static let empty = WriteStrings.tr("Localization", "menu_extraction_loading.empty")
+    /// 메뉴와 가격을 읽고 있어요
+    public static let title = WriteStrings.tr("Localization", "menu_extraction_loading.title")
+  }
+
+  public enum MenuExtractionResult: Sendable {
+    /// 등록하기
+    public static let register = WriteStrings.tr("Localization", "menu_extraction_result.register")
+    /// 총 %d개의 메뉴를 인식했어요.\n이대로 등록할까요?
+    public static func titleFormat(_ p1: Int) -> String {
+      return WriteStrings.tr("Localization", "menu_extraction_result.title_format",p1)
+    }
+  }
+
+  public enum MenuPhotoSelect: Sendable {
+    /// 사진에서 선택
+    public static let album = WriteStrings.tr("Localization", "menu_photo_select.album")
+    /// 사진찍기
+    public static let camera = WriteStrings.tr("Localization", "menu_photo_select.camera")
+    /// 카메라 접근 권한이 필요해요.\n설정에서 카메라 접근을 허용해주세요.
+    public static let cameraPermission = WriteStrings.tr("Localization", "menu_photo_select.camera_permission")
+    /// 카메라를 사용할 수 없어요.
+    public static let cameraUnavailable = WriteStrings.tr("Localization", "menu_photo_select.camera_unavailable")
+    /// 상품명, 가격, 카테고리가 잘 보이는\n선명한 사진이면 좋아요.
+    public static let description = WriteStrings.tr("Localization", "menu_photo_select.description")
+    /// 설정으로 이동
+    public static let openSetting = WriteStrings.tr("Localization", "menu_photo_select.open_setting")
+    /// 메뉴판 사진을 선택해\n이미지를 올려주세요.
+    public static let title = WriteStrings.tr("Localization", "menu_photo_select.title")
+  }
+
   public enum WriteAdditionalInfo: Sendable {
     /// 가게 세부 정보를 입력하고 더 알찬 정보를 제공해 보세요
     public static let description = WriteStrings.tr("Localization", "write_additional_info.description")
@@ -247,6 +282,13 @@ public enum WriteStrings: Sendable {
     /// 음식 카테고리 선택
     public static let title = WriteStrings.tr("Localization", "write_detail_category.title")
 
+    public enum MenuExtractionBanner: Sendable {
+      /// 메뉴 등록
+      public static let button = WriteStrings.tr("Localization", "write_detail_category.menu_extraction_banner.button")
+      /// 사진 한 장으로\n메뉴를 쉽게 등록할 수 있어요.
+      public static let title = WriteStrings.tr("Localization", "write_detail_category.menu_extraction_banner.title")
+    }
+
     public enum Navigation: Sendable {
       /// 가게 제보
       public static let title = WriteStrings.tr("Localization", "write_detail_category.navigation.title")
@@ -318,10 +360,16 @@ public enum WriteStrings: Sendable {
     public static let addMenu = WriteStrings.tr("Localization", "write_detail_menu.add_menu")
     /// 음식 카테고리
     public static let category = WriteStrings.tr("Localization", "write_detail_menu.category")
+    /// %@ 메뉴
+    public static func categoryMenuFormat(_ p1: Any) -> String {
+      return WriteStrings.tr("Localization", "write_detail_menu.category_menu_format",String(describing: p1))
+    }
     /// 카테고리 수정
     public static let editCategory = WriteStrings.tr("Localization", "write_detail_menu.edit_category")
     /// 작성 완료
     public static let finish = WriteStrings.tr("Localization", "write_detail_menu.finish")
+    /// 이미지로 메뉴 추가
+    public static let imageMenuButton = WriteStrings.tr("Localization", "write_detail_menu.image_menu_button")
     /// 다음
     public static let next = WriteStrings.tr("Localization", "write_detail_menu.next")
     /// 건너뛰기
@@ -332,6 +380,8 @@ public enum WriteStrings: Sendable {
     public static let titleSmallRange = WriteStrings.tr("Localization", "write_detail_menu.title_small_range")
 
     public enum Menu: Sendable {
+      /// 삭제
+      public static let delete = WriteStrings.tr("Localization", "write_detail_menu.menu.delete")
       /// 슈크림 붕어빵
       public static let namePlaceholder = WriteStrings.tr("Localization", "write_detail_menu.menu.name_placeholder")
       /// 원

@@ -128,6 +128,8 @@
 "write_detail_category.title" = "음식 카테고리 선택";
 "write_detail_category.navigation.title" = "가게 제보";
 "write_detail_category.toast.need_category" = "1개 이상의 음식 카테고리를 선택해주세요";
+"write_detail_category.menu_extraction_banner.title" = "사진 한 장으로\n메뉴를 쉽게 등록할 수 있어요.";
+"write_detail_category.menu_extraction_banner.button" = "메뉴 등록";
 
 // WriteDetailCategoryBottomSheet
 "write_detail_category_bottom_sheet.title" = "추가할 카테고리를 선택해 주세요";
@@ -153,6 +155,24 @@
 "write_detail_menu.navigation.title.normal" = "가게 제보";
 "write_detail_menu.toast.validate_price" = "최소 가격은 1원 이상 입력해주세요";
 "write_detail_menu.toast.validate_menu" = "최소 수량은 1개 이상 입력해주세요";
+"write_detail_menu.image_menu_button" = "이미지로 메뉴 추가";
+"write_detail_menu.menu.delete" = "삭제";
+"write_detail_menu.category_menu_format" = "%@ 메뉴";
+
+"menu_photo_select.title" = "메뉴판 사진을 선택해\n이미지를 올려주세요.";
+"menu_photo_select.description" = "상품명, 가격, 카테고리가 잘 보이는\n선명한 사진이면 좋아요.";
+"menu_photo_select.album" = "사진에서 선택";
+"menu_photo_select.camera" = "사진찍기";
+"menu_photo_select.camera_unavailable" = "카메라를 사용할 수 없어요.";
+"menu_photo_select.camera_permission" = "카메라 접근 권한이 필요해요.\n설정에서 카메라 접근을 허용해주세요.";
+"menu_photo_select.open_setting" = "설정으로 이동";
+
+"menu_extraction_loading.title" = "메뉴와 가격을 읽고 있어요";
+"menu_extraction_loading.description" = "잠시만 기다려주세요. 곧 등록 결과를 보여드릴게요.";
+"menu_extraction_loading.empty" = "메뉴를 인식하지 못했어요.\n다른 사진으로 다시 시도해주세요.";
+
+"menu_extraction_result.title_format" = "총 %d개의 메뉴를 인식했어요.\n이대로 등록할까요?";
+"menu_extraction_result.register" = "등록하기";
 
 // WriteNavigation
 "write_navigation.toast.need_data" = "필수 데이터가 입력되지 않았어요. 다시 시도해주세요.";

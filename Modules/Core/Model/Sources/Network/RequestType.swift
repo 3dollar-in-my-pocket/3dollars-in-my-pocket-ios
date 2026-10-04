@@ -6,10 +6,15 @@ public protocol RequestType {
     var header: HTTPHeaderType { get }
     var path: String { get }
     var usingQuery: Bool { get }
+    var timeoutInterval: TimeInterval? { get }
 }
 
 public extension RequestType {
     var param: Encodable? {
+        return nil
+    }
+
+    var timeoutInterval: TimeInterval? {
         return nil
     }
     
