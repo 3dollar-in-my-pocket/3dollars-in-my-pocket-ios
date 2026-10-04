@@ -20,6 +20,8 @@ final class PhotoDetailViewModel: BaseViewModel {
         let scrollToIndex = PassthroughSubject<(index: Int, animated: Bool), Never>()
         let showLoading = PassthroughSubject<Bool, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
+        let onSuccessDeletePhoto = PassthroughSubject<Void, Never>()
+        let dismiss = PassthroughSubject<Void, Never>()
         
         /// 상세화면에서 업데이트된 페이징 정보를 리스트 화면으로 전달
         let updatePhotoListState = PassthroughSubject<PhotoListViewModel.State, Never>()
@@ -197,8 +199,14 @@ final class PhotoDetailViewModel: BaseViewModel {
                     state.currentIndex -= 1
                 }
                 output.photos.send(state.photos)
-                output.scrollToIndex.send((state.currentIndex, true))
                 updatePhotoListState()
+                output.onSuccessDeletePhoto.send(())
+
+                if state.photos.isEmpty {
+                    output.dismiss.send(())
+                } else {
+                    output.scrollToIndex.send((state.currentIndex, true))
+                }
                 
             case .failure(let error):
                 output.showErrorAlert.send(error)
