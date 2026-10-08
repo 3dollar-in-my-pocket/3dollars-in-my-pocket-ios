@@ -29,6 +29,8 @@ public struct HomeFilterScreenResponse: Decodable {
                 sections.append(try HomeFilterSection(from: sectionDecoder))
             case .homeMapControl:
                 sections.append(try HomeMapControlSection(from: sectionDecoder))
+            case .homeBottomSheetTab:
+                sections.append(try HomeBottomSheetTabSection(from: sectionDecoder))
             case .unknown:
                 continue
             }

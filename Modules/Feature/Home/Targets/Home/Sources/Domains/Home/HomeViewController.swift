@@ -202,6 +202,7 @@ public final class HomeViewController: BaseViewController {
             .store(in: &cancellables)
 
         bindMapOutput()
+        bindBottomSheetTabOutput()
 
         viewModel.output.bottomSheetCards
             .main
@@ -264,6 +265,24 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeViewController, isShow: Bool) in
                 owner.homeView.showFilterTooltiop(isShow: isShow)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func bindBottomSheetTabOutput() {
+        viewModel.output.bottomSheetTabSection
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, section: HomeBottomSheetTabSection?) in
+                owner.bottomSheetViewController?.updateTabSection(section)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.curationLocation
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, location: CLLocation) in
+                owner.bottomSheetViewController?.updateCurationLocation(location)
             }
             .store(in: &cancellables)
     }
@@ -341,6 +360,9 @@ public final class HomeViewController: BaseViewController {
                 owner.bottomSheetController?.move(to: .tip, animated: true)
             }
             .store(in: &cancellables)
+        viewController.onChangeTrackingScrollView = { [weak self] scrollView in
+            self?.bottomSheetController?.track(scrollView: scrollView)
+        }
 
         let fpc = FloatingPanelController()
         fpc.layout = HomeListLayout()

@@ -1,0 +1,697 @@
+{
+  "sections": [
+    {
+      "type": "HOME_FILTER",
+      "bars": [
+        {
+          "type": "CATEGORY_BAR",
+          "categoriesFilter": {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/category.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">간식 종류</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 4.0,
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#D0D0D0",
+                "width": 1.0
+              }
+            }
+          },
+          "categoriesFilterClickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {},
+            "eventType": "CLICK"
+          },
+          "currentCategoryFilter": {
+            "fontColor": "#FF8181",
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#FF8181",
+                "width": 1.0
+              }
+            },
+            "clickLog": {
+              "screenName": "home",
+              "objectType": "button",
+              "objectId": "current_category_filter",
+              "extraParameters": {},
+              "eventType": "CLICK"
+            }
+          }
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "filterOpenStatuses",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">🟢 영업 중</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "opening_filter",
+                "extraParameters": {
+                  "value": "false"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">🟢 영업 중</span>",
+                  "isHtml": true,
+                  "fontColor": "#FF8181"
+                },
+                "style": {
+                  "backgroundColor": "#FFEFEF",
+                  "border": {
+                    "color": "#FF8181",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "OPEN",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "opening_filter",
+                "extraParameters": {
+                  "value": "true"
+                },
+                "eventType": "CLICK"
+              }
+            }
+          ]
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "filterConditions",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">🔥 최근 활동</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "recent_activity_filter",
+                "extraParameters": {
+                  "value": "false"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">🔥 최근 활동</span>",
+                  "isHtml": true,
+                  "fontColor": "#FF8181"
+                },
+                "style": {
+                  "backgroundColor": "#FFEFEF",
+                  "border": {
+                    "color": "#FF8181",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "RECENT_ACTIVITY",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "recent_activity_filter",
+                "extraParameters": {
+                  "value": "true"
+                },
+                "eventType": "CLICK"
+              }
+            }
+          ]
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "targetStores",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">👨‍🍳 사장님 직영점만</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "boss_filter",
+                "extraParameters": {
+                  "value": "false"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">👨‍🍳 사장님 직영점만</span>",
+                  "isHtml": true,
+                  "fontColor": "#FF8181"
+                },
+                "style": {
+                  "backgroundColor": "#FFEFEF",
+                  "border": {
+                    "color": "#FF8181",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "BOSS_STORE",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "boss_filter",
+                "extraParameters": {
+                  "value": "true"
+                },
+                "eventType": "CLICK"
+              }
+            }
+          ]
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "filterMinReviewRating",
+          "options": [
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">⭐ 4.0 이상</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "review_rating_filter",
+                "extraParameters": {
+                  "value": "false"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">⭐ 4.0 이상</span>",
+                  "isHtml": true,
+                  "fontColor": "#FF8181"
+                },
+                "style": {
+                  "backgroundColor": "#FFEFEF",
+                  "border": {
+                    "color": "#FF8181",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": 4.0,
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "review_rating_filter",
+                "extraParameters": {
+                  "value": "true"
+                },
+                "eventType": "CLICK"
+              }
+            }
+          ]
+        },
+        {
+          "type": "ACTION_BAR",
+          "button": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">(테스트) 링크 이동</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "link": {
+              "type": "APP_SCHEME",
+              "link": "/community"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#D0D0D0",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "link",
+            "extraParameters": {
+              "type": "test"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "type": "RADIO_BAR",
+          "paramKey": "sortType",
+          "options": [
+            {
+              "chip": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/change.png",
+                  "style": {
+                    "width": 16.0,
+                    "height": 16.0,
+                    "dimmed": false
+                  }
+                },
+                "imageAlignment": "START",
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">인기순</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "contentSpacing": 4.0,
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "POPULAR",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "sorting",
+                "extraParameters": {
+                  "value": "POPULAR"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/change.png",
+                  "style": {
+                    "width": 16.0,
+                    "height": 16.0,
+                    "dimmed": false
+                  }
+                },
+                "imageAlignment": "START",
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">거리순</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "contentSpacing": 4.0,
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "DISTANCE_ASC",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "sorting",
+                "extraParameters": {
+                  "value": "DISTANCE_ASC"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/change.png",
+                  "style": {
+                    "width": 16.0,
+                    "height": 16.0,
+                    "dimmed": false
+                  }
+                },
+                "imageAlignment": "START",
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">최신 업데이트순</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "contentSpacing": 4.0,
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "UPDATED_DESC",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "sorting",
+                "extraParameters": {
+                  "value": "UPDATED_DESC"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/change.png",
+                  "style": {
+                    "width": 16.0,
+                    "height": 16.0,
+                    "dimmed": false
+                  }
+                },
+                "imageAlignment": "START",
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">최신 등록순</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "contentSpacing": 4.0,
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "LATEST",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "sorting",
+                "extraParameters": {
+                  "value": "LATEST"
+                },
+                "eventType": "CLICK"
+              }
+            },
+            {
+              "chip": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/change.png",
+                  "style": {
+                    "width": 16.0,
+                    "height": 16.0,
+                    "dimmed": false
+                  }
+                },
+                "imageAlignment": "START",
+                "text": {
+                  "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">오래된 등록순</span>",
+                  "isHtml": true,
+                  "fontColor": "#5A5A5A"
+                },
+                "contentSpacing": 4.0,
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#D0D0D0",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": "OLDEST",
+              "clickLog": {
+                "screenName": "home",
+                "objectType": "button",
+                "objectId": "sorting",
+                "extraParameters": {
+                  "value": "OLDEST"
+                },
+                "eventType": "CLICK"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "HOME_MAP_CONTROL",
+      "controls": [
+        {
+          "type": "FILTER",
+          "paramKey": "focusFavoriteStores",
+          "options": [
+            {
+              "button": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/bookmark_empty.png",
+                  "style": {
+                    "width": 28.0,
+                    "height": 28.0,
+                    "dimmed": false
+                  }
+                },
+                "clickLog": {
+                  "screenName": "home",
+                  "objectType": "button",
+                  "objectId": "map_favorite_store_filter",
+                  "extraParameters": {
+                    "value": "false"
+                  },
+                  "eventType": "CLICK"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#E2E2E2",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": true
+            },
+            {
+              "button": {
+                "image": {
+                  "url": "https://storage.threedollars.co.kr/app/bookmark.png",
+                  "style": {
+                    "width": 28.0,
+                    "height": 28.0,
+                    "dimmed": false
+                  }
+                },
+                "clickLog": {
+                  "screenName": "home",
+                  "objectType": "button",
+                  "objectId": "map_favorite_store_filter",
+                  "extraParameters": {
+                    "value": "true"
+                  },
+                  "eventType": "CLICK"
+                },
+                "style": {
+                  "backgroundColor": "#FFFFFF",
+                  "border": {
+                    "color": "#E2E2E2",
+                    "width": 1.0
+                  }
+                }
+              },
+              "paramValue": false
+            }
+          ]
+        },
+        {
+          "type": "ACTION",
+          "button": {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/location-current.png",
+              "style": {
+                "width": 28.0,
+                "height": 28.0,
+                "dimmed": false
+              }
+            },
+            "customAction": {
+              "actionType": "HOME_MAP_CONTROL_SECTION_MOVE_TO_CURRENT_LOCATION",
+              "extraParams": {
+                "MAP_ZOOM_LEVEL": 13.0
+              }
+            },
+            "clickLog": {
+              "screenName": "home",
+              "objectType": "button",
+              "objectId": "current_location",
+              "extraParameters": {},
+              "eventType": "CLICK"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "HOME_BOTTOM_SHEET_TAB",
+      "tabs": [
+        {
+          "tabId": "CURATION",
+          "viewType": "CURATION",
+          "selected": {
+            "title": {
+              "text": "<span style=\"font-size:16px; font-weight:400; color:#181818\">🔥 요즘 뜨는 간식</span>",
+              "isHtml": true,
+              "fontColor": "#181818"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#F4F4F4",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "title": {
+              "text": "<span style=\"font-size:16px; font-weight:400; color:#5A5A5A\">🔥 요즘 뜨는 간식</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "style": {
+              "backgroundColor": "#F4F4F4"
+            }
+          },
+          "defaultSelected": true,
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "bar",
+            "objectId": "tab",
+            "extraParameters": {
+              "value": "CURATION"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "tabId": "DEFAULT",
+          "viewType": "STORE_LIST",
+          "selected": {
+            "title": {
+              "text": "<span style=\"font-size:16px; font-weight:400; color:#181818\">내 주변 간식</span>",
+              "isHtml": true,
+              "fontColor": "#181818"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#F4F4F4",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "title": {
+              "text": "<span style=\"font-size:16px; font-weight:400; color:#5A5A5A\">내 주변 간식</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "style": {
+              "backgroundColor": "#F4F4F4"
+            }
+          },
+          "defaultSelected": false,
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "bar",
+            "objectId": "tab",
+            "extraParameters": {
+              "value": "DEFAULT"
+            },
+            "eventType": "CLICK"
+          }
+        }
+      ]
+    }
+  ],
+  "configuration": {
+    "initialMapZoomLevel": 13.0
+  },
+  "viewLog": {
+    "screenName": "home",
+    "extraParameters": {
+      "preset": "DEFAULT"
+    },
+    "eventType": "PAGE_VIEW"
+  }
+}

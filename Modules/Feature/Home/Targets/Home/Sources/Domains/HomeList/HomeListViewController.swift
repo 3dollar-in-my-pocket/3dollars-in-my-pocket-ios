@@ -1,5 +1,6 @@
 import UIKit
 import Combine
+import CoreLocation
 
 import Common
 import DesignSystem
@@ -22,10 +23,22 @@ final class HomeListViewController: BaseViewController {
         viewModel: viewModel,
         rootViewController: self
     )
+    private lazy var curationDataSource = HomeCurationDataSource(
+        collectionView: homeListView.curationView.collectionView,
+        viewModel: viewModel.curationViewModel,
+        rootViewController: self
+    )
+
+    var onChangeTrackingScrollView: ((UIScrollView) -> Void)?
 
     /// FloatingPanelController.track(scrollView:) 에 넘길 스크롤 뷰.
     var trackingScrollView: UIScrollView {
-        return homeListView.collectionView
+        switch viewModel.output.selectedViewType.value {
+        case .curation:
+            return homeListView.curationView.collectionView
+        case .storeList, .unknown:
+            return homeListView.collectionView
+        }
     }
 
     init(viewModel: HomeListViewModel) {
@@ -44,12 +57,17 @@ final class HomeListViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         _ = dataSource
+        _ = curationDataSource
     }
 
     override func bindViewModelInput() {
         homeListView.mapViewButton.controlPublisher(for: .touchUpInside)
             .map { _ in () }
             .subscribe(viewModel.input.didTapMapView)
+            .store(in: &cancellables)
+
+        homeListView.tabView.didTapTab
+            .subscribe(viewModel.input.didTapTab)
             .store(in: &cancellables)
     }
 
@@ -70,6 +88,46 @@ final class HomeListViewController: BaseViewController {
                 owner.scrollToTop()
             }
             .store(in: &cancellables)
+
+        bindTabOutput()
+        bindCurationOutput()
+    }
+
+    private func bindTabOutput() {
+        viewModel.output.tabs
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, tabs: [HomeBottomSheetTabItem]) in
+                owner.homeListView.bindTabs(tabs)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.selectedViewType
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, viewType: HomeBottomTabViewType) in
+                owner.homeListView.showPage(viewType: viewType)
+                owner.onChangeTrackingScrollView?(owner.trackingScrollView)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func bindCurationOutput() {
+        viewModel.curationViewModel.output.items
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, items: [HomeCurationSectionItem]) in
+                owner.curationDataSource.reload(items)
+            }
+            .store(in: &cancellables)
+
+        viewModel.curationViewModel.output.route
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, route: HomeCurationViewModel.Route) in
+                owner.handleCurationRoute(route)
+            }
+            .store(in: &cancellables)
     }
 
     override func viewDidLayoutSubviews() {
@@ -86,6 +144,14 @@ final class HomeListViewController: BaseViewController {
             return view.window?.safeAreaInsets.bottom ?? 0
         }
         return tabBar.frame.height
+    }
+
+    func updateTabSection(_ section: HomeBottomSheetTabSection?) {
+        viewModel.input.setTabSection.send(section)
+    }
+
+    func updateCurationLocation(_ location: CLLocation) {
+        viewModel.input.setCurationLocation.send(location)
     }
 
     func updateCards(_ cards: [any HomeListCardComponent]) {
@@ -110,5 +176,17 @@ final class HomeListViewController: BaseViewController {
         guard itemCount > index, index >= 0 else { return }
         let indexPath = IndexPath(item: index, section: 0)
         homeListView.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+    }
+}
+
+// MARK: Route
+extension HomeListViewController {
+    private func handleCurationRoute(_ route: HomeCurationViewModel.Route) {
+        switch route {
+        case .deepLink(let link):
+            Environment.appModuleInterface.deepLinkHandler.handleLinkResponse(link)
+        case .showErrorAlert(let error):
+            showErrorAlert(error: error)
+        }
     }
 }
