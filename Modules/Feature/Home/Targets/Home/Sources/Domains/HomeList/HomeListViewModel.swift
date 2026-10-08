@@ -1,8 +1,10 @@
 import Foundation
 import Combine
+import CoreLocation
 
 import Common
 import Model
+import Networking
 import Log
 
 extension HomeListViewModel {
@@ -13,6 +15,9 @@ extension HomeListViewModel {
         let didTapCard = PassthroughSubject<Int, Never>()
         let didTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
         let didTapMapView = PassthroughSubject<Void, Never>()
+        let setTabSection = PassthroughSubject<HomeBottomSheetTabSection?, Never>()
+        let didTapTab = PassthroughSubject<Int, Never>()
+        let setCurationLocation = PassthroughSubject<CLLocation, Never>()
     }
 
     struct Output {
@@ -25,10 +30,14 @@ extension HomeListViewModel {
         let didTapCardAt = PassthroughSubject<Int, Never>()
         let didTapImageAt = PassthroughSubject<(images: [SDImage], index: Int), Never>()
         let didTapMapView = PassthroughSubject<Void, Never>()
+        let tabs = CurrentValueSubject<[HomeBottomSheetTabItem], Never>([])
+        let selectedViewType = CurrentValueSubject<HomeBottomTabViewType, Never>(.storeList)
     }
 
     struct State {
         var cards: [any HomeListCardComponent] = []
+        var tabs: [HomeBottomTab] = []
+        var selectedTabId: String?
     }
 
     public struct Config {
@@ -36,9 +45,14 @@ extension HomeListViewModel {
     }
 
     struct Dependency {
+        let screenRepository: ScreenRepository
         let logManager: LogManagerProtocol
 
-        init(logManager: LogManagerProtocol = LogManager.shared) {
+        init(
+            screenRepository: ScreenRepository = ScreenRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared
+        ) {
+            self.screenRepository = screenRepository
             self.logManager = logManager
         }
     }
@@ -49,9 +63,14 @@ final class HomeListViewModel: BaseViewModel {
     let output = Output()
     private var state = State()
     private let dependency: Dependency
+    let curationViewModel: HomeCurationViewModel
 
     init(config: Config = Config(), dependency: Dependency = Dependency()) {
         self.dependency = dependency
+        self.curationViewModel = HomeCurationViewModel(dependency: .init(
+            screenRepository: dependency.screenRepository,
+            logManager: dependency.logManager
+        ))
         super.init()
     }
 
@@ -91,6 +110,60 @@ final class HomeListViewModel: BaseViewModel {
             .map { _ in () }
             .subscribe(output.didTapMapView)
             .store(in: &cancellables)
+
+        bindTabs()
+    }
+
+    private func bindTabs() {
+        input.setTabSection
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, section: HomeBottomSheetTabSection?) in
+                owner.applyTabSection(section)
+            }
+            .store(in: &cancellables)
+
+        input.didTapTab
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, index: Int) in
+                owner.selectTab(at: index)
+            }
+            .store(in: &cancellables)
+
+        input.setCurationLocation
+            .subscribe(curationViewModel.input.setLocation)
+            .store(in: &cancellables)
+    }
+
+    private func applyTabSection(_ section: HomeBottomSheetTabSection?) {
+        let tabs = (section?.tabs ?? []).filter { $0.viewType != .unknown }
+        state.tabs = tabs
+
+        if let selectedTabId = state.selectedTabId, tabs.contains(where: { $0.tabId == selectedTabId }) {
+            emitTabs()
+            return
+        }
+        let defaultTab = tabs.first(where: \.defaultSelected) ?? tabs.first
+        state.selectedTabId = defaultTab?.tabId
+        emitTabs()
+    }
+
+    private func selectTab(at index: Int) {
+        guard let tab = state.tabs[safe: index], tab.tabId != state.selectedTabId else { return }
+        dependency.logManager.sendEvent(event: ClickEvent(clickLog: tab.clickLog))
+        state.selectedTabId = tab.tabId
+        emitTabs()
+    }
+
+    private func emitTabs() {
+        let selectedTab = state.tabs.first { $0.tabId == state.selectedTabId }
+        let curationTabId = selectedTab?.viewType == .curation ? selectedTab?.tabId : nil
+        curationViewModel.input.setTabId.send(curationTabId)
+        output.tabs.send(state.tabs.map { HomeBottomSheetTabItem(tab: $0, isSelected: $0.tabId == selectedTab?.tabId) })
+
+        let viewType = selectedTab?.viewType ?? .storeList
+        if output.selectedViewType.value != viewType {
+            output.selectedViewType.send(viewType)
+        }
     }
 
     private func emitDataSource() {

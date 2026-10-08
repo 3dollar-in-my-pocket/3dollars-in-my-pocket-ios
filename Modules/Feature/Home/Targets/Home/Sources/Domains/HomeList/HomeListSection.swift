@@ -11,3 +11,8 @@ enum HomeListSectionItem: Hashable {
     case admobCard(HomeListAdmobCardResponse)
     case emptyCard(HomeListEmptyCardResponse)
 }
+
+struct HomeBottomSheetTabItem: Hashable {
+    let tab: HomeBottomTab
+    let isSelected: Bool
+}

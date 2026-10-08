@@ -62,6 +62,8 @@ extension HomeViewModel {
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
         let bottomSheetCardsReplaced = PassthroughSubject<Void, Never>()
+        let bottomSheetTabSection = CurrentValueSubject<HomeBottomSheetTabSection?, Never>(nil)
+        let curationLocation = PassthroughSubject<CLLocation, Never>()
         /// 지도 마커로 그릴 카드(BasicCard 만 포함). 인덱스는 cards 와 일치하지 않을 수 있다.
         let markerCards = CurrentValueSubject<[HomeListBasicCardResponse], Never>([])
         /// 마커 탭 시 바텀시트가 해당 카드로 스크롤하도록 알려준다.
@@ -231,6 +233,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.currentLocation = location
                 owner.state.newCameraPosition = location
                 owner.output.initialCameraPosition.send((location, owner.state.initialMapZoomLevel))
+                owner.output.curationLocation.send(location)
             })
             .store(in: &cancellables)
 
@@ -373,6 +376,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.resultCameraPosition = location
                 owner.output.cameraPosition.send((location, nil))
                 owner.fetchInitialCards()
+                owner.output.curationLocation.send(location)
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
@@ -385,6 +389,9 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.mapMaxDistance = owner.state.newMapMaxDistance
                 owner.state.resultCameraPosition = owner.state.newCameraPosition
                 owner.fetchInitialCards()
+                if let location = owner.state.resultCameraPosition {
+                    owner.output.curationLocation.send(location)
+                }
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
@@ -769,6 +776,9 @@ extension HomeViewModel {
                 mapControlViewModel.input.setSection.send(
                     response.sections.compactMap { $0 as? HomeMapControlSection }.first
                 )
+                output.bottomSheetTabSection.send(
+                    response.sections.compactMap { $0 as? HomeBottomSheetTabSection }.first
+                )
 
                 if shouldRefreshCards && state.resultCameraPosition.isNotNil {
                     fetchInitialCards()
@@ -776,6 +786,7 @@ extension HomeViewModel {
             case .failure:
                 output.filterDatasource.send(makeFallbackFilterDatasource())
                 mapControlViewModel.input.setSection.send(nil)
+                output.bottomSheetTabSection.send(nil)
             }
             // 성공/실패와 무관하게 게이팅을 풀어 첫 fetch 가 진행되도록 한다.
             filterScreenLoaded.send()
