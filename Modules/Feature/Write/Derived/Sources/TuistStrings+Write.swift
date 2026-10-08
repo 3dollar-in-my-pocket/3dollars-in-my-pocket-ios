@@ -362,10 +362,6 @@ public enum WriteStrings: Sendable {
     public static let addMenu = WriteStrings.tr("Localization", "write_detail_menu.add_menu")
     /// 음식 카테고리
     public static let category = WriteStrings.tr("Localization", "write_detail_menu.category")
-    /// %@ 메뉴
-    public static func categoryMenuFormat(_ p1: Any) -> String {
-      return WriteStrings.tr("Localization", "write_detail_menu.category_menu_format",String(describing: p1))
-    }
     /// 카테고리 수정
     public static let editCategory = WriteStrings.tr("Localization", "write_detail_menu.edit_category")
     /// 작성 완료

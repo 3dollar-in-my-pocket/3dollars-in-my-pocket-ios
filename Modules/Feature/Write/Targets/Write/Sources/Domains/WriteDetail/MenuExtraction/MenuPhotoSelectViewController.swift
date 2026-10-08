@@ -5,6 +5,11 @@ import DesignSystem
 import Log
 
 final class MenuPhotoSelectViewController: BaseViewController {
+    private enum Layout {
+        static let exampleImageRatio: CGFloat = 2.0 / 3.0
+        static let exampleImageCornerRadius: CGFloat = 12
+    }
+
     private let backgroundButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = Colors.systemBlack.color.withAlphaComponent(0.2)
@@ -41,6 +46,7 @@ final class MenuPhotoSelectViewController: BaseViewController {
         let imageView = UIImageView(image: Assets.imageMenuExample.image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = Layout.exampleImageCornerRadius
         return imageView
     }()
 
@@ -121,7 +127,7 @@ final class MenuPhotoSelectViewController: BaseViewController {
         exampleImageView.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(180)
+            $0.height.equalTo(exampleImageView.snp.width).multipliedBy(Layout.exampleImageRatio)
         }
 
         albumButton.snp.makeConstraints {
@@ -172,7 +178,7 @@ final class MenuPhotoSelectViewController: BaseViewController {
             .resizeImage(scaledTo: 18)
             .withRenderingMode(.alwaysTemplate)
         config.imagePadding = 8
-        config.baseForegroundColor = Colors.gray50.color
+        config.baseForegroundColor = Colors.gray70.color
         config.cornerStyle = .fixed
         config.background.cornerRadius = 12
         config.background.strokeWidth = 1
