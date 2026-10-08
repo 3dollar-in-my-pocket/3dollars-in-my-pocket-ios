@@ -157,7 +157,6 @@
 "write_detail_menu.toast.validate_menu" = "최소 수량은 1개 이상 입력해주세요";
 "write_detail_menu.image_menu_button" = "이미지로 메뉴 추가";
 "write_detail_menu.menu.delete" = "삭제";
-"write_detail_menu.category_menu_format" = "%@ 메뉴";
 
 "menu_photo_select.title" = "메뉴판 사진을 선택해\n이미지를 올려주세요.";
 "menu_photo_select.description" = "상품명, 가격, 카테고리가 잘 보이는\n선명한 사진이면 좋아요.";

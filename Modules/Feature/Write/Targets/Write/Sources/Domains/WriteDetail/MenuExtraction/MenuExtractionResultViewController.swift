@@ -88,7 +88,7 @@ final class MenuExtractionResultViewController: BaseViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateStickyTab()
+        updateStickyHeader()
     }
 
     private func setupUI() {
@@ -100,7 +100,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         ])
         scrollView.addSubview(stackView)
         scrollView.delegate = self
-        contentView.attachStickyTab(to: view)
+        contentView.attachStickyHeader(to: view)
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(contentView)
         bottomContainerView.addSubViews([
@@ -195,7 +195,7 @@ final class MenuExtractionResultViewController: BaseViewController {
             .sink { [weak self] viewModels in
                 self?.contentView.reloadMenus(viewModels)
                 self?.view.layoutIfNeeded()
-                self?.updateStickyTab()
+                self?.updateStickyHeader()
             }
             .store(in: &cancellables)
 
@@ -215,8 +215,8 @@ final class MenuExtractionResultViewController: BaseViewController {
             .store(in: &cancellables)
     }
 
-    private func updateStickyTab() {
-        contentView.updateStickyTabFrame(in: view, stickyTopY: scrollView.frame.minY)
+    private func updateStickyHeader() {
+        contentView.updateStickyHeaderFrame(in: view, stickyTopY: scrollView.frame.minY)
     }
 
     private func scrollToBottom() {
@@ -264,6 +264,6 @@ final class MenuExtractionResultViewController: BaseViewController {
 
 extension MenuExtractionResultViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        updateStickyTab()
+        updateStickyHeader()
     }
 }
