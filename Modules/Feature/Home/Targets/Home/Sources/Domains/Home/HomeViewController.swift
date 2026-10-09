@@ -353,6 +353,9 @@ public final class HomeViewController: BaseViewController {
         bottomSheetVM.output.willLoadMore
             .subscribe(viewModel.input.bottomSheetWillLoadMore)
             .store(in: &cancellables)
+        bottomSheetVM.output.didSelectCurationStore
+            .subscribe(viewModel.input.bottomSheetDidSelectCurationStore)
+            .store(in: &cancellables)
         bottomSheetVM.output.didTapMapView
             .main
             .withUnretained(self)
@@ -792,7 +795,11 @@ extension HomeViewController {
         homeView.mapControlView.isHidden = false
         homeView.writeButton.isHidden = false
         fpc.removePanelFromParent(animated: true) { [weak self] in
-            self?.restoreHomeListIfNeeded()
+            guard let self else { return }
+            if self.isStorePreviewPresented.isNot, fpc.parent == nil {
+                self.storePreviewBottomSheet?.clearContent()
+            }
+            self.restoreHomeListIfNeeded()
         }
     }
 

@@ -32,6 +32,7 @@ extension HomeListViewModel {
         let didTapMapView = PassthroughSubject<Void, Never>()
         let tabs = CurrentValueSubject<[HomeBottomSheetTabItem], Never>([])
         let selectedViewType = CurrentValueSubject<HomeBottomTabViewType, Never>(.storeList)
+        let didSelectCurationStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
     }
 
     struct State {
@@ -46,13 +47,16 @@ extension HomeListViewModel {
 
     struct Dependency {
         let screenRepository: ScreenRepository
+        let storeRepository: StoreRepository
         let logManager: LogManagerProtocol
 
         init(
             screenRepository: ScreenRepository = ScreenRepositoryImpl(),
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
             logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.screenRepository = screenRepository
+            self.storeRepository = storeRepository
             self.logManager = logManager
         }
     }
@@ -69,6 +73,7 @@ final class HomeListViewModel: BaseViewModel {
         self.dependency = dependency
         self.curationViewModel = HomeCurationViewModel(dependency: .init(
             screenRepository: dependency.screenRepository,
+            storeRepository: dependency.storeRepository,
             logManager: dependency.logManager
         ))
         super.init()
@@ -131,6 +136,10 @@ final class HomeListViewModel: BaseViewModel {
 
         input.setCurationLocation
             .subscribe(curationViewModel.input.setLocation)
+            .store(in: &cancellables)
+
+        curationViewModel.output.didSelectStore
+            .subscribe(output.didSelectCurationStore)
             .store(in: &cancellables)
     }
 

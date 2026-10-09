@@ -47,6 +47,7 @@ extension HomeViewModel {
         let bottomSheetWillLoadMore = PassthroughSubject<Void, Never>()
         let bottomSheetDidTapCard = PassthroughSubject<Int, Never>()
         let bottomSheetDidTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
+        let bottomSheetDidSelectCurationStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
     }
 
     struct Output {
@@ -468,6 +469,13 @@ final class HomeViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        input.bottomSheetDidSelectCurationStore
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, store: HomeCurationSelectedStore) in
+                owner.handleCurationStoreSelection(store)
+            }
+            .store(in: &cancellables)
+
         input.bottomSheetDidTapImage
             .withUnretained(self)
             .sink { (owner: HomeViewModel, payload) in
@@ -629,6 +637,18 @@ final class HomeViewModel: BaseViewModel {
         } else if let empty = card as? HomeListEmptyCardResponse, let log = empty.clickLog {
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: log))
         }
+    }
+
+    private func handleCurationStoreSelection(_ store: HomeCurationSelectedStore) {
+        output.cameraPosition.send((CLLocation(latitude: store.latitude, longitude: store.longitude), nil))
+        if let markerIndex = state_markerCards.firstIndex(where: { extractStoreId(from: $0) == store.storeId }) {
+            output.focusMarkerAt.send(markerIndex)
+        }
+        output.route.send(.presentStorePreview(
+            storeId: store.storeId,
+            latitude: store.latitude,
+            longitude: store.longitude
+        ))
     }
 
     private func createFetchInput(cursor: String?) -> FetchHomeSectionListInput {

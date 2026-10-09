@@ -29,6 +29,12 @@ struct HomeCurationCarouselViewData: Hashable {
     let cards: [HomeCurationCard]
 }
 
+struct HomeCurationSelectedStore: Equatable {
+    let storeId: Int
+    let latitude: Double
+    let longitude: Double
+}
+
 struct HomeCurationCategoryViewData: Hashable {
     let filter: HomeCurationCategoryFilter
     let isSelected: Bool
