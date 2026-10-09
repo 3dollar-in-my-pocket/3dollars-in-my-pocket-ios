@@ -358,6 +358,9 @@ public final class HomeViewController: BaseViewController {
         bottomSheetVM.output.willLoadMore
             .subscribe(viewModel.input.bottomSheetWillLoadMore)
             .store(in: &cancellables)
+        bottomSheetVM.output.didSelectCurationStore
+            .subscribe(viewModel.input.bottomSheetDidSelectCurationStore)
+            .store(in: &cancellables)
         bottomSheetVM.output.didTapMapView
             .main
             .withUnretained(self)

@@ -124,16 +124,28 @@ final class HomeCurationViewModelTests: XCTestCase {
 
     // MARK: TH-1402 TC6
 
-    func test_TH1402_TC6_가게카드를누르면_가게정보가담긴클릭로그후_가게상세링크로이동한다() async throws {
+    func test_TH1402_TC6_가게카드를누르면_가게정보가담긴클릭로그후_가게위치와함께가게선택을전달한다() async throws {
         // Given
         let logManager = MockLogManager()
         let repository = MockScreenRepository()
         repository.fetchHomeCurationSectionResult = .success(try makeSection())
-        let viewModel = makeViewModel(repository: repository, logManager: logManager)
+        let storeRepository = MockStoreRepository()
+        storeRepository.fetchStoreResult = .success(
+            try FixtureLoader.decode(StoreDetailResponse.self, from: "StoreDetailUserStore")
+        )
+        let viewModel = makeViewModel(repository: repository, storeRepository: storeRepository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
         await fulfillment(of: [loaded.expectation], timeout: 1)
+        let selected = expectation(description: "didSelectStore")
+        var selectedStore: HomeCurationSelectedStore?
+        viewModel.output.didSelectStore
+            .sink { store in
+                selectedStore = store
+                selected.fulfill()
+            }
+            .store(in: &cancellables)
         var routedLink: SDLink?
         viewModel.output.route
             .sink { route in
@@ -145,12 +157,52 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.didTapCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:116"))
 
         // Then
-        XCTAssertEqual(routedLink?.link, "/store?storeId=116&storeType=USER_STORE")
+        await fulfillment(of: [selected], timeout: 1)
+        let store = try selectedStore.unwrapped()
+        XCTAssertEqual(store.storeId, 116)
+        XCTAssertEqual(store.latitude, 37.4983268205018, accuracy: 0.000001)
+        XCTAssertEqual(store.longitude, 127.0256096087437, accuracy: 0.000001)
+        XCTAssertEqual(storeRepository.fetchStoreInputs.map(\.storeId), ["116"])
+        XCTAssertNil(routedLink)
         let log = try logManager.sentEvents.first.unwrapped()
         XCTAssertEqual(log.parameters["object_type"] as? String, "card")
         XCTAssertEqual(log.parameters["object_id"] as? String, "store")
         XCTAssertEqual(log.parameters["store_id"] as? String, "116")
         XCTAssertEqual(log.parameters["store_type"] as? String, "USER_STORE")
+    }
+
+    func test_TH1402_TC6_가게위치조회에실패하면_가게상세링크로이동한다() async throws {
+        // Given
+        let repository = MockScreenRepository()
+        repository.fetchHomeCurationSectionResult = .success(try makeSection())
+        let storeRepository = MockStoreRepository()
+        let viewModel = makeViewModel(repository: repository, storeRepository: storeRepository)
+        let loaded = expectItems(viewModel, count: 1)
+        viewModel.input.setTabId.send("CURATION")
+        viewModel.input.setLocation.send(location)
+        await fulfillment(of: [loaded.expectation], timeout: 1)
+        let routed = expectation(description: "deepLink")
+        var routedLink: SDLink?
+        viewModel.output.route
+            .sink { route in
+                if case .deepLink(let link) = route {
+                    routedLink = link
+                    routed.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        var didSelect = false
+        viewModel.output.didSelectStore
+            .sink { _ in didSelect = true }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.didTapCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:116"))
+
+        // Then
+        await fulfillment(of: [routed], timeout: 1)
+        XCTAssertEqual(routedLink?.link, "/store?storeId=116&storeType=USER_STORE")
+        XCTAssertFalse(didSelect)
     }
 
     // MARK: TH-1402 TC7
@@ -205,9 +257,14 @@ final class HomeCurationViewModelTests: XCTestCase {
 extension HomeCurationViewModelTests {
     private func makeViewModel(
         repository: MockScreenRepository,
+        storeRepository: MockStoreRepository = MockStoreRepository(),
         logManager: MockLogManager = MockLogManager()
     ) -> HomeCurationViewModel {
-        HomeCurationViewModel(dependency: .init(screenRepository: repository, logManager: logManager))
+        HomeCurationViewModel(dependency: .init(
+            screenRepository: repository,
+            storeRepository: storeRepository,
+            logManager: logManager
+        ))
     }
 
     private func makeSection() throws -> HomeCurationSectionResponse {

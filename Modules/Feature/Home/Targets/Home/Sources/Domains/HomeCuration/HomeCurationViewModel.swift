@@ -22,6 +22,7 @@ extension HomeCurationViewModel {
         let screenName: ScreenName = .home
         let items = CurrentValueSubject<[HomeCurationSectionItem], Never>([])
         let route = PassthroughSubject<Route, Never>()
+        let didSelectStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
     }
 
     enum Route {
@@ -48,13 +49,16 @@ extension HomeCurationViewModel {
 
     struct Dependency {
         let screenRepository: ScreenRepository
+        let storeRepository: StoreRepository
         let logManager: LogManagerProtocol
 
         init(
             screenRepository: ScreenRepository = ScreenRepositoryImpl(),
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
             logManager: LogManagerProtocol = LogManager.shared
         ) {
             self.screenRepository = screenRepository
+            self.storeRepository = storeRepository
             self.logManager = logManager
         }
     }
@@ -67,6 +71,7 @@ final class HomeCurationViewModel: BaseViewModel {
     private let dependency: Dependency
     private var loadTask: Task<Void, Never>?
     private var cardTasks: [String: Task<Void, Never>] = [:]
+    private var storeTask: Task<Void, Never>?
 
     init(dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -226,12 +231,56 @@ final class HomeCurationViewModel: BaseViewModel {
             if let clickLog = preview.clickLog {
                 dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
             }
-            if let link = preview.link {
-                output.route.send(.deepLink(link))
-            }
+            selectStore(preview)
         case .admobCard(let admob):
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))
         }
+    }
+
+    private func selectStore(_ card: StoreImagePreviewCard) {
+        guard let storeId = storeId(of: card) else {
+            routeToLink(of: card)
+            return
+        }
+
+        storeTask?.cancel()
+        storeTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let input = FetchStoreInput(storeId: String(storeId), includes: [])
+            let result = await dependency.storeRepository.fetchStore(input: input)
+            guard !Task.isCancelled else { return }
+
+            guard case .success(let store) = result, let location = store.location else {
+                routeToLink(of: card)
+                return
+            }
+            output.didSelectStore.send(HomeCurationSelectedStore(
+                storeId: storeId,
+                latitude: location.latitude,
+                longitude: location.longitude
+            ))
+        }
+    }
+
+    private func routeToLink(of card: StoreImagePreviewCard) {
+        guard let link = card.link else { return }
+        output.route.send(.deepLink(link))
+    }
+
+    private func storeId(of card: StoreImagePreviewCard) -> Int? {
+        if let value = card.clickLog?.extraParameters["store_id"]?.anyValue {
+            if let storeId = value as? Int { return storeId }
+            if let storeId = (value as? String).flatMap(Int.init) { return storeId }
+        }
+        if let link = card.link?.link,
+           let storeId = URLComponents(string: "x://x\(link)")?
+            .queryItems?
+            .first(where: { $0.name == "storeId" })?
+            .value
+            .flatMap(Int.init) {
+            return storeId
+        }
+        return card.refs.first.flatMap { Int($0.storeId) }
     }
 
     private func sendImpressionLogIfNeeded(_ admob: HomeListAdmobCardResponse) {
