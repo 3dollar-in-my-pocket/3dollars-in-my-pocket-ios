@@ -313,30 +313,41 @@ private final class StoreInfoMenuCardView: UIView {
     private func makeItemRow(_ item: TextMenuItem) -> UIView {
         let view = UIView()
         let primaryLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        primaryLabel.numberOfLines = 1
         primaryLabel.setSDText(item.primaryText)
+        primaryLabel.lineBreakMode = .byTruncatingTail
         let secondaryLabel = StoreSectionTextLabel(font: Fonts.medium.font(size: 12))
+        secondaryLabel.numberOfLines = 1
         secondaryLabel.setSDText(item.secondaryText)
         secondaryLabel.textAlignment = .right
         let leaderLineView = DashedLineView()
 
         view.addSubViews([primaryLabel, leaderLineView, secondaryLabel])
+        view.snp.makeConstraints {
+            $0.height.equalTo(0).priority(.low)
+        }
         primaryLabel.snp.makeConstraints {
             // 그룹 헤더 아이콘(28) + 간격(8) 뒤 텍스트 시작점과 정렬한다.
-            $0.top.bottom.equalToSuperview()
             $0.leading.equalToSuperview().offset(36)
+            $0.centerY.equalToSuperview()
+            $0.top.greaterThanOrEqualToSuperview()
+            $0.bottom.lessThanOrEqualToSuperview()
         }
         leaderLineView.snp.makeConstraints {
             $0.leading.equalTo(primaryLabel.snp.trailing).offset(8)
             $0.trailing.equalTo(secondaryLabel.snp.leading).offset(-8)
+            $0.width.greaterThanOrEqualTo(0)
             $0.centerY.equalToSuperview()
             $0.height.equalTo(1)
         }
         secondaryLabel.snp.makeConstraints {
-            $0.centerY.equalTo(primaryLabel)
             $0.trailing.equalToSuperview()
+            $0.centerY.equalToSuperview()
+            $0.top.greaterThanOrEqualToSuperview()
+            $0.bottom.lessThanOrEqualToSuperview()
         }
         primaryLabel.setContentHuggingPriority(.required, for: .horizontal)
-        primaryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        primaryLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         secondaryLabel.setContentHuggingPriority(.required, for: .horizontal)
         secondaryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         return view
