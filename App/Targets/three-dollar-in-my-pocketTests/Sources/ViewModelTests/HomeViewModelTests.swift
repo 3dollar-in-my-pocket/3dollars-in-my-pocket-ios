@@ -64,6 +64,35 @@ final class HomeViewModelTests: XCTestCase {
 
     // MARK: - Helpers
 
+    // MARK: TH-1402 TC6
+
+    func test_TH1402_TC6_큐레이션가게가선택되면_지도를가게위치로옮기고_가게미리보기시트를띄운다() {
+        // Given
+        let viewModel = makeViewModel()
+        var camera: CLLocation?
+        viewModel.output.cameraPosition
+            .sink { camera = $0.0 }
+            .store(in: &cancellables)
+        var preview: HomeCurationSelectedStore?
+        viewModel.output.route
+            .sink { route in
+                if case let .presentStorePreview(storeId, latitude, longitude) = route {
+                    preview = HomeCurationSelectedStore(storeId: storeId, latitude: latitude, longitude: longitude)
+                }
+            }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.bottomSheetDidSelectCurationStore.send(
+            HomeCurationSelectedStore(storeId: 116, latitude: 37.4983, longitude: 127.0256)
+        )
+
+        // Then
+        XCTAssertEqual(camera?.coordinate.latitude, 37.4983)
+        XCTAssertEqual(camera?.coordinate.longitude, 127.0256)
+        XCTAssertEqual(preview, HomeCurationSelectedStore(storeId: 116, latitude: 37.4983, longitude: 127.0256))
+    }
+
     private func makeViewModel(logManager: MockLogManager = MockLogManager()) -> HomeViewModel {
         HomeViewModel(dependency: .init(
             screenRepository: MockScreenRepository(),

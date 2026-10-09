@@ -8,6 +8,8 @@ import Networking
 final class MockStoreRepository: StoreRepository {
     var fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error> = .failure(MockError.notStubbed())
     var reportStoreResult: Result<StoreDeleteResponse, Error> = .failure(MockError.notStubbed())
+    var fetchStoreResult: Result<StoreDetailResponse, Error> = .failure(MockError.notStubbed())
+    private(set) var fetchStoreInputs: [FetchStoreInput] = []
     private(set) var reportStoreCallCount = 0
     private(set) var lastReportStoreArguments: (storeId: Int, reportReason: String)?
 
@@ -41,7 +43,10 @@ final class MockStoreRepository: StoreRepository {
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> { .failure(MockError.notStubbed()) }
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> { .failure(MockError.notStubbed()) }
     func existsFeedbackOnDateByAccount(storeId: Int) async -> Result<FeedbackExistsResponse, Error> { .failure(MockError.notStubbed()) }
-    func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error> { .failure(MockError.notStubbed()) }
+    func fetchStore(input: FetchStoreInput) async -> Result<StoreDetailResponse, Error> {
+        fetchStoreInputs.append(input)
+        return fetchStoreResult
+    }
     func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> { .failure(MockError.notStubbed()) }
     func fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error> { .failure(MockError.notStubbed()) }
     func recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<String?, Error> { .failure(MockError.notStubbed()) }
