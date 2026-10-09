@@ -794,6 +794,9 @@ extension HomeViewController {
         homeView.writeButton.isHidden = false
         fpc.removePanelFromParent(animated: true) { [weak self] in
             guard let self else { return }
+            if fpc.parent == nil {
+                self.storePreviewBottomSheet?.clearContent()
+            }
             self.tabBarController?.tabBar.isHidden = false
             if self.bottomSheetController?.parent == nil, let homeListPanel = self.bottomSheetController {
                 let restoreState = self.homeListRestoreState ?? .tip

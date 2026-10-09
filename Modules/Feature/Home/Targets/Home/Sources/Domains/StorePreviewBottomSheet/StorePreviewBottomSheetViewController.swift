@@ -1,3 +1,4 @@
+// swiftlint:disable file_length - 가게 미리보기(tip)와 가게 상세 임베드(full)를 한 패널에서 전환하는 시트라 두 상태의 뷰·바인딩이 같은 파일에 있어야 흐름을 따라갈 수 있다
 import UIKit
 import Combine
 
@@ -10,6 +11,7 @@ import StoreInterface
 import CombineCocoa
 import SnapKit
 
+// swiftlint:disable:next type_body_length - 미리보기(tip)·상세 임베드(full) 전환을 한 패널에서 조율하는 VC. 재사용 시 이전 가게를 비우는 clearContent 추가로 601→612줄
 final class StorePreviewBottomSheetViewController: BaseViewController {
     private enum Layout {
         static let grabberAreaHeight: CGFloat = 12
@@ -242,6 +244,18 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         if wasShowingDetail {
             didReachFullState()
         }
+    }
+
+    func clearContent() {
+        previewSection = nil
+        titleLabel.text = nil
+        titleLabel.attributedText = nil
+        configureBadge(nil)
+        metadataView.clear()
+        configureImages([])
+        configureBodies([])
+        actionBarStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        setSaveButton(isFavorited: false)
     }
 
     private func resetDetail() {
