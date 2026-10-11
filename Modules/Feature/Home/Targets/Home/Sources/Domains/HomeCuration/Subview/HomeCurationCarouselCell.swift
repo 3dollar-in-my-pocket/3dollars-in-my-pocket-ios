@@ -20,9 +20,12 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
         static let cardBottomInset: CGFloat = 12
         static let cardRowHeight: CGFloat = HomeCurationStoreCardCell.Layout.height
         static let dividerHeight: CGFloat = 1
+        static let emptyVerticalInset: CGFloat = 20
+        static let emptyLabelHeight: CGFloat = 20
+        static let emptyRowHeight: CGFloat = emptyVerticalInset * 2 + emptyLabelHeight
 
         static func height(_ carousel: HomeCurationCarouselViewData) -> CGFloat {
-            let cardsHeight = carousel.cards.isEmpty ? 0 : cardRowHeight + cardBottomInset
+            let cardsHeight = carousel.cards.isEmpty ? emptyRowHeight : cardRowHeight + cardBottomInset
             return verticalInset + titleHeight + chipRowHeight + cardsHeight + verticalInset
         }
     }
@@ -76,6 +79,16 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
         return collectionView
     }()
 
+    private let emptyLabel: UILabel = {
+        let label = UILabel()
+        label.font = Fonts.regular.font(size: 14)
+        label.textColor = Colors.gray70.color
+        label.textAlignment = .center
+        label.text = Strings.HomeCuration.Empty.title
+        label.isHidden = true
+        return label
+    }()
+
     private let dividerView: UIView = {
         let view = UIView()
         view.backgroundColor = Colors.gray10.color
@@ -83,7 +96,7 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
     }()
 
     override func setup() {
-        contentView.addSubViews([titleLabel, categoryCollectionView, cardCollectionView, dividerView])
+        contentView.addSubViews([titleLabel, categoryCollectionView, cardCollectionView, emptyLabel, dividerView])
     }
 
     override func bindConstraints() {
@@ -103,6 +116,12 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
             $0.top.equalTo(categoryCollectionView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(Layout.cardRowHeight)
+        }
+
+        emptyLabel.snp.makeConstraints {
+            $0.top.equalTo(categoryCollectionView.snp.bottom).offset(Layout.emptyVerticalInset)
+            $0.leading.trailing.equalToSuperview().inset(Layout.horizontalInset)
+            $0.height.equalTo(Layout.emptyLabelHeight)
         }
 
         dividerView.snp.makeConstraints {
@@ -129,6 +148,7 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
 
         categoryCollectionView.reloadData()
         cardCollectionView.isHidden = carousel.cards.isEmpty
+        emptyLabel.isHidden = carousel.cards.isNotEmpty
 
         let isSameCarousel = previous?.carouselId == carousel.carouselId
         if !isSameCarousel {

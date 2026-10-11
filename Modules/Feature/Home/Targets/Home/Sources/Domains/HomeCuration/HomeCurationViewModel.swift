@@ -21,6 +21,7 @@ extension HomeCurationViewModel {
     struct Output {
         let screenName: ScreenName = .home
         let items = CurrentValueSubject<[HomeCurationSectionItem], Never>([])
+        let isEmpty = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
         let didSelectStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
     }
@@ -39,6 +40,7 @@ extension HomeCurationViewModel {
         var loadedCategoryIds: [String: String] = [:]
         var cards: [String: [HomeCurationCard]] = [:]
         var impressedCardIds: Set<String> = []
+        var hasLoadedSection = false
     }
 
     struct LoadedRequest: Equatable {
@@ -175,6 +177,7 @@ final class HomeCurationViewModel: BaseViewModel {
         cardTasks.values.forEach { $0.cancel() }
         cardTasks = [:]
         state.items = items
+        state.hasLoadedSection = true
         state.impressedCardIds = []
         state.selectedCategoryIds = [:]
         state.loadedCategoryIds = [:]
@@ -311,6 +314,10 @@ final class HomeCurationViewModel: BaseViewModel {
             }
         }
         output.items.send(items)
+        let isEmpty = state.hasLoadedSection && items.isEmpty
+        if output.isEmpty.value != isEmpty {
+            output.isEmpty.send(isEmpty)
+        }
     }
 
     private func carousel(id: String) -> HomeCurationCarousel? {

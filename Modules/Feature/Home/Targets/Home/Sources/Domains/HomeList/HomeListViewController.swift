@@ -121,6 +121,14 @@ final class HomeListViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.curationViewModel.output.isEmpty
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, isEmpty: Bool) in
+                owner.homeListView.curationView.setEmpty(isEmpty)
+            }
+            .store(in: &cancellables)
+
         viewModel.curationViewModel.output.route
             .main
             .withUnretained(self)
