@@ -52,6 +52,7 @@ public final class HomeViewController: BaseViewController {
     private var isMovingStorePreviewToFull = false
     private var homeListRestoreState: FloatingPanelState?
     private var homeListRestoreContentOffset: CGPoint?
+    private var isStorePreviewPresented = false
 
     private var isFirstLoad = true
     fileprivate let transition = SearchTransition()
@@ -149,12 +150,6 @@ public final class HomeViewController: BaseViewController {
 
         homeView.mapControlView.didTapButton
             .subscribe(viewModel.mapControlViewModel.input.didTapControl)
-            .store(in: &cancellables)
-
-        homeView.researchButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.onTapResearch)
             .store(in: &cancellables)
 
         homeView.homeFilterCollectionView.onLoadFilter = { [weak self] in
@@ -745,11 +740,14 @@ extension HomeViewController {
 
         // 순서가 중요: HomeList 패널 제거 → 탭바 숨김(.tip anchor 의 safeArea 계산이 새 값으로 굳음)
         // → StorePreview 패널 mount. 거꾸로 하면 패널이 부착된 뒤 safeArea 가 바뀌면서 미끄러져 보인다.
-        if let homeListPanel = bottomSheetController, homeListPanel.parent != nil {
+        if let homeListPanel = bottomSheetController, homeListPanel.parent != nil, homeListPanel.state != .hidden {
             homeListRestoreState = homeListPanel.state
             homeListRestoreContentOffset = homeListPanel.trackingScrollView?.contentOffset
         }
-        bottomSheetController?.removePanelFromParent(animated: true)
+        isStorePreviewPresented = true
+        bottomSheetController?.removePanelFromParent(animated: true) { [weak self] in
+            self?.restoreHomeListIfNeeded()
+        }
         tabBarController?.tabBar.isHidden = true
         homeView.mapControlView.isHidden = true
         homeView.writeButton.isHidden = true
@@ -758,7 +756,11 @@ extension HomeViewController {
     }
 
     private func dismissStorePreview() {
-        guard let fpc = storePreviewBottomSheetController, fpc.parent != nil else { return }
+        guard isStorePreviewPresented, let fpc = storePreviewBottomSheetController, fpc.parent != nil else {
+            restoreHomeListIfNeeded()
+            return
+        }
+        isStorePreviewPresented = false
         storePreviewBottomSheet?.dismissDisplayItemModals()
         storePreviewBottomSheet?.didReachTipState()
         // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
@@ -768,22 +770,30 @@ extension HomeViewController {
         homeView.mapControlView.isHidden = false
         homeView.writeButton.isHidden = false
         fpc.removePanelFromParent(animated: true) { [weak self] in
-            guard let self else { return }
-            self.tabBarController?.tabBar.isHidden = false
-            if self.bottomSheetController?.parent == nil, let homeListPanel = self.bottomSheetController {
-                let restoreState = self.homeListRestoreState ?? .tip
-                homeListPanel.layout = HomeListLayout(initialState: restoreState)
-                homeListPanel.addPanel(toParent: self, animated: true)
-                if let contentOffset = self.homeListRestoreContentOffset {
-                    homeListPanel.trackingScrollView?.setContentOffset(contentOffset, animated: false)
-                }
-                self.homeView.updateTopBackground(progress: restoreState == .full ? 1 : 0)
-                self.homeListRestoreState = nil
-                self.homeListRestoreContentOffset = nil
-                // 재부착으로 패널이 다시 최상단에 삽입되므로 상단 chrome 을 패널 위로 끌어올린다.
-                self.bringTopChromeToFront()
-            }
+            self?.restoreHomeListIfNeeded()
         }
+    }
+
+    private func restoreHomeListIfNeeded() {
+        guard isStorePreviewPresented.isNot else { return }
+        tabBarController?.tabBar.isHidden = false
+        homeView.mapControlView.isHidden = false
+        homeView.writeButton.isHidden = false
+        guard storePreviewBottomSheetController?.parent == nil,
+              let homeListPanel = bottomSheetController,
+              homeListPanel.parent == nil else { return }
+
+        let restoreState = homeListRestoreState ?? .tip
+        homeListPanel.layout = HomeListLayout(initialState: restoreState)
+        homeListPanel.addPanel(toParent: self, animated: true)
+        if let contentOffset = homeListRestoreContentOffset {
+            homeListPanel.trackingScrollView?.setContentOffset(contentOffset, animated: false)
+        }
+        homeView.updateTopBackground(progress: restoreState == .full ? 1 : 0)
+        homeListRestoreState = nil
+        homeListRestoreContentOffset = nil
+        // 재부착으로 패널이 다시 최상단에 삽입되므로 상단 chrome 을 패널 위로 끌어올린다.
+        bringTopChromeToFront()
     }
 
     private func makeStorePreviewViewController(

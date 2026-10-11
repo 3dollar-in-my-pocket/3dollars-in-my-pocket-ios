@@ -80,11 +80,7 @@ extension OpeningHoursSectionView {
         }
         
         @objc private func didTapDone() {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "ko_KR")
-            formatter.dateFormat = Strings.WriteAdditionalInfo.OpeningHours.dateFormat
-            let timeString = formatter.string(from: datePicker.date)
-            textField.text = timeString
+            textField.text = OpeningHoursFormatter.string(from: datePicker.date)
             
             timeChanged.send(datePicker.date)
             textField.resignFirstResponder()
@@ -100,10 +96,7 @@ extension OpeningHoursSectionView {
                 return
             }
             datePicker.date = date
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "ko_KR")
-            formatter.dateFormat = Strings.WriteAdditionalInfo.OpeningHours.dateFormat
-            textField.text = formatter.string(from: date)
+            textField.text = OpeningHoursFormatter.string(from: date)
         }
     }
 }

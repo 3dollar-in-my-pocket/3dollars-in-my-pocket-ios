@@ -203,6 +203,8 @@ public enum WriteStrings: Sendable {
       public static let cancel = WriteStrings.tr("Localization", "write_additional_info.opening_hours.cancel")
       /// a h시
       public static let dateFormat = WriteStrings.tr("Localization", "write_additional_info.opening_hours.date_format")
+      /// a h시 m분
+      public static let dateFormatWithMinute = WriteStrings.tr("Localization", "write_additional_info.opening_hours.date_format_with_minute")
       /// 완료
       public static let done = WriteStrings.tr("Localization", "write_additional_info.opening_hours.done")
       /// 오후 8시

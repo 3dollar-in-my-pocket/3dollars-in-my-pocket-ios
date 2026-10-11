@@ -113,6 +113,7 @@
 "write_additional_info.opening_hours.done" = "완료";
 "write_additional_info.opening_hours.cancel" = "취소";
 "write_additional_info.opening_hours.date_format" = "a h시";
+"write_additional_info.opening_hours.date_format_with_minute" = "a h시 m분";
 "write_additional_info.opening_hours.title" = "출몰 시간대";
 "write_additional_info.opening_hours.start_time_placeholder" = "오전 11시";
 "write_additional_info.opening_hours.separator" = "부터";
