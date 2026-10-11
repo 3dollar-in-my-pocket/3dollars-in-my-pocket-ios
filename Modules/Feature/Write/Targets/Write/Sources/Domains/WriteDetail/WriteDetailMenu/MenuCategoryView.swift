@@ -74,6 +74,6 @@ final class MenuCategoryView: BaseView {
 
     func bind(category: StoreFoodCategoryResponse) {
         imageView.setImage(urlString: category.imageUrl)
-        titleLabel.text = Strings.WriteDetailMenu.categoryMenuFormat(category.name)
+        titleLabel.text = category.name
     }
 }
