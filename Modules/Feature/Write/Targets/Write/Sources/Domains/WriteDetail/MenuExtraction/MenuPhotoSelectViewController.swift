@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 final class MenuPhotoSelectViewController: BaseViewController {
     private let backgroundButton: UIButton = {
@@ -53,10 +54,20 @@ final class MenuPhotoSelectViewController: BaseViewController {
         image: Icons.camera.image
     )
 
+    private let viewModel: MenuPhotoSelectViewModel
     private let onTapAlbum: () -> Void
     private let onTapCamera: () -> Void
 
-    init(onTapAlbum: @escaping () -> Void, onTapCamera: @escaping () -> Void) {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+
+    init(
+        viewModel: MenuPhotoSelectViewModel,
+        onTapAlbum: @escaping () -> Void,
+        onTapCamera: @escaping () -> Void
+    ) {
+        self.viewModel = viewModel
         self.onTapAlbum = onTapAlbum
         self.onTapCamera = onTapCamera
         super.init(nibName: nil, bundle: nil)
@@ -136,23 +147,18 @@ final class MenuPhotoSelectViewController: BaseViewController {
 
         albumButton.tapPublisher
             .throttleClick()
-            .sink { [weak self] in
-                guard let self else { return }
-                let onTapAlbum = self.onTapAlbum
-                dismiss(animated: true) {
-                    onTapAlbum()
-                }
-            }
+            .subscribe(viewModel.input.didTapAlbum)
             .store(in: &cancellables)
 
         cameraButton.tapPublisher
             .throttleClick()
-            .sink { [weak self] in
-                guard let self else { return }
-                let onTapCamera = self.onTapCamera
-                dismiss(animated: true) {
-                    onTapCamera()
-                }
+            .subscribe(viewModel.input.didTapCamera)
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .sink { [weak self] route in
+                self?.handleRoute(route)
             }
             .store(in: &cancellables)
     }
@@ -172,5 +178,21 @@ final class MenuPhotoSelectViewController: BaseViewController {
         config.background.strokeWidth = 1
         config.background.strokeColor = Colors.gray40.color
         return UIButton(configuration: config)
+    }
+}
+
+// MARK: Route
+extension MenuPhotoSelectViewController {
+    private func handleRoute(_ route: MenuPhotoSelectViewModel.Route) {
+        let action: () -> Void
+        switch route {
+        case .album:
+            action = onTapAlbum
+        case .camera:
+            action = onTapCamera
+        }
+        dismiss(animated: true) {
+            action()
+        }
     }
 }
