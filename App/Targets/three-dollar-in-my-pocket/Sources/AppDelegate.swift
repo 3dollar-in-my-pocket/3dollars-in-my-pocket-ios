@@ -119,6 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @MainActor
     private func requestTrackingAuthorizationIfNeeded() async {
+        defer { setTrackingAuthorizationUserProperty() }
         guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
 
         if UIApplication.shared.applicationState != .active {
@@ -127,6 +128,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         _ = await ATTrackingManager.requestTrackingAuthorization()
+    }
+
+    private func setTrackingAuthorizationUserProperty() {
+        let value: String
+        switch ATTrackingManager.trackingAuthorizationStatus {
+        case .authorized:
+            value = "authorized"
+        case .denied:
+            value = "denied"
+        case .restricted:
+            value = "restricted"
+        case .notDetermined:
+            value = "notDetermined"
+        @unknown default:
+            value = "unknown"
+        }
+        Analytics.setUserProperty(value, forName: "attStatus")
     }
     
     private func initializeDI() {
