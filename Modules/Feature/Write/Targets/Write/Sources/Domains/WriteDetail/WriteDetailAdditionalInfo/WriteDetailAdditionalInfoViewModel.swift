@@ -89,15 +89,15 @@ final class WriteDetailAdditionalInfoViewModel: BaseViewModel {
         self.state = State(
             paymentMethods: config.paymentMethods,
             appearanceDays: config.appearanceDays,
-            startTime: config.openingHours?.startTime?.toDate(),
-            endTime: config.openingHours?.endTime?.toDate()
+            startTime: config.openingHours?.startTime?.toDate(format: "HH:mm"),
+            endTime: config.openingHours?.endTime?.toDate(format: "HH:mm")
         )
         self.output = Output(
             afterCreatedStore: config.afterCreatedStore,
             selectedPaymentMethods: .init(config.paymentMethods),
             selectedDays: .init(config.appearanceDays),
-            selectedStartTime: .init(config.openingHours?.startTime?.toDate()),
-            selectedEndTime: .init(config.openingHours?.endTime?.toDate())
+            selectedStartTime: .init(config.openingHours?.startTime?.toDate(format: "HH:mm")),
+            selectedEndTime: .init(config.openingHours?.endTime?.toDate(format: "HH:mm"))
         )
         self.dependency = dependency
         super.init()
