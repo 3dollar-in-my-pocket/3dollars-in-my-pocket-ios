@@ -59,6 +59,11 @@ final class StorePreviewMetadataRowView: BaseView {
         secondaryStack.isHidden = metadata.secondary.isEmpty
     }
 
+    func clear() {
+        primaryStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        secondaryStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    }
+
     private func configureRow(stack: UIStackView, chips: [SDChip], separator: SDImage) {
         stack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 

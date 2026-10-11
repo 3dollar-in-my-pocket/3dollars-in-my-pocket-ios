@@ -59,6 +59,14 @@ public enum HomeStrings: Sendable {
     public static let writeButton = HomeStrings.tr("Localization", "home.write_button")
   }
 
+  public enum HomeCuration: Sendable {
+  
+    public enum Empty: Sendable {
+      /// 주변에 가게가 없어요
+      public static let title = HomeStrings.tr("Localization", "home_curation.empty.title")
+    }
+  }
+
   public enum HomeList: Sendable {
     /// 지도 보기
     public static let mapViewButton = HomeStrings.tr("Localization", "home_list.map_view_button")

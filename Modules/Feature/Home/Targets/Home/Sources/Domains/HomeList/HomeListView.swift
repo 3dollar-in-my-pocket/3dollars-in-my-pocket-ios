@@ -2,6 +2,7 @@ import UIKit
 
 import Common
 import DesignSystem
+import Model
 
 import SnapKit
 
@@ -29,6 +30,28 @@ final class HomeListView: BaseView {
         return view
     }()
 
+    let tabView = HomeBottomSheetTabView()
+
+    private let tabContainerView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        return view
+    }()
+
+    private let contentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
+    }()
+
+    private let pageContainerView = UIView()
+
+    let curationView: HomeCurationView = {
+        let view = HomeCurationView()
+        view.isHidden = true
+        return view
+    }()
+
     let mapViewButton: MapViewButton = {
         let button = MapViewButton()
         button.alpha = 0
@@ -52,9 +75,14 @@ final class HomeListView: BaseView {
     override func setup() {
         backgroundColor = .clear
 
+        tabContainerView.addSubview(tabView)
+        pageContainerView.addSubViews([collectionView, curationView])
+        contentStackView.addArrangedSubview(tabContainerView)
+        contentStackView.addArrangedSubview(pageContainerView)
+
         addSubViews([
             dragIndicatorView,
-            collectionView,
+            contentStackView,
             mapViewButton
         ])
     }
@@ -66,10 +94,27 @@ final class HomeListView: BaseView {
             $0.size.equalTo(Layout.dragIndicatorSize)
         }
 
-        collectionView.snp.makeConstraints {
+        contentStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(dragIndicatorView.snp.bottom)
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
+        }
+
+        tabContainerView.snp.makeConstraints {
+            $0.height.equalTo(HomeBottomSheetTabView.Layout.containerHeight).priority(999)
+        }
+
+        tabView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(HomeBottomSheetTabView.Layout.topInset)
+            $0.leading.trailing.equalToSuperview().inset(HomeBottomSheetTabView.Layout.horizontalInset)
+        }
+
+        collectionView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
+        curationView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
 
         mapViewButton.snp.makeConstraints {
@@ -94,6 +139,17 @@ final class HomeListView: BaseView {
         mapViewButton.alpha = clamped
         mapViewButton.isHidden = clamped <= 0
         updateBottomBarCoveringHeight(bottomBarCoveringHeight)
+    }
+
+    func bindTabs(_ tabs: [HomeBottomSheetTabItem]) {
+        tabContainerView.isHidden = tabs.isEmpty
+        tabView.bind(tabs)
+    }
+
+    func showPage(viewType: HomeBottomTabViewType) {
+        let isCuration = viewType == .curation
+        curationView.isHidden = !isCuration
+        collectionView.isHidden = isCuration
     }
 
     func updateBottomBarCoveringHeight(_ height: CGFloat) {

@@ -33,3 +33,4 @@
 
 "location_deny_title" = "위치 권한 거절";
 "location_deny_description" = "현재 내 위치와 가까운 가게를 찾기 위해 위치 권한이 필요합니다. 설정에서 위치 권한을 허용시켜주세요.";
+"home_curation.empty.title" = "주변에 가게가 없어요";
