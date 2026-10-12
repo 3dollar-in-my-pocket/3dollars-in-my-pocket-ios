@@ -3,6 +3,7 @@ import Foundation
 
 import Common
 import Model
+import Log
 
 extension MenuExtractionResultViewModel {
     struct Input {
@@ -13,6 +14,7 @@ extension MenuExtractionResultViewModel {
     }
 
     struct Output {
+        let screenName: ScreenName = .writeDetailMenuExtractionResult
         let afterCreatedStore: Bool
         let recognizedMenuCount: Int
         let categories: CurrentValueSubject<[StoreFoodCategoryResponse], Never>

@@ -1,3 +1,4 @@
+// swiftlint:disable file_length - 가게 미리보기(tip)와 가게 상세 임베드(full)를 한 패널에서 전환하는 시트라 두 상태의 뷰·바인딩이 같은 파일에 있어야 흐름을 따라갈 수 있다
 import UIKit
 import Combine
 
@@ -10,6 +11,7 @@ import StoreInterface
 import CombineCocoa
 import SnapKit
 
+// swiftlint:disable:next type_body_length - 미리보기(tip)·상세 임베드(full) 전환을 한 패널에서 조율하는 VC. 재사용 시 이전 가게 비우기·로딩 스켈레톤이 같은 상태를 다뤄 함께 둔다
 final class StorePreviewBottomSheetViewController: BaseViewController {
     private enum Layout {
         static let grabberAreaHeight: CGFloat = 12
@@ -166,6 +168,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     private var isTrackingDetailScroll = false
     private var isPanelAtFull = false
     private var displayItemModalViews: [UIView] = []
+    private let skeletonView = StorePreviewSkeletonView()
+    private var isLoadingPreview = true
 
     private var previewViews: [UIView] {
         [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
@@ -198,6 +202,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         bindBodyTapGesture()
         setupActions()
         bind()
+        updateSkeleton()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -244,6 +249,24 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         }
     }
 
+    func clearContent() {
+        previewSection = nil
+        titleLabel.text = nil
+        titleLabel.attributedText = nil
+        configureBadge(nil)
+        metadataView.clear()
+        configureImages([])
+        configureBodies([])
+        actionBarStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        setSaveButton(isFavorited: false)
+        isLoadingPreview = true
+        updateSkeleton()
+    }
+
+    private func updateSkeleton() {
+        skeletonView.isHidden = isLoadingPreview.isNot || detailContainerView.isHidden.isNot
+    }
+
     private func resetDetail() {
         if let detailViewController {
             detailViewController.willMove(toParent: nil)
@@ -258,13 +281,14 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
         previewViews.forEach { $0.isHidden = false }
+        updateSkeleton()
     }
 
     private func setupViews() {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        (previewViews + [detailContainerView, detailNavigationBar])
+        (previewViews + [skeletonView, detailContainerView, detailNavigationBar])
             .forEach { view.addSubview($0) }
 
         titleStack.addArrangedSubview(titleLabel)
@@ -302,6 +326,13 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
             $0.top.equalToSuperview().offset(Layout.contentTop)
             $0.trailing.lessThanOrEqualTo(topButtonStack.snp.leading).offset(-4)
             $0.height.equalTo(28)
+        }
+
+        skeletonView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(Layout.contentTop)
+            $0.leading.equalToSuperview().offset(Layout.horizontalMargin)
+            $0.trailing.equalTo(topButtonStack.snp.leading).offset(-8)
+            $0.height.equalTo(StorePreviewSkeletonView.Layout.height)
         }
 
         metadataView.snp.makeConstraints {
@@ -514,6 +545,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         embedStoreSectionsIfNeeded()
         previewViews.forEach { $0.isHidden = true }
         detailContainerView.isHidden = false
+        updateSkeleton()
         showDetailNavigationBar()
         (detailViewController as? StoreDetailSectionsLoadable)?.markSectionsDisplayed()
     }
@@ -535,6 +567,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
         previewViews.forEach { $0.isHidden = false }
+        updateSkeleton()
     }
 
     private func showDetailNavigationBar() {
@@ -582,6 +615,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
 
     private func render(section: StorePreviewSection) {
         previewSection = section
+        isLoadingPreview = false
+        updateSkeleton()
         (detailViewController as? StoreDetailSectionsLoadable)?.updatePlaceholderPreview(
             StoreScreenPreviewSection(preview: section, storeId: viewModel.storeId)
         )

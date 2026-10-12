@@ -8,7 +8,20 @@ final class MenuFormContentView: BaseView {
     let tabView: MenuCategoryTabView
     let categoryView = MenuCategoryView()
 
-    private let tabPlaceholderView = UIView()
+    private let stickyHeaderPlaceholderView = UIView()
+
+    private let stickyHeaderView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.systemWhite.color
+        return view
+    }()
+
+    private let stickyHeaderBottomLineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray20.color
+        view.isHidden = true
+        return view
+    }()
 
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -22,6 +35,10 @@ final class MenuFormContentView: BaseView {
         return stackView
     }()
 
+    private var stickyHeaderHeight: CGFloat {
+        MenuCategoryTabView.Layout.height + MenuCategoryView.Layout.height
+    }
+
     init(showsFilterButton: Bool) {
         self.tabView = MenuCategoryTabView(showsFilterButton: showsFilterButton)
         super.init(frame: .zero)
@@ -34,9 +51,14 @@ final class MenuFormContentView: BaseView {
     override func setup() {
         backgroundColor = Colors.systemWhite.color
         addSubview(stackView)
-        stackView.addArrangedSubview(tabPlaceholderView)
-        stackView.addArrangedSubview(categoryView)
+        stackView.addArrangedSubview(stickyHeaderPlaceholderView)
         stackView.addArrangedSubview(menuStackView)
+
+        stickyHeaderView.addSubViews([
+            tabView,
+            categoryView,
+            stickyHeaderBottomLineView
+        ])
     }
 
     override func bindConstraints() {
@@ -44,25 +66,38 @@ final class MenuFormContentView: BaseView {
             $0.edges.equalToSuperview()
         }
 
-        tabPlaceholderView.snp.makeConstraints {
-            $0.height.equalTo(MenuCategoryTabView.Layout.height)
+        stickyHeaderPlaceholderView.snp.makeConstraints {
+            $0.height.equalTo(stickyHeaderHeight)
+        }
+
+        tabView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+        }
+
+        categoryView.snp.makeConstraints {
+            $0.top.equalTo(tabView.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+        }
+
+        stickyHeaderBottomLineView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(1)
         }
     }
 
-    func attachStickyTab(to hostView: UIView) {
-        tabView.snp.removeConstraints()
-        tabView.translatesAutoresizingMaskIntoConstraints = true
-        hostView.addSubview(tabView)
+    func attachStickyHeader(to hostView: UIView) {
+        hostView.addSubview(stickyHeaderView)
     }
 
-    func updateStickyTabFrame(in hostView: UIView, stickyTopY: CGFloat) {
-        let placeholderFrame = tabPlaceholderView.convert(tabPlaceholderView.bounds, to: hostView)
-        tabView.frame = CGRect(
+    func updateStickyHeaderFrame(in hostView: UIView, stickyTopY: CGFloat) {
+        let placeholderFrame = stickyHeaderPlaceholderView.convert(stickyHeaderPlaceholderView.bounds, to: hostView)
+        stickyHeaderView.frame = CGRect(
             x: placeholderFrame.minX,
             y: max(placeholderFrame.minY, stickyTopY),
             width: placeholderFrame.width,
-            height: MenuCategoryTabView.Layout.height
+            height: stickyHeaderHeight
         )
+        stickyHeaderBottomLineView.isHidden = placeholderFrame.minY >= stickyTopY
     }
 
     @discardableResult

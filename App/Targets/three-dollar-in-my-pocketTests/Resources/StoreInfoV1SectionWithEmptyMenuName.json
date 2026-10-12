@@ -1,0 +1,267 @@
+{
+  "type": "INFO_V1",
+  "sectionId": "INFO",
+  "header": {
+    "title": {
+      "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">가게 정보 &amp; 메뉴</span>",
+      "isHtml": true,
+      "fontColor": "#0F0F0F"
+    },
+    "subTitle": {
+      "text": "<span style=\"font-size:12px; font-weight:500; color:#787878\">2025.01.02 업데이트</span>",
+      "isHtml": true,
+      "fontColor": "#787878"
+    },
+    "trailingAction": {
+      "text": {
+        "text": "<span style=\"font-size:12px; font-weight:700; color:#FF8181\">정보 수정</span>",
+        "isHtml": true,
+        "fontColor": "#FF8181"
+      },
+      "customAction": {
+        "actionType": "STORE_EDIT_SECTION_UPDATE",
+        "extraParams": {
+          "STORE_ID": "100847"
+        }
+      },
+      "clickLog": {
+        "screenName": "store_detail",
+        "objectType": "button",
+        "objectId": "edit",
+        "extraParameters": {
+          "store_id": "100847"
+        },
+        "eventType": "CLICK"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      }
+    }
+  },
+  "informationCard": {
+    "rows": [
+      {
+        "type": "TRAILING_TEXT",
+        "label": {
+          "text": "<span style=\"font-size:12px; font-weight:700; color:#0F0F0F\">가게 형태</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        },
+        "value": {
+          "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">매장</span>",
+          "isHtml": true,
+          "fontColor": "#5A5A5A"
+        }
+      },
+      {
+        "type": "CHIP_GROUP",
+        "label": {
+          "text": "<span style=\"font-size:12px; font-weight:700; color:#0F0F0F\">출몰 요일</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        },
+        "chips": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#FFFFFF\">월</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "style": {
+              "backgroundColor": "#5A5A5A"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#FFFFFF\">화</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "style": {
+              "backgroundColor": "#5A5A5A"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#FFFFFF\">수</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "style": {
+              "backgroundColor": "#5A5A5A"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#FFFFFF\">목</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "style": {
+              "backgroundColor": "#5A5A5A"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#FFFFFF\">금</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "style": {
+              "backgroundColor": "#5A5A5A"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#FFFFFF\">토</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "style": {
+              "backgroundColor": "#5A5A5A"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">일</span>",
+              "isHtml": true,
+              "fontColor": "#B7B7B7"
+            },
+            "style": {
+              "backgroundColor": "#F4F4F4"
+            }
+          }
+        ]
+      },
+      {
+        "type": "TRAILING_TEXT",
+        "label": {
+          "text": "<span style=\"font-size:12px; font-weight:700; color:#0F0F0F\">출몰 시간대</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        },
+        "value": {
+          "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">14:00 부터 20:00 까지</span>",
+          "isHtml": true,
+          "fontColor": "#5A5A5A"
+        }
+      },
+      {
+        "type": "INLINE_OPTION",
+        "label": {
+          "text": "<span style=\"font-size:12px; font-weight:700; color:#0F0F0F\">결제 방식</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        },
+        "items": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">현금</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "isSelected": true
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">계좌이체</span>",
+              "isHtml": true,
+              "fontColor": "#B7B7B7"
+            },
+            "isSelected": false
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">카드</span>",
+              "isHtml": true,
+              "fontColor": "#B7B7B7"
+            },
+            "isSelected": false
+          }
+        ]
+      }
+    ],
+    "style": {
+      "backgroundColor": "#FAFAFA"
+    }
+  },
+  "menuCard": {
+    "groups": [
+      {
+        "header": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1_bungeoppang.png?version=1",
+            "style": {
+              "width": 28.0,
+              "height": 28.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">붕어빵</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "contentSpacing": 8.0
+        },
+        "items": [
+          {
+            "primaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\"></span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            },
+            "secondaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\">5개 4000원</span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            }
+          },
+          {
+            "primaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\"></span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            },
+            "secondaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\">3개 2500원</span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            }
+          },
+          {
+            "primaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\">슈크림붕</span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            },
+            "secondaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\">1000</span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            }
+          },
+          {
+            "primaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\">팥붕</span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            },
+            "secondaryText": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#0F0F0F\">1000</span>",
+              "isHtml": true,
+              "fontColor": "#0F0F0F"
+            }
+          }
+        ]
+      }
+    ],
+    "style": {
+      "backgroundColor": "#FAFAFA"
+    }
+  },
+  "style": {
+    "backgroundColor": "#FFFFFF"
+  }
+}

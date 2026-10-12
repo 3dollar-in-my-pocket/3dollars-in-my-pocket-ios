@@ -133,7 +133,7 @@ final class WriteDetailMenuViewController: BaseViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         applyGradientToSkipButton()
-        updateStickyTab()
+        updateStickyHeader()
     }
 
     private func setupUI() {
@@ -146,7 +146,7 @@ final class WriteDetailMenuViewController: BaseViewController {
         ])
         scrollView.addSubview(stackView)
         scrollView.delegate = self
-        contentView.attachStickyTab(to: view)
+        contentView.attachStickyHeader(to: view)
 
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(imageMenuButtonContainerView)
@@ -231,6 +231,8 @@ final class WriteDetailMenuViewController: BaseViewController {
             .main
             .sink { [weak self] isAvailable in
                 self?.imageMenuButtonContainerView.isHidden = isAvailable.isNot
+                self?.view.layoutIfNeeded()
+                self?.updateStickyHeader()
             }
             .store(in: &cancellables)
 
@@ -276,7 +278,7 @@ final class WriteDetailMenuViewController: BaseViewController {
             .sink { [weak self] viewModels in
                 self?.contentView.reloadMenus(viewModels)
                 self?.view.layoutIfNeeded()
-                self?.updateStickyTab()
+                self?.updateStickyHeader()
             }
             .store(in: &cancellables)
 
@@ -334,8 +336,8 @@ final class WriteDetailMenuViewController: BaseViewController {
         self.gradientLayer = gradientLayer
     }
 
-    private func updateStickyTab() {
-        contentView.updateStickyTabFrame(in: view, stickyTopY: scrollView.frame.minY)
+    private func updateStickyHeader() {
+        contentView.updateStickyHeaderFrame(in: view, stickyTopY: scrollView.frame.minY)
     }
 
     private func scrollToBottom() {
@@ -415,6 +417,6 @@ extension WriteDetailMenuViewController {
 
 extension WriteDetailMenuViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        updateStickyTab()
+        updateStickyHeader()
     }
 }

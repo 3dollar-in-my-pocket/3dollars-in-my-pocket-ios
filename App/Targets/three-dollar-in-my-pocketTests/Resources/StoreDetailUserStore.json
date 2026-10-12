@@ -1,0 +1,110 @@
+{
+  "storeId": "116",
+  "storeType": "USER_STORE",
+  "name": "가게15",
+  "rating": 5.0,
+  "isOwner": false,
+  "location": {
+    "latitude": 37.4983268205018,
+    "longitude": 127.0256096087437
+  },
+  "address": {
+    "fullAddress": "서울특별시 서초구 서초동 1317-29"
+  },
+  "distanceM": 182,
+  "menus": [
+    {
+      "name": "아시안 푸드",
+      "description": "3000원",
+      "category": {
+        "category": "ETC",
+        "categoryId": "ETC",
+        "name": "기타",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+        "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+        "classification": {
+          "type": "SNACKS",
+          "description": "간식",
+          "priority": 2
+        },
+        "isNew": false
+      }
+    },
+    {
+      "name": "붕어빵",
+      "description": "3000원",
+      "category": {
+        "category": "BUNGEOPPANG",
+        "categoryId": "BUNGEOPPANG",
+        "name": "붕어빵",
+        "imageUrl": "https://storage.threedollars.co.kr/menu/v1_bungeoppang.png?version=1",
+        "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_bungeoppang_3x.png?version=1",
+        "description": "붕어빵 만나기 30초 전",
+        "classification": {
+          "type": "TREND_SNACKS",
+          "description": "✨트렌드 간식",
+          "priority": 1
+        },
+        "isNew": false
+      }
+    }
+  ],
+  "appearanceDays": [
+    {
+      "dayOfTheWeek": "TUESDAY",
+      "locationDescription": ""
+    },
+    {
+      "dayOfTheWeek": "MONDAY",
+      "locationDescription": ""
+    },
+    {
+      "dayOfTheWeek": "SUNDAY",
+      "locationDescription": ""
+    },
+    {
+      "dayOfTheWeek": "FRIDAY",
+      "locationDescription": ""
+    }
+  ],
+  "categories": [
+    {
+      "category": "ETC",
+      "categoryId": "ETC",
+      "name": "기타",
+      "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+      "disableImageUrl": "https://storage.threedollars.co.kr/menu/etc%403x.png?version=1",
+      "description": "식사는 없어 배고파도 음료도 없어 목말라도",
+      "classification": {
+        "type": "SNACKS",
+        "description": "간식",
+        "priority": 2
+      },
+      "isNew": false
+    },
+    {
+      "category": "BUNGEOPPANG",
+      "categoryId": "BUNGEOPPANG",
+      "name": "붕어빵",
+      "imageUrl": "https://storage.threedollars.co.kr/menu/v1_bungeoppang.png?version=1",
+      "disableImageUrl": "https://storage.threedollars.co.kr/menu/v4/disable_bungeoppang_3x.png?version=1",
+      "description": "붕어빵 만나기 30초 전",
+      "classification": {
+        "type": "TREND_SNACKS",
+        "description": "✨트렌드 간식",
+        "priority": 1
+      },
+      "isNew": false
+    }
+  ],
+  "activitiesStatus": "NO_RECENT_ACTIVITY",
+  "representativeImages": [],
+  "accountNumbers": [],
+  "contactsNumbers": [],
+  "sns": [],
+  "labels": [],
+  "paymentMethods": [],
+  "createdAt": "2023-08-14T10:49:10",
+  "updatedAt": "2023-08-14T10:49:10"
+}

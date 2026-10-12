@@ -72,8 +72,8 @@ final class WriteCompleteViewModel: BaseViewModel {
             userStoreResponse: config.userStoreResponse,
             paymentMethods: config.userStoreResponse.paymentMethods,
             appearanceDays: config.userStoreResponse.appearanceDays,
-            startTime: config.userStoreResponse.openingHours?.startTime?.toDate(),
-            endTime: config.userStoreResponse.openingHours?.endTime?.toDate(),
+            startTime: config.userStoreResponse.openingHours?.startTime?.toDate(format: "HH:mm"),
+            endTime: config.userStoreResponse.openingHours?.endTime?.toDate(format: "HH:mm"),
             menus: config.userStoreResponse.menusV3.map { UserStoreMenuRequestV3(response: $0) }
         )
         self.dependency = dependency

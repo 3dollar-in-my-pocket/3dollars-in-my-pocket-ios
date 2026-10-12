@@ -2,8 +2,14 @@ import UIKit
 
 import Common
 import DesignSystem
+import Log
 
 final class MenuPhotoSelectViewController: BaseViewController {
+    private enum Layout {
+        static let exampleImageRatio: CGFloat = 2.0 / 3.0
+        static let exampleImageCornerRadius: CGFloat = 12
+    }
+
     private let backgroundButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = Colors.systemBlack.color.withAlphaComponent(0.2)
@@ -40,6 +46,7 @@ final class MenuPhotoSelectViewController: BaseViewController {
         let imageView = UIImageView(image: Assets.imageMenuExample.image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = Layout.exampleImageCornerRadius
         return imageView
     }()
 
@@ -53,10 +60,20 @@ final class MenuPhotoSelectViewController: BaseViewController {
         image: Icons.camera.image
     )
 
+    private let viewModel: MenuPhotoSelectViewModel
     private let onTapAlbum: () -> Void
     private let onTapCamera: () -> Void
 
-    init(onTapAlbum: @escaping () -> Void, onTapCamera: @escaping () -> Void) {
+    override var screenName: ScreenName {
+        return viewModel.output.screenName
+    }
+
+    init(
+        viewModel: MenuPhotoSelectViewModel,
+        onTapAlbum: @escaping () -> Void,
+        onTapCamera: @escaping () -> Void
+    ) {
+        self.viewModel = viewModel
         self.onTapAlbum = onTapAlbum
         self.onTapCamera = onTapCamera
         super.init(nibName: nil, bundle: nil)
@@ -110,7 +127,7 @@ final class MenuPhotoSelectViewController: BaseViewController {
         exampleImageView.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(180)
+            $0.height.equalTo(exampleImageView.snp.width).multipliedBy(Layout.exampleImageRatio)
         }
 
         albumButton.snp.makeConstraints {
@@ -136,23 +153,18 @@ final class MenuPhotoSelectViewController: BaseViewController {
 
         albumButton.tapPublisher
             .throttleClick()
-            .sink { [weak self] in
-                guard let self else { return }
-                let onTapAlbum = self.onTapAlbum
-                dismiss(animated: true) {
-                    onTapAlbum()
-                }
-            }
+            .subscribe(viewModel.input.didTapAlbum)
             .store(in: &cancellables)
 
         cameraButton.tapPublisher
             .throttleClick()
-            .sink { [weak self] in
-                guard let self else { return }
-                let onTapCamera = self.onTapCamera
-                dismiss(animated: true) {
-                    onTapCamera()
-                }
+            .subscribe(viewModel.input.didTapCamera)
+            .store(in: &cancellables)
+
+        viewModel.output.route
+            .main
+            .sink { [weak self] route in
+                self?.handleRoute(route)
             }
             .store(in: &cancellables)
     }
@@ -166,11 +178,27 @@ final class MenuPhotoSelectViewController: BaseViewController {
             .resizeImage(scaledTo: 18)
             .withRenderingMode(.alwaysTemplate)
         config.imagePadding = 8
-        config.baseForegroundColor = Colors.gray50.color
+        config.baseForegroundColor = Colors.gray70.color
         config.cornerStyle = .fixed
         config.background.cornerRadius = 12
         config.background.strokeWidth = 1
         config.background.strokeColor = Colors.gray40.color
         return UIButton(configuration: config)
+    }
+}
+
+// MARK: Route
+extension MenuPhotoSelectViewController {
+    private func handleRoute(_ route: MenuPhotoSelectViewModel.Route) {
+        let action: () -> Void
+        switch route {
+        case .album:
+            action = onTapAlbum
+        case .camera:
+            action = onTapCamera
+        }
+        dismiss(animated: true) {
+            action()
+        }
     }
 }

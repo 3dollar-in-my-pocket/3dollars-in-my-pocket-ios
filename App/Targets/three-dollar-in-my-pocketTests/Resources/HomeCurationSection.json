@@ -1,0 +1,2531 @@
+{
+  "items": [
+    {
+      "type": "CAROUSEL",
+      "carouselId": "POPULAR_SNACKS",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:20px; font-weight:700; color:#0F0F0F\">최근 인기 간식</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        }
+      },
+      "defaultCategoryId": "BUNGEOPPANG",
+      "categoryFilters": [
+        {
+          "categoryId": "BUNGEOPPANG",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">붕어빵</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">붕어빵</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "WAKBBU_SALT_BREAD",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">왁뿌 소금빵</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">왁뿌 소금빵</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "WAKBBU_SALT_BREAD"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "FRUIT_SANDO",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">후르츠산도</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">후르츠산도</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "FRUIT_SANDO"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "PIZZA_SEOLGI",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">피자설기</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">피자설기</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "PIZZA_SEOLGI"
+            },
+            "eventType": "CLICK"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:116",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게15</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">182m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">4개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=116&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "116",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:12",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-0110d087-72f7-4308-858c-5c1b48ca4d69.jpeg",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">서초</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.4km</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=12&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "12",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:44",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-d8eec2a5-5ba6-4fd6-9b95-e7fafe3dacc6.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">호</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.9km</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=44&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "44",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "ADMOB_CARD",
+          "cardId": "ADMOB:37d33f0e-369c-4cae-a1a4-ce3d0b2979fd",
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "admob",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG"
+            },
+            "eventType": "CLICK"
+          },
+          "impressionLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "admob",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG"
+            },
+            "eventType": "IMPRESSION"
+          },
+          "height": 100
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:100323",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-0cfc96ed-ddc4-409c-bf11-5a4894620caa.jpeg",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">강남역 브랜딩 마커 1</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">157m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=100323&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "100323",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:114",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-12fe4584-0f5c-479a-b196-a95878e07f52.jpeg",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게15</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">234m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=114&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "114",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:110",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-389ca869-e37c-468a-b2df-8646d0284338.jpeg",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게15</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">242m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=110&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "110",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:12804906",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/boss/store-certification/v1/v1-bcd924cb-e2d2-4312-88a9-660039b739a7.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">현식 테스트</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">4m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">2개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=12804906&storeType=BOSS_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "12804906",
+              "store_type": "BOSS_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:120145",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/boss/store-certification/v1/v1-5300304e-e412-469c-bd50-4c07d52a8d91.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">하경짱</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=120145&storeType=BOSS_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "120145",
+              "store_type": "BOSS_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:109",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게14</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">243m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=109&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "109",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:115",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게15</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">268m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=115&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "POPULAR_SNACKS",
+              "categoryId": "BUNGEOPPANG",
+              "store_id": "115",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        }
+      ]
+    },
+    {
+      "type": "ADMOB_CARD",
+      "cardId": "ADMOB:1fcdcbf6-3c2c-4899-b47a-afef23b8a6bb",
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "admob",
+        "extraParameters": {
+          "tabId": "CURATION"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "admob",
+        "extraParameters": {
+          "tabId": "CURATION"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "height": 50
+    },
+    {
+      "type": "CAROUSEL",
+      "carouselId": "TASTE_SNACKS",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:20px; font-weight:700; color:#0F0F0F\">입맛별로 찾는 간식</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        }
+      },
+      "defaultCategoryId": "GRANDMA_TASTE",
+      "categoryFilters": [
+        {
+          "categoryId": "GRANDMA_TASTE",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">👵 할미입맛</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">👵 할미입맛</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "SWEET_TASTE",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">🍯 달달한</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">🍯 달달한</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "SWEET_TASTE"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "FRESH_TASTE",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">🍓 상큼한</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">🍓 상큼한</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "FRESH_TASTE"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "BREAD_LOVER",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">🥐 빵순이</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">🥐 빵순이</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "BREAD_LOVER"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "categoryId": "SAVORY_TASTE",
+          "selected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#E96060\">🍢 든든·짭짤</span>",
+              "isHtml": true,
+              "fontColor": "#E96060"
+            },
+            "style": {
+              "backgroundColor": "#FFEFEF",
+              "border": {
+                "color": "#E96060",
+                "width": 1.0
+              }
+            }
+          },
+          "unselected": {
+            "text": {
+              "text": "<span style=\"font-size:12px; font-weight:500; color:#232323\">🍢 든든·짭짤</span>",
+              "isHtml": true,
+              "fontColor": "#232323"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "button",
+            "objectId": "category_filter",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "SAVORY_TASTE"
+            },
+            "eventType": "CLICK"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:153",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-1b531ca6-3e1c-4998-ae42-453d6c013cf7.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">강남역 주변 가게</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">785m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">45개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">4.1</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=153&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "153",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:169",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-69ee463d-d0ae-4614-b934-81821936f837.jpeg",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">강남구 인기 가게</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">145m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">38개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">4.9</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=169&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "169",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:154",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">신논현</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">817m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">10개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">4.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=154&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "154",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "ADMOB_CARD",
+          "cardId": "ADMOB:c48a0701-04b6-40a8-a869-abea40f313a0",
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "admob",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE"
+            },
+            "eventType": "CLICK"
+          },
+          "impressionLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "admob",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE"
+            },
+            "eventType": "IMPRESSION"
+          },
+          "height": 100
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:12",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-0110d087-72f7-4308-858c-5c1b48ca4d69.jpeg",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">서초</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.4km</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=12&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "12",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:44",
+          "image": {
+            "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-d8eec2a5-5ba6-4fd6-9b95-e7fafe3dacc6.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">호</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.9km</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=44&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "44",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:105",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게13</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">322m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=105&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "105",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:12804902",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/icon_menu_24pt%3Dbutter.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">1061-3</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">4m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=12804902&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "12804902",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:12804901",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/icon_menu_24pt%3Dbutter.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">1061-2</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">4m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=12804901&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "12804901",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:104",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게12</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">331m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=104&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "104",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        },
+        {
+          "type": "IMAGE_PREVIEW_CARD",
+          "cardId": "S:102",
+          "image": {
+            "url": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+            "style": {
+              "width": 100.0,
+              "height": 100.0,
+              "dimmed": false
+            }
+          },
+          "title": {
+            "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">가게12</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metricLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">366m</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+                "isHtml": true,
+                "fontColor": "#969696"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "contextLabel": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+                "isHtml": true,
+                "fontColor": "#FF8181"
+              },
+              "contentSpacing": 2.0,
+              "style": {
+                "backgroundColor": "#FFFFFF"
+              }
+            }
+          ],
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=102&storeType=USER_STORE"
+          },
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "clickLog": {
+            "screenName": "home",
+            "objectType": "card",
+            "objectId": "store",
+            "extraParameters": {
+              "tabId": "CURATION",
+              "carouselId": "TASTE_SNACKS",
+              "categoryId": "GRANDMA_TASTE",
+              "store_id": "102",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "refs": []
+        }
+      ]
+    }
+  ]
+}

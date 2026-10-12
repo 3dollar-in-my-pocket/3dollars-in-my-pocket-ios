@@ -14,6 +14,7 @@ final class MenuPhotoPicker: NSObject {
         self.onPicked = onPicked
 
         let viewController = MenuPhotoSelectViewController(
+            viewModel: MenuPhotoSelectViewModel(),
             onTapAlbum: { [weak self] in
                 self?.presentAlbum()
             },
