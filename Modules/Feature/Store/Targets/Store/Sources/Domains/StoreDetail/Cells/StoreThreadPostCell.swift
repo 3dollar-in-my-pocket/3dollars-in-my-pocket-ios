@@ -208,6 +208,7 @@ private final class ThreadPostEmbedCardView: UIView {
     enum Layout {
         static let renderTimeout: TimeInterval = 10
         static let threadsOrigins = ["https://www.threads.com", "https://www.threads.net"]
+        static let threadsHosts = ["threads.com", "threads.net"]
         static let heightMessageName = "height"
         static let baseURL = URL(string: "https://threedollars.co.kr")
     }
@@ -346,12 +347,28 @@ extension ThreadPostEmbedCardView: WKNavigationDelegate, WKUIDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        if navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url {
+        guard let url = navigationAction.request.url else {
+            decisionHandler(.cancel)
+            return
+        }
+        if navigationAction.navigationType == .linkActivated {
             onOpenURL?(url)
             decisionHandler(.cancel)
             return
         }
-        decisionHandler(.allow)
+        let isMainFrame = navigationAction.targetFrame?.isMainFrame ?? true
+        let isAllowed = isMainFrame ? Self.isEmbedDocument(url) : Self.isThreadsURL(url)
+        decisionHandler(isAllowed ? .allow : .cancel)
+    }
+
+    private static func isEmbedDocument(_ url: URL) -> Bool {
+        url.scheme == "about" || url.host == Layout.baseURL?.host
+    }
+
+    private static func isThreadsURL(_ url: URL) -> Bool {
+        guard url.scheme == "https" || url.scheme == "about" else { return false }
+        guard let host = url.host else { return url.scheme == "about" }
+        return Layout.threadsHosts.contains { host == $0 || host.hasSuffix(".\($0)") }
     }
 
     func webView(

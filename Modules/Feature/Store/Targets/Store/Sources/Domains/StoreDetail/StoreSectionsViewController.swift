@@ -418,6 +418,9 @@ public final class StoreSectionsViewController: BaseViewController {
         let actionHandler: (StoreSectionAction) -> Void = { [weak self] in
             self?.viewModel.input.didSelectAction.send($0)
         }
+        if let section = component as? StoreThreadPostEmbedSection {
+            return makeThreadPostCell(section, indexPath: indexPath, in: collectionView)
+        }
 
         switch component {
             case let section as StoreCalloutSection:
@@ -502,8 +505,6 @@ public final class StoreSectionsViewController: BaseViewController {
                     self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
                 }
                 return cell
-            case let section as StoreThreadPostEmbedSection:
-                return makeThreadPostCell(section, indexPath: indexPath, in: collectionView)
             case is StoreSkeletonSection:
                 let cell: StoreSkeletonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 return cell
