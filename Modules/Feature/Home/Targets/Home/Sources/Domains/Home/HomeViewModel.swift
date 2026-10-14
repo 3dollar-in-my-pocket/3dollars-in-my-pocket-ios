@@ -58,7 +58,6 @@ extension HomeViewModel {
         let cameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
         /// 최초 진입 카메라 이동. 이동 후 조회 반경을 다시 측정해야 하므로 일반 이동과 분리한다.
         let initialCameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
-        /// 현재 위치 버튼 이동. 줌 레벨이 바뀔 수 있어 이동이 끝난 뒤 조회 반경을 다시 측정해야 한다.
         let currentLocationCameraPosition = PassthroughSubject<(CLLocation, Double?), Never>()
         let focusBounds = PassthroughSubject<LocationBoundsResponse, Never>()
         let advertisementMarker = PassthroughSubject<AdvertisementResponse, Never>()
