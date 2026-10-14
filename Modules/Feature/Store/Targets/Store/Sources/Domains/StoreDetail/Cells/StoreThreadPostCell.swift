@@ -347,7 +347,7 @@ extension ThreadPostEmbedCardView: WKNavigationDelegate, WKUIDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        guard let url = navigationAction.request.url else {
+        guard let url = navigationAction.request.url, url.scheme == "https", let host = url.host else {
             decisionHandler(.cancel)
             return
         }
@@ -357,18 +357,15 @@ extension ThreadPostEmbedCardView: WKNavigationDelegate, WKUIDelegate {
             return
         }
         let isMainFrame = navigationAction.targetFrame?.isMainFrame ?? true
-        let isAllowed = isMainFrame ? Self.isEmbedDocument(url) : Self.isThreadsURL(url)
-        decisionHandler(isAllowed ? .allow : .cancel)
-    }
-
-    private static func isEmbedDocument(_ url: URL) -> Bool {
-        url.scheme == "about" || url.host == Layout.baseURL?.host
-    }
-
-    private static func isThreadsURL(_ url: URL) -> Bool {
-        guard url.scheme == "https" || url.scheme == "about" else { return false }
-        guard let host = url.host else { return url.scheme == "about" }
-        return Layout.threadsHosts.contains { host == $0 || host.hasSuffix(".\($0)") }
+        if isMainFrame, host == Layout.baseURL?.host {
+            decisionHandler(.allow)
+            return
+        }
+        if isMainFrame.isNot, Layout.threadsHosts.contains(where: { host == $0 || host.hasSuffix(".\($0)") }) {
+            decisionHandler(.allow)
+            return
+        }
+        decisionHandler(.cancel)
     }
 
     func webView(
