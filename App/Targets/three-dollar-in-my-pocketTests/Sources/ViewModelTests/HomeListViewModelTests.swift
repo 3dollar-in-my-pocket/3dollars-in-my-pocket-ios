@@ -113,4 +113,49 @@ final class HomeListViewModelTests: XCTestCase {
         XCTAssertEqual(logManager.sentEvents.count, 2)
         XCTAssertEqual(logManager.sentEvents.last?.parameters["value"] as? String, "CURATION")
     }
+
+    // MARK: TH-1466 TC2
+
+    func test_TH1466_TC2_가게리스트탭이보이면_리스트섹션노출로그를바로보낸다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(logManager: logManager)
+        let impressionLog = try makeListSectionImpressionLog()
+
+        // When
+        viewModel.input.receiveSectionImpressionLog.send(impressionLog)
+
+        // Then
+        XCTAssertEqual(logManager.sentEvents.count, 1)
+        XCTAssertEqual(logManager.sentEvents.first?.name.rawValue, EventName.impression.rawValue)
+        XCTAssertEqual(logManager.sentEvents.first?.parameters["object_id"] as? String, "home_list")
+        XCTAssertEqual(logManager.sentEvents.first?.parameters["store_card_count"] as? String, "15")
+    }
+
+    func test_TH1466_TC2_큐레이션탭이보이는동안받은로그는_가게리스트탭으로바꿀때한번보낸다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(logManager: logManager)
+        viewModel.input.setTabSection.send(try makeTabSection())
+        let impressionLog = try makeListSectionImpressionLog()
+        viewModel.input.receiveSectionImpressionLog.send(impressionLog)
+        let impressionCountBeforeSwitch = logManager.sentEvents.filter { $0.name.rawValue == EventName.impression.rawValue }.count
+
+        // When
+        viewModel.input.didTapTab.send(1)
+        viewModel.input.didTapTab.send(0)
+        viewModel.input.didTapTab.send(1)
+
+        // Then
+        XCTAssertEqual(impressionCountBeforeSwitch, 0)
+        let impressions = logManager.sentEvents.filter { $0.name.rawValue == EventName.impression.rawValue }
+        XCTAssertEqual(impressions.count, 1)
+        XCTAssertEqual(impressions.first?.parameters["object_id"] as? String, "home_list")
+    }
+
+    private func makeListSectionImpressionLog() throws -> SDImpressionLog {
+        let response = try FixtureLoader.decode(HomeListSectionResponse.self, from: "HomeListSectionWithSectionLog")
+        return try XCTUnwrap(response.impressionLog)
+    }
+
 }

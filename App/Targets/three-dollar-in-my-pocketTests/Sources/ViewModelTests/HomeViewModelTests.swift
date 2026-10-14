@@ -129,6 +129,35 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(screenRepository.fetchHomeSectionListInputs.last?.mapLatitude ?? 0, 37.4979, accuracy: 0.0001)
     }
 
+    // MARK: TH-1466 TC2
+
+    func test_TH1466_TC2_리스트첫페이지와다음페이지응답마다_리스트섹션노출로그를전달한다() async throws {
+        // Given
+        let response = try FixtureLoader.decode(HomeListSectionResponse.self, from: "HomeListSectionWithSectionLog")
+        let screenRepository = MockScreenRepository(fetchHomeSectionListResult: .success(response))
+        let viewModel = makeViewModel(screenRepository: screenRepository)
+        let received = expectation(description: "listSectionImpressionLog")
+        received.expectedFulfillmentCount = 2
+        var logs: [SDImpressionLog] = []
+        viewModel.output.listSectionImpressionLog
+            .sink { logs.append($0); received.fulfill() }
+            .store(in: &cancellables)
+        let firstPage = expectation(description: "firstPage")
+        viewModel.output.bottomSheetCardsReplaced
+            .first()
+            .sink { firstPage.fulfill() }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.onInitialMapDistanceReady.send(1000)
+        await fulfillment(of: [firstPage], timeout: 1)
+        viewModel.input.bottomSheetWillLoadMore.send(())
+
+        // Then
+        await fulfillment(of: [received], timeout: 1)
+        XCTAssertEqual(logs.map(\.objectId), ["home_list", "home_list"])
+    }
+
     // MARK: - Helpers
 
     // MARK: TH-1402 TC6

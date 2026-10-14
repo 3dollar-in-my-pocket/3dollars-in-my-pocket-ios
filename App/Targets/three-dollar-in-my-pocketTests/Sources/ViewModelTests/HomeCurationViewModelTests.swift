@@ -252,6 +252,104 @@ final class HomeCurationViewModelTests: XCTestCase {
         XCTAssertEqual(logManager.sentEvents.map(\.name.rawValue), [EventName.impression.rawValue, EventName.click.rawValue])
         XCTAssertEqual(logManager.sentEvents.first?.parameters["tabId"] as? String, "CURATION")
     }
+
+    // MARK: TH-1466 TC1
+
+    func test_TH1466_TC1_큐레이션섹션을받으면_서버섹션노출로그를한번보낸다() async throws {
+        // Given
+        let logManager = MockLogManager()
+        let repository = MockScreenRepository()
+        repository.fetchHomeCurationSectionResult = .success(try makeSection(from: "HomeCurationSectionWithLogs"))
+        let viewModel = makeViewModel(repository: repository, logManager: logManager)
+        let loaded = expectItems(viewModel, count: 1)
+
+        // When
+        viewModel.input.setTabId.send("CURATION")
+        viewModel.input.setLocation.send(location)
+
+        // Then
+        await fulfillment(of: [loaded.expectation], timeout: 1)
+        XCTAssertEqual(logManager.sentEvents.count, 1)
+        let event = try XCTUnwrap(logManager.sentEvents.first)
+        XCTAssertEqual(event.name.rawValue, EventName.impression.rawValue)
+        XCTAssertEqual(event.screen.rawValue, "home")
+        XCTAssertEqual(event.parameters["object_type"] as? String, "section")
+        XCTAssertEqual(event.parameters["object_id"] as? String, "home_curation")
+        XCTAssertEqual(event.parameters["tabId"] as? String, "CURATION")
+    }
+
+    // MARK: TH-1466 TC3
+
+    func test_TH1466_TC3_캐러셀가게카드는_여러번보여도_서버노출로그를한번만보낸다() async throws {
+        // Given
+        let logManager = MockLogManager()
+        let repository = MockScreenRepository()
+        repository.fetchHomeCurationSectionResult = .success(try makeSection(from: "HomeCurationSectionWithLogs"))
+        let viewModel = makeViewModel(repository: repository, logManager: logManager)
+        let loaded = expectItems(viewModel, count: 1)
+        viewModel.input.setTabId.send("CURATION")
+        viewModel.input.setLocation.send(location)
+        await fulfillment(of: [loaded.expectation], timeout: 1)
+        let sentCount = logManager.sentEvents.count
+
+        // When
+        viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:47"))
+        viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:47"))
+        viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:525011"))
+
+        // Then
+        let events = Array(logManager.sentEvents.dropFirst(sentCount))
+        XCTAssertEqual(events.map(\.name.rawValue), [EventName.impression.rawValue, EventName.impression.rawValue])
+        XCTAssertEqual(events.map { $0.parameters["object_type"] as? String }, ["card", "card"])
+        XCTAssertEqual(events.map { $0.parameters["store_id"] as? String }, ["47", "525011"])
+        XCTAssertEqual(events.first?.parameters["position"] as? String, "1")
+    }
+
+    func test_TH1466_TC3_카테고리를바꿔새로받은카드는_노출로그를다시보낸다() async throws {
+        // Given
+        let logManager = MockLogManager()
+        let repository = MockScreenRepository()
+        repository.fetchHomeCurationSectionResult = .success(try makeSection(from: "HomeCurationSectionWithLogs"))
+        repository.fetchHomeCurationCarouselCardsResult = .success(
+            try FixtureLoader.decode(HomeCurationCarouselCardsResponse.self, from: "HomeCurationCarouselCardsWithLogs")
+        )
+        let viewModel = makeViewModel(repository: repository, logManager: logManager)
+        let items = expectItems(viewModel, count: 3)
+        viewModel.input.setTabId.send("CURATION")
+        viewModel.input.setLocation.send(location)
+        let loaded = expectItems(viewModel, count: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 1)
+
+        // When
+        viewModel.input.didTapCategory.send((carouselId: "POPULAR_SNACKS", categoryId: "FRUIT_SANDO"))
+        await fulfillment(of: [items.expectation], timeout: 1)
+        let sentCount = logManager.sentEvents.count
+        viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:12805812"))
+
+        // Then
+        let events = Array(logManager.sentEvents.dropFirst(sentCount))
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.parameters["categoryId"] as? String, "FRUIT_SANDO")
+        XCTAssertEqual(events.first?.parameters["store_id"] as? String, "12805812")
+    }
+
+    func test_TH1466_TC3_노출로그가없는가게카드는_로그를보내지않는다() async throws {
+        // Given
+        let logManager = MockLogManager()
+        let repository = MockScreenRepository()
+        repository.fetchHomeCurationSectionResult = .success(try makeSection())
+        let viewModel = makeViewModel(repository: repository, logManager: logManager)
+        let loaded = expectItems(viewModel, count: 1)
+        viewModel.input.setTabId.send("CURATION")
+        viewModel.input.setLocation.send(location)
+        await fulfillment(of: [loaded.expectation], timeout: 1)
+
+        // When
+        viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:116"))
+
+        // Then
+        XCTAssertTrue(logManager.sentEvents.isEmpty)
+    }
 }
 
 extension HomeCurationViewModelTests {
@@ -267,8 +365,8 @@ extension HomeCurationViewModelTests {
         ))
     }
 
-    private func makeSection() throws -> HomeCurationSectionResponse {
-        try FixtureLoader.decode(HomeCurationSectionResponse.self, from: "HomeCurationSection")
+    private func makeSection(from fileName: String = "HomeCurationSection") throws -> HomeCurationSectionResponse {
+        try FixtureLoader.decode(HomeCurationSectionResponse.self, from: fileName)
     }
 
     private func expectItems(_ viewModel: HomeCurationViewModel, count: Int) -> ItemsRecorder {
