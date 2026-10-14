@@ -251,7 +251,7 @@ private final class StoreInfoDetailCardView: UIView {
             $0.trailing.equalToSuperview()
         }
         control.addAction(UIAction { [weak self] _ in
-            self?.onAction(.link(row.link, clickLog: nil))
+            self?.onAction(.link(row.link, clickLog: row.clickLog))
         }, for: .touchUpInside)
         return control
     }
