@@ -26,6 +26,7 @@ public struct StoreImagePreviewCard: Decodable, Hashable, StoreCardComponent {
     public let style: SDSurfaceStyle
     public let refs: [StoreReferenceResponse]
     public let clickLog: SDClickLog?
+    public let impressionLog: SDImpressionLog?
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -39,6 +40,7 @@ public struct StoreImagePreviewCard: Decodable, Hashable, StoreCardComponent {
         self.style = try container.decode(SDSurfaceStyle.self, forKey: .style)
         self.refs = try container.decodeIfPresent([StoreReferenceResponse].self, forKey: .refs) ?? []
         self.clickLog = try container.decodeIfPresent(SDClickLog.self, forKey: .clickLog)
+        self.impressionLog = try container.decodeIfPresent(SDImpressionLog.self, forKey: .impressionLog)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -52,6 +54,7 @@ public struct StoreImagePreviewCard: Decodable, Hashable, StoreCardComponent {
         case style
         case refs
         case clickLog
+        case impressionLog
     }
 }
 

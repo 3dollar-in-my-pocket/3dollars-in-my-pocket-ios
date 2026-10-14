@@ -6,6 +6,7 @@ public struct StoreEditSection: Decodable, Equatable, Hashable, StoreSectionComp
     public let style: SDSurfaceStyle?
     public let map: StoreEditMap?
     public let actionBars: [SDActionBar]
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreEditMap: Decodable, Equatable, Hashable {

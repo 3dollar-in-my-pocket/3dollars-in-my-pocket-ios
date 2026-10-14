@@ -5,6 +5,7 @@ public struct StoreAdmobSection: Decodable, Equatable, Hashable, StoreSectionCom
     public let sectionId: String?
     public let style: SDSurfaceStyle?
     public let cards: [StoreAdmobCard]
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreAdmobCard: Decodable, Equatable, Hashable {

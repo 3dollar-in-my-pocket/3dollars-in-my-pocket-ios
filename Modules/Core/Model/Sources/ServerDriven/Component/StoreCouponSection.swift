@@ -6,6 +6,7 @@ public struct StoreCouponSection: Decodable, Equatable, Hashable, StoreSectionCo
     public let style: SDSurfaceStyle?
     public let header: SDHeader?
     public let cards: [StoreCouponCard]
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreCouponCard: Decodable, Equatable, Hashable {

@@ -7,6 +7,7 @@ public struct StoreInfoV1Section: Decodable, Equatable, Hashable, StoreSectionCo
     public let header: SDHeader
     public let informationCard: InformationCard?
     public let menuCard: MenuCard?
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct InformationCard: Decodable, Equatable, Hashable {

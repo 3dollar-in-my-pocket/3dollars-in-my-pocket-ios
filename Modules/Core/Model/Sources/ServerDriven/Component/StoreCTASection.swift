@@ -5,6 +5,7 @@ public struct StoreCTASection: Decodable, Equatable, Hashable, StoreSectionCompo
     public let sectionId: String?
     public let style: SDSurfaceStyle?
     public let content: StoreCTAContent
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreCTAContent: Decodable, Equatable, Hashable {

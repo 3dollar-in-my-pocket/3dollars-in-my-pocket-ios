@@ -8,6 +8,7 @@ public struct StoreReviewSection: Decodable, Equatable, Hashable, StoreSectionCo
     public let summary: StoreReviewSummary
     public let cards: [StoreReviewCard]
     public let more: SDActionBar?
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreReviewSummary: Decodable, Equatable, Hashable {

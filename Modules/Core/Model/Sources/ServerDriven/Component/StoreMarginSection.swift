@@ -5,4 +5,5 @@ public struct StoreMarginSection: Decodable, Equatable, Hashable, StoreSectionCo
     public let sectionId: String?
     public let style: SDSurfaceStyle?
     public let height: Double
+    public let impressionLog: SDImpressionLog?
 }
