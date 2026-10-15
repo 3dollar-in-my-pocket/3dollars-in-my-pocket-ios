@@ -179,7 +179,12 @@ final class HomeView: BaseView {
 
     /// - Parameter animated: 최초 진입처럼 이동 직후 `mapMaxDistance` 를 측정해야 하는 경우 `false` 로 넘겨
     ///   애니메이션 없이 즉시 카메라를 적용한다. 애니메이션 중에는 `contentBounds` 가 최종 값이 아니다.
-    func moveCamera(location: CLLocation, zoomLevel: Double? = nil, animated: Bool = true) {
+    func moveCamera(
+        location: CLLocation,
+        zoomLevel: Double? = nil,
+        animated: Bool = true,
+        completion: (() -> Void)? = nil
+    ) {
         let currentCameraPosition = mapView.cameraPosition
         let target = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
         let cameraPosition = NMFCameraPosition(
@@ -191,7 +196,9 @@ final class HomeView: BaseView {
         let cameraUpdate = NMFCameraUpdate(position: cameraPosition)
 
         cameraUpdate.animation = animated ? .easeIn : .none
-        mapView.moveCamera(cameraUpdate)
+        mapView.moveCamera(cameraUpdate) { _ in
+            completion?()
+        }
     }
 
     func moveCamera(bounds: LocationBoundsResponse) {

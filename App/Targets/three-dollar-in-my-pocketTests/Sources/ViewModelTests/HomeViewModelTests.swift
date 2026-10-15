@@ -129,6 +129,73 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(screenRepository.fetchHomeSectionListInputs.last?.mapLatitude ?? 0, 37.4979, accuracy: 0.0001)
     }
 
+    // MARK: TH-1459 TC1
+
+    func test_TH1459_TC1_현재위치버튼으로이동하면_재조회버튼이노출된다() async {
+        // Given
+        let location = CLLocation(latitude: 37.5665, longitude: 126.978)
+        let viewModel = makeViewModel(
+            locationManager: MockLocationManager(getCurrentLocationResult: .success(location))
+        )
+        let moved = expectation(description: "currentLocationCameraPosition")
+        var camera: (CLLocation, Double?)?
+        var isHiddenResearchButton: Bool?
+        viewModel.output.currentLocationCameraPosition
+            .sink { camera = $0; moved.fulfill() }
+            .store(in: &cancellables)
+        viewModel.output.isHiddenResearchButton
+            .sink { isHiddenResearchButton = $0 }
+            .store(in: &cancellables)
+
+        viewModel.mapControlViewModel.input.setSection.send(nil)
+
+        // When
+        viewModel.mapControlViewModel.input.didTapControl.send(0)
+
+        // Then
+        await fulfillment(of: [moved], timeout: 1)
+        XCTAssertEqual(camera?.0.coordinate.latitude, 37.5665)
+        XCTAssertEqual(camera?.0.coordinate.longitude, 126.978)
+        XCTAssertEqual(isHiddenResearchButton, false)
+    }
+
+    // MARK: TH-1459 TC2
+
+    func test_TH1459_TC2_현재위치로이동후_재조회하면_현재위치와_새반경으로가게를조회한다() async {
+        // Given
+        let location = CLLocation(latitude: 37.5665, longitude: 126.978)
+        let screenRepository = MockScreenRepository()
+        let viewModel = makeViewModel(
+            screenRepository: screenRepository,
+            locationManager: MockLocationManager(getCurrentLocationResult: .success(location))
+        )
+        viewModel.input.changeMapLocation.send(CLLocation(latitude: 37.4979, longitude: 127.0276))
+        let moved = expectation(description: "currentLocationCameraPosition")
+        viewModel.output.currentLocationCameraPosition
+            .sink { _ in moved.fulfill() }
+            .store(in: &cancellables)
+        viewModel.mapControlViewModel.input.setSection.send(nil)
+        viewModel.mapControlViewModel.input.didTapControl.send(0)
+        await fulfillment(of: [moved], timeout: 1)
+        viewModel.input.changeMaxDistance.send(800)
+        let fetched = expectation(description: "fetch")
+        viewModel.output.showLoading
+            .filter { $0 == false }
+            .first()
+            .sink { _ in fetched.fulfill() }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.onTapResearch.send(())
+
+        // Then
+        await fulfillment(of: [fetched], timeout: 1)
+        let input = screenRepository.fetchHomeSectionListInputs.last
+        XCTAssertEqual(input?.mapLatitude ?? 0, 37.5665, accuracy: 0.0001)
+        XCTAssertEqual(input?.mapLongitude ?? 0, 126.978, accuracy: 0.0001)
+        XCTAssertEqual(input?.distanceM, 800)
+    }
+
     // MARK: - Helpers
 
     // MARK: TH-1402 TC6
@@ -162,14 +229,15 @@ final class HomeViewModelTests: XCTestCase {
 
     private func makeViewModel(
         logManager: MockLogManager = MockLogManager(),
-        screenRepository: MockScreenRepository = MockScreenRepository()
+        screenRepository: MockScreenRepository = MockScreenRepository(),
+        locationManager: MockLocationManager = MockLocationManager()
     ) -> HomeViewModel {
         HomeViewModel(dependency: .init(
             screenRepository: screenRepository,
             advertisementRepository: MockAdvertisementRepository(),
             userRepository: MockUserRepository(),
             mapRepository: MockMapRepository(),
-            locationManager: MockLocationManager(),
+            locationManager: locationManager,
             preference: Preference(name: "HomeViewModelTests"),
             logManager: logManager
         ))
