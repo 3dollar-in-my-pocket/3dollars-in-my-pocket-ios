@@ -7,6 +7,7 @@ public struct StoreVisitSection: Decodable, Equatable, Hashable, StoreSectionCom
     public let header: SDHeader
     public let summary: StoreVisitSummary
     public let history: StoreVisitSectionHistory
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreVisitSummary: Decodable, Equatable, Hashable {

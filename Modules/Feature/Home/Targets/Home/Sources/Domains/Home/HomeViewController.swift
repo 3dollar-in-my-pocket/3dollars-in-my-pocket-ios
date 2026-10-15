@@ -212,6 +212,14 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.output.listSectionImpressionLog
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, impressionLog: SDImpressionLog) in
+                owner.bottomSheetViewController?.updateListSectionImpressionLog(impressionLog)
+            }
+            .store(in: &cancellables)
+
         viewModel.output.bottomSheetCardsReplaced
             .main
             .withUnretained(self)

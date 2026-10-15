@@ -64,6 +64,7 @@ extension HomeViewModel {
         /// 바텀시트로 전달할 카드 목록.
         let bottomSheetCards = CurrentValueSubject<[any HomeListCardComponent], Never>([])
         let bottomSheetCardsReplaced = PassthroughSubject<Void, Never>()
+        let listSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
         let bottomSheetTabSection = CurrentValueSubject<HomeBottomSheetTabSection?, Never>(nil)
         let curationLocation = PassthroughSubject<CLLocation, Never>()
         /// 지도 마커로 그릴 카드(BasicCard 만 포함). 인덱스는 cards 와 일치하지 않을 수 있다.
@@ -516,6 +517,7 @@ final class HomeViewModel: BaseViewModel {
                 prefetchCardImages(response.cards)
                 emitCards()
                 output.bottomSheetCardsReplaced.send(())
+                sendListSectionImpressionLog(response.impressionLog)
 
                 if let focusBounds = response.focusBounds {
                     output.focusBounds.send(focusBounds)
@@ -546,6 +548,7 @@ final class HomeViewModel: BaseViewModel {
                 state.hasMore = response.cursor?.hasMore ?? false
                 prefetchCardImages(response.cards)
                 emitCards()
+                sendListSectionImpressionLog(response.impressionLog)
             case .failure:
                 // 페이지네이션 실패는 silent — 사용자 흐름을 끊지 않는다.
                 break
@@ -560,6 +563,11 @@ final class HomeViewModel: BaseViewModel {
         for card in cards where existingIds.insert(card.cardId).inserted {
             state.cards.append(card)
         }
+    }
+
+    private func sendListSectionImpressionLog(_ impressionLog: SDImpressionLog?) {
+        guard let impressionLog else { return }
+        output.listSectionImpressionLog.send(impressionLog)
     }
 
     private func emitCards() {

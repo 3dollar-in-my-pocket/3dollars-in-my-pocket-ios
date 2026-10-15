@@ -41,6 +41,7 @@ extension HomeCurationViewModel {
         var cards: [String: [HomeCurationCard]] = [:]
         var impressedCardIds: Set<String> = []
         var hasLoadedSection = false
+        var pendingSectionImpressionLog: SDImpressionLog?
     }
 
     struct LoadedRequest: Equatable {
@@ -86,6 +87,7 @@ final class HomeCurationViewModel: BaseViewModel {
             .sink { (owner: HomeCurationViewModel, tabId: String?) in
                 owner.state.tabId = tabId
                 owner.fetchSectionIfNeeded()
+                owner.sendSectionImpressionLogIfVisible()
             }
             .store(in: &cancellables)
 
@@ -115,11 +117,14 @@ final class HomeCurationViewModel: BaseViewModel {
         input.willDisplayCarouselCard
             .withUnretained(self)
             .sink { (owner: HomeCurationViewModel, payload) in
-                guard case .admobCard(let admob) = owner.carouselCard(
-                    carouselId: payload.carouselId,
-                    cardId: payload.cardId
-                ) else { return }
-                owner.sendImpressionLogIfNeeded(admob)
+                switch owner.carouselCard(carouselId: payload.carouselId, cardId: payload.cardId) {
+                case .imagePreviewCard(let preview):
+                    owner.sendImpressionLogIfNeeded(preview, carouselId: payload.carouselId)
+                case .admobCard(let admob):
+                    owner.sendImpressionLogIfNeeded(admob)
+                case nil:
+                    break
+                }
             }
             .store(in: &cancellables)
 
@@ -149,6 +154,7 @@ final class HomeCurationViewModel: BaseViewModel {
         )
         guard request != state.loadedRequest else { return }
         state.loadedRequest = request
+        state.pendingSectionImpressionLog = nil
 
         loadTask?.cancel()
         cardTasks.values.forEach { $0.cancel() }
@@ -165,6 +171,8 @@ final class HomeCurationViewModel: BaseViewModel {
             switch result {
             case .success(let response):
                 applySection(response.items)
+                state.pendingSectionImpressionLog = response.impressionLog
+                sendSectionImpressionLogIfVisible()
             case .failure(let error):
                 state.loadedRequest = nil
                 guard state.tabId == request.tabId else { return }
@@ -221,6 +229,7 @@ final class HomeCurationViewModel: BaseViewModel {
             case .success(let response):
                 state.cards[carouselId] = response.cards
                 state.loadedCategoryIds[carouselId] = categoryId
+                state.impressedCardIds = state.impressedCardIds.filter { !$0.hasPrefix(impressionKeyPrefix(carouselId: carouselId)) }
             case .failure:
                 state.selectedCategoryIds[carouselId] = state.loadedCategoryIds[carouselId]
             }
@@ -289,6 +298,24 @@ final class HomeCurationViewModel: BaseViewModel {
     private func sendImpressionLogIfNeeded(_ admob: HomeListAdmobCardResponse) {
         guard state.impressedCardIds.insert(admob.cardId).inserted else { return }
         dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: admob.impressionLog))
+    }
+
+    private func sendImpressionLogIfNeeded(_ preview: StoreImagePreviewCard, carouselId: String) {
+        guard let impressionLog = preview.impressionLog,
+              state.impressedCardIds.insert(impressionKeyPrefix(carouselId: carouselId) + preview.cardId).inserted else { return }
+        dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
+    }
+
+    private func sendSectionImpressionLogIfVisible() {
+        guard let tabId = state.tabId,
+              tabId == state.loadedRequest?.tabId,
+              let impressionLog = state.pendingSectionImpressionLog else { return }
+        state.pendingSectionImpressionLog = nil
+        dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
+    }
+
+    private func impressionKeyPrefix(carouselId: String) -> String {
+        "\(carouselId)/"
     }
 
     private func emitItems() {

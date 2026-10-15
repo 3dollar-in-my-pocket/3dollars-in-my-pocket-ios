@@ -273,6 +273,7 @@ public final class StoreSectionsViewController: BaseViewController {
         }
         dataSource.apply(snapshot, animatingDifferences: false)
         collectionView.layoutIfNeeded()
+        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
         updateBottomActionBarVisibility()
         if isPlaceholder.isNot {
             hasLoadedSections = true
@@ -551,15 +552,9 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
               isImpressionReady(component),
               displayedImpressionIdentifiers.insert(identifier).inserted else { return }
 
-        switch component {
-        case let section as StoreRelatedStoresSectionV2:
-            viewModel.sendImpressionLog(section.impressionLog)
-        case let section as StoreAdmobSection:
+        viewModel.sendImpressionLog(component.impressionLog)
+        if let section = component as? StoreAdmobSection {
             viewModel.sendImpressionLog(section.cards.first?.impressionLog)
-        case let section as StoreThreadPostEmbedSection:
-            viewModel.sendImpressionLog(section.impressionLog)
-        default:
-            break
         }
     }
 

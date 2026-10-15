@@ -9,6 +9,7 @@ public struct StoreInfoV2Section: Decodable, Equatable, Hashable, StoreSectionCo
     public let detailCard: DetailCard?
     public let accountCards: [AccountCopyCard]
     public let menuListCard: MenuListCard?
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct ImageGallery: Decodable, Equatable, Hashable {
@@ -46,6 +47,7 @@ public struct DetailLinkRow: Decodable, Equatable, Hashable {
     public let label: SDText
     public let value: SDText
     public let link: SDLink
+    public let clickLog: SDClickLog?
 }
 
 public struct DetailTextRow: Decodable, Equatable, Hashable {

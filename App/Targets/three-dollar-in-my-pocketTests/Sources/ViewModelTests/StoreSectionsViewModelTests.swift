@@ -131,14 +131,15 @@ final class StoreSectionsViewModelTests: XCTestCase {
     private func makeViewModel(
         repository: MockStoreRepository,
         reportRepository: MockReportRepository = MockReportRepository(),
-        globalEventBus: MockGlobalEventBus = MockGlobalEventBus()
+        globalEventBus: MockGlobalEventBus = MockGlobalEventBus(),
+        logManager: MockLogManager = MockLogManager()
     ) -> StoreSectionsViewModel {
         StoreSectionsViewModel(
             config: .init(storeId: 1, latitude: 37.5, longitude: 127.0),
             dependency: .init(
                 storeRepository: repository,
                 reportRepository: reportRepository,
-                logManager: MockLogManager(),
+                logManager: logManager,
                 globalEventBus: globalEventBus
             )
         )
@@ -378,4 +379,68 @@ final class StoreSectionsViewModelTests: XCTestCase {
         """
         return try JSONDecoder().decode(StoreScreenV2Response.self, from: Data(json.utf8))
     }
+
+    // MARK: TH-1466 TC4
+
+    func test_TH1466_TC4_섹션노출로그는_서버값그대로_store_section노출로그로전송된다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(repository: MockStoreRepository(), logManager: logManager)
+        let response = try FixtureLoader.decode(StoreScreenV2Response.self, from: "StoreScreenV2WithLogs")
+        let coupon = try XCTUnwrap(response.sections.first { $0.type == .coupon })
+
+        // When
+        viewModel.sendImpressionLog(coupon.impressionLog)
+
+        // Then
+        XCTAssertEqual(logManager.sentEvents.count, 1)
+        let event = try XCTUnwrap(logManager.sentEvents.first)
+        XCTAssertEqual(event.name.rawValue, EventName.impression.rawValue)
+        XCTAssertEqual(event.screen.rawValue, "store_detail")
+        XCTAssertEqual(event.parameters["object_type"] as? String, "section")
+        XCTAssertEqual(event.parameters["object_id"] as? String, "store_section")
+        XCTAssertEqual(event.parameters["section_type"] as? String, "COUPON")
+    }
+
+    func test_TH1466_TC4_노출로그가없는섹션은_로그를보내지않는다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(repository: MockStoreRepository(), logManager: logManager)
+        let response = try FixtureLoader.decode(StoreScreenV2Response.self, from: "StoreScreenV2WithLogs")
+        let margin = try XCTUnwrap(response.sections.first { $0.type == .margin })
+
+        // When
+        viewModel.sendImpressionLog(margin.impressionLog)
+
+        // Then
+        XCTAssertNil(margin.impressionLog)
+        XCTAssertTrue(logManager.sentEvents.isEmpty)
+    }
+
+    // MARK: TH-1466 TC5
+
+    func test_TH1466_TC5_정보섹션링크행을누르면_서버클릭로그를보낸다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(repository: MockStoreRepository(), logManager: logManager)
+        let response = try FixtureLoader.decode(StoreScreenV2Response.self, from: "StoreScreenV2WithLogs")
+        let infoV2 = try XCTUnwrap(response.sections.compactMap { $0 as? StoreInfoV2Section }.first)
+        let linkRow = try XCTUnwrap(infoV2.detailCard?.rows.compactMap { row -> DetailLinkRow? in
+            guard case .link(let linkRow) = row else { return nil }
+            return linkRow
+        }.first)
+
+        // When
+        viewModel.input.didSelectAction.send(.link(linkRow.link, clickLog: linkRow.clickLog))
+
+        // Then
+        XCTAssertEqual(logManager.sentEvents.count, 1)
+        let event = try XCTUnwrap(logManager.sentEvents.first)
+        XCTAssertEqual(event.name.rawValue, EventName.click.rawValue)
+        XCTAssertEqual(event.screen.rawValue, "store_detail")
+        XCTAssertEqual(event.parameters["object_type"] as? String, "button")
+        XCTAssertEqual(event.parameters["object_id"] as? String, "sns_link")
+        XCTAssertEqual(event.parameters["store_id"] as? String, "120009")
+    }
+
 }

@@ -1,0 +1,472 @@
+{
+  "cards": [
+    {
+      "type": "IMAGE_PREVIEW_CARD",
+      "cardId": "S:12805812",
+      "image": {
+        "url": "https://storage.threedollars.co.kr/menu/fruit_sando_3x.png",
+        "style": {
+          "width": 100.0,
+          "height": 100.0,
+          "dimmed": false
+        }
+      },
+      "title": {
+        "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">분카샤 을지로점</span>",
+        "isHtml": true,
+        "fontColor": "#0F0F0F"
+      },
+      "metricLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.2km</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/review.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "contextLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+            "isHtml": true,
+            "fontColor": "#FF8181"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12805812&storeType=USER_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12805812",
+          "store_type": "USER_STORE",
+          "position": "1"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12805812",
+          "store_type": "USER_STORE",
+          "position": "1"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "refs": []
+    },
+    {
+      "type": "IMAGE_PREVIEW_CARD",
+      "cardId": "S:12805245",
+      "image": {
+        "url": "https://storage.threedollars.co.kr/menu/fruit_sando_3x.png",
+        "style": {
+          "width": 100.0,
+          "height": 100.0,
+          "dimmed": false
+        }
+      },
+      "title": {
+        "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">밀크바</span>",
+        "isHtml": true,
+        "fontColor": "#0F0F0F"
+      },
+      "metricLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.5km</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/review.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "contextLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+            "isHtml": true,
+            "fontColor": "#FF8181"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12805245&storeType=USER_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12805245",
+          "store_type": "USER_STORE",
+          "position": "2"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12805245",
+          "store_type": "USER_STORE",
+          "position": "2"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "refs": []
+    },
+    {
+      "type": "IMAGE_PREVIEW_CARD",
+      "cardId": "S:12805811",
+      "image": {
+        "url": "https://storage.threedollars.co.kr/menu/fruit_sando_3x.png",
+        "style": {
+          "width": 100.0,
+          "height": 100.0,
+          "dimmed": false
+        }
+      },
+      "title": {
+        "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">호랑이</span>",
+        "isHtml": true,
+        "fontColor": "#0F0F0F"
+      },
+      "metricLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">1.5km</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/review.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "contextLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+            "isHtml": true,
+            "fontColor": "#FF8181"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12805811&storeType=USER_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12805811",
+          "store_type": "USER_STORE",
+          "position": "3"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12805811",
+          "store_type": "USER_STORE",
+          "position": "3"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "refs": []
+    },
+    {
+      "type": "IMAGE_PREVIEW_CARD",
+      "cardId": "S:12806019",
+      "image": {
+        "url": "https://storage.threedollars.co.kr/menu/fruit_sando_3x.png",
+        "style": {
+          "width": 100.0,
+          "height": 100.0,
+          "dimmed": false
+        }
+      },
+      "title": {
+        "text": "<span style=\"font-size:14px; font-weight:600; color:#0F0F0F\">HARU(하루)</span>",
+        "isHtml": true,
+        "fontColor": "#0F0F0F"
+      },
+      "metricLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">2.6km</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/review.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#969696\">0개</span>",
+            "isHtml": true,
+            "fontColor": "#969696"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "contextLabel": [
+        {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+            "style": {
+              "width": 12.0,
+              "height": 12.0,
+              "dimmed": false
+            }
+          },
+          "imageAlignment": "START",
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#FF8181\">0.0</span>",
+            "isHtml": true,
+            "fontColor": "#FF8181"
+          },
+          "contentSpacing": 2.0,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ],
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12806019&storeType=USER_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12806019",
+          "store_type": "USER_STORE",
+          "position": "4"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "CURATION",
+          "carouselId": "POPULAR_SNACKS",
+          "categoryId": "FRUIT_SANDO",
+          "store_id": "12806019",
+          "store_type": "USER_STORE",
+          "position": "4"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "refs": []
+    }
+  ]
+}

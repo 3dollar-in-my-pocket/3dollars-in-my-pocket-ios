@@ -166,6 +166,10 @@ final class HomeListViewController: BaseViewController {
         viewModel.input.updateCards.send(cards)
     }
 
+    func updateListSectionImpressionLog(_ impressionLog: SDImpressionLog) {
+        viewModel.input.receiveSectionImpressionLog.send(impressionLog)
+    }
+
     func didReplaceCards() {
         viewModel.input.didReplaceCards.send(())
     }
