@@ -308,6 +308,20 @@ public final class HomeViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        viewModel.output.currentLocationCameraPosition
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, cameraPosition in
+                owner.homeView.moveCamera(
+                    location: cameraPosition.0,
+                    zoomLevel: cameraPosition.1
+                ) { [weak owner] in
+                    guard let owner else { return }
+                    owner.viewModel.input.changeMaxDistance.send(owner.homeView.mapMaxDistance)
+                }
+            }
+            .store(in: &cancellables)
+
         // 초기 줌 레벨이 적용된 뒤의 실제 조회 반경을 측정해 첫 조회에 사용한다.
         viewModel.output.initialCameraPosition
             .receive(on: DispatchQueue.main)
