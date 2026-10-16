@@ -9,6 +9,7 @@ public struct StorePreviewSection: Decodable, Hashable, StoreCardComponent {
     public let bodies: [StorePreviewBody]
     public let style: SDSurfaceStyle?
     public let additionalInfos: StorePreviewAdditionalInfos?
+    public let markers: [HomeListCardMarker]?
 }
 
 public struct StorePreviewAdditionalInfos: Decodable, Equatable, Hashable {
