@@ -37,4 +37,9 @@ public extension ParameterName {
     static let referer = ParameterName(rawValue: "referer")
     static let reasonType = ParameterName(rawValue: "reason_type")
     static let preset = ParameterName(rawValue: "preset")
+    static let menuExtractionUsed = ParameterName(rawValue: "menu_extraction_used")
+    static let editedMenu = ParameterName(rawValue: "edited_menu")
+    static let flow = ParameterName(rawValue: "flow")
+    static let recognizedMenuCount = ParameterName(rawValue: "recognized_menu_count")
+    static let finalMenuCount = ParameterName(rawValue: "final_menu_count")
 }

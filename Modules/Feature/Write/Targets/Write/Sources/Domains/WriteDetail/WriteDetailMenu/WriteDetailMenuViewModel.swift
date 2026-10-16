@@ -63,6 +63,7 @@ extension WriteDetailMenuViewModel {
         let selectedCategories: [StoreFoodCategoryResponse]
         let menus: [UserStoreMenuRequestV3]
         let afterCreatedStore: Bool
+        let menuExtractionFlow: MenuExtractionFlow
         let menuExtractionUsage: MenuExtractionUsage
     }
 }
@@ -180,6 +181,7 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         let config = MenuExtractionLoadingViewModel.Config(
             image: image,
             afterCreatedStore: output.afterCreatedStore,
+            flow: self.config.menuExtractionFlow,
             menuExtractionUsage: self.config.menuExtractionUsage
         )
         let viewModel = MenuExtractionLoadingViewModel(config: config)
