@@ -20,6 +20,7 @@ extension StorePreviewBottomSheetViewModel {
 
     struct Output {
         let section = PassthroughSubject<StorePreviewSection, Never>()
+        let markers = PassthroughSubject<[HomeListCardMarker], Never>()
         let detailTitle = PassthroughSubject<String, Never>()
         let pageViewLog = PassthroughSubject<SDPageViewLog, Never>()
         let toast = PassthroughSubject<String, Never>()
@@ -185,6 +186,7 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
             // 서버의 isSubscriber 값으로 저장 버튼 초기 선택 상태를 동기화한다.
             state.isFavorited = preview.additionalInfos?.isSubscriber ?? false
             output.section.send(preview)
+            output.markers.send(preview.markers ?? [])
             output.detailTitle.send(state.storeName)
             output.isFavoriteOverride.send(state.isFavorited)
             output.pageViewLog.send(response.viewLog)
