@@ -158,6 +158,7 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
         let config = MenuExtractionLoadingViewModel.Config(
             image: image,
             afterCreatedStore: false,
+            flow: .create,
             menuExtractionUsage: self.config.menuExtractionUsage
         )
         let viewModel = MenuExtractionLoadingViewModel(config: config)

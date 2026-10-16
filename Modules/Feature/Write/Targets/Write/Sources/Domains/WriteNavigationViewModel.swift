@@ -192,6 +192,7 @@ final class WriteNavigationViewModel: BaseViewModel {
             selectedCategories: state.selectedCategories,
             menus: state.menus,
             afterCreatedStore: state.afterCreatedStore,
+            menuExtractionFlow: .create,
             menuExtractionUsage: state.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)

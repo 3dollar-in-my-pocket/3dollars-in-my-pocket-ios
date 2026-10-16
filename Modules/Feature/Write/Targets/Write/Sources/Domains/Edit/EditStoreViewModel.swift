@@ -177,6 +177,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
             selectedCategories: state.currentStore.categories,
             menus: menus,
             afterCreatedStore: true,
+            menuExtractionFlow: .edit,
             menuExtractionUsage: state.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
@@ -252,6 +253,7 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
                     _ = try uploadResult.get()
                 }
 
+                sendEditStoreCompleteLog()
                 output.onEdit.send(patchResponse)
                 output.isLoading.send(false)
                 output.route.send(.toast("가게 정보가 수정되었습니다"))
@@ -358,6 +360,18 @@ extension EditStoreViewModel {
             objectType: .button,
             objectId: .ok,
             extraParameters: extraParameters
+        ))
+    }
+
+    private func sendEditStoreCompleteLog() {
+        dependency.logManager.sendEvent(event: CustomEvent(
+            screen: output.screenName,
+            name: .editStoreComplete,
+            extraParameters: [
+                .menuExtractionUsed: String(state.menuExtractionUsage.isUsed),
+                .editedMenu: String(state.editedMenus.isNotNil),
+                .flow: MenuExtractionFlow.edit.rawValue
+            ]
         ))
     }
 }

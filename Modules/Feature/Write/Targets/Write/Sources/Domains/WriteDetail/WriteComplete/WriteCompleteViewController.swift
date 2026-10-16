@@ -101,6 +101,10 @@ final class WriteCompleteViewController: BaseViewController {
     override var screenName: ScreenName {
         return viewModel.output.screenName
     }
+
+    override var extraParameters: [ParameterName: Any]? {
+        return [.menuExtractionUsed: String(viewModel.output.isMenuExtractionUsedInCreate)]
+    }
     
     private let viewModel: WriteCompleteViewModel
     
