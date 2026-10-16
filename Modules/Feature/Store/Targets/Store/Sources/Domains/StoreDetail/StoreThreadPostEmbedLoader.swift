@@ -5,6 +5,9 @@ import Model
 import Networking
 
 final class StoreThreadPostEmbedLoader {
+    private static let instagramHost = "instagram.com"
+    private static let instagramEmbedScriptURL = "https://platform.instagram.com/en_US/embeds.js"
+
     private let repository: ThreadsRepository
     private var htmls: [String: String] = [:]
     private var failedPermalinks = Set<String>()
@@ -14,7 +17,8 @@ final class StoreThreadPostEmbedLoader {
     }
 
     func applyEmbeds(to sections: [any StoreSectionComponent]) -> [any StoreSectionComponent] {
-        sections.map { section in
+        registerInstagramEmbeds(in: sections)
+        return sections.map { section in
             switch section {
             case let threadPostSection as StoreThreadPostSection:
                 return StoreThreadPostEmbedSection(section: threadPostSection, htmls: htmls, failedPermalinks: failedPermalinks)
@@ -45,6 +49,36 @@ final class StoreThreadPostEmbedLoader {
             }
         }
         return true
+    }
+
+    private func registerInstagramEmbeds(in sections: [any StoreSectionComponent]) {
+        sections
+            .compactMap { $0 as? StoreThreadPostSection }
+            .flatMap(\.cards)
+            .filter { $0.platform == .instagram && htmls[$0.permalink] == nil }
+            .forEach { card in
+                if let html = Self.instagramEmbedHTML(permalink: card.permalink) {
+                    htmls[card.permalink] = html
+                } else {
+                    failedPermalinks.insert(card.permalink)
+                }
+            }
+    }
+
+    static func instagramEmbedHTML(permalink: String) -> String? {
+        guard let url = URL(string: permalink),
+              url.scheme == "https",
+              let host = url.host,
+              host == instagramHost || host.hasSuffix(".\(instagramHost)") else { return nil }
+        let escapedPermalink = url.absoluteString
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+        return """
+        <blockquote class="instagram-media" data-instgrm-permalink="\(escapedPermalink)" data-instgrm-version="14"></blockquote>
+        <script async src="\(instagramEmbedScriptURL)"></script>
+        """
     }
 
     private func fetchHTMLs(permalinks: [String]) async -> [String: String] {

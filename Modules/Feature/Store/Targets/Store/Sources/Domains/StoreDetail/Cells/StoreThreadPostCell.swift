@@ -208,7 +208,9 @@ private final class ThreadPostEmbedCardView: UIView {
     enum Layout {
         static let renderTimeout: TimeInterval = 10
         static let threadsOrigins = ["https://www.threads.com", "https://www.threads.net"]
-        static let threadsHosts = ["threads.com", "threads.net"]
+        static let instagramOrigin = "https://www.instagram.com"
+        static let instagramRenderedMessageTypes = ["MOUNTED", "MEASURE"]
+        static let embedHosts = ["threads.com", "threads.net", "instagram.com"]
         static let heightMessageName = "height"
         static let baseURL = URL(string: "https://threedollars.co.kr")
     }
@@ -292,21 +294,36 @@ private final class ThreadPostEmbedCardView: UIView {
     }
 
     private static func document(body: String) -> String {
-        let origins = Layout.threadsOrigins.map { "'\($0)'" }.joined(separator: ", ")
+        let threadsOrigins = Layout.threadsOrigins.map { "'\($0)'" }.joined(separator: ", ")
+        let instagramRenderedTypes = Layout.instagramRenderedMessageTypes.map { "'\($0)'" }.joined(separator: ", ")
         return """
         <!doctype html>
         <html>
         <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <style>html, body { margin: 0; padding: 0; background: transparent; }</style>
+        <style>
+        html, body { margin: 0; padding: 0; background: transparent; }
+        .instagram-media { min-width: 0 !important; width: calc(100% - 2px) !important; }
+        </style>
         </head>
         <body>
         <div id="root">\(body)</div>
         <script>
         (function() {
             var root = document.getElementById('root');
-            var threadsOrigins = [\(origins)];
+            var threadsOrigins = [\(threadsOrigins)];
+            var instagramRenderedTypes = [\(instagramRenderedTypes)];
             var isEmbedRendered = false;
+            var isRenderedMessage = function(event) {
+                if (threadsOrigins.indexOf(event.origin) >= 0) { return true; }
+                if (event.origin !== '\(Layout.instagramOrigin)') { return false; }
+                try {
+                    var data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+                    return !!data && instagramRenderedTypes.indexOf(data.type) >= 0;
+                } catch (error) {
+                    return false;
+                }
+            };
             var report = function() {
                 if (!isEmbedRendered) { return; }
                 window.webkit.messageHandlers.\(Layout.heightMessageName).postMessage(
@@ -314,7 +331,7 @@ private final class ThreadPostEmbedCardView: UIView {
                 );
             };
             window.addEventListener('message', function(event) {
-                if (threadsOrigins.indexOf(event.origin) < 0) { return; }
+                if (!isRenderedMessage(event)) { return; }
                 isEmbedRendered = true;
                 requestAnimationFrame(report);
             });
@@ -361,7 +378,7 @@ extension ThreadPostEmbedCardView: WKNavigationDelegate, WKUIDelegate {
             decisionHandler(.allow)
             return
         }
-        if isMainFrame.isNot, Layout.threadsHosts.contains(where: { host == $0 || host.hasSuffix(".\($0)") }) {
+        if isMainFrame.isNot, Layout.embedHosts.contains(where: { host == $0 || host.hasSuffix(".\($0)") }) {
             decisionHandler(.allow)
             return
         }
