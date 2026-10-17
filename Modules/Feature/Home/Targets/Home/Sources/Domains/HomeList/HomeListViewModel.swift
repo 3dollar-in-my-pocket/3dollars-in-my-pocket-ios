@@ -18,6 +18,7 @@ extension HomeListViewModel {
         let setTabSection = PassthroughSubject<HomeBottomSheetTabSection?, Never>()
         let didTapTab = PassthroughSubject<Int, Never>()
         let setCurationLocation = PassthroughSubject<CLLocation, Never>()
+        let receiveSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
     }
 
     struct Output {
@@ -39,6 +40,7 @@ extension HomeListViewModel {
         var cards: [any HomeListCardComponent] = []
         var tabs: [HomeBottomTab] = []
         var selectedTabId: String?
+        var pendingSectionImpressionLog: SDImpressionLog?
     }
 
     public struct Config {
@@ -107,6 +109,14 @@ final class HomeListViewModel: BaseViewModel {
             .subscribe(output.didTapImageAt)
             .store(in: &cancellables)
 
+        input.receiveSectionImpressionLog
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, impressionLog: SDImpressionLog) in
+                owner.state.pendingSectionImpressionLog = impressionLog
+                owner.sendSectionImpressionLogIfVisible()
+            }
+            .store(in: &cancellables)
+
         input.didTapMapView
             .withUnretained(self)
             .handleEvents(receiveOutput: { (owner: HomeListViewModel, _) in
@@ -173,6 +183,14 @@ final class HomeListViewModel: BaseViewModel {
         if output.selectedViewType.value != viewType {
             output.selectedViewType.send(viewType)
         }
+        sendSectionImpressionLogIfVisible()
+    }
+
+    private func sendSectionImpressionLogIfVisible() {
+        guard output.selectedViewType.value == .storeList,
+              let impressionLog = state.pendingSectionImpressionLog else { return }
+        state.pendingSectionImpressionLog = nil
+        dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
     }
 
     private func emitDataSource() {

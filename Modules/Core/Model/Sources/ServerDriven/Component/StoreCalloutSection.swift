@@ -5,6 +5,7 @@ public struct StoreCalloutSection: Decodable, Equatable, Hashable, StoreSectionC
     public let sectionId: String?
     public let content: StoreCalloutContent
     public let style: SDSurfaceStyle?
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreCalloutContent: Decodable, Equatable, Hashable {

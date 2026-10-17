@@ -10,6 +10,7 @@ public struct StoreScreenPreviewSection: Decodable, Equatable, Hashable, StoreSe
     public let style: SDSurfaceStyle?
     public let additionalInfos: StoreScreenPreviewAdditionalInfos
     public let contributorActionBar: SDActionBar?
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreScreenPreviewAdditionalInfos: Decodable, Equatable, Hashable {
@@ -37,7 +38,8 @@ extension StoreScreenPreviewSection {
                 storeId: String(storeId),
                 storeType: preview.additionalInfos?.storeType
             ),
-            contributorActionBar: nil
+            contributorActionBar: nil,
+            impressionLog: nil
         )
     }
 }

@@ -7,5 +7,5 @@ public struct StoreRelatedStoresSectionV2: Decodable, Equatable, Hashable, Store
     public let header: SDHeader
     public let cards: [StoreImagePreviewCard]
     public let reference: [ExperimentReferenceResponse]
-    public let impressionLog: SDImpressionLog
+    public let impressionLog: SDImpressionLog?
 }

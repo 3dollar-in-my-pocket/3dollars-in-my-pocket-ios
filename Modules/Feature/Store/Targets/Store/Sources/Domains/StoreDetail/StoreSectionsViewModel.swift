@@ -21,6 +21,7 @@ extension StoreSectionsViewModel {
         let didConfirmDeleteReview = PassthroughSubject<Int, Never>()
         let didConfirmUseCoupon = PassthroughSubject<String, Never>()
         let didClickAd = PassthroughSubject<SDClickLog?, Never>()
+        let didTapThreadPostLink = PassthroughSubject<(url: URL, clickLog: SDClickLog?), Never>()
     }
 
     struct Output {
@@ -73,6 +74,7 @@ extension StoreSectionsViewModel {
         let couponRepository: CouponRepository
         let logManager: LogManagerProtocol
         let globalEventBus: GlobalEventBusProtocol
+        let threadsRepository: ThreadsRepository
 
         init(
             storeRepository: StoreRepository = StoreRepositoryImpl(),
@@ -80,7 +82,8 @@ extension StoreSectionsViewModel {
             reviewRepository: ReviewRepository = ReviewRepositoryImpl(),
             couponRepository: CouponRepository = CouponRepositoryImpl(),
             logManager: LogManagerProtocol = LogManager.shared,
-            globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus
+            globalEventBus: GlobalEventBusProtocol = Environment.appModuleInterface.globalEventBus,
+            threadsRepository: ThreadsRepository = ThreadsRepositoryImpl()
         ) {
             self.storeRepository = storeRepository
             self.reportRepository = reportRepository
@@ -88,6 +91,7 @@ extension StoreSectionsViewModel {
             self.couponRepository = couponRepository
             self.logManager = logManager
             self.globalEventBus = globalEventBus
+            self.threadsRepository = threadsRepository
         }
     }
 
@@ -109,6 +113,7 @@ final class StoreSectionsViewModel: BaseViewModel {
     private var state = State()
     private let config: Config
     private let dependency: Dependency
+    private let threadPostEmbedLoader: StoreThreadPostEmbedLoader
 
     var storeId: Int {
         config.storeId
@@ -117,6 +122,7 @@ final class StoreSectionsViewModel: BaseViewModel {
     init(config: Config, dependency: Dependency = Dependency()) {
         self.config = config
         self.dependency = dependency
+        self.threadPostEmbedLoader = StoreThreadPostEmbedLoader(repository: dependency.threadsRepository)
         super.init()
     }
 
@@ -179,6 +185,14 @@ final class StoreSectionsViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
+        input.didTapThreadPostLink
+            .withUnretained(self)
+            .sink { (owner: StoreSectionsViewModel, payload) in
+                owner.sendClickLog(payload.clickLog)
+                owner.output.route.send(.openURL(payload.url))
+            }
+            .store(in: &cancellables)
+
         input.didTapFavorite
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, _) in
@@ -210,8 +224,9 @@ final class StoreSectionsViewModel: BaseViewModel {
 
         switch result {
         case .success(let response):
-            state.sections = response.sections
-            output.sections.send(response.sections)
+            let sections = threadPostEmbedLoader.applyEmbeds(to: response.sections)
+            state.sections = sections
+            output.sections.send(sections)
             syncFavoriteState(from: response.sections)
             if state.hasDisplayed {
                 sendPageView(response.viewLog)
@@ -223,6 +238,9 @@ final class StoreSectionsViewModel: BaseViewModel {
                 state.pendingSectionFragment = nil
                 scrollToSectionIfPossible(fragment: fragment)
             }
+            Task { [weak self] in
+                await self?.resolveThreadPostEmbeds()
+            }.store(in: taskBag)
         case .failure(let error):
             if let message = Self.deletedStoreMessage(from: error) {
                 output.route.send(.closeWithDeletedStore(message: message))
@@ -230,6 +248,14 @@ final class StoreSectionsViewModel: BaseViewModel {
                 output.error.send(error)
             }
         }
+    }
+
+    @MainActor
+    private func resolveThreadPostEmbeds() async {
+        guard await threadPostEmbedLoader.fetchPendingEmbeds(in: state.sections) else { return }
+        let sections = threadPostEmbedLoader.applyEmbeds(to: state.sections)
+        state.sections = sections
+        output.sections.send(sections)
     }
 
     static func deletedStoreMessage(from error: Error) -> String? {

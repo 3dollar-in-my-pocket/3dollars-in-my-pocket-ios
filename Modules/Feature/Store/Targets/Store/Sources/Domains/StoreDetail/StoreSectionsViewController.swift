@@ -38,6 +38,7 @@ public final class StoreSectionsViewController: BaseViewController {
     private var tabItemIndex: Int?
     private var tabTargetItemIndexes: [Int?] = []
     private var selectedTabIndex = 0
+    private var threadPostHeights: [[String]: CGFloat] = [:]
     private lazy var dataSource = makeDataSource()
 
     init(
@@ -124,7 +125,8 @@ public final class StoreSectionsViewController: BaseViewController {
             StoreInfoV2Cell.self,
             StoreCTACell.self,
             StoreReviewCell.self,
-            StoreSkeletonCell.self
+            StoreSkeletonCell.self,
+            StoreThreadPostCell.self
         ])
         if loadsOnViewDidLoad {
             markSectionsDisplayed()
@@ -163,10 +165,12 @@ public final class StoreSectionsViewController: BaseViewController {
         guard isDisplayed.isNot else { return }
         isDisplayed = true
         viewModel.input.didDisplay.send(())
-        let admobIdentifiers = dataSource.snapshot().itemIdentifiers.filter { sectionsByIdentifier[$0] is StoreAdmobSection }
-        if admobIdentifiers.isEmpty.isNot {
+        let displayDependentIdentifiers = dataSource.snapshot().itemIdentifiers.filter {
+            sectionsByIdentifier[$0] is StoreAdmobSection || sectionsByIdentifier[$0] is StoreThreadPostEmbedSection
+        }
+        if displayDependentIdentifiers.isEmpty.isNot {
             var snapshot = dataSource.snapshot()
-            snapshot.reconfigureItems(admobIdentifiers)
+            snapshot.reconfigureItems(displayDependentIdentifiers)
             dataSource.apply(snapshot, animatingDifferences: false)
         }
         collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
@@ -269,6 +273,7 @@ public final class StoreSectionsViewController: BaseViewController {
         }
         dataSource.apply(snapshot, animatingDifferences: false)
         collectionView.layoutIfNeeded()
+        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
         updateBottomActionBarVisibility()
         if isPlaceholder.isNot {
             hasLoadedSections = true
@@ -376,6 +381,17 @@ public final class StoreSectionsViewController: BaseViewController {
         reconfigure(identifier: identifier)
     }
 
+    private func updateThreadPostHeight(_ height: CGFloat, permalinks: [String]) {
+        if let previousHeight = threadPostHeights[permalinks], abs(previousHeight - height) <= 0.5 { return }
+        threadPostHeights[permalinks] = height
+        let identifier = dataSource.snapshot().itemIdentifiers.first {
+            (sectionsByIdentifier[$0] as? StoreThreadPostEmbedSection)?.permalinks == permalinks
+        }
+        guard let identifier else { return }
+        reconfigure(identifier: identifier)
+        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
+    }
+
     private func reconfigure(identifier: String) {
         var snapshot = dataSource.snapshot()
         snapshot.reconfigureItems([identifier])
@@ -402,6 +418,9 @@ public final class StoreSectionsViewController: BaseViewController {
     ) -> UICollectionViewCell? {
         let actionHandler: (StoreSectionAction) -> Void = { [weak self] in
             self?.viewModel.input.didSelectAction.send($0)
+        }
+        if let section = component as? StoreThreadPostEmbedSection {
+            return makeThreadPostCell(section, indexPath: indexPath, in: collectionView)
         }
 
         switch component {
@@ -494,6 +513,23 @@ public final class StoreSectionsViewController: BaseViewController {
                 return nil
         }
     }
+
+    private func makeThreadPostCell(
+        _ section: StoreThreadPostEmbedSection,
+        indexPath: IndexPath,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        let cell: StoreThreadPostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        let permalinks = section.permalinks
+        cell.bind(section, height: threadPostHeights[permalinks], isDisplayed: isDisplayed)
+        cell.onHeightSettled = { [weak self] height in
+            self?.updateThreadPostHeight(height, permalinks: permalinks)
+        }
+        cell.onOpenURL = { [weak self] url, clickLog in
+            self?.viewModel.input.didTapThreadPostLink.send((url: url, clickLog: clickLog))
+        }
+        return cell
+    }
 }
 
 extension StoreSectionsViewController: UICollectionViewDelegate {
@@ -512,17 +548,19 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
     private func sendImpressionLogIfNeeded(at indexPath: IndexPath) {
         guard isDisplayed,
               let identifier = dataSource.itemIdentifier(for: indexPath),
-              displayedImpressionIdentifiers.insert(identifier).inserted,
-              let component = sectionsByIdentifier[identifier] else { return }
+              let component = sectionsByIdentifier[identifier],
+              isImpressionReady(component),
+              displayedImpressionIdentifiers.insert(identifier).inserted else { return }
 
-        switch component {
-        case let section as StoreRelatedStoresSectionV2:
-            viewModel.sendImpressionLog(section.impressionLog)
-        case let section as StoreAdmobSection:
+        viewModel.sendImpressionLog(component.impressionLog)
+        if let section = component as? StoreAdmobSection {
             viewModel.sendImpressionLog(section.cards.first?.impressionLog)
-        default:
-            break
         }
+    }
+
+    private func isImpressionReady(_ component: any StoreSectionComponent) -> Bool {
+        guard let section = component as? StoreThreadPostEmbedSection else { return true }
+        return (threadPostHeights[section.permalinks] ?? 0) > 0
     }
 }
 

@@ -6,6 +6,7 @@ public struct StoreAppearanceDaySection: Decodable, Equatable, Hashable, StoreSe
     public let style: SDSurfaceStyle?
     public let header: SDHeader
     public let items: [StoreAppearanceDayItem]
+    public let impressionLog: SDImpressionLog?
 }
 
 public struct StoreAppearanceDayItem: Decodable, Equatable, Hashable {
