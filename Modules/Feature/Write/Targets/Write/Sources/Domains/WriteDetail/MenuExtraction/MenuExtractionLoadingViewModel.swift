@@ -26,6 +26,7 @@ extension MenuExtractionLoadingViewModel {
     struct Config {
         let image: Data
         let afterCreatedStore: Bool
+        let flow: MenuExtractionFlow
         let menuExtractionUsage: MenuExtractionUsage
     }
 
@@ -97,7 +98,8 @@ final class MenuExtractionLoadingViewModel: BaseViewModel {
         self.config.menuExtractionUsage.markUsed()
         let config = MenuExtractionResultViewModel.Config(
             result: extractionResult,
-            afterCreatedStore: config.afterCreatedStore
+            afterCreatedStore: config.afterCreatedStore,
+            flow: config.flow
         )
         let viewModel = MenuExtractionResultViewModel(config: config)
         viewModel.output.finishRegister

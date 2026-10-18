@@ -16,6 +16,7 @@ extension WriteCompleteViewModel {
     
     struct Output {
         let screenName: ScreenName = .writeDetailComplete
+        let isMenuExtractionUsedInCreate: Bool
         let isLoading = PassthroughSubject<Bool, Never>()
         let userStoreResponse: CurrentValueSubject<UserStoreResponse, Never>
         let didTapComplete = PassthroughSubject<String, Never>()
@@ -67,7 +68,10 @@ final class WriteCompleteViewModel: BaseViewModel {
     
     init(config: Config, dependency: Dependency = Dependency()) {
         self.config = config
-        self.output = Output(userStoreResponse: .init(config.userStoreResponse))
+        self.output = Output(
+            isMenuExtractionUsedInCreate: config.menuExtractionUsage.isUsed,
+            userStoreResponse: .init(config.userStoreResponse)
+        )
         self.state = State(
             userStoreResponse: config.userStoreResponse,
             paymentMethods: config.userStoreResponse.paymentMethods,
@@ -116,13 +120,14 @@ final class WriteCompleteViewModel: BaseViewModel {
             selectedCategories: state.userStoreResponse.categories,
             menus: [],
             afterCreatedStore: true,
+            menuExtractionFlow: .afterCreate,
             menuExtractionUsage: self.config.menuExtractionUsage
         )
         let viewModel = WriteDetailMenuViewModel(config: config)
         viewModel.output.finishInputMenu
             .sink { [weak self] (menus: [UserStoreMenuRequestV3]) in
                 self?.state.menus = menus
-                self?.patchStore()
+                self?.patchStore(isMenuEdited: true)
             }
             .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteDetailMenu(viewModel))
@@ -139,13 +144,13 @@ final class WriteCompleteViewModel: BaseViewModel {
                 self?.state.appearanceDays = appearanceDays
                 self?.state.startTime = startTime
                 self?.state.endTime = endTime
-                self?.patchStore()
+                self?.patchStore(isMenuEdited: false)
             }
             .store(in: &viewModel.cancellables)
         output.route.send(.pushWriteDetailAdditionalInfo(viewModel))
     }
     
-    private func patchStore() {
+    private func patchStore(isMenuEdited: Bool) {
         Task { [weak self] in
             guard let self else { return }
             let store = state.userStoreResponse
@@ -165,6 +170,9 @@ final class WriteCompleteViewModel: BaseViewModel {
                 let response = try await dependency.storeRepository.patchStore(storeId: String(store.storeId), input: input).get()
                 
                 output.isLoading.send(false)
+                if isMenuEdited {
+                    sendEditStoreCompleteLog()
+                }
                 self.input.updateStore.send(response)
             } catch {
                 output.isLoading.send(false)
@@ -194,6 +202,18 @@ final class WriteCompleteViewModel: BaseViewModel {
             screen: output.screenName,
             objectType: .button,
             objectId: .ok
+        ))
+    }
+
+    private func sendEditStoreCompleteLog() {
+        dependency.logManager.sendEvent(event: CustomEvent(
+            screen: .editStore,
+            name: .editStoreComplete,
+            extraParameters: [
+                .menuExtractionUsed: String(config.menuExtractionUsage.isUsed),
+                .editedMenu: String(true),
+                .flow: MenuExtractionFlow.afterCreate.rawValue
+            ]
         ))
     }
 }

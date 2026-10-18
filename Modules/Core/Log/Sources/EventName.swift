@@ -99,4 +99,7 @@ public enum EventName: String, Sendable {
     case clickReview = "click_review"
     case clickEdit = "click_edit"
     case clickShareBookmark = "click_share_bookmark"
+
+    // 가게 정보 수정
+    case editStoreComplete = "edit_store_complete"
 }

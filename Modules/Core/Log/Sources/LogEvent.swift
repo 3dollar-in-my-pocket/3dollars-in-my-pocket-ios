@@ -217,4 +217,5 @@ public enum LogObjectId: String {
     case write
     case community
     case myPage = "my_page"
+    case register
 }
