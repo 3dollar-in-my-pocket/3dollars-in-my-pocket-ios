@@ -185,6 +185,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     var onRequestOpenLink: ((SDLink) -> Void)?
     var onRequestAddPhoto: ((Int) -> Void)?
     var onRequestClose: (() -> Void)?
+    var onMarkersLoaded: (([HomeListCardMarker]) -> Void)?
     /// 데이터(이미지/바디 유무)에 따라 컨텐츠 높이가 변할 때 호출. FloatingPanel anchor 갱신용.
     var onContentHeightChanged: ((CGFloat) -> Void)?
 
@@ -430,6 +431,13 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
                 guard let self else { return }
                 self.render(section: section)
                 self.bindActionBars(section.actionBars)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.markers
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] markers in
+                self?.onMarkersLoaded?(markers)
             }
             .store(in: &cancellables)
 

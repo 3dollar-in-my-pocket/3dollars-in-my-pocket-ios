@@ -20,6 +20,7 @@ public final class HomeViewController: BaseViewController {
         static let storeDetailExpandStartProgress: CGFloat = 0.02
         static let storePreviewGrabberSize = CGSize(width: 40, height: 5)
         static let storePreviewGrabberPadding: CGFloat = 7
+        static let sameMarkerLocationTolerance: Double = 0.000001
     }
 
     public override var screenName: ScreenName {
@@ -45,6 +46,7 @@ public final class HomeViewController: BaseViewController {
     private var markers: [Int: NMFMarker] = [:]
     private var markerData: [Int: HomeListCardMarker] = [:]
     private var focusedMarkerIndex: Int?
+    private var storePreviewMarkers: [NMFMarker] = []
     private var bottomSheetViewController: HomeListViewController?
     private var bottomSheetController: FloatingPanelController?
     private var storePreviewBottomSheet: StorePreviewBottomSheetViewController?
@@ -450,6 +452,7 @@ public final class HomeViewController: BaseViewController {
             // 비동기로 unfocused 칩 이미지 렌더 후 마커에 반영.
             applyMarkerIcon(chip: cardMarker.unfocused, to: nmfMarker)
         }
+        removeStorePreviewMarkersOverlappingHomeMarkers()
     }
 
     /// 탭한 마커를 focused 이미지로 바꾸고, 기존에 선택된 마커는 unfocused 로 되돌린다. (선택은 항상 하나)
@@ -491,6 +494,51 @@ public final class HomeViewController: BaseViewController {
                 marker.height = sdImage.style.height
             }
         }
+    }
+
+    private func showStorePreviewMarkers(_ previewMarkers: [HomeListCardMarker]) {
+        clearStorePreviewMarkers()
+        let newMarkers = previewMarkers.filter { previewMarker in
+            homeMarkerIndex(at: previewMarker.location) == nil
+        }
+        guard newMarkers.isNotEmpty else { return }
+
+        unfocusSelectedMarker()
+        storePreviewMarkers = newMarkers.map { previewMarker in
+            let nmfMarker = NMFMarker()
+            nmfMarker.position = NMGLatLng(
+                lat: previewMarker.location.latitude,
+                lng: previewMarker.location.longitude
+            )
+            nmfMarker.iconImage = NMFOverlayImage(name: "")
+            nmfMarker.zIndex = 1
+            nmfMarker.touchHandler = { _ in true }
+            nmfMarker.mapView = homeView.mapView
+            applyMarkerIcon(chip: previewMarker.focused, to: nmfMarker)
+            return nmfMarker
+        }
+    }
+
+    private func clearStorePreviewMarkers() {
+        storePreviewMarkers.forEach { $0.mapView = nil }
+        storePreviewMarkers.removeAll()
+    }
+
+    private func removeStorePreviewMarkersOverlappingHomeMarkers() {
+        storePreviewMarkers.removeAll { previewMarker in
+            let location = LocationResponse(latitude: previewMarker.position.lat, longitude: previewMarker.position.lng)
+            guard let index = homeMarkerIndex(at: location) else { return false }
+            previewMarker.mapView = nil
+            focusMarker(at: index)
+            return true
+        }
+    }
+
+    private func homeMarkerIndex(at location: LocationResponse) -> Int? {
+        markerData.first { _, data in
+            abs(data.location.latitude - location.latitude) < Layout.sameMarkerLocationTolerance
+                && abs(data.location.longitude - location.longitude) < Layout.sameMarkerLocationTolerance
+        }?.key
     }
 
     private func clearMarker() {
@@ -767,6 +815,7 @@ extension HomeViewController {
             longitude: longitude
         )
         let newViewModel = StorePreviewBottomSheetViewModel(config: config)
+        clearStorePreviewMarkers()
 
         // 부착된 상태(연속 마커 탭) 라면 VM 만 교체하고 종료.
         if let existing = storePreviewBottomSheet,
@@ -812,6 +861,7 @@ extension HomeViewController {
         storePreviewBottomSheet?.didReachTipState()
         // 미리보기 시트를 닫고 HomeList 로 돌아갈 때 선택된 마커를 unfocused 로 되돌린다.
         unfocusSelectedMarker()
+        clearStorePreviewMarkers()
         // 패널이 완전히 내려간 뒤 탭바를 복원하고 HomeList 를 다시 띄운다.
         // 슬라이드 다운 도중 탭바가 먼저 나타나면 패널이 탭바를 가로지르는 어색한 프레임이 생긴다.
         homeView.mapControlView.isHidden = false
@@ -947,6 +997,10 @@ extension HomeViewController {
         }
         viewController.onRequestClose = { [weak self] in
             self?.dismissStorePreview()
+        }
+        viewController.onMarkersLoaded = { [weak self] markers in
+            guard self?.isStorePreviewPresented == true else { return }
+            self?.showStorePreviewMarkers(markers)
         }
         viewController.onContentHeightChanged = { [weak self] height in
             self?.updateStorePreviewPanelHeight(height)
