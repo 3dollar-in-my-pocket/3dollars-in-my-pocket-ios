@@ -35,30 +35,56 @@ final class StoreThreadPostSectionTests: XCTestCase {
         XCTAssertEqual(response.sections.count, 1)
         XCTAssertTrue(response.sections.first is StoreThreadPostSection)
     }
+
+    func test_TH1511_TC1_카드platform을디코딩하면_INSTAGRAM은인스타로_없으면쓰레드로_모르는값은unknown으로파싱된다() throws {
+        // Given
+        let cards = [
+            StoreThreadPostFixture.cardJSON(permalink: StoreThreadPostFixture.instagramPermalink, platform: "INSTAGRAM"),
+            StoreThreadPostFixture.cardJSON(permalink: StoreThreadPostFixture.permalinks[0], platform: nil),
+            StoreThreadPostFixture.cardJSON(permalink: StoreThreadPostFixture.permalinks[1], platform: "TIKTOK")
+        ]
+        let json = StoreThreadPostFixture.screenJSON(sections: [StoreThreadPostFixture.sectionJSON(cards: cards)])
+
+        // When
+        let response = try JSONDecoder().decode(StoreScreenV2Response.self, from: Data(json.utf8))
+
+        // Then
+        let section = try XCTUnwrap(response.sections.first as? StoreThreadPostSection)
+        XCTAssertEqual(section.cards.map(\.platform), [.instagram, .threads, .unknown])
+    }
 }
 
 enum StoreThreadPostFixture {
+    static let instagramPermalink = "https://www.instagram.com/p/DPinsta01"
+
     static let permalinks = [
         "https://www.threads.com/@gyeol_jeong84/post/DOaaa",
         "https://www.threads.com/@other_user/post/DObbb"
     ]
 
     static var threadPostSectionJSON: String {
-        let cards = permalinks.map { permalink in
-            """
-            {
-              "permalink": "\(permalink)",
-              "clickLog": { "screenName": "store_detail", "objectType": "card", "objectId": "threads_post", "extraParameters": { "store_id": "12806182" } }
-            }
-            """
-        }.joined(separator: ",")
+        sectionJSON(cards: permalinks.map { cardJSON(permalink: $0, platform: nil) })
+    }
+
+    static func cardJSON(permalink: String, platform: String?) -> String {
+        let platformField = platform.map { "\"platform\": \"\($0)\"," } ?? ""
         return """
+        {
+          \(platformField)
+          "permalink": "\(permalink)",
+          "clickLog": { "screenName": "store_detail", "objectType": "card", "objectId": "threads_post", "extraParameters": { "store_id": "12806182" } }
+        }
+        """
+    }
+
+    static func sectionJSON(cards: [String]) -> String {
+        """
         {
           "type": "THREADS_POST",
           "sectionId": "THREADS_POST",
           "style": { "backgroundColor": "#FFFFFF" },
           "header": { "title": { "text": "쓰레드 소식", "isHtml": false, "fontColor": "#0F0F0F" } },
-          "cards": [\(cards)],
+          "cards": [\(cards.joined(separator: ","))],
           "impressionLog": { "screenName": "store_detail", "objectType": "carousel", "objectId": "threads_post", "extraParameters": { "store_id": "12806182" } }
         }
         """

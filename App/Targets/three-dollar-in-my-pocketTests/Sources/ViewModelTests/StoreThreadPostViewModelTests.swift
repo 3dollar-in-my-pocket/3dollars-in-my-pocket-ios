@@ -72,11 +72,59 @@ final class StoreThreadPostViewModelTests: XCTestCase {
         XCTAssertEqual(logManager.sentEvents.first?.parameters[ParameterName.objectId.rawValue] as? String, "threads_post")
     }
 
+    func test_TH1511_TC2_쓰레드와인스타카드가섞이면_인스타는oEmbed요청없이퍼가기코드로_순서대로노출된다() async throws {
+        // Given
+        let threadsPermalink = StoreThreadPostFixture.permalinks[0]
+        let instagramPermalink = StoreThreadPostFixture.instagramPermalink
+        let threadsRepository = MockThreadsRepository(htmlsByURL: [threadsPermalink: "<blockquote>threads</blockquote>"])
+        let sectionJSON = StoreThreadPostFixture.sectionJSON(cards: [
+            StoreThreadPostFixture.cardJSON(permalink: instagramPermalink, platform: "INSTAGRAM"),
+            StoreThreadPostFixture.cardJSON(permalink: threadsPermalink, platform: "THREADS")
+        ])
+        let viewModel = try makeViewModel(threadsRepository: threadsRepository, sectionJSON: sectionJSON)
+        let resolvedSection = expectResolvedThreadPostSection(from: viewModel)
+
+        // When
+        viewModel.input.load.send(())
+
+        // Then
+        await fulfillment(of: [resolvedSection.expectation], timeout: 2)
+        let embeds = try XCTUnwrap(resolvedSection.value()?.embeds)
+        XCTAssertEqual(embeds.map(\.permalink), [instagramPermalink, threadsPermalink])
+        XCTAssertTrue(embeds[0].html.contains("class=\"instagram-media\""))
+        XCTAssertTrue(embeds[0].html.contains("data-instgrm-permalink=\"\(instagramPermalink)\""))
+        XCTAssertTrue(embeds[0].html.contains("https://platform.instagram.com/en_US/embeds.js"))
+        XCTAssertEqual(threadsRepository.requestedURLs, [threadsPermalink])
+    }
+
+    func test_TH1511_TC3_platform을모르거나인스타도메인이아닌카드는_노출에서제외된다() async throws {
+        // Given
+        let threadsPermalink = StoreThreadPostFixture.permalinks[0]
+        let threadsRepository = MockThreadsRepository(htmlsByURL: [threadsPermalink: "<blockquote>threads</blockquote>"])
+        let sectionJSON = StoreThreadPostFixture.sectionJSON(cards: [
+            StoreThreadPostFixture.cardJSON(permalink: "https://www.tiktok.com/@user/video/1", platform: "TIKTOK"),
+            StoreThreadPostFixture.cardJSON(permalink: "https://evil.example.com/p/DPinsta01", platform: "INSTAGRAM"),
+            StoreThreadPostFixture.cardJSON(permalink: threadsPermalink, platform: "THREADS")
+        ])
+        let viewModel = try makeViewModel(threadsRepository: threadsRepository, sectionJSON: sectionJSON)
+        let resolvedSection = expectResolvedThreadPostSection(from: viewModel)
+
+        // When
+        viewModel.input.load.send(())
+
+        // Then
+        await fulfillment(of: [resolvedSection.expectation], timeout: 2)
+        let embeds = try XCTUnwrap(resolvedSection.value()?.embeds)
+        XCTAssertEqual(embeds.map(\.permalink), [threadsPermalink])
+        XCTAssertEqual(threadsRepository.requestedURLs, [threadsPermalink])
+    }
+
     private func makeViewModel(
         threadsRepository: MockThreadsRepository,
-        logManager: MockLogManager = MockLogManager()
+        logManager: MockLogManager = MockLogManager(),
+        sectionJSON: String = StoreThreadPostFixture.threadPostSectionJSON
     ) throws -> StoreSectionsViewModel {
-        let json = StoreThreadPostFixture.screenJSON(sections: [StoreThreadPostFixture.threadPostSectionJSON])
+        let json = StoreThreadPostFixture.screenJSON(sections: [sectionJSON])
         let response = try JSONDecoder().decode(StoreScreenV2Response.self, from: Data(json.utf8))
         return StoreSectionsViewModel(
             config: .init(storeId: 12806182, latitude: 37.5, longitude: 127.1),
