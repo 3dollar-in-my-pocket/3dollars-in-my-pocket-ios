@@ -22,7 +22,9 @@ struct StoreThreadPostEmbedSection: StoreSectionComponent {
 
     init(section: StoreThreadPostSection, htmls: [String: String], failedPermalinks: Set<String>) {
         var seenPermalinks = Set<String>()
-        let cards = section.cards.filter { !$0.permalink.isEmpty && seenPermalinks.insert($0.permalink).inserted }
+        let cards = section.cards.filter {
+            $0.platform != .unknown && !$0.permalink.isEmpty && seenPermalinks.insert($0.permalink).inserted
+        }
         self.init(
             sectionId: section.sectionId,
             style: section.style,

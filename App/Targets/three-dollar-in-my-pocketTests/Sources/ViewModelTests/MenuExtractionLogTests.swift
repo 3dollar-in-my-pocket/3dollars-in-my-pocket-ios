@@ -74,7 +74,7 @@ final class MenuExtractionLogTests: XCTestCase {
     func test_TH1453_TC32_인식결과화면에진입하면_extraction_result화면으로page_view가전송된다() {
         // Given
         let result = MenuExtractionResult(categories: [], menus: [], recognizedMenuCount: 0)
-        let viewModel = MenuExtractionResultViewModel(config: .init(result: result, afterCreatedStore: false))
+        let viewModel = MenuExtractionResultViewModel(config: .init(result: result, afterCreatedStore: false, flow: .create))
 
         // When
         let viewController = MenuExtractionResultViewController(viewModel: viewModel)
@@ -92,6 +92,7 @@ final class MenuExtractionLogTests: XCTestCase {
                 selectedCategories: [],
                 menus: [],
                 afterCreatedStore: true,
+                menuExtractionFlow: .edit,
                 menuExtractionUsage: MenuExtractionUsage()
             ),
             dependencies: .init(categoryRepository: MockCategoryRepository(), logManager: MockLogManager())
