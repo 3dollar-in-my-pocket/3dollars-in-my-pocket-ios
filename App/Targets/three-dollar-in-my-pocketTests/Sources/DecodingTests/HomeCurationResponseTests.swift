@@ -133,6 +133,35 @@ final class HomeCurationResponseTests: XCTestCase {
         XCTAssertNil(carousel.header.subTitle)
         XCTAssertNil(carousel.header.trailingAction)
     }
+
+    // MARK: TH-1516 TC3
+
+    func test_TH1516_TC3_카테고리가빈배열이면_빈카테고리로디코딩된다() throws {
+        // Given
+        let json = Self.carouselSectionJSON(categoryFields: #""defaultCategoryId": "", "categoryFilters": [],"#)
+
+        // When
+        let response = try JSONDecoder().decode(HomeCurationSectionResponse.self, from: Data(json.utf8))
+
+        // Then
+        guard case .carousel(let carousel) = response.items.first else { return XCTFail("캐러셀이 아님") }
+        XCTAssertEqual(carousel.categoryFilters, [])
+        XCTAssertEqual(carousel.cards.map(\.cardId), ["S:1"])
+    }
+
+    func test_TH1516_TC3_카테고리필드가없어도_캐러셀이디코딩된다() throws {
+        // Given
+        let json = Self.carouselSectionJSON(categoryFields: "")
+
+        // When
+        let response = try JSONDecoder().decode(HomeCurationSectionResponse.self, from: Data(json.utf8))
+
+        // Then
+        guard case .carousel(let carousel) = response.items.first else { return XCTFail("캐러셀이 아님") }
+        XCTAssertEqual(carousel.categoryFilters, [])
+        XCTAssertEqual(carousel.defaultCategoryId, "")
+        XCTAssertEqual(carousel.cards.map(\.cardId), ["S:1"])
+    }
 }
 
 extension HomeCurationResponseTests {
@@ -156,6 +185,22 @@ extension HomeCurationResponseTests {
             "contextLabel": [],
             "link": { "type": "APP_SCHEME", "link": "/store?storeId=1&storeType=USER_STORE" },
             "style": { "backgroundColor": "#FFFFFF" }
+        }
+        """
+    }
+
+    private static func carouselSectionJSON(categoryFields: String) -> String {
+        """
+        {
+            "items": [
+                {
+                    "type": "CAROUSEL",
+                    "carouselId": "SNS_STORES",
+                    "header": { "title": { "text": "SNS에 나온 가게", "isHtml": false, "fontColor": "#0F0F0F" } },
+                    \(categoryFields)
+                    "cards": [ \(previewCardJSON(cardId: "S:1")) ]
+                }
+            ]
         }
         """
     }

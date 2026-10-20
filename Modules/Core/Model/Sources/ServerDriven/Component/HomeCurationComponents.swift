@@ -50,8 +50,8 @@ public struct HomeCurationCarousel: Decodable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.carouselId = try container.decode(String.self, forKey: .carouselId)
         self.header = try container.decode(SDHeader.self, forKey: .header)
-        self.defaultCategoryId = try container.decode(String.self, forKey: .defaultCategoryId)
-        self.categoryFilters = try container.decode([HomeCurationCategoryFilter].self, forKey: .categoryFilters)
+        self.defaultCategoryId = try container.decodeIfPresent(String.self, forKey: .defaultCategoryId) ?? ""
+        self.categoryFilters = try container.decodeIfPresent([HomeCurationCategoryFilter].self, forKey: .categoryFilters) ?? []
         self.cards = try container.decodeIfPresent([LossyHomeCurationCard].self, forKey: .cards)?
             .compactMap(\.card) ?? []
     }
