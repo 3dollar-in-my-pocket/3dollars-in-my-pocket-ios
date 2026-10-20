@@ -624,9 +624,11 @@ public final class HomeViewController: BaseViewController {
     }
 
     private func presentSigninDialog() {
-        let viewController = Environment.membershipInterface.createSigninBottomSheetViewController()
+        let viewController = Environment.membershipInterface.createSigninAnonymousViewController { [weak self] in
+            self?.viewModel.mapControlViewModel.input.didSignin.send(())
+        }
 
-        present(viewController, animated: true)
+        tabBarController?.present(viewController, animated: true)
     }
 }
 

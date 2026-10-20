@@ -5,8 +5,8 @@ import DependencyInjection
 import MembershipInterface
 
 public final class MembershipInterfaceImpl: MembershipInterface {
-    public func createSigninAnonymousViewController() -> UIViewController {
-        return SigninAnonymousViewController.instance()
+    public func createSigninAnonymousViewController(onSignin: (() -> Void)?) -> UIViewController {
+        return SigninAnonymousViewController.instance(onSignin: onSignin)
     }
     
     public func createPolicyViewController() -> UIViewController {
