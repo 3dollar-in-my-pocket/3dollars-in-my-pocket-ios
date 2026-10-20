@@ -116,15 +116,14 @@ final class SigninAnonymousViewModel: Common.BaseViewModel {
                 output.route.send(.dismiss)
                 
             case .failure(let error):
+                output.route.send(.showLoading(isShow: false))
                 if let networkError = error as? NetworkError,
-                   case .errorContainer(let errorContainer) = networkError {
-                    if errorContainer.resultCode == "CF002" {
-                        let signinRequest = SigninRequest(socialType: socialType, token: accessToken)
-                        output.route.send(.showAlreadyExist(signinRequest))
-                    } else {
-                        output.route.send(.showErrorAlert(error))
-                    }
-                    
+                   case .errorContainer(let errorContainer) = networkError,
+                   errorContainer.resultCode == "CF002" {
+                    let signinRequest = SigninRequest(socialType: socialType, token: accessToken)
+                    output.route.send(.showAlreadyExist(signinRequest))
+                } else {
+                    output.route.send(.showErrorAlert(error))
                 }
             }
         }

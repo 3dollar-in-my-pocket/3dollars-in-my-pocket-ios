@@ -3,7 +3,7 @@ import UIKit
 import Common
 
 public protocol MembershipInterface {
-    func createSigninAnonymousViewController() -> UIViewController
+    func createSigninAnonymousViewController(onSignin: (() -> Void)?) -> UIViewController
     
     func createPolicyViewController() -> UIViewController
     

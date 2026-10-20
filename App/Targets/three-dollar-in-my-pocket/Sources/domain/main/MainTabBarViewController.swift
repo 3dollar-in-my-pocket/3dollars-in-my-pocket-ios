@@ -320,7 +320,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         if let navigationViewController = viewController as? UINavigationController {
             if navigationViewController.topViewController is MyPage.MyPageViewController,
                Preference.shared.isAnonymousUser {
-                let viewController = membershipInterface.createSigninAnonymousViewController()
+                let viewController = membershipInterface.createSigninAnonymousViewController(onSignin: nil)
 
                 self.present(viewController, animated: true)
                 return false
