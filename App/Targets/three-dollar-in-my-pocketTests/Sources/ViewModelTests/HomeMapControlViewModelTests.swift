@@ -180,6 +180,48 @@ final class HomeMapControlViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.output.filterParams.value["focusFavoriteStores"], "false")
     }
 
+    // MARK: TH-1520 TC1
+
+    func test_TH1520_TC1_익명상태에서_필터탭후_계정연동하면_필터가적용된다() throws {
+        // Given
+        let preference = Preference(name: "HomeMapControlViewModelTests-TH1520-TC1")
+        preference.isAnonymousUser = true
+        let viewModel = makeViewModel(preference: preference)
+        viewModel.input.setSection.send(try makeSection())
+        viewModel.input.didTapControl.send(0)
+        var didChangeFilterCount = 0
+        viewModel.output.didChangeFilter
+            .sink { didChangeFilterCount += 1 }
+            .store(in: &cancellables)
+
+        // When
+        preference.isAnonymousUser = false
+        viewModel.input.didSignin.send(())
+
+        // Then
+        XCTAssertEqual(viewModel.output.filterParams.value["focusFavoriteStores"], "true")
+        XCTAssertEqual(didChangeFilterCount, 1)
+    }
+
+    // MARK: TH-1520 TC2
+
+    func test_TH1520_TC2_필터탭없이_로그인완료가오면_필터가바뀌지않는다() throws {
+        // Given
+        let viewModel = makeViewModel(preference: Preference(name: "HomeMapControlViewModelTests-TH1520-TC2"))
+        viewModel.input.setSection.send(try makeSection())
+        var didChangeFilterCount = 0
+        viewModel.output.didChangeFilter
+            .sink { didChangeFilterCount += 1 }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.didSignin.send(())
+
+        // Then
+        XCTAssertEqual(viewModel.output.filterParams.value["focusFavoriteStores"], "false")
+        XCTAssertEqual(didChangeFilterCount, 0)
+    }
+
     // MARK: - Helpers
 
     private func makeSection() throws -> HomeMapControlSection {

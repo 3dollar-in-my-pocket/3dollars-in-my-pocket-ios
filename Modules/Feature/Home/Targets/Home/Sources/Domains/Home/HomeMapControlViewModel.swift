@@ -20,6 +20,7 @@ extension HomeMapControlViewModel {
         /// 필터 화면 응답의 `HOME_MAP_CONTROL` 섹션. nil 이면(섹션 없음·응답 실패) 현재 위치 버튼만 폴백으로 둔다.
         let setSection = PassthroughSubject<HomeMapControlSection?, Never>()
         let didTapControl = PassthroughSubject<Int, Never>()
+        let didSignin = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -40,6 +41,7 @@ extension HomeMapControlViewModel {
         var renderedControls: [(control: (any HomeMapControl)?, button: HomeMapControlButton)] = []
         var controls: [any HomeMapControl] = []
         var filterValues: [String: Bool] = [:]
+        var pendingFilterParamKey: String?
         var isMovingToCurrentLocation = false
     }
 
@@ -86,11 +88,19 @@ final class HomeMapControlViewModel: BaseViewModel {
                 owner.handleTap(at: index)
             }
             .store(in: &cancellables)
+
+        input.didSignin
+            .withUnretained(self)
+            .sink { (owner: HomeMapControlViewModel, _) in
+                owner.applyPendingFilter()
+            }
+            .store(in: &cancellables)
     }
 
     private func applySection(_ section: HomeMapControlSection?) {
         state.controls = section?.controls ?? []
         state.filterValues = [:]
+        state.pendingFilterParamKey = nil
         emitButtons()
         emitFilterParams()
     }
@@ -165,6 +175,7 @@ final class HomeMapControlViewModel: BaseViewModel {
 
     private func toggle(_ filter: HomeMapStoreFilterControl) {
         guard dependency.preference.isAnonymousUser.isNot else {
+            state.pendingFilterParamKey = filter.paramKey
             output.route.send(.presentSigninDialog)
             return
         }
@@ -174,6 +185,17 @@ final class HomeMapControlViewModel: BaseViewModel {
         emitButtons()
         emitFilterParams()
         output.didChangeFilter.send(())
+    }
+
+    private func applyPendingFilter() {
+        guard let paramKey = state.pendingFilterParamKey else { return }
+        state.pendingFilterParamKey = nil
+
+        let filter = state.controls
+            .compactMap { $0 as? HomeMapStoreFilterControl }
+            .first { $0.paramKey == paramKey }
+        guard let filter else { return }
+        toggle(filter)
     }
 
     private func moveToCurrentLocation(zoomLevel: Double?) {

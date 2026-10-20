@@ -8,14 +8,16 @@ import Model
 final class SigninAnonymousViewController: BaseViewController {
     private let signinAnonymousView = SigninAnonymousView()
     private let viewModel = SigninAnonymousViewModel()
+    private var onSignin: (() -> Void)?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
     
-    static func instance() -> SigninAnonymousViewController {
+    static func instance(onSignin: (() -> Void)? = nil) -> SigninAnonymousViewController {
         let viewController = SigninAnonymousViewController(nibName: nil, bundle: nil)
         viewController.modalPresentationStyle = .overCurrentContext
+        viewController.onSignin = onSignin
         return viewController
     }
     
@@ -54,7 +56,7 @@ final class SigninAnonymousViewController: BaseViewController {
             .sink { owner, route in
                 switch route {
                 case .dismiss:
-                    owner.dismiss(animated: true)
+                    owner.dismiss(animated: true, completion: owner.onSignin)
                     
                 case .showAlreadyExist(let signinRequest):
                     owner.showAlreadyExist(signinRequest: signinRequest)

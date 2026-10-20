@@ -624,7 +624,9 @@ public final class HomeViewController: BaseViewController {
     }
 
     private func presentSigninDialog() {
-        let viewController = Environment.membershipInterface.createSigninAnonymousViewController()
+        let viewController = Environment.membershipInterface.createSigninAnonymousViewController { [weak self] in
+            self?.viewModel.mapControlViewModel.input.didSignin.send(())
+        }
 
         tabBarController?.present(viewController, animated: true)
     }
