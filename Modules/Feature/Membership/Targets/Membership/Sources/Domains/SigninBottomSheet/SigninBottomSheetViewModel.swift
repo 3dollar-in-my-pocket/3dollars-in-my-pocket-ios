@@ -108,6 +108,7 @@ final class SigninBottomSheetViewModel: BaseViewModel {
             case .success(let signinResponse):
                 preference.userId = signinResponse.userId
                 preference.authToken = signinResponse.token
+                preference.isAnonymousUser = false
                 sendFCMToken(socialType: socialType)
                 
             case .failure(let error):
