@@ -24,9 +24,13 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
         static let emptyLabelHeight: CGFloat = 20
         static let emptyRowHeight: CGFloat = emptyVerticalInset * 2 + emptyLabelHeight
 
+        static func categoryAreaHeight(_ carousel: HomeCurationCarouselViewData) -> CGFloat {
+            return carousel.categories.isEmpty ? chipVerticalInset : chipRowHeight
+        }
+
         static func height(_ carousel: HomeCurationCarouselViewData) -> CGFloat {
             let cardsHeight = carousel.cards.isEmpty ? emptyRowHeight : cardRowHeight + cardBottomInset
-            return verticalInset + titleHeight + chipRowHeight + cardsHeight + verticalInset
+            return verticalInset + titleHeight + categoryAreaHeight(carousel) + cardsHeight + verticalInset
         }
     }
 
@@ -146,6 +150,10 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
         titleLabel.setSDText(carousel.header.title, customFont: Fonts.bold.font(size: 20))
         titleLabel.lineBreakMode = .byTruncatingTail
 
+        categoryCollectionView.isHidden = carousel.categories.isEmpty
+        categoryCollectionView.snp.updateConstraints {
+            $0.height.equalTo(Layout.categoryAreaHeight(carousel))
+        }
         categoryCollectionView.reloadData()
         cardCollectionView.isHidden = carousel.cards.isEmpty
         emptyLabel.isHidden = carousel.cards.isNotEmpty

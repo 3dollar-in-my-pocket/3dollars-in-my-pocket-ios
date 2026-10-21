@@ -25,14 +25,18 @@ description: 가슴속 3천원 서버 OpenAPI 스키마를 조회/확인합니�
 1. **전체 JSON을 컨텍스트에 덤프하지 말 것.** 스펙은 ~1MB(스키마 300개+, 경로 100개+)다. 반드시 임시 파일로 받아 **python/grep으로 필요한 부분만 추출**해서 본다.
 2. **curl 사용 (urllib 금지).** 로컬에 Proxyman 등 프록시 인증서가 깔려 있으면 python `urllib`은 `CERTIFICATE_VERIFY_FAILED`로 실패한다. `curl`로 받는다.
 3. **스펙과 실데이터를 구분.** OpenAPI의 `extraParams`/`extraParameters`처럼 `additionalProperties`(자유형 맵)는 실제 키가 문서에 안 나온다. 또 신규 필드는 배포 전이라 스펙엔 있어도 실응답엔 없을 수 있다. 확신이 필요하면 **실제 엔드포인트를 호출해 교차 검증**한다(아래 참조).
-4. **allOf/oneOf/discriminator 해석.** 스키마가 상속/합성(`allOf`)·다형성(`oneOf` + `discriminator`)을 많이 쓴다. 단순히 `properties`만 보면 빈 객체로 보일 수 있으니 raw 정의를 펼쳐 본다.
+4. **서버 호출엔 시뮬레이터와 같은 User-Agent를 붙인다.** 서버에 User-Agent 화이트리스트가 있어 `curl/…`·`Python-urllib/…` 기본값은 `403 FB000 forbidden`이다. 앱(`HTTPUtils.userAgent`)과 같은 형식 `{버전} ({번들ID}; build:{빌드}; iOS {x.y.z})`으로 보낸다. 버전·빌드는 `Tuist/ProjectDescriptionHelpers/DefaultSetting.swift`에서 읽는다:
+   ```bash
+   UA="$(sed -n 's/.*appVersion: SettingValue = "\(.*\)".*/\1/p' Tuist/ProjectDescriptionHelpers/DefaultSetting.swift) (com.macgongmon.-dollar-in-my-pocket-debug; build:$(sed -n 's/.*buildNumber: SettingValue = "\(.*\)".*/\1/p' Tuist/ProjectDescriptionHelpers/DefaultSetting.swift); iOS 26.2.0)"
+   ```
+5. **allOf/oneOf/discriminator 해석.** 스키마가 상속/합성(`allOf`)·다형성(`oneOf` + `discriminator`)을 많이 쓴다. 단순히 `properties`만 보면 빈 객체로 보일 수 있으니 raw 정의를 펼쳐 본다.
 
 ## 절차
 
 ### 1) 스펙 내려받기 (임시 파일로 캐시)
 
 ```bash
-curl -s "https://dev.threedollars.co.kr/api/v3/api-docs" -o /tmp/th_apidocs.json
+curl -s -A "$UA" "https://dev.threedollars.co.kr/api/v3/api-docs" -o /tmp/th_apidocs.json
 echo "size: $(wc -c < /tmp/th_apidocs.json) bytes"   # 정상이면 ~970KB+
 ```
 
@@ -141,13 +145,13 @@ EOF
 `screen/store` 류 일부 GET 엔드포인트는 인증 없이도 응답한다(좌표 헤더 필요). 자유형 `extraParams` 실제 키나 "신규 필드 실제 내려오는지"를 확인할 때 유용하다.
 
 ```bash
-curl -s "https://dev.threedollars.co.kr/api/v1/screen/store/1000/preview" \
+curl -s -A "$UA" "https://dev.threedollars.co.kr/api/v1/screen/store/1000/preview" \
   -H "X-Device-Latitude: 37.5" -H "X-Device-Longitude: 127.0" \
   | python3 -c "import sys,json; print(json.dumps(json.load(sys.stdin), ensure_ascii=False, indent=1)[:1500])"
 ```
 
 - `{"ok": false, ... "not_exists_store"}`면 다른 storeId로 시도.
-- `/api/v4/stores/around` 등 일부는 `forbidden`(인증 필요) — 호출 불가.
+- `forbidden`(FB000)이면 먼저 User-Agent를 확인한다. UA가 맞는데도 막히면 인증이 필요한 엔드포인트다.
 - 실데이터가 스펙과 다르면, **"스펙엔 있으나 미배포" 또는 "자유형 맵이라 문서 미기재"** 가능성을 함께 보고한다.
 
 ## 보고 형식
