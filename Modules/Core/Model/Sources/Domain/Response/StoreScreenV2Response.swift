@@ -56,6 +56,8 @@ public struct StoreScreenV2Response: Decodable {
                 component = try StoreReviewSection(from: sectionDecoder)
             case .threadPost:
                 component = try StoreThreadPostSection(from: sectionDecoder)
+            case .advertisement:
+                component = try StoreAdSection(from: sectionDecoder)
             case .unknown:
                 continue
             }

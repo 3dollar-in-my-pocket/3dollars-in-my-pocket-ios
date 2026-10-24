@@ -79,7 +79,7 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register([HomeCurationStoreCardCell.self, HomeCurationAdmobCardCell.self])
+        collectionView.register([HomeCurationStoreCardCell.self, HomeCurationAdmobCardCell.self, HomeCurationAdCardCell.self])
         return collectionView
     }()
 
@@ -201,6 +201,10 @@ extension HomeCurationCarouselCell: UICollectionViewDataSource {
                 self?.onTapCard?(card.cardId)
             }
             return cell
+        case .adCard(let card):
+            let cell: HomeCurationAdCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            cell.bind(card)
+            return cell
         case .none:
             let cell: HomeCurationStoreCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             return cell
@@ -216,8 +220,14 @@ extension HomeCurationCarouselCell: UICollectionViewDelegateFlowLayout {
             return
         }
 
-        guard case .imagePreviewCard(let card) = carousel?.cards[safe: indexPath.item] else { return }
-        onTapCard?(card.cardId)
+        switch carousel?.cards[safe: indexPath.item] {
+        case .imagePreviewCard(let card):
+            onTapCard?(card.cardId)
+        case .adCard(let card):
+            onTapCard?(card.cardId)
+        case .admobCard, .none:
+            break
+        }
     }
 
     func collectionView(

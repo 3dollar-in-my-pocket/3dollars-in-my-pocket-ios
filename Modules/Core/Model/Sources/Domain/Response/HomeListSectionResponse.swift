@@ -46,6 +46,8 @@ public struct HomeListSectionResponse: Decodable {
                 decodedCards.append(try HomeListAdmobCardResponse(from: cardDecoder))
             case .emptyCard:
                 decodedCards.append(try HomeListEmptyCardResponse(from: cardDecoder))
+            case .adCard:
+                decodedCards.append(try SDAdCard(from: cardDecoder))
             case .unknown:
                 continue
             }
