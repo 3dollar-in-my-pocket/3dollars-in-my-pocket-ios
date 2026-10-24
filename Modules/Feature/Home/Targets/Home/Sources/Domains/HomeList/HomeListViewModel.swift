@@ -205,6 +205,8 @@ final class HomeListViewModel: BaseViewModel {
                 items.append(.admobCard(admob))
             } else if let empty = card as? HomeListEmptyCardResponse {
                 items.append(.emptyCard(empty))
+            } else if let adCard = card as? SDAdCard {
+                items.append(.adCard(adCard))
             }
         }
         output.dataSource.send([HomeListSection(items: items)])
@@ -222,6 +224,8 @@ final class HomeListViewModel: BaseViewModel {
             log = admob.impressionLog
         case let empty as HomeListEmptyCardResponse:
             log = empty.impressionLog
+        case let adCard as SDAdCard:
+            log = adCard.impressionLog
         default:
             log = nil
         }
