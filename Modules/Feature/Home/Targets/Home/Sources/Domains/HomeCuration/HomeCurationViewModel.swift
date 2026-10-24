@@ -119,9 +119,19 @@ final class HomeCurationViewModel: BaseViewModel {
             .sink { (owner: HomeCurationViewModel, payload) in
                 switch owner.carouselCard(carouselId: payload.carouselId, cardId: payload.cardId) {
                 case .imagePreviewCard(let preview):
-                    owner.sendImpressionLogIfNeeded(preview, carouselId: payload.carouselId)
+                    owner.sendCarouselCardImpressionLogIfNeeded(
+                        cardId: preview.cardId,
+                        impressionLog: preview.impressionLog,
+                        carouselId: payload.carouselId
+                    )
                 case .admobCard(let admob):
                     owner.sendImpressionLogIfNeeded(admob)
+                case .adCard(let adCard):
+                    owner.sendCarouselCardImpressionLogIfNeeded(
+                        cardId: adCard.cardId,
+                        impressionLog: adCard.impressionLog,
+                        carouselId: payload.carouselId
+                    )
                 case nil:
                     break
                 }
@@ -246,6 +256,11 @@ final class HomeCurationViewModel: BaseViewModel {
             selectStore(preview)
         case .admobCard(let admob):
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))
+        case .adCard(let adCard):
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: adCard.clickLog))
+            if let link = adCard.link {
+                output.route.send(.deepLink(link))
+            }
         }
     }
 
@@ -300,9 +315,13 @@ final class HomeCurationViewModel: BaseViewModel {
         dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: admob.impressionLog))
     }
 
-    private func sendImpressionLogIfNeeded(_ preview: StoreImagePreviewCard, carouselId: String) {
-        guard let impressionLog = preview.impressionLog,
-              state.impressedCardIds.insert(impressionKeyPrefix(carouselId: carouselId) + preview.cardId).inserted else { return }
+    private func sendCarouselCardImpressionLogIfNeeded(
+        cardId: String,
+        impressionLog: SDImpressionLog?,
+        carouselId: String
+    ) {
+        guard let impressionLog,
+              state.impressedCardIds.insert(impressionKeyPrefix(carouselId: carouselId) + cardId).inserted else { return }
         dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
     }
 

@@ -1,0 +1,655 @@
+{
+  "cards": [
+    {
+      "type": "BASIC_CARD",
+      "cardId": "S:12806244",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">TH1485 test store</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        },
+        "badge": {
+          "url": "https://storage.threedollars.co.kr/app/store_badge_new.png",
+          "style": {
+            "width": 16.0,
+            "height": 16.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "metadata": {
+        "primary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">기타, 꼬치, 붕어빵 외 2개</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/star_solid_bold.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">0.0 (0)</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 2.0,
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">0m</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">최근 방문 0명</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "separator": {
+          "url": "https://storage.threedollars.co.kr/app/rectangle_465.png",
+          "style": {
+            "width": 2.0,
+            "height": 2.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "images": [],
+      "bodies": [],
+      "marker": {
+        "focused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_fire_focused_27.png",
+            "style": {
+              "width": 38.0,
+              "height": 48.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "unfocused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_fire_unfocused_27.png",
+            "style": {
+              "width": 38.0,
+              "height": 48.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "location": {
+          "latitude": 37.4979,
+          "longitude": 127.0276
+        },
+        "link": {
+          "type": "APP_SCHEME",
+          "link": "/store?storeId=12806244&storeType=USER_STORE"
+        },
+        "clickLog": {
+          "screenName": "home",
+          "objectType": "marker",
+          "objectId": "store",
+          "extraParameters": {
+            "tabId": "DEFAULT",
+            "store_id": "12806244",
+            "store_type": "USER_STORE"
+          },
+          "eventType": "CLICK"
+        }
+      },
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12806244&storeType=USER_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "refs": [
+        {
+          "type": "STORE",
+          "storeId": "12806244",
+          "storeType": "USER_STORE"
+        }
+      ],
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "12806244",
+          "store_type": "USER_STORE",
+          "position": "1"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "12806244",
+          "store_type": "USER_STORE",
+          "position": "1"
+        },
+        "eventType": "IMPRESSION"
+      }
+    },
+    {
+      "type": "BASIC_CARD",
+      "cardId": "S:12804906",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">현식 테스트</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        }
+      },
+      "metadata": {
+        "primary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">두쫀쿠, 버터떡, 붕어빵</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/star_solid_bold.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">5.0 (2)</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 2.0,
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:600; color:#2E2E2E\">영업 종료</span>",
+              "isHtml": true,
+              "fontColor": "#2E2E2E"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">0m</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">최근 방문 0명</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">사장님 직영점</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "separator": {
+          "url": "https://storage.threedollars.co.kr/app/rectangle_465.png",
+          "style": {
+            "width": 2.0,
+            "height": 2.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "images": [
+        {
+          "url": "https://storage.dev.threedollars.co.kr/boss/store/v1/v1-c3cf264b-ff1a-4a18-99bf-1d0fc4a820fb.jpeg",
+          "style": {
+            "width": 120.0,
+            "height": 120.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        },
+        {
+          "url": "https://storage.dev.threedollars.co.kr/boss/store-certification/v1/v1-bcd924cb-e2d2-4312-88a9-660039b739a7.png",
+          "style": {
+            "width": 120.0,
+            "height": 120.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      ],
+      "bodies": [
+        {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">리뷰개행리뷰개행리뷰를 길개 사용하기 리뷰리뷰를 길게써보면 \n리뷰를 길게길게\n으아아아아아아\n아이폰 듀오\n사계 그리고 너</span>",
+            "isHtml": true,
+            "fontColor": "#5A5A5A"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        },
+        {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">리뷰랍ㅍ립ㅍ랍ㅍ리</span>",
+            "isHtml": true,
+            "fontColor": "#5A5A5A"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        }
+      ],
+      "marker": {
+        "focused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_verified_focused_28.png",
+            "style": {
+              "width": 40.0,
+              "height": 40.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "unfocused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_verified_unfocused_28.png",
+            "style": {
+              "width": 40.0,
+              "height": 36.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "location": {
+          "latitude": 37.4979,
+          "longitude": 127.0276
+        },
+        "link": {
+          "type": "APP_SCHEME",
+          "link": "/store?storeId=12804906&storeType=BOSS_STORE"
+        },
+        "clickLog": {
+          "screenName": "home",
+          "objectType": "marker",
+          "objectId": "store",
+          "extraParameters": {
+            "tabId": "DEFAULT",
+            "store_id": "12804906",
+            "store_type": "BOSS_STORE"
+          },
+          "eventType": "CLICK"
+        }
+      },
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12804906&storeType=BOSS_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "refs": [
+        {
+          "type": "STORE",
+          "storeId": "12804906",
+          "storeType": "BOSS_STORE"
+        }
+      ],
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "12804906",
+          "store_type": "BOSS_STORE",
+          "position": "2"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "12804906",
+          "store_type": "BOSS_STORE",
+          "position": "2"
+        },
+        "eventType": "IMPRESSION"
+      }
+    },
+    {
+      "type": "AD_CARD",
+      "cardId": "AD:109",
+      "title": {
+        "text": "가3팀이 붕어빵을 판다?",
+        "isHtml": false,
+        "fontColor": "#0F0F0F"
+      },
+      "subTitle": {
+        "text": "익선동 팝업에서 슈크림 붕어빵을 먼저 만나보세요",
+        "isHtml": false,
+        "fontColor": "#969696"
+      },
+      "labels": [
+        {
+          "text": {
+            "text": "광고",
+            "isHtml": false,
+            "fontColor": "#FF8181"
+          },
+          "style": {
+            "backgroundColor": "#FFEFEF"
+          }
+        }
+      ],
+      "image": {
+        "url": "https://storage.dev.threedollars.co.kr/popup/v1-d49d6f2d-43ae-4694-aae6-2c9fc6995c2a.png",
+        "style": {
+          "width": 64.0,
+          "height": 64.0,
+          "dimmed": false,
+          "alpha": 1.0
+        }
+      },
+      "link": {
+        "type": "WEB",
+        "link": "https://web.threedollars.co.kr"
+      },
+      "adRef": {
+        "type": "AD",
+        "adId": 109,
+        "adGroupId": "test"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "advertisement",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "position": "3",
+          "advertisement_id": "109",
+          "advertisement_group_id": "test"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "advertisement",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "position": "3",
+          "advertisement_id": "109",
+          "advertisement_group_id": "test"
+        },
+        "eventType": "IMPRESSION"
+      }
+    },
+    {
+      "type": "BASIC_CARD",
+      "cardId": "S:12804902",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">1061-3</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        }
+      },
+      "metadata": {
+        "primary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">버터떡, 두쫀쿠, 소금빵 외 7개</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/star_solid_bold.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">0.0 (0)</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 2.0,
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">0m</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">최근 방문 0명</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "separator": {
+          "url": "https://storage.threedollars.co.kr/app/rectangle_465.png",
+          "style": {
+            "width": 2.0,
+            "height": 2.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "images": [],
+      "bodies": [],
+      "marker": {
+        "focused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_focused_31.png",
+            "style": {
+              "width": 32.0,
+              "height": 40.0,
+              "dimmed": false,
+              "alpha": 0.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "unfocused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_unfocused_31.png",
+            "style": {
+              "width": 28.0,
+              "height": 28.0,
+              "dimmed": false,
+              "alpha": 0.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "location": {
+          "latitude": 37.4979,
+          "longitude": 127.0276
+        },
+        "link": {
+          "type": "APP_SCHEME",
+          "link": "/store?storeId=12804902&storeType=USER_STORE"
+        },
+        "clickLog": {
+          "screenName": "home",
+          "objectType": "marker",
+          "objectId": "store",
+          "extraParameters": {
+            "tabId": "DEFAULT",
+            "store_id": "12804902",
+            "store_type": "USER_STORE"
+          },
+          "eventType": "CLICK"
+        }
+      },
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12804902&storeType=USER_STORE"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "refs": [
+        {
+          "type": "STORE",
+          "storeId": "12804902",
+          "storeType": "USER_STORE"
+        }
+      ],
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "12804902",
+          "store_type": "USER_STORE",
+          "position": "4"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "12804902",
+          "store_type": "USER_STORE",
+          "position": "4"
+        },
+        "eventType": "IMPRESSION"
+      }
+    }
+  ],
+  "cursor": {
+    "nextCursor": "GM3S4NBZG44TUORRGI3S4MBSG43DUORTFYYDUORQFYYTGMZUG44DMNBTGY4DMNZYGA2TUORRGAYDCMRU",
+    "hasMore": true
+  },
+  "impressionLog": {
+    "screenName": "home",
+    "objectType": "section",
+    "objectId": "home_list",
+    "extraParameters": {
+      "tabId": "DEFAULT",
+      "store_card_count": "15",
+      "ad_card_count": "1",
+      "advertisement_card_count": "1"
+    },
+    "eventType": "IMPRESSION"
+  }
+}

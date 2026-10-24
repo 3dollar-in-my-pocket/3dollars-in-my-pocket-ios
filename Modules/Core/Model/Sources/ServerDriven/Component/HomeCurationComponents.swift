@@ -13,6 +13,7 @@ public enum HomeCurationItemType: String, Decodable {
 public enum HomeCurationCardType: String, Decodable {
     case imagePreviewCard = "IMAGE_PREVIEW_CARD"
     case admobCard = "ADMOB_CARD"
+    case adCard = "AD_CARD"
     case unknown
 
     public init(from decoder: Decoder) throws {
@@ -28,12 +29,15 @@ public enum HomeCurationItem: Hashable {
 public enum HomeCurationCard: Hashable {
     case imagePreviewCard(StoreImagePreviewCard)
     case admobCard(HomeListAdmobCardResponse)
+    case adCard(SDAdCard)
 
     public var cardId: String {
         switch self {
         case .imagePreviewCard(let card):
             return card.cardId
         case .admobCard(let card):
+            return card.cardId
+        case .adCard(let card):
             return card.cardId
         }
     }
@@ -98,6 +102,8 @@ struct LossyHomeCurationCard: Decodable {
             card = .imagePreviewCard(try StoreImagePreviewCard(from: decoder))
         case .admobCard:
             card = .admobCard(try HomeListAdmobCardResponse(from: decoder))
+        case .adCard:
+            card = .adCard(try SDAdCard(from: decoder))
         case .unknown:
             card = nil
         }
