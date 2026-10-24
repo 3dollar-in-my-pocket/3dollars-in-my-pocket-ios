@@ -387,9 +387,7 @@ public final class HomeViewController: BaseViewController {
                 owner.bottomSheetController?.move(to: .tip, animated: true)
             }
             .store(in: &cancellables)
-        viewController.onChangeTrackingScrollView = { [weak self] scrollView in
-            self?.bottomSheetController?.track(scrollView: scrollView)
-        }
+        bindHomeListSheet(viewController)
 
         let fpc = FloatingPanelController()
         fpc.layout = HomeListLayout()
@@ -727,6 +725,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         }
         homeView.updateTopBackground(progress: progress)
         bottomSheetViewController?.updateMapButton(progress: progress)
+        moveMapButtonsWithHomeListSheet(fpc)
     }
 
     public func floatingPanelDidChangeState(_ fpc: FloatingPanelController) {
@@ -747,12 +746,13 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         case .full:
             homeView.updateTopBackground(progress: 1)
             bottomSheetViewController?.updateMapButton(progress: 1)
-        case .tip:
+        case .tip, .collapsed:
             homeView.updateTopBackground(progress: 0)
             bottomSheetViewController?.updateMapButton(progress: 0)
         default:
             break
         }
+        moveMapButtonsWithHomeListSheet(fpc)
     }
 
     public func floatingPanelWillEndDragging(
@@ -774,6 +774,41 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         default:
             break
         }
+    }
+}
+
+// MARK: - Home List Sheet
+extension HomeViewController {
+    private var homeListCollapsedVisibleHeight: CGFloat {
+        (bottomSheetController?.layout as? HomeListLayout)?.collapsedVisibleHeight
+            ?? HomeListView.Layout.collapsedVisibleHeight(hasTabs: false)
+    }
+
+    private func bindHomeListSheet(_ viewController: HomeListViewController) {
+        viewController.onChangeTrackingScrollView = { [weak self] scrollView in
+            self?.bottomSheetController?.track(scrollView: scrollView)
+        }
+        viewController.onChangeCollapsedVisibleHeight = { [weak self] height in
+            self?.updateHomeListCollapsedVisibleHeight(height)
+        }
+    }
+
+    private func updateHomeListCollapsedVisibleHeight(_ height: CGFloat) {
+        guard let fpc = bottomSheetController, homeListCollapsedVisibleHeight != height else { return }
+        let isAttached = fpc.parent != nil
+        fpc.layout = HomeListLayout(
+            initialState: isAttached ? fpc.state : .tip,
+            collapsedVisibleHeight: height
+        )
+        guard isAttached else { return }
+        fpc.invalidateLayout()
+        moveMapButtonsWithHomeListSheet(fpc)
+    }
+
+    private func moveMapButtonsWithHomeListSheet(_ fpc: FloatingPanelController, to state: FloatingPanelState? = nil) {
+        guard fpc === bottomSheetController else { return }
+        let sheetY = state.map { fpc.surfaceLocation(for: $0).y } ?? fpc.surfaceLocation.y
+        homeView.moveMapButtons(down: sheetY - fpc.surfaceLocation(for: .tip).y)
     }
 }
 
@@ -887,8 +922,12 @@ extension HomeViewController {
               homeListPanel.parent == nil else { return }
 
         let restoreState = homeListRestoreState ?? .tip
-        homeListPanel.layout = HomeListLayout(initialState: restoreState)
+        homeListPanel.layout = HomeListLayout(
+            initialState: restoreState,
+            collapsedVisibleHeight: homeListCollapsedVisibleHeight
+        )
         homeListPanel.addPanel(toParent: self, animated: true)
+        moveMapButtonsWithHomeListSheet(homeListPanel, to: restoreState)
         if let contentOffset = homeListRestoreContentOffset {
             homeListPanel.trackingScrollView?.setContentOffset(contentOffset, animated: false)
         }
