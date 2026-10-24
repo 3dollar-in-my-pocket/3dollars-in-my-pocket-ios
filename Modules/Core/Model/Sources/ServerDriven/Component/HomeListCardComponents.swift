@@ -4,6 +4,7 @@ public enum HomeListCardType: String, Decodable {
     case basicCard = "BASIC_CARD"
     case admobCard = "ADMOB_CARD"
     case emptyCard = "EMPTY_CARD"
+    case adCard = "AD_CARD"
     case unknown
 
     public init(from decoder: Decoder) throws {

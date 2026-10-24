@@ -18,6 +18,7 @@ public enum StoreSectionType: String, Decodable {
     case cta = "CTA"
     case review = "REVIEW"
     case threadPost = "THREADS_POST"
+    case advertisement = "AD"
     case unknown
 
     public init(from decoder: Decoder) throws {
