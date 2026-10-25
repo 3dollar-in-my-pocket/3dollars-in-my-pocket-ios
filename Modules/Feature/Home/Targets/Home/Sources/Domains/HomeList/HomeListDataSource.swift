@@ -18,7 +18,8 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
         collectionView.register([
             HomeListStoreCell.self,
             HomeListAdmobCell.self,
-            HomeListEmptyCell.self
+            HomeListEmptyCell.self,
+            HomeListAdCell.self
         ])
 
         super.init(collectionView: collectionView) { collectionView, indexPath, item in
@@ -44,6 +45,10 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 return cell
             case .emptyCard:
                 let cell: HomeListEmptyCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                return cell
+            case .adCard(let card):
+                let cell: HomeListAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(card)
                 return cell
             }
         }
@@ -95,6 +100,8 @@ extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
         case .emptyCard:
             let height = HomeListEmptyCell.Layout.height
             return CGSize(width: width, height: height)
+        case .adCard(let card):
+            return CGSize(width: width, height: HomeListAdCell.Layout.height(card))
         case .none:
             return .zero
         }

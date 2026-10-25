@@ -126,7 +126,8 @@ public final class StoreSectionsViewController: BaseViewController {
             StoreCTACell.self,
             StoreReviewCell.self,
             StoreSkeletonCell.self,
-            StoreThreadPostCell.self
+            StoreThreadPostCell.self,
+            StoreAdCell.self
         ])
         if loadsOnViewDidLoad {
             markSectionsDisplayed()
@@ -422,6 +423,9 @@ public final class StoreSectionsViewController: BaseViewController {
         if let section = component as? StoreThreadPostEmbedSection {
             return makeThreadPostCell(section, indexPath: indexPath, in: collectionView)
         }
+        if let section = component as? StoreAdSection {
+            return makeAdCell(section, indexPath: indexPath, in: collectionView, actionHandler: actionHandler)
+        }
 
         switch component {
             case let section as StoreCalloutSection:
@@ -514,6 +518,24 @@ public final class StoreSectionsViewController: BaseViewController {
         }
     }
 
+    private func makeAdCell(
+        _ section: StoreAdSection,
+        indexPath: IndexPath,
+        in collectionView: UICollectionView,
+        actionHandler: @escaping (StoreSectionAction) -> Void
+    ) -> UICollectionViewCell {
+        let cell: StoreAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        cell.bind(section)
+        cell.onTap = { [weak self] card in
+            if let link = card.link {
+                actionHandler(.link(link, clickLog: card.clickLog))
+            } else {
+                self?.viewModel.input.didClickAd.send(card.clickLog)
+            }
+        }
+        return cell
+    }
+
     private func makeThreadPostCell(
         _ section: StoreThreadPostEmbedSection,
         indexPath: IndexPath,
@@ -554,6 +576,9 @@ extension StoreSectionsViewController: UICollectionViewDelegate {
 
         viewModel.sendImpressionLog(component.impressionLog)
         if let section = component as? StoreAdmobSection {
+            viewModel.sendImpressionLog(section.cards.first?.impressionLog)
+        }
+        if let section = component as? StoreAdSection {
             viewModel.sendImpressionLog(section.cards.first?.impressionLog)
         }
     }

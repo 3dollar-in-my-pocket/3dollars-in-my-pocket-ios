@@ -10,6 +10,7 @@ enum HomeListSectionItem: Hashable {
     case basicCard(HomeListBasicCardResponse)
     case admobCard(HomeListAdmobCardResponse)
     case emptyCard(HomeListEmptyCardResponse)
+    case adCard(SDAdCard)
 }
 
 struct HomeBottomSheetTabItem: Hashable {

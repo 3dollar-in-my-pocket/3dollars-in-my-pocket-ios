@@ -645,6 +645,11 @@ final class HomeViewModel: BaseViewModel {
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))
         } else if let empty = card as? HomeListEmptyCardResponse, let log = empty.clickLog {
             dependency.logManager.sendEvent(event: ClickEvent(clickLog: log))
+        } else if let adCard = card as? SDAdCard {
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: adCard.clickLog))
+            if let link = adCard.link {
+                output.route.send(.deepLink(link))
+            }
         }
     }
 
