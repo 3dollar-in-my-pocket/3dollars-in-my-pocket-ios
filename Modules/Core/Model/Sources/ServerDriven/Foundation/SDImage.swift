@@ -14,11 +14,13 @@ public struct SDImageStyle: Decodable, Equatable, Hashable {
     public let width: Double
     public let height: Double
     public let dimmed: Bool
+    public let alpha: Double
 
-    public init(width: Double, height: Double, dimmed: Bool = false) {
+    public init(width: Double, height: Double, dimmed: Bool = false, alpha: Double = 1.0) {
         self.width = width
         self.height = height
         self.dimmed = dimmed
+        self.alpha = alpha
     }
 
     public init(from decoder: any Decoder) throws {
@@ -26,11 +28,13 @@ public struct SDImageStyle: Decodable, Equatable, Hashable {
         self.width = try container.decode(Double.self, forKey: .width)
         self.height = try container.decode(Double.self, forKey: .height)
         self.dimmed = try container.decodeIfPresent(Bool.self, forKey: .dimmed) ?? false
+        self.alpha = try container.decodeIfPresent(Double.self, forKey: .alpha) ?? 1.0
     }
 
     private enum CodingKeys: String, CodingKey {
         case width
         case height
         case dimmed
+        case alpha
     }
 }

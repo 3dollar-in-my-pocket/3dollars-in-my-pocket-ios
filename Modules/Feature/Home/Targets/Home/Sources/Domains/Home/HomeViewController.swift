@@ -485,13 +485,14 @@ public final class HomeViewController: BaseViewController {
         marker.captionTextSize = 12
         marker.captionAligns = [NMFAlignType.bottom]
 
-        guard let sdImage = chip.image, let url = URL(string: sdImage.url) else { return }
+        guard let sdImage = chip.image, let url = URL(string: sdImage.url) else {
+            marker.alpha = HomeMarkerIcon.alpha(of: nil)
+            return
+        }
         ImageDownloader.default.downloadImage(with: url) { [weak marker] result in
             guard let marker, case .success(let value) = result else { return }
             DispatchQueue.main.async {
-                marker.iconImage = NMFOverlayImage(image: value.image)
-                marker.width = sdImage.style.width
-                marker.height = sdImage.style.height
+                marker.applyIcon(value.image, style: sdImage.style)
             }
         }
     }
