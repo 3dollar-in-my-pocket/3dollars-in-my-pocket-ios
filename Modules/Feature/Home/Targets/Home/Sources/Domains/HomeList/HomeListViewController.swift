@@ -30,6 +30,7 @@ final class HomeListViewController: BaseViewController {
     )
 
     var onChangeTrackingScrollView: ((UIScrollView) -> Void)?
+    var onChangeCollapsedVisibleHeight: ((CGFloat) -> Void)?
 
     /// FloatingPanelController.track(scrollView:) 에 넘길 스크롤 뷰.
     var trackingScrollView: UIScrollView {
@@ -99,6 +100,9 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, tabs: [HomeBottomSheetTabItem]) in
                 owner.homeListView.bindTabs(tabs)
+                owner.onChangeCollapsedVisibleHeight?(
+                    HomeListView.Layout.collapsedVisibleHeight(hasTabs: tabs.isNotEmpty)
+                )
             }
             .store(in: &cancellables)
 
