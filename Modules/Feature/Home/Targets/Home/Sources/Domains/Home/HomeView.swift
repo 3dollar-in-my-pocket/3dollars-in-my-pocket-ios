@@ -250,6 +250,12 @@ final class HomeView: BaseView {
         }
     }
 
+    func moveMapButtons(down offset: CGFloat) {
+        let transform = CGAffineTransform(translationX: 0, y: max(0, offset))
+        mapControlView.transform = transform
+        writeButton.transform = transform
+    }
+
     /// 바텀시트의 .tip → .full 진행도(0~1) 를 상단 배경 alpha 와 주소 버튼 테두리에 함께 매핑한다.
     func updateTopBackground(progress: CGFloat) {
         let clamped = max(0, min(1, progress))

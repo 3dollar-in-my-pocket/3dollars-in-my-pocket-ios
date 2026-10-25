@@ -14,6 +14,12 @@ final class HomeListView: BaseView {
         static let dragIndicatorSize = CGSize(width: 36, height: 4)
         static let collectionTopInset: CGFloat = 12
 
+        static func collapsedVisibleHeight(hasTabs: Bool) -> CGFloat {
+            let handleHeight = dragIndicatorTopInset + dragIndicatorSize.height
+            let headerHeight = hasTabs ? HomeBottomSheetTabView.Layout.containerHeight : collectionTopInset
+            return handleHeight + headerHeight
+        }
+
         static func mapButtonBottomInset(
             safeAreaBottom: CGFloat,
             bottomBarCoveringHeight: CGFloat
