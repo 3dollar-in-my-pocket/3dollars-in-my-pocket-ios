@@ -14,7 +14,18 @@ public final class VisitStoreListViewController: BaseViewController {
         return viewModel.output.screenName
     }
     
-    private let myPageNavigationBar = MyPageNavigationBar(title: "방문 인증 내역")
+    private let editButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("편집", for: .normal)
+        button.setTitle("완료", for: .selected)
+        button.setTitle("완료", for: [.selected, .highlighted])
+        button.setTitleColor(Colors.systemWhite.color, for: .normal)
+        button.titleLabel?.font = Fonts.medium.font(size: 14)
+        button.isHidden = true
+        return button
+    }()
+
+    private lazy var myPageNavigationBar = MyPageNavigationBar(title: "방문 인증 내역", rightButtons: [editButton])
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
@@ -31,7 +42,9 @@ public final class VisitStoreListViewController: BaseViewController {
         return emptyView
     }()
     
-    private lazy var dataSource = VisitStoreListDataSource(collectionView: collectionView)
+    private lazy var dataSource = VisitStoreListDataSource(collectionView: collectionView) { [weak self] item in
+        self?.viewModel.input.didTapDelete.send(item)
+    }
     
     private let viewModel: VisitStoreListViewModel
     
@@ -97,6 +110,12 @@ public final class VisitStoreListViewController: BaseViewController {
                 owner.navigationController?.popViewController(animated: true)
             }
             .store(in: &cancellables)
+
+        editButton
+            .controlPublisher(for: .touchUpInside)
+            .mapVoid
+            .subscribe(viewModel.input.didTapEdit)
+            .store(in: &cancellables)
     }
     
     public override func bindViewModelOutput() {
@@ -126,7 +145,16 @@ public final class VisitStoreListViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, sections in
                 owner.emptyView.isHidden = sections.isNotEmpty
+                owner.editButton.isHidden = sections.isEmpty
                 owner.dataSource.reload(sections)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.isEditing
+            .main
+            .withUnretained(self)
+            .sink { owner, isEditing in
+                owner.editButton.isSelected = isEditing
             }
             .store(in: &cancellables)
         
@@ -139,6 +167,8 @@ public final class VisitStoreListViewController: BaseViewController {
                     owner.pushStoreDetail(storeId: storeId)
                 case .bossStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
+                case .presentDeleteAlert(let item):
+                    owner.presentDeleteAlert(item)
                 }
             }
             .store(in: &cancellables)
@@ -159,6 +189,16 @@ public final class VisitStoreListViewController: BaseViewController {
         navigationController?.pushViewController(viewController, animated: true)
     }
     
+    private func presentDeleteAlert(_ item: MyVisitStore) {
+        AlertUtils.showWithCancel(
+            viewController: self,
+            message: "방문 인증을 삭제할까요?",
+            okButtonTitle: "삭제"
+        ) { [weak self] in
+            self?.viewModel.input.didConfirmDelete.send(item)
+        }
+    }
+
     private func pushStoreDetail(storeId: String) {
         guard let storeId = Int(storeId) else { return }
         pushStoreDetail(storeId: storeId)

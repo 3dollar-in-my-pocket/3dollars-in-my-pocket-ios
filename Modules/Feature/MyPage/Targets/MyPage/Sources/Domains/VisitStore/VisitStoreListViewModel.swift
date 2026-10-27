@@ -13,6 +13,9 @@ final class VisitStoreListViewModel: BaseViewModel {
         let loadTrigger = PassthroughSubject<Void, Never>()
         let didSelectItem = PassthroughSubject<IndexPath, Never>()
         let willDisplaytCell = PassthroughSubject<Int, Never>()
+        let didTapEdit = PassthroughSubject<Void, Never>()
+        let didTapDelete = PassthroughSubject<MyVisitStore, Never>()
+        let didConfirmDelete = PassthroughSubject<MyVisitStore, Never>()
     }
 
     struct Output {
@@ -22,6 +25,7 @@ final class VisitStoreListViewModel: BaseViewModel {
         let route = PassthroughSubject<Route, Never>()
         let showErrorAlert = PassthroughSubject<Error, Never>()
         let sections = CurrentValueSubject<[VisitStoreListSection], Never>([])
+        let isEditing = CurrentValueSubject<Bool, Never>(false)
     }
 
     struct State {
@@ -34,6 +38,7 @@ final class VisitStoreListViewModel: BaseViewModel {
     enum Route {
         case storeDetail(Int)
         case bossStoreDetail(String)
+        case presentDeleteAlert(MyVisitStore)
     }
 
     let input = Input()
@@ -42,14 +47,17 @@ final class VisitStoreListViewModel: BaseViewModel {
     private var state = State()
 
     private let myPageRepository: MyPageRepository
+    private let visitRepository: VisitRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
 
     init(
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
+        visitRepository: VisitRepository = VisitRepositoryImpl(),
         logManager: LogManagerProtocol = LogManager.shared
     ) {
         self.myPageRepository = myPageRepository
+        self.visitRepository = visitRepository
         self.logManager = logManager
 
         super.init()
@@ -57,6 +65,7 @@ final class VisitStoreListViewModel: BaseViewModel {
 
     override func bind() {
         super.bind()
+        bindEdit()
         
         input.loadTrigger
             .withUnretained(self)
@@ -78,7 +87,7 @@ final class VisitStoreListViewModel: BaseViewModel {
                     owner.state.items = response.contents.map { MyVisitStore(response: $0) }
                     owner.state.hasMore = response.cursor.hasMore
                     owner.state.nextCursor = response.cursor.nextCursor
-                    owner.updateDataSource()
+                    owner.reloadItems()
                 case .failure(let error):
                     owner.output.showErrorAlert.send(error)
                 }
@@ -117,9 +126,10 @@ final class VisitStoreListViewModel: BaseViewModel {
         
         input.didSelectItem
             .withUnretained(self)
+            .filter { owner, _ in owner.output.isEditing.value.isNot }
             .compactMap { owner, indexPath -> PlatformStore? in
                 guard let item = owner.output.sections.value[safe: indexPath.section]?.items[safe: indexPath.item],
-                      case .store(let store) = item else { return nil }
+                      case .store(let store, _) = item else { return nil }
                 return store.store
             }
             .handleEvents(receiveOutput: { [weak self] store in
@@ -143,12 +153,80 @@ final class VisitStoreListViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
     
+    private func bindEdit() {
+        input.didTapEdit
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.sendClickEdit()
+                owner.setEditing(owner.output.isEditing.value.isNot)
+            }
+            .store(in: &cancellables)
+
+        input.didTapDelete
+            .map { Route.presentDeleteAlert($0) }
+            .subscribe(output.route)
+            .store(in: &cancellables)
+
+        input.didConfirmDelete
+            .withUnretained(self)
+            .sink { owner, item in
+                owner.sendClickDeleteVisit(item)
+                Task { [weak owner] in
+                    await owner?.deleteVisit(item)
+                }
+                .store(in: owner.taskBag)
+            }
+            .store(in: &cancellables)
+    }
+
+    @MainActor
+    private func deleteVisit(_ item: MyVisitStore) async {
+        output.showLoading.send(true)
+        let result = await visitRepository.deleteStoreVisit(visitId: item.visitId)
+        output.showLoading.send(false)
+
+        switch result {
+        case .success(let message):
+            state.items.removeAll { $0.visitId == item.visitId }
+            reloadItems()
+            if let message, message.isNotEmpty {
+                output.showToast.send(message)
+            }
+        case .failure(let error):
+            if case .errorContainer(let container) = error as? NetworkError,
+               container.resultCode != "UA000",
+               let message = container.message,
+               message.isNotEmpty {
+                output.showToast.send(message)
+            } else {
+                output.showErrorAlert.send(error)
+            }
+        }
+    }
+
+    private func reloadItems() {
+        if state.items.isEmpty {
+            setEditing(false)
+        } else {
+            updateDataSource()
+        }
+    }
+
+    private func setEditing(_ isEditing: Bool) {
+        output.isEditing.send(isEditing)
+        updateDataSource()
+    }
+
     private func updateDataSource() {
+        let isEditing = output.isEditing.value
         let sections: [VisitStoreListSection] = state.items.reduce(into: []) { result, element in
             if let sectionIndex = result.firstIndex(where: { $0.visitDate == element.visitDate }) {
-                result[sectionIndex].items.append(.store(element))
+                result[sectionIndex].items.append(.store(element, isEditing: isEditing))
             } else {
-                let newSection = VisitStoreListSection(visitDate: element.visitDate, items: [.store(element)])
+                let newSection = VisitStoreListSection(
+                    visitDate: element.visitDate,
+                    items: [.store(element, isEditing: isEditing)]
+                )
                 result.append(newSection)
             }
         }
@@ -171,6 +249,27 @@ private extension VisitStoreListViewModel {
             extraParameters: [
                 .storeId: store.id,
                 .storeType: store.type.rawValue
+            ]
+        ))
+    }
+
+    func sendClickEdit() {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .edit
+        ))
+    }
+
+    func sendClickDeleteVisit(_ item: MyVisitStore) {
+        logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .deleteVisit,
+            extraParameters: [
+                .storeId: item.store.id,
+                .storeType: item.store.type.rawValue,
+                .visitId: item.visitId
             ]
         ))
     }
