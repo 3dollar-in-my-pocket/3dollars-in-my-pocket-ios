@@ -294,8 +294,12 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             mainTabBarViewController?.landStoreOnHome(storeId: storeId, isExpanded: isExpanded)
         }
 
-        if navigationController.presentedViewController.isNotNil {
-            navigationController.dismiss(animated: true, completion: land)
+        let presentingViewController = [navigationController, mainTabBarViewController]
+            .compactMap { $0 }
+            .first { $0.presentedViewController.isNotNil }
+
+        if let presentingViewController {
+            presentingViewController.dismiss(animated: true, completion: land)
         } else {
             land()
         }
