@@ -4,6 +4,8 @@ import Common
 import DesignSystem
 import Model
 
+import SnapKit
+
 final class VisitStoreItemCell: BaseCollectionViewCell {
 
     enum Layout {
@@ -76,6 +78,8 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         button.isHidden = true
         return button
     }()
+
+    private var titleTrailingToDeleteButtonConstraint: Constraint?
     
     override func setup() {
         super.setup()
@@ -140,8 +144,10 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         titleStackView.snp.makeConstraints {
             $0.centerY.equalTo(imageView)
             $0.leading.equalTo(imageView.snp.trailing).offset(16)
-            $0.trailing.lessThanOrEqualTo(deleteButton.snp.leading).offset(-8)
+            $0.trailing.lessThanOrEqualToSuperview().inset(16)
+            titleTrailingToDeleteButtonConstraint = $0.trailing.lessThanOrEqualTo(deleteButton.snp.leading).offset(-8).constraint
         }
+        titleTrailingToDeleteButtonConstraint?.deactivate()
 
         deleteButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
@@ -152,6 +158,11 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
 
     func bind(item: MyVisitStore, isEditing: Bool) {
         deleteButton.isHidden = isEditing.isNot
+        if isEditing {
+            titleTrailingToDeleteButtonConstraint?.activate()
+        } else {
+            titleTrailingToDeleteButtonConstraint?.deactivate()
+        }
         imageView.setImage(urlString: item.store.categories.first?.imageUrl)
         titleLabel.text = item.store.name
         tagLabel.text = item.store.categories.map { "#\($0.name)" }.joined(separator: " ")
