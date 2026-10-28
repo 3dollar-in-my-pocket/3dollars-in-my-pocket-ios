@@ -145,8 +145,15 @@ public final class VisitStoreListViewController: BaseViewController {
             .withUnretained(self)
             .sink { owner, sections in
                 owner.emptyView.isHidden = sections.isNotEmpty
-                owner.editButton.isHidden = sections.isEmpty
                 owner.dataSource.reload(sections)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.hasDeletableItem
+            .main
+            .withUnretained(self)
+            .sink { owner, hasDeletableItem in
+                owner.editButton.isHidden = hasDeletableItem.isNot
             }
             .store(in: &cancellables)
 

@@ -15,19 +15,21 @@ final class VisitStoreListViewModelTests: XCTestCase {
 
     // MARK: TH-1538 TC1
 
-    func test_TH1538_TC1_편집버튼을누르면_모든항목이편집상태가된다() throws {
+    func test_TH1538_TC1_편집버튼을누르면_24시간이내항목에만삭제버튼이보인다() throws {
         // Given
         let viewModel = try makeLoadedViewModel()
-        var isEditing: Bool?
-        viewModel.output.isEditing.sink { isEditing = $0 }.store(in: &cancellables)
 
         // When
         viewModel.input.didTapEdit.send(())
 
         // Then
-        XCTAssertEqual(isEditing, true)
-        XCTAssertTrue(editingStates(viewModel).allSatisfy { $0 })
-        XCTAssertEqual(editingStates(viewModel).count, 3)
+        XCTAssertEqual(viewModel.output.isEditing.value, true)
+        XCTAssertEqual(canDeleteByVisitId(viewModel), [
+            "recent-1": true,
+            "recent-2": true,
+            "recent-3": true,
+            "old-1": false
+        ])
     }
 
     // MARK: TH-1538 TC2
@@ -42,7 +44,7 @@ final class VisitStoreListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.output.isEditing.value, false)
-        XCTAssertTrue(editingStates(viewModel).allSatisfy { $0 == false })
+        XCTAssertTrue(canDeleteByVisitId(viewModel).values.allSatisfy { $0 == false })
     }
 
     // MARK: TH-1538 TC3
@@ -57,10 +59,10 @@ final class VisitStoreListViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        viewModel.input.didTapDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didTapDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-1")))
 
         // Then
-        XCTAssertEqual(alertVisitId, "visit-1")
+        XCTAssertEqual(alertVisitId, "recent-1")
     }
 
     // MARK: TH-1538 TC4
@@ -72,56 +74,51 @@ final class VisitStoreListViewModelTests: XCTestCase {
         let viewModel = try makeLoadedViewModel(visitRepository: visitRepository, logManager: logManager)
 
         // When
-        viewModel.input.didTapDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didTapDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-1")))
 
         // Then
         XCTAssertTrue(visitRepository.deletedVisitIds.isEmpty)
         XCTAssertFalse(logManager.sentEvents.contains { ($0.parameters["object_id"] as? String) == "delete_visit" })
-        XCTAssertEqual(editingStates(viewModel).count, 3)
+        XCTAssertEqual(visitIds(viewModel).count, 4)
     }
 
     // MARK: TH-1538 TC5
 
-    func test_TH1538_TC5_삭제를확정하면_visitId로삭제하고항목을지우고서버메시지를토스트로띄운다() throws {
+    func test_TH1538_TC5_삭제를확정하면_visitId로삭제하고항목을지우고고정문구토스트를띄운다() throws {
         // Given
         let visitRepository = MockVisitRepository()
-        visitRepository.deleteStoreVisitResult = .success("방문 인증을 삭제했어요")
+        visitRepository.deleteStoreVisitResult = .success("OK")
         let viewModel = try makeLoadedViewModel(visitRepository: visitRepository)
         let toasted = expectation(description: "toast")
         var toast: String?
         viewModel.output.showToast.sink { toast = $0; toasted.fulfill() }.store(in: &cancellables)
 
         // When
-        viewModel.input.didConfirmDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didConfirmDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-1")))
 
         // Then
         wait(for: [toasted], timeout: 2)
-        XCTAssertEqual(visitRepository.deletedVisitIds, ["visit-1"])
-        XCTAssertEqual(toast, "방문 인증을 삭제했어요")
-        XCTAssertFalse(visitIds(viewModel).contains("visit-1"))
-        XCTAssertEqual(visitIds(viewModel).count, 2)
+        XCTAssertEqual(visitRepository.deletedVisitIds, ["recent-1"])
+        XCTAssertEqual(toast, "방문 인증 기록이 삭제되었습니다.")
+        XCTAssertFalse(visitIds(viewModel).contains("recent-1"))
+        XCTAssertEqual(visitIds(viewModel).count, 3)
     }
 
     // MARK: TH-1538 TC6
 
-    func test_TH1538_TC6_서버가삭제를거부하면_서버에러메시지를토스트로띄우고항목을유지한다() throws {
+    func test_TH1538_TC6_24시간이지난항목은_편집모드에서도삭제할수없다() throws {
         // Given
-        let visitRepository = MockVisitRepository()
-        visitRepository.deleteStoreVisitResult = .failure(NetworkError.errorContainer(
-            .init(message: "하루가 지난 방문 인증은 삭제할 수 없어요", resultCode: "BR000")
-        ))
-        let viewModel = try makeLoadedViewModel(visitRepository: visitRepository)
-        let toasted = expectation(description: "toast")
-        var toast: String?
-        viewModel.output.showToast.sink { toast = $0; toasted.fulfill() }.store(in: &cancellables)
+        let viewModel = try makeLoadedViewModel()
+        viewModel.input.didTapEdit.send(())
+        var routes: [VisitStoreListViewModel.Route] = []
+        viewModel.output.route.sink { routes.append($0) }.store(in: &cancellables)
 
         // When
-        viewModel.input.didConfirmDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didTapDelete.send(try XCTUnwrap(visit(viewModel, id: "old-1")))
 
         // Then
-        wait(for: [toasted], timeout: 2)
-        XCTAssertEqual(toast, "하루가 지난 방문 인증은 삭제할 수 없어요")
-        XCTAssertEqual(visitIds(viewModel).count, 3)
+        XCTAssertEqual(canDeleteByVisitId(viewModel)["old-1"], false)
+        XCTAssertTrue(routes.isEmpty)
     }
 
     // MARK: TH-1538 TC7
@@ -131,16 +128,15 @@ final class VisitStoreListViewModelTests: XCTestCase {
         let visitRepository = MockVisitRepository()
         visitRepository.deleteStoreVisitResult = .success("OK")
         let viewModel = try makeLoadedViewModel(visitRepository: visitRepository)
-        XCTAssertEqual(viewModel.output.sections.value.map(\.visitDate), ["2026-10-27", "2026-10-20"])
-        let target = try XCTUnwrap(viewModel.output.sections.value.last?.items.first.flatMap(item))
-        let deleted = sectionsExpectation(viewModel) { $0.count == 1 }
+        XCTAssertEqual(viewModel.output.sections.value.map(\.visitDate), ["2026-10-28", "2026-10-27", "2026-10-20"])
+        let deleted = sectionsExpectation(viewModel) { $0.count == 2 }
 
         // When
-        viewModel.input.didConfirmDelete.send(target)
+        viewModel.input.didConfirmDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-3")))
 
         // Then
         wait(for: [deleted], timeout: 2)
-        XCTAssertEqual(viewModel.output.sections.value.map(\.visitDate), ["2026-10-27"])
+        XCTAssertEqual(viewModel.output.sections.value.map(\.visitDate), ["2026-10-28", "2026-10-20"])
     }
 
     // MARK: TH-1538 TC8
@@ -149,16 +145,20 @@ final class VisitStoreListViewModelTests: XCTestCase {
         // Given
         let visitRepository = MockVisitRepository()
         visitRepository.deleteStoreVisitResult = .success("OK")
-        let viewModel = try makeLoadedViewModel(visitRepository: visitRepository, visits: [Self.visitJSON(id: "visit-1", date: "2026-10-27")])
+        let viewModel = try makeLoadedViewModel(
+            visitRepository: visitRepository,
+            visits: [Self.visitJSON(id: "recent-1", date: "2026-10-28", createdAt: "2026-10-28T09:00:00")]
+        )
         viewModel.input.didTapEdit.send(())
         let emptied = sectionsExpectation(viewModel) { $0.isEmpty }
 
         // When
-        viewModel.input.didConfirmDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didConfirmDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-1")))
 
         // Then
         wait(for: [emptied], timeout: 2)
         XCTAssertEqual(viewModel.output.isEditing.value, false)
+        XCTAssertEqual(viewModel.output.hasDeletableItem.value, false)
     }
 
     // MARK: TH-1538 TC9
@@ -172,11 +172,11 @@ final class VisitStoreListViewModelTests: XCTestCase {
         viewModel.output.showErrorAlert.sink { _ in failed.fulfill() }.store(in: &cancellables)
 
         // When
-        viewModel.input.didConfirmDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didConfirmDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-1")))
 
         // Then
         wait(for: [failed], timeout: 2)
-        XCTAssertEqual(visitIds(viewModel).count, 3)
+        XCTAssertEqual(visitIds(viewModel).count, 4)
     }
 
     // MARK: TH-1538 TC11
@@ -226,7 +226,7 @@ final class VisitStoreListViewModelTests: XCTestCase {
         let viewModel = try makeLoadedViewModel(visitRepository: visitRepository, logManager: logManager)
 
         // When
-        viewModel.input.didConfirmDelete.send(try XCTUnwrap(firstItem(viewModel)))
+        viewModel.input.didConfirmDelete.send(try XCTUnwrap(visit(viewModel, id: "recent-1")))
 
         // Then
         let events = logManager.sentEvents.filter { ($0.parameters["object_id"] as? String) == "delete_visit" }
@@ -234,27 +234,53 @@ final class VisitStoreListViewModelTests: XCTestCase {
         XCTAssertEqual(events.first?.parameters["object_type"] as? String, "button")
         XCTAssertEqual(events.first?.parameters["store_id"] as? String, "101")
         XCTAssertEqual(events.first?.parameters["store_type"] as? String, "USER_STORE")
-        XCTAssertEqual(events.first?.parameters["visit_id"] as? String, "visit-1")
+        XCTAssertEqual(events.first?.parameters["visit_id"] as? String, "recent-1")
+    }
+
+    // MARK: TH-1538 TC16
+
+    func test_TH1538_TC16_24시간이내인증이하나도없으면_편집버튼을노출하지않는다() throws {
+        // Given / When
+        let viewModel = try makeLoadedViewModel(visits: [
+            Self.visitJSON(id: "old-1", date: "2026-10-27", createdAt: "2026-10-27T09:59:59"),
+            Self.visitJSON(id: "old-2", date: "2026-10-20", createdAt: "2026-10-20T12:00:00")
+        ])
+
+        // Then
+        XCTAssertEqual(viewModel.output.hasDeletableItem.value, false)
+        XCTAssertEqual(visitIds(viewModel).count, 2)
     }
 }
 
 private extension VisitStoreListViewModelTests {
-    static func visitJSON(id: String, date: String, storeId: String = "101") -> String {
+    static func visitJSON(id: String, date: String, createdAt: String, storeId: String = "101") -> String {
         """
         {
-          "visit": { "visitId": "\(id)", "type": "EXISTS", "visitDate": "\(date)", "isOwner": true, "createdAt": "\(date)T12:00:00", "updatedAt": "\(date)T12:00:00" },
+          "visit": { "visitId": "\(id)", "type": "EXISTS", "visitDate": "\(date)", "isOwner": true, "createdAt": "\(createdAt)", "updatedAt": "\(createdAt)" },
           "store": { "storeType": "USER_STORE", "storeId": "\(storeId)", "isOwner": false, "storeName": "가게\(storeId)", "categories": [], "isDeleted": false, "activitiesStatus": "RECENT_ACTIVITY" }
         }
         """
+    }
+
+    static var fixedNow: Date {
+        var components = DateComponents()
+        components.year = 2026
+        components.month = 10
+        components.day = 28
+        components.hour = 10
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Seoul") ?? .current
+        return calendar.date(from: components) ?? Date()
     }
 
     func makeLoadedViewModel(
         visitRepository: MockVisitRepository = MockVisitRepository(),
         logManager: MockLogManager = MockLogManager(),
         visits: [String] = [
-            visitJSON(id: "visit-1", date: "2026-10-27"),
-            visitJSON(id: "visit-2", date: "2026-10-27", storeId: "102"),
-            visitJSON(id: "visit-3", date: "2026-10-20", storeId: "103")
+            visitJSON(id: "recent-1", date: "2026-10-28", createdAt: "2026-10-28T09:00:00"),
+            visitJSON(id: "recent-2", date: "2026-10-28", createdAt: "2026-10-28T08:00:00", storeId: "102"),
+            visitJSON(id: "recent-3", date: "2026-10-27", createdAt: "2026-10-27T10:00:01", storeId: "103"),
+            visitJSON(id: "old-1", date: "2026-10-20", createdAt: "2026-10-20T12:00:00", storeId: "104")
         ]
     ) throws -> VisitStoreListViewModel {
         let json = "{ \"contents\": [\(visits.joined(separator: ","))], \"cursor\": { \"nextCursor\": null, \"hasMore\": false } }"
@@ -267,7 +293,8 @@ private extension VisitStoreListViewModelTests {
         let viewModel = VisitStoreListViewModel(
             myPageRepository: myPageRepository,
             visitRepository: visitRepository,
-            logManager: logManager
+            logManager: logManager,
+            now: { Self.fixedNow }
         )
         let loaded = sectionsExpectation(viewModel) { $0.isNotEmpty }
         viewModel.input.loadTrigger.send(())
@@ -289,23 +316,22 @@ private extension VisitStoreListViewModelTests {
         return expectation
     }
 
-    func item(_ sectionItem: VisitStoreListSectionItem) -> MyVisitStore {
-        guard case .store(let item, _) = sectionItem else { fatalError("unexpected item") }
-        return item
+    func allItems(_ viewModel: VisitStoreListViewModel) -> [(item: MyVisitStore, canDelete: Bool)] {
+        viewModel.output.sections.value.flatMap(\.items).map {
+            guard case .store(let item, let canDelete) = $0 else { fatalError("unexpected item") }
+            return (item, canDelete)
+        }
     }
 
-    func firstItem(_ viewModel: VisitStoreListViewModel) -> MyVisitStore? {
-        viewModel.output.sections.value.first?.items.first.map(item)
+    func visit(_ viewModel: VisitStoreListViewModel, id: String) -> MyVisitStore? {
+        allItems(viewModel).first { $0.item.visitId == id }?.item
     }
 
     func visitIds(_ viewModel: VisitStoreListViewModel) -> [String] {
-        viewModel.output.sections.value.flatMap(\.items).map { item($0).visitId }
+        allItems(viewModel).map(\.item.visitId)
     }
 
-    func editingStates(_ viewModel: VisitStoreListViewModel) -> [Bool] {
-        viewModel.output.sections.value.flatMap(\.items).map {
-            guard case .store(_, let isEditing) = $0 else { return false }
-            return isEditing
-        }
+    func canDeleteByVisitId(_ viewModel: VisitStoreListViewModel) -> [String: Bool] {
+        Dictionary(uniqueKeysWithValues: allItems(viewModel).map { ($0.item.visitId, $0.canDelete) })
     }
 }

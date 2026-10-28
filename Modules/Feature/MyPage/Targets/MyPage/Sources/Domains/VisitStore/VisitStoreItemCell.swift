@@ -156,9 +156,9 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         }
     }
 
-    func bind(item: MyVisitStore, isEditing: Bool) {
-        deleteButton.isHidden = isEditing.isNot
-        if isEditing {
+    func bind(item: MyVisitStore, canDelete: Bool) {
+        deleteButton.isHidden = canDelete.isNot
+        if canDelete {
             titleTrailingToDeleteButtonConstraint?.activate()
         } else {
             titleTrailingToDeleteButtonConstraint?.deactivate()

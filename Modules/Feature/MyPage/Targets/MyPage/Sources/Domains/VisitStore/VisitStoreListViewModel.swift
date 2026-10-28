@@ -8,6 +8,19 @@ import Log
 
 final class VisitStoreListViewModel: BaseViewModel {
     private static let size: Int = 20
+
+    enum Constant {
+        static let deletableInterval: TimeInterval = 24 * 60 * 60
+        static let deletedToastMessage = "방문 인증 기록이 삭제되었습니다."
+    }
+
+    private static let createdAtFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return formatter
+    }()
     
     struct Input {
         let loadTrigger = PassthroughSubject<Void, Never>()
@@ -26,6 +39,7 @@ final class VisitStoreListViewModel: BaseViewModel {
         let showErrorAlert = PassthroughSubject<Error, Never>()
         let sections = CurrentValueSubject<[VisitStoreListSection], Never>([])
         let isEditing = CurrentValueSubject<Bool, Never>(false)
+        let hasDeletableItem = CurrentValueSubject<Bool, Never>(false)
     }
 
     struct State {
@@ -50,15 +64,18 @@ final class VisitStoreListViewModel: BaseViewModel {
     private let visitRepository: VisitRepository
     private let preference = Preference.shared
     private let logManager: LogManagerProtocol
+    private let now: () -> Date
 
     init(
         myPageRepository: MyPageRepository = MyPageRepositoryImpl(),
         visitRepository: VisitRepository = VisitRepositoryImpl(),
-        logManager: LogManagerProtocol = LogManager.shared
+        logManager: LogManagerProtocol = LogManager.shared,
+        now: @escaping () -> Date = Date.init
     ) {
         self.myPageRepository = myPageRepository
         self.visitRepository = visitRepository
         self.logManager = logManager
+        self.now = now
 
         super.init()
     }
@@ -163,7 +180,9 @@ final class VisitStoreListViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         input.didTapDelete
-            .map { Route.presentDeleteAlert($0) }
+            .withUnretained(self)
+            .filter { owner, item in owner.isDeletable(item) }
+            .map { _, item in Route.presentDeleteAlert(item) }
             .subscribe(output.route)
             .store(in: &cancellables)
 
@@ -186,12 +205,10 @@ final class VisitStoreListViewModel: BaseViewModel {
         output.showLoading.send(false)
 
         switch result {
-        case .success(let message):
+        case .success:
             state.items.removeAll { $0.visitId == item.visitId }
             reloadItems()
-            if let message, message.isNotEmpty {
-                output.showToast.send(message)
-            }
+            output.showToast.send(Constant.deletedToastMessage)
         case .failure(let error):
             if case .errorContainer(let container) = error as? NetworkError,
                container.resultCode != "UA000",
@@ -205,11 +222,16 @@ final class VisitStoreListViewModel: BaseViewModel {
     }
 
     private func reloadItems() {
-        if state.items.isEmpty {
+        if state.items.contains(where: isDeletable).isNot {
             setEditing(false)
         } else {
             updateDataSource()
         }
+    }
+
+    private func isDeletable(_ item: MyVisitStore) -> Bool {
+        guard let createdAt = Self.createdAtFormatter.date(from: item.createdAt) else { return false }
+        return now().timeIntervalSince(createdAt) < Constant.deletableInterval
     }
 
     private func setEditing(_ isEditing: Bool) {
@@ -220,17 +242,15 @@ final class VisitStoreListViewModel: BaseViewModel {
     private func updateDataSource() {
         let isEditing = output.isEditing.value
         let sections: [VisitStoreListSection] = state.items.reduce(into: []) { result, element in
+            let item = VisitStoreListSectionItem.store(element, canDelete: isEditing && isDeletable(element))
             if let sectionIndex = result.firstIndex(where: { $0.visitDate == element.visitDate }) {
-                result[sectionIndex].items.append(.store(element, isEditing: isEditing))
+                result[sectionIndex].items.append(item)
             } else {
-                let newSection = VisitStoreListSection(
-                    visitDate: element.visitDate,
-                    items: [.store(element, isEditing: isEditing)]
-                )
-                result.append(newSection)
+                result.append(VisitStoreListSection(visitDate: element.visitDate, items: [item]))
             }
         }
         
+        output.hasDeletableItem.send(state.items.contains(where: isDeletable))
         output.sections.send(sections)
     }
     
