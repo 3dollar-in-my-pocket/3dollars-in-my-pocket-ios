@@ -97,18 +97,18 @@ final class BossStoreFeedbackViewController: BaseViewController {
 
         closeButton.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).inset(16)
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
 
         collectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(sendFeedbackButton.snp.top)
         }
 
         titleLabel.snp.makeConstraints {
             $0.centerY.equalTo(closeButton)
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
         }
 
         sendFeedbackButton.snp.makeConstraints {
@@ -231,7 +231,6 @@ extension BossStoreFeedbackViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let width = UIScreen.main.bounds.width
-        return CGSize(width: width, height: BossStoreFeedbackHeaderCell.Layout.height)
+        return CGSize(width: collectionView.bounds.width, height: BossStoreFeedbackHeaderCell.Layout.height)
     }
 }

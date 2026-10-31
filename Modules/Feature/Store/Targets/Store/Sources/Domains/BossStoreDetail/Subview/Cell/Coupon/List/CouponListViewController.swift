@@ -132,7 +132,7 @@ extension CouponListViewController: UICollectionViewDelegate {
 
 extension CouponListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let containerWidth = UIScreen.main.bounds.width
+        let containerWidth = collectionView.bounds.width
 
         switch dataSource.itemIdentifier(for: indexPath) {
         case .coupon(let viewModel):
