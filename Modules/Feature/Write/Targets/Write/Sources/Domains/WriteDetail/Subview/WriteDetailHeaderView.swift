@@ -4,10 +4,6 @@ import Common
 import DesignSystem
 
 final class WriteDetailHeaderView: BaseCollectionViewReusableView {
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 44)
-    }
-    
     private let stackView = UIStackView()
     
     private let titleLabel: UILabel = {

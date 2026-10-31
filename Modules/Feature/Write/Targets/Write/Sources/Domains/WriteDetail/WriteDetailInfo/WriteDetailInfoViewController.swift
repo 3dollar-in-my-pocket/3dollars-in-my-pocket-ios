@@ -115,8 +115,8 @@ final class WriteDetailInfoViewController: BaseViewController {
         stackView.addArrangedSubview(addressField, previousSpace: 20)
         
         scrollView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(view.safeAreaLayoutGuide)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(nextButton.snp.top)
         }
@@ -125,7 +125,7 @@ final class WriteDetailInfoViewController: BaseViewController {
             $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
             $0.trailing.equalToSuperview()
-            $0.width.equalTo(UIUtils.windowBounds.width)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
         }
 
         nameTextField.snp.makeConstraints {

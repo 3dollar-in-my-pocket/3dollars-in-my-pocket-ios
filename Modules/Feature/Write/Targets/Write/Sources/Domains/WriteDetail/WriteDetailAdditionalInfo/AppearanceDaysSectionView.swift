@@ -144,7 +144,9 @@ final class AppearanceDaysSectionView: UIView {
         buttonStackView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.trailing.lessThanOrEqualToSuperview()
+            $0.width.equalToSuperview().priority(.high)
+            $0.width.lessThanOrEqualTo(360)
             $0.bottom.equalToSuperview()
             $0.height.equalTo(36)
         }

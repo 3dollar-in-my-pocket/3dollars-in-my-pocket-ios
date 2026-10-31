@@ -5,15 +5,12 @@ import DesignSystem
 
 final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     enum Layout {
-        static func size(count: Int) -> CGSize {
-            let width = UIScreen.main.bounds.width
-            let itemGroupHeight = itemGroupHeight(count: count)
-            
-            return CGSize(width: width, height: itemGroupHeight + topOffset + 64)
+        static func height(count: Int) -> CGFloat {
+            return itemGroupHeight(count: count) + topOffset + 64
         }
         static let topOffset: CGFloat = 12
         static func itemGroupHeight(count: Int) -> CGFloat {
-            let itemHeight = WriteDetailMenuItemCell.Layout.size.height * CGFloat(count)
+            let itemHeight = WriteDetailMenuItemCell.Layout.height * CGFloat(count)
             let space = count - 1 > 0 ? space * CGFloat(count - 1) : 0
             
             return itemHeight + space + topOffset
@@ -53,6 +50,7 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
         let menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
         menuCollectionView.register([WriteDetailMenuItemCell.self])
         menuCollectionView.dataSource = self
+        menuCollectionView.delegate = self
         return menuCollectionView
     }()
     
@@ -111,7 +109,6 @@ final class WriteDetailMenuGroupCell: BaseCollectionViewCell {
     private func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = WriteDetailMenuItemCell.Layout.size
         layout.minimumInteritemSpacing = 8
         layout.minimumLineSpacing = 8
         
@@ -129,5 +126,11 @@ extension WriteDetailMenuGroupCell: UICollectionViewDataSource {
         cell.bind(viewModel: viewModel, index: indexPath.row)
         
         return cell
+    }
+}
+
+extension WriteDetailMenuGroupCell: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: WriteDetailMenuItemCell.Layout.height)
     }
 }

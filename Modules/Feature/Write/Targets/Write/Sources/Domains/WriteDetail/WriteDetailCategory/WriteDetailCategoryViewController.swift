@@ -98,7 +98,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
         ])
         
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
         }
         
@@ -109,7 +109,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
         
         menuExtractionBannerView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         updateMenuExtractionBanner(isAvailable: true)
@@ -154,7 +154,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
             } else {
                 $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             }
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(nextButton.snp.top)
         }
     }

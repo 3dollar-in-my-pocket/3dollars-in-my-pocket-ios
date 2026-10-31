@@ -150,7 +150,7 @@ public final class WriteAddressViewController: BaseViewController {
         }
         
         currentLocationButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.bottom.equalTo(mapView).offset(-28)
             $0.width.equalTo(46)
             $0.height.equalTo(46)
@@ -164,26 +164,26 @@ public final class WriteAddressViewController: BaseViewController {
         }
         
         addressLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.top.equalToSuperview().offset(26)
             $0.height.equalTo(48)
         }
         
         addressButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.top.equalTo(addressLabel.snp.bottom).offset(24)
             $0.height.equalTo(48)
         }
         
         bossDescriptionLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(addressButton.snp.bottom).offset(16)
         }
         
         bossButton.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(bossDescriptionLabel.snp.bottom)
             $0.height.equalTo(28)
         }

@@ -72,6 +72,11 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
     
     private let viewModel: WriteDetailCategoryBottomSheetViewModel
     private lazy var datasource = WriteDetailCategoryBottomSheetDatasource(collectionView: collectionView, viewModel: viewModel)
+    private var lastContentWidth: CGFloat = 0
+    
+    private var contentWidth: CGFloat {
+        return view.bounds.width - view.safeAreaInsets.left - view.safeAreaInsets.right
+    }
     
     init(viewModel: WriteDetailCategoryBottomSheetViewModel) {
         self.viewModel = viewModel
@@ -88,6 +93,19 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         collectionView.dataSource = datasource
         setupUI()
         bind()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        guard contentWidth != lastContentWidth else { return }
+        let isInitialLayout = lastContentWidth == 0
+        lastContentWidth = contentWidth
+        updateCollectionViewHeight(from: viewModel.output.datasource.value)
+
+        if !isInitialLayout {
+            panModalSetNeedsLayoutUpdate()
+        }
     }
     
     private func setupUI() {
@@ -111,7 +129,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         }
         
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.centerY.equalTo(titleLabel)
             $0.size.equalTo(30)
         }
@@ -123,7 +141,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(countLabel.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(0)
         }
         
@@ -133,8 +151,8 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         }
         
         editButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             
             if UIUtils.bottomSafeAreaInset > 0 {
                 $0.top.equalTo(containerScrollView.snp.bottom).offset(24)
@@ -161,15 +179,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         viewModel.output.datasource
             .main
             .sink { [weak self] sections in
-                if let collectionViewHeight = self?.calculateCollectionViewHeight(from: sections) {
-                    self?.containerScrollView.snp.updateConstraints {
-                        $0.height.equalTo(collectionViewHeight)
-                    }
-                    self?.collectionView.snp.updateConstraints {
-                        $0.height.equalTo(collectionViewHeight)
-                    }
-                    self?.containerScrollView.contentSize = CGSize(width: UIUtils.windowBounds.width, height: collectionViewHeight)
-                }
+                self?.updateCollectionViewHeight(from: sections)
                 self?.datasource.reload(sections)
                 DispatchQueue.main.async {
                     self?.selectCategories(from: sections)
@@ -217,9 +227,19 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         }
     }
     
+    private func updateCollectionViewHeight(from sections: [WriteDetailCategorySection]) {
+        let collectionViewHeight = calculateCollectionViewHeight(from: sections)
+        containerScrollView.snp.updateConstraints {
+            $0.height.equalTo(collectionViewHeight)
+        }
+        collectionView.snp.updateConstraints {
+            $0.height.equalTo(collectionViewHeight)
+        }
+    }
+    
     private func calculateCollectionViewHeight(from sections: [WriteDetailCategorySection]) -> CGFloat {
         let contentInsets = collectionView.contentInset
-        let availableWidth = UIUtils.windowBounds.width - contentInsets.left - contentInsets.right
+        let availableWidth = contentWidth - contentInsets.left - contentInsets.right
         let minimumInteritemSpacing: CGFloat = 8
         let minimumLineSpacing: CGFloat = 8
         let headerHeight: CGFloat = 48

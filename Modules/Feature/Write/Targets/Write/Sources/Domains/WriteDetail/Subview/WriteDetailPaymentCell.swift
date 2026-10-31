@@ -6,10 +6,6 @@ import DesignSystem
 import Model
 
 final class WriteDetailPaymentCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
-    }
-    
     var tapPublisher: PassthroughSubject<PaymentMethod, Never> {
         return paymentStackView.tapPublisher
     }
