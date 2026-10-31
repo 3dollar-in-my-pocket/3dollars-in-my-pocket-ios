@@ -129,24 +129,24 @@ final class ReportPollViewController: BaseViewController {
 
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(24)
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
         }
 
         closeButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(24)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.size.equalTo(24)
         }
 
         collectionView.snp.makeConstraints {
             $0.top.equalTo(closeButton.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(244)
         }
 
         reportButton.snp.makeConstraints {
             $0.top.equalTo(collectionView.snp.bottom).offset(28)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
