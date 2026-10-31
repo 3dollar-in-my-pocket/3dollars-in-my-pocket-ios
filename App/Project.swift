@@ -97,25 +97,10 @@ struct BuildSetting {
         ]
         
         static let debug: SettingsDictionary = [
-            "ADMOB_APP_ID": "ca-app-pub-5385646520024289~4792901724",
-            "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_FRONT_BANNER": "ca-app-pub-3940256099942544/4411468910",
-            "ADMOB_UNIT_ID_SEARCH_ADDRESS": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_POLL_LIST_ITEM": "ca-app-pub-3940256099942544/2435281174",
-            "ADMOB_UNIT_ID_LOCAL_NEWS_FEED": "ca-app-pub-3940256099942544/2435281174",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars.dev",
-            "API_URL": "https://dev.threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원-Dev",
             "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
             "DEEP_LINK_SCHEME": "dollars-dev",
-            "UNIVERSIAL_LINK_HOST": "https://app.dev.threedollars.co.kr",
-            "KAKAO_APP_KEY": "95f91f9656806e132796f0071ab99aaa",
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket-debug",
             "PRODUCT_MODULE_NAME": "dollar_in_my_pocket",
             "PRODUCT_NAME": "dollar-in-my-pocket-debug",
@@ -124,24 +109,9 @@ struct BuildSetting {
         ]
         
         static let release: SettingsDictionary = [
-            "ADMOB_APP_ID": "ca-app-pub-5385646520024289~4792901724",
-            "ADMOB_UNIT_ID_POLL_DETAIL": "ca-app-pub-5385646520024289/2322085549",
-            "ADMOB_UNIT_ID_HOME_LIST": "ca-app-pub-5385646520024289/6832176196",
-            "ADMOB_UNIT_ID_HOME_LIST_CARD": "ca-app-pub-5385646520024289/5480575233",
-            "ADMOB_UNIT_ID_HOME_CARD": "ca-app-pub-5385646520024289/1530466795",
-            "ADMOB_UNIT_ID_COMMUNITY": "ca-app-pub-5385646520024289/3715058263",
-            "ADMOB_UNIT_ID_CATEGORY_FILTER": "ca-app-pub-5385646520024289/4463007033",
-            "ADMOB_UNIT_ID_STORE_DETAIL": "ca-app-pub-5385646520024289/7518571901",
-            "ADMOB_UNIT_ID_FRONT_BANNER": "ca-app-pub-5385646520024289/1579849512",
-            "ADMOB_UNIT_ID_SEARCH_ADDRESS": "ca-app-pub-5385646520024289/9408956811",
-            "ADMOB_UNIT_ID_POLL_LIST_ITEM": "ca-app-pub-5385646520024289/2843548462",
-            "ADMOB_UNIT_ID_LOCAL_NEWS_FEED": "ca-app-pub-5385646520024289/9458339538",
             "ANDROID_PACKAGE_NAME": "com.zion830.threedollars",
-            "API_URL": "https://threedollars.co.kr",
             "APP_DISPLAY_NAME": "가슴속3천원",
             "DEEP_LINK_SCHEME": "dollars",
-            "UNIVERSIAL_LINK_HOST": "https://app.threedollars.co.kr",
-            "KAKAO_APP_KEY": "a0ce3cecac62e2dedf50751d5abc5740",
             "ONLY_ACTIVE_ARCH": "YES",
             "PRODUCT_BUNDLE_IDENTIFIER": "com.macgongmon.-dollar-in-my-pocket",
             "PRODUCT_NAME": "dollar-in-my-pocket",
@@ -346,8 +316,16 @@ let project = Project(
             settings: .settings(
                 base: BuildSetting.App.base,
                 configurations: [
-                    .debug(name: .debug, settings: BuildSetting.App.debug),
-                    .release(name: .release, settings: BuildSetting.App.release)
+                    .debug(
+                        name: .debug,
+                        settings: BuildSetting.App.debug,
+                        xcconfig: .relativeToRoot("App/Config/Environment-Debug.xcconfig")
+                    ),
+                    .release(
+                        name: .release,
+                        settings: BuildSetting.App.release,
+                        xcconfig: .relativeToRoot("App/Config/Environment-Release.xcconfig")
+                    )
                 ])
         ),
         .target(

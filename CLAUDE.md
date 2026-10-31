@@ -23,6 +23,8 @@ tuist edit
 make clean
 ```
 
+**환경 설정 파일**: 빌드에는 gitignore된 `App/Config/Environment-Debug.xcconfig`·`Environment-Release.xcconfig`가 필요합니다 (팀 내부 공유). `scripts/app-config.sh pack`으로 한 줄 값을 만들어 Xcode Cloud 환경변수 `APP_CONFIG_ARCHIVE`(Secret)에 넣으면 `ci_post_clone.sh`가 복원하고, GitHub Actions 테스트는 `scripts/app-config.sh placeholder` 기본값으로 빌드합니다. xcconfig에서 URL은 `https:/$()/host` 형태로 씁니다.
+
 ### 빌드
 ```bash
 # Debug 빌드
