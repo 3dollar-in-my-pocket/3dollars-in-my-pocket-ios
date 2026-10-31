@@ -8,8 +8,11 @@ final class PhotoListCell: BaseCollectionViewCell {
     enum Layout {
         static let itemSpace: CGFloat = 16
         static let numberOfItemInRow: CGFloat = 2
-        static let width: CGFloat = (UIUtils.windowBounds.width - 40 - itemSpace) / numberOfItemInRow
-        static let size = CGSize(width: width, height: width)
+
+        static func size(containerWidth: CGFloat) -> CGSize {
+            let width = (containerWidth - itemSpace * (numberOfItemInRow - 1)) / numberOfItemInRow
+            return CGSize(width: width, height: width)
+        }
     }
     
     private let imageView: UIImageView = {

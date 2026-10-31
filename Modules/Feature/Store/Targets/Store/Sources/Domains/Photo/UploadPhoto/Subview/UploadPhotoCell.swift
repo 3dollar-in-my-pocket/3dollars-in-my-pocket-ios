@@ -7,8 +7,12 @@ import DesignSystem
 final class UploadPhotoCell: BaseCollectionViewCell {
     enum Layout {
         static let space: CGFloat = 8
-        static let width: CGFloat = (UIUtils.windowBounds.width - 64)/3
-        static let itemSize = CGSize(width: width, height: width)
+        static let numberOfItemInRow: CGFloat = 3
+        
+        static func itemSize(containerWidth: CGFloat) -> CGSize {
+            let width = (containerWidth - space * (numberOfItemInRow - 1)) / numberOfItemInRow
+            return CGSize(width: width, height: width)
+        }
     }
     
     var imageRequestId: PHImageRequestID?
