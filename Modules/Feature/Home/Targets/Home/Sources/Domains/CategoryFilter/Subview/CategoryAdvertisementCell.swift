@@ -5,13 +5,6 @@ import DesignSystem
 import Model
 
 final class CategoryAdvertisementCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(
-            width: (UIScreen.main.bounds.width - 48 - 36)/4,
-            height: (UIScreen.main.bounds.width - 48 - 36)/4 + 2
-        )
-    }
-    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
