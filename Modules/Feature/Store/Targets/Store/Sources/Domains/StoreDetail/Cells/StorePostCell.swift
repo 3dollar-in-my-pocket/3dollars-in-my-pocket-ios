@@ -62,8 +62,13 @@ final class StorePostCell: BaseCollectionViewCell {
             actionButton.addAction(UIAction { [weak self] _ in self?.onAction?(action) }, for: .touchUpInside)
         }
         cardStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let bodyWidth = contentView.bounds.width - Layout.horizontalMargin * 2 - StorePostCardView.Layout.inset * 2
         section.cards.forEach { card in
-            let cardView = StorePostCardView(card: card, isBodyExpanded: expandedCardIds.contains(card.cardId))
+            let cardView = StorePostCardView(
+                card: card,
+                isBodyExpanded: expandedCardIds.contains(card.cardId),
+                bodyWidth: bodyWidth
+            )
             cardView.onAction = { [weak self] action in self?.onAction?(action) }
             cardView.onTapBody = { [weak self] in self?.onToggleBodyExpansion?(card.cardId) }
             cardView.onTapImage = { [weak self] index in self?.onTapImage?(card.images, index) }
@@ -149,11 +154,13 @@ private final class StorePostCardView: UIView {
 
     private let card: StorePostContentCard
     private let isBodyExpanded: Bool
+    private let bodyWidth: CGFloat
     private var isBodyTruncated = false
 
-    init(card: StorePostContentCard, isBodyExpanded: Bool) {
+    init(card: StorePostContentCard, isBodyExpanded: Bool, bodyWidth: CGFloat) {
         self.card = card
         self.isBodyExpanded = isBodyExpanded
+        self.bodyWidth = bodyWidth
         super.init(frame: .zero)
         setupViews()
         bindConstraints()
@@ -265,7 +272,7 @@ private final class StorePostCardView: UIView {
             return
         }
 
-        let limited = StorePostCardView.limitedText(fullText: fullText, attributes: attributes)
+        let limited = StorePostCardView.limitedText(fullText: fullText, attributes: attributes, width: bodyWidth)
         bodyLabel.attributedText = limited.text
         isBodyTruncated = limited.isTruncated
     }
@@ -285,15 +292,12 @@ private final class StorePostCardView: UIView {
         return [.font: Layout.bodyFont, .foregroundColor: color, .paragraphStyle: paragraphStyle]
     }
 
-    private static var bodyWidth: CGFloat {
-        UIUtils.windowBounds.width - StorePostCell.Layout.horizontalMargin * 2 - Layout.inset * 2
-    }
-
     private static func limitedText(
         fullText: NSAttributedString,
-        attributes: [NSAttributedString.Key: Any]
+        attributes: [NSAttributedString.Key: Any],
+        width: CGFloat
     ) -> (text: NSAttributedString, isTruncated: Bool) {
-        let width = bodyWidth
+        guard width > 0 else { return (fullText, false) }
         let framesetter = CTFramesetterCreateWithAttributedString(fullText)
         let path = CGPath(rect: CGRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude), transform: nil)
         let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
