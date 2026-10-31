@@ -187,6 +187,9 @@ final class WriteDetailMenuViewModel: BaseViewModel {
         let viewModel = MenuExtractionLoadingViewModel(config: config)
 
         viewModel.output.finishExtraction
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.config.menuExtractionUsage.registerMenuImage(image)
+            })
             .subscribe(input.finishMenuExtraction)
             .store(in: &cancellables)
 

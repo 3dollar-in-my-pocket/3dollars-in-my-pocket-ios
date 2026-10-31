@@ -168,6 +168,9 @@ final class WriteCompleteViewModel: BaseViewModel {
                 )
 
                 let response = try await dependency.storeRepository.patchStore(storeId: String(store.storeId), input: input).get()
+                if isMenuEdited {
+                    await uploadMenuImageIfNeeded(storeId: store.storeId)
+                }
                 
                 output.isLoading.send(false)
                 if isMenuEdited {
@@ -179,6 +182,11 @@ final class WriteCompleteViewModel: BaseViewModel {
                 output.route.send(.showErrorAlert(error))
             }
         }
+    }
+
+    private func uploadMenuImageIfNeeded(storeId: Int) async {
+        guard let menuImage = config.menuExtractionUsage.consumeMenuImage() else { return }
+        _ = await dependency.storeRepository.uploadPhotos(storeId: storeId, photos: [menuImage])
     }
 
     private func sendClickAddMenuLog() {
