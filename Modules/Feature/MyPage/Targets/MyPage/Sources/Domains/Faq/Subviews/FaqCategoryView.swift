@@ -65,7 +65,7 @@ final class FaqCategoryView: BaseView {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout =  UICollectionViewFlowLayout()
+        let layout =  WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 8

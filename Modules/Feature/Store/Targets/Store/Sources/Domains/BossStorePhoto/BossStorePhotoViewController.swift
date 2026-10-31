@@ -189,7 +189,7 @@ final class BossStorePhotoViewController: BaseViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = .zero
         layout.minimumLineSpacing = .zero

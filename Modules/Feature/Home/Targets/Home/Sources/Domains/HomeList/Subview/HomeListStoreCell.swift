@@ -161,7 +161,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }()
 
     private lazy var imagesCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing

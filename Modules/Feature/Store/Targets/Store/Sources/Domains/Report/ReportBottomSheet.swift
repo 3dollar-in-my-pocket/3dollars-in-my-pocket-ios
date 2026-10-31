@@ -45,7 +45,7 @@ final class ReportBottomSheet: BaseView {
     }()
     
     let collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = ReportBottomSheet.Layout.space
         layout.minimumLineSpacing = ReportBottomSheet.Layout.space

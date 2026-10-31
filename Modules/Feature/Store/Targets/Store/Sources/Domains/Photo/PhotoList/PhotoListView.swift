@@ -121,7 +121,7 @@ final class PhotoListView: BaseView {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = PhotoListCell.Layout.itemSpace
         layout.minimumLineSpacing = PhotoListCell.Layout.itemSpace

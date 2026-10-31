@@ -1,6 +1,8 @@
 import UIKit
 
-class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+import Common
+
+class LeftAlignedCollectionViewFlowLayout: WidthAdaptiveFlowLayout {
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         guard let originalAttributes = super.layoutAttributesForElements(in: rect) else {
             return nil

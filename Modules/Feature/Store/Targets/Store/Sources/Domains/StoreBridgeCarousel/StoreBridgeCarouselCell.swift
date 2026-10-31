@@ -105,7 +105,7 @@ final class StoreBridgeCarouselView: BaseView {
     }
 
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 12
         layout.sectionInset = .init(top: 0, left: 20, bottom: 0, right: 20)

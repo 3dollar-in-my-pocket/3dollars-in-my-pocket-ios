@@ -34,7 +34,7 @@ final class ReportReviewBottomSheet: BaseView {
     
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = Layout.space
         layout.minimumLineSpacing = Layout.space

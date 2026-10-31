@@ -51,7 +51,7 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
     }()
 
     private lazy var categoryCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.chipSpacing
         layout.sectionInset = UIEdgeInsets(
@@ -70,7 +70,7 @@ final class HomeCurationCarouselCell: BaseCollectionViewCell {
     }()
 
     private lazy var cardCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.cardSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: Layout.horizontalInset, bottom: 0, right: Layout.horizontalInset)

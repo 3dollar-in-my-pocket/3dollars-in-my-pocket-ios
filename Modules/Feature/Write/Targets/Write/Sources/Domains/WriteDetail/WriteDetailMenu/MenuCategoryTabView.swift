@@ -14,7 +14,7 @@ final class MenuCategoryTabView: BaseView {
     var onTapFilter: (() -> Void)?
 
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0

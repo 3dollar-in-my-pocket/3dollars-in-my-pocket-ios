@@ -81,7 +81,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         return button
     }()
     private let actionCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.actionBarSpacing
         layout.minimumInteritemSpacing = Layout.actionBarSpacing
@@ -98,7 +98,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         return collectionView
     }()
     private let imageCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing

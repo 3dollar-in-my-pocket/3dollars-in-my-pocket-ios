@@ -8,7 +8,7 @@ public final class SDUCollectionView: UIView {
     public let collectionView: UICollectionView
 
     public init() {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         super.init(frame: .zero)
 

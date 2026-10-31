@@ -100,7 +100,7 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     }
     
     private func createLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 8

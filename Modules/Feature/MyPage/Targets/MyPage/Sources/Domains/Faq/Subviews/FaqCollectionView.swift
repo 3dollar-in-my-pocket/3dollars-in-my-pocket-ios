@@ -13,7 +13,7 @@ final class FaqCollectionView: UICollectionView {
     private var faqSections: [[FaqResponse]] = []
     
     init() {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = Layout.minimumLineSpacing

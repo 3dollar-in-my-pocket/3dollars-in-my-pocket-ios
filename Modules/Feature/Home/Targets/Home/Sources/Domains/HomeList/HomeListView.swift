@@ -176,7 +176,7 @@ final class HomeListView: BaseView {
     }
 
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         return layout
     }

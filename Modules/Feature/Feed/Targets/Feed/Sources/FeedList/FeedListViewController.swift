@@ -49,6 +49,7 @@ public final class FeedListViewController: BaseViewController {
     private let viewModel: FeedListViewModel
     private lazy var datasource = FeedListDatasource(collectionView: collectionView, rootViewController: self)
     private var isRefreshing = false
+    private var lastLayoutWidth: CGFloat = 0
     
     public init(viewModel: FeedListViewModel) {
         self.viewModel = viewModel
@@ -66,6 +67,17 @@ public final class FeedListViewController: BaseViewController {
         setupCollectionView()
         bind()
         viewModel.input.load.send(())
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let width = collectionView.bounds.width
+        guard width != lastLayoutWidth else { return }
+        let isFirstLayout = lastLayoutWidth == 0
+        lastLayoutWidth = width
+        guard isFirstLayout.isNot else { return }
+        collectionView.reloadData()
     }
     
     private func setup() {
@@ -145,7 +157,7 @@ public final class FeedListViewController: BaseViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         return layout
     }

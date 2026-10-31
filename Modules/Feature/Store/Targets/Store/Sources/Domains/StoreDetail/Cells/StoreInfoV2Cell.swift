@@ -34,7 +34,7 @@ final class StoreInfoV2Cell: BaseCollectionViewCell {
     private let actionButton = UIButton(type: .system)
 
     private lazy var galleryCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = Layout.galleryItemSize
         layout.minimumLineSpacing = Layout.galleryItemSpacing

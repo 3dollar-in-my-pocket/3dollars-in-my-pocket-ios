@@ -91,7 +91,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
     }
 
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.itemSize = PollItemCell.Layout.size
         layout.scrollDirection = .horizontal
         layout.sectionInset = Layout.sectionInset

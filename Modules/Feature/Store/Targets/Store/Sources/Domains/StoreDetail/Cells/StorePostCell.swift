@@ -23,9 +23,15 @@ final class StorePostCell: BaseCollectionViewCell {
         stackView.spacing = Layout.contentSpacing
         return stackView
     }()
+    private var boundSection: StorePostSection?
+    private var boundExpandedCardIds: Set<String> = []
+    private var boundWidth: CGFloat = 0
 
     override func prepareForReuse() {
         super.prepareForReuse()
+        boundSection = nil
+        boundExpandedCardIds = []
+        boundWidth = 0
         cardStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         onAction = nil
         onToggleBodyExpansion = nil
@@ -34,6 +40,13 @@ final class StorePostCell: BaseCollectionViewCell {
 
     override func setup() {
         contentView.addSubViews([titleLabel, actionButton, cardStack])
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard let boundSection, contentView.bounds.width != boundWidth else { return }
+        bind(boundSection, expandedCardIds: boundExpandedCardIds)
     }
 
     override func bindConstraints() {
@@ -55,6 +68,9 @@ final class StorePostCell: BaseCollectionViewCell {
     }
 
     func bind(_ section: StorePostSection, expandedCardIds: Set<String> = []) {
+        boundSection = section
+        boundExpandedCardIds = expandedCardIds
+        boundWidth = contentView.bounds.width
         titleLabel.setSDText(section.header.title, lineHeight: 24)
         actionButton.setOptionalSDButton(section.header.trailingAction)
         actionButton.removeTarget(nil, action: nil, for: .touchUpInside)
@@ -124,7 +140,7 @@ private final class StorePostCardView: UIView {
     }()
 
     private lazy var imageCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing
