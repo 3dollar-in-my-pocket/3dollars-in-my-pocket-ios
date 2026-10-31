@@ -118,7 +118,11 @@ extension Project {
                     .project(target: "\(name)", path: "./"),
                     .mock,
                     .SPM.snapKit
-                ]
+                ],
+                settings: .settings(configurations: [
+                    .debug(name: .debug, xcconfig: .relativeToRoot("App/Config/Environment-Debug.xcconfig")),
+                    .release(name: .release, xcconfig: .relativeToRoot("App/Config/Environment-Debug.xcconfig"))
+                ])
             )
             
             targets.append(demoTarget)

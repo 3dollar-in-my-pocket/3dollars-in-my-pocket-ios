@@ -23,7 +23,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NMFNcpKeyId</key>
-	<string>1ev5u0jcqy</string>
+	<string>$(NCP_CLIENT_ID)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

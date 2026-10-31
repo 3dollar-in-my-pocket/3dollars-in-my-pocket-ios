@@ -109,3 +109,6 @@ R.generated.swift
 **/.DS_Store
 # Tuist generated module maps
 **/Derived/ModuleMaps/
+
+# App environment config (scripts/app-config.sh)
+App/Config/Environment-*.xcconfig

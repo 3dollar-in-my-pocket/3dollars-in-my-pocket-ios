@@ -8,6 +8,6 @@ app_identifier([
   "com.macgongmon.-dollar-in-my-pocket.content-extension"
 ])
 
-apple_id("dbgustlr92@naver.com")
+apple_id(ENV["FASTLANE_APPLE_ID"])
 
 team_id("X975A2HM62")
