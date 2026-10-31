@@ -1,0 +1,41 @@
+{
+  "contents": [
+    {
+      "role": "iOS",
+      "creatorNames": [
+        "유현식"
+      ]
+    },
+    {
+      "role": "Server",
+      "creatorNames": [
+        "강승호"
+      ]
+    },
+    {
+      "role": "Android",
+      "creatorNames": [
+        "정진용"
+      ]
+    },
+    {
+      "role": "기획",
+      "creatorNames": [
+        "이한나"
+      ]
+    },
+    {
+      "role": "Product Design",
+      "creatorNames": [
+        "양민설",
+        "조혜원"
+      ]
+    },
+    {
+      "role": "Brand Design",
+      "creatorNames": [
+        "이유정"
+      ]
+    }
+  ]
+}
