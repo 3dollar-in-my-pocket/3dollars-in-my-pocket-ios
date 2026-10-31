@@ -5,11 +5,6 @@ import DesignSystem
 import Model
 
 final class VisitButton: UIButton {
-    enum Layout {
-        static let width: CGFloat = (UIUtils.windowBounds.width - 63) / 2
-        static let size = CGSize(width: width, height: width)
-    }
-    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.isUserInteractionEnabled = false
