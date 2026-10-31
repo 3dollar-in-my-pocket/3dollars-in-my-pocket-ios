@@ -89,7 +89,7 @@ extension ReviewFeedbackSelectionView: UICollectionViewDelegate {
 
 extension ReviewFeedbackSelectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = floor((UIScreen.main.bounds.width - 48) / 2)
+        let width = floor((collectionView.bounds.width - 8) / 2)
         switch dataSource.itemIdentifier(for: indexPath) {
         case .feedback:
             return CGSize(width: width, height: BossStoreFeedbackItemCell.Layout.height)
@@ -99,7 +99,6 @@ extension ReviewFeedbackSelectionView: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let width = UIScreen.main.bounds.width
-        return CGSize(width: width, height: BossStoreFeedbackHeaderCell.Layout.height)
+        return CGSize(width: collectionView.bounds.width, height: BossStoreFeedbackHeaderCell.Layout.height)
     }
 }

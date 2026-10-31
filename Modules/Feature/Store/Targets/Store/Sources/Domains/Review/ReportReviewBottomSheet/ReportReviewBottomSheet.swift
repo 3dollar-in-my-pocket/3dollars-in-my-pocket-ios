@@ -84,9 +84,9 @@ final class ReportReviewBottomSheet: BaseView {
         for sectionItem in sectionItems {
             switch sectionItem {
             case .reason:
-                height += ReportReviewReasonCell.Layout.size.height
+                height += ReportReviewReasonCell.Layout.height
             case .reasonDetail:
-                height += ReportReviewReasonDetailCell.Layout.size.height
+                height += ReportReviewReasonDetailCell.Layout.height
             }
             height += Layout.space
         }
