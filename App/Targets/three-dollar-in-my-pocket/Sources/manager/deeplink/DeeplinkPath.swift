@@ -31,6 +31,6 @@ enum StoreLandingSheet: String {
     case collapsed
 
     init(param: String?) {
-        self = param.flatMap(StoreLandingSheet.init(rawValue:)) ?? .expanded
+        self = param.flatMap(StoreLandingSheet.init(rawValue:)) ?? .collapsed
     }
 }
