@@ -29,6 +29,12 @@ public final class FeedListViewController: BaseViewController {
         return button
     }()
     
+    private let listBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.gray0.color
+        return view
+    }()
+
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.backgroundColor = Colors.gray0.color
@@ -67,6 +73,7 @@ public final class FeedListViewController: BaseViewController {
         view.addSubViews([
             titleLabel,
             closeButton,
+            listBackgroundView,
             collectionView,
             emptyListView
         ])
@@ -78,15 +85,19 @@ public final class FeedListViewController: BaseViewController {
         
         closeButton.snp.makeConstraints {
             $0.size.equalTo(24)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-16)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
         }
         
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
             $0.top.equalTo(closeButton.snp.bottom).offset(16)
+        }
+        
+        listBackgroundView.snp.makeConstraints {
+            $0.top.equalTo(collectionView)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         emptyListView.snp.makeConstraints {
@@ -158,11 +169,11 @@ extension FeedListViewController {
 
 extension FeedListViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIUtils.windowBounds.width - 32
+        let width = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
         
         switch datasource.itemIdentifier(for: indexPath) {
         case .feed(let feed):
-            let height = FeedCell.Layout.calculateHeight(feed: feed)
+            let height = FeedCell.Layout.calculateHeight(feed: feed, cellWidth: width)
             
             return CGSize(width: width, height: height)
         case .advertisement:
