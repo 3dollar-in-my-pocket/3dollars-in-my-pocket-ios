@@ -5,7 +5,7 @@ import DesignSystem
 
 final class QnaCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 48)
+        static let height: CGFloat = 48
     }
     
     private let titleLabel: UILabel = {

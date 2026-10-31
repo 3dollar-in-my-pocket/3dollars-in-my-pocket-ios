@@ -16,7 +16,6 @@ final class FaqCollectionView: UICollectionView {
         let layout = UICollectionViewFlowLayout()
         
         layout.scrollDirection = .vertical
-        layout.headerReferenceSize = FaqCollectionHeaderView.Layout.size
         layout.minimumLineSpacing = Layout.minimumLineSpacing
         layout.minimumInteritemSpacing = Layout.minimumInteritemSpacing
         
@@ -81,6 +80,10 @@ extension FaqCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let faq = faqSections[safe: indexPath.section]?[safe: indexPath.item] else { return .zero }
         
-        return FaqCollectionCell.Layout.calculateSize(faq: faq)
+        return FaqCollectionCell.Layout.calculateSize(faq: faq, width: collectionView.bounds.width)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: FaqCollectionHeaderView.Layout.height)
     }
 }

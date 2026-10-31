@@ -6,7 +6,7 @@ import DesignSystem
 
 final class SettingMenuCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 56)
+        static let height: CGFloat = 56
     }
     
     private let containerView: UIView = {

@@ -5,7 +5,7 @@ import DesignSystem
 
 final class SettingAdBannerCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 64)
+        static let height: CGFloat = 64
     }
     
     private let titleLabel: UILabel = {
