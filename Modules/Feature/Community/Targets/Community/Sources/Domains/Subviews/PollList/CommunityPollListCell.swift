@@ -7,7 +7,7 @@ import DesignSystem
 final class CommunityPollListCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 426)
+        static let height: CGFloat = 426
         static let sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
     }
 

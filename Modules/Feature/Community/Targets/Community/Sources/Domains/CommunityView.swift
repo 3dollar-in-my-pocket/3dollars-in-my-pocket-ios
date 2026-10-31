@@ -52,6 +52,7 @@ final class CommunityView: BaseView {
     override func setup() {
         super.setup()
 
+        backgroundColor = Colors.gray0.color
         addSubViews([collectionView, feedButton])
     }
 
@@ -59,11 +60,12 @@ final class CommunityView: BaseView {
         super.bindConstraints()
 
         collectionView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide)
         }
 
         feedButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-Layout.feedButtonTrailing)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-Layout.feedButtonTrailing)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-Layout.feedButtonBottom)
             $0.height.equalTo(Layout.feedButtonHeight)
         }

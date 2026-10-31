@@ -116,15 +116,17 @@ extension CommunityDataSource: UICollectionViewDelegate {
 
 extension CommunityDataSource: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width
+
         switch self[indexPath] {
         case .poll:
-            return CommunityPollListCell.Layout.size
+            return CGSize(width: width, height: CommunityPollListCell.Layout.height)
         case .popularStoreTab:
-            return CommunityPopularStoreTabCell.Layout.size
+            return CGSize(width: width, height: CommunityPopularStoreTabCell.Layout.height)
         case .popularStore:
-            return CommunityPopularStoreItemCell.Layout.size
+            return CGSize(width: width, height: CommunityPopularStoreItemCell.Layout.height)
         case .banner:
-            return CommunityBannerCell.Layout.size
+            return CGSize(width: width, height: CommunityBannerCell.Layout.height)
         default:
             return .zero
         }
