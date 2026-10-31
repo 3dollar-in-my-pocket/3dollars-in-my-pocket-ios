@@ -111,14 +111,14 @@ final class HomeView: BaseView {
 
         addressButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
-            $0.leading.equalToSuperview().offset(14)
-            $0.trailing.equalToSuperview().offset(-14)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(14)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-14)
         }
 
         homeFilterCollectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(addressButton.snp.bottom)
-            $0.trailing.equalToSuperview()
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.height.equalTo(60)
         }
 
@@ -128,19 +128,19 @@ final class HomeView: BaseView {
         }
         
         researchButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.centerX.equalTo(safeAreaLayoutGuide)
             make.bottom.equalTo(homeFilterCollectionView)
             make.height.equalTo(34)
         }
         
         mapControlView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-bottomSheetShortFormHeight - 16)
         }
 
         writeButton.snp.makeConstraints {
             $0.bottom.equalTo(mapControlView)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.height.equalTo(44)
         }
     }

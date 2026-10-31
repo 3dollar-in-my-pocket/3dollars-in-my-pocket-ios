@@ -194,7 +194,11 @@ extension HomeCurationCarouselCell: UICollectionViewDataSource {
         case .admobCard(let card):
             let cell: HomeCurationAdmobCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             if let rootViewController {
-                let size = HomeCurationAdmobCardCell.Layout.size(card, maxHeight: Layout.cardRowHeight)
+                let size = HomeCurationAdmobCardCell.Layout.size(
+                    card,
+                    containerWidth: collectionView.bounds.width,
+                    maxHeight: Layout.cardRowHeight
+                )
                 cell.bind(card, size: size, rootViewController: rootViewController)
             }
             cell.onClickAd = { [weak self] in
@@ -252,7 +256,11 @@ extension HomeCurationCarouselCell: UICollectionViewDelegateFlowLayout {
 
         switch carousel?.cards[safe: indexPath.item] {
         case .admobCard(let card):
-            let size = HomeCurationAdmobCardCell.Layout.size(card, maxHeight: Layout.cardRowHeight)
+            let size = HomeCurationAdmobCardCell.Layout.size(
+                card,
+                containerWidth: collectionView.bounds.width,
+                maxHeight: Layout.cardRowHeight
+            )
             return CGSize(width: size.width, height: Layout.cardRowHeight)
         default:
             return HomeCurationStoreCardCell.Layout.size
