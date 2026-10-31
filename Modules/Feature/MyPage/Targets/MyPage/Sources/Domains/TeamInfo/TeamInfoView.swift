@@ -21,6 +21,13 @@ final class TeamInfoView: BaseView {
         return label
     }()
     
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+
+        scrollView.showsVerticalScrollIndicator = false
+        return scrollView
+    }()
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         
@@ -61,10 +68,11 @@ final class TeamInfoView: BaseView {
         stackView.addArrangedSubview(logoImageView)
         stackView.addArrangedSubview(teamInfoGroupView)
         
+        scrollView.addSubview(stackView)
         addSubViews([
             backButton,
             titleLabel,
-            stackView,
+            scrollView,
             instagramButton
         ])
     }
@@ -85,16 +93,16 @@ final class TeamInfoView: BaseView {
             $0.height.equalTo(160)
         }
         
-        stackView.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(82)
-            $0.leading.equalToSuperview().offset(48)
-            $0.trailing.equalToSuperview().offset(-48)
-            $0.bottom.equalTo(safeAreaLayoutGuide)
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(backButton.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(instagramButton.snp.top).offset(-16)
         }
         
-        logoImageView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(backButton.snp.bottom).offset(82)
+        stackView.snp.makeConstraints {
+            $0.top.equalTo(scrollView.contentLayoutGuide).offset(66)
+            $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(48)
+            $0.bottom.equalTo(scrollView.contentLayoutGuide).offset(-16)
         }
         
         instagramButton.snp.makeConstraints {
