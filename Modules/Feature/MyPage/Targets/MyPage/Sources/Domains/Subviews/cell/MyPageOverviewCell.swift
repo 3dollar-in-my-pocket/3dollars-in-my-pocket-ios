@@ -91,13 +91,15 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
         stackView.addArrangedSubview(medalCountButton)
         
         storeCountButton.snp.makeConstraints {
-            $0.size.equalTo(MyPageOverviewCountButton.size)
+            $0.height.equalTo(MyPageOverviewCountButton.height)
         }
         reviewCountButton.snp.makeConstraints {
-            $0.size.equalTo(MyPageOverviewCountButton.size)
+            $0.height.equalTo(MyPageOverviewCountButton.height)
+            $0.width.equalTo(storeCountButton)
         }
         medalCountButton.snp.makeConstraints {
-            $0.size.equalTo(MyPageOverviewCountButton.size)
+            $0.height.equalTo(MyPageOverviewCountButton.height)
+            $0.width.equalTo(storeCountButton)
         }
     }
     

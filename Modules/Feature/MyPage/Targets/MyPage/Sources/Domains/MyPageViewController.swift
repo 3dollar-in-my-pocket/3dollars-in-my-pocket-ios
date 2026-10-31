@@ -114,13 +114,12 @@ public final class MyPageViewController: BaseViewController {
         
         settingButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(16)
             $0.size.equalTo(24)
         }
         
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
             $0.top.equalTo(self.navigationBackgroundView.snp.bottom)
             $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
