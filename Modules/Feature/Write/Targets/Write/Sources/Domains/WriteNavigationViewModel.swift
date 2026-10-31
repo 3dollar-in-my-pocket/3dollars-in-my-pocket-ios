@@ -242,6 +242,11 @@ final class WriteNavigationViewModel: BaseViewModel {
         }
     }
     
+    private func uploadMenuImageIfNeeded(storeId: Int) async {
+        guard let menuImage = state.menuExtractionUsage.consumeMenuImage() else { return }
+        _ = await dependency.storeRepository.uploadPhotos(storeId: storeId, photos: [menuImage])
+    }
+    
     private func createStore() {
         guard let location = state.location,
               let storeName = state.storeName else {
@@ -275,6 +280,7 @@ final class WriteNavigationViewModel: BaseViewModel {
                     nonceToken: token
                 )
                 let response = try await dependency.storeRepository.createStore(input: input, nonceToken: token).get()
+                await uploadMenuImageIfNeeded(storeId: response.storeId)
                 
                 output.isLoading.send(false)
                 state.afterCreatedStore = true
