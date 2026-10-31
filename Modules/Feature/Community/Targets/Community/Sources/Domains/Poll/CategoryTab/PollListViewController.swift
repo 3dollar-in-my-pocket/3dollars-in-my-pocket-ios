@@ -120,13 +120,9 @@ extension PollListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .poll:
-            return CGSize(width: UIScreen.main.bounds.width - 40, height: 246)
+            return CGSize(width: collectionView.bounds.width - 40, height: 246)
         default:
             return .zero
         }
     }
-
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//        return CGSize(width: UIScreen.main.bounds.width, height: PollHeaderView.Layout.height)
-//    }
 }
