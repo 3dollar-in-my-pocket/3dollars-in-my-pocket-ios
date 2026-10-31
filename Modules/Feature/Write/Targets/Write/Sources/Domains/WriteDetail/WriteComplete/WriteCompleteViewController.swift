@@ -138,7 +138,7 @@ final class WriteCompleteViewController: BaseViewController {
         ])
         
         stackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(56)
         }
         

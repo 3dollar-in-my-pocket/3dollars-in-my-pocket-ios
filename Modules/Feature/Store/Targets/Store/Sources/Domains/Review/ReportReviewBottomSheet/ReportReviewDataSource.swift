@@ -67,10 +67,10 @@ extension ReportReviewDataSource: UICollectionViewDelegateFlowLayout {
         
         switch item {
         case .reason:
-            return ReportReviewReasonCell.Layout.size
+            return ReportReviewReasonCell.Layout.size(containerWidth: collectionView.bounds.width)
             
         case .reasonDetail:
-            return ReportReviewReasonDetailCell.Layout.size
+            return ReportReviewReasonDetailCell.Layout.size(containerWidth: collectionView.bounds.width)
         }
     }
     

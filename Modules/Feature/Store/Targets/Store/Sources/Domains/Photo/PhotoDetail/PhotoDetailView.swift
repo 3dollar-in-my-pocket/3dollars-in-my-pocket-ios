@@ -68,40 +68,57 @@ final class PhotoDetailView: BaseView {
     override func bindConstraints() {
         closeButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(24)
         }
         
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(closeButton.snp.bottom).offset(16)
             $0.bottom.equalTo(leftButton.snp.top).offset(-16)
         }
         
         leftButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
         }
         
         rightButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
         }
         
         deleteButton.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.centerY.equalTo(leftButton)
             $0.size.equalTo(24)
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateItemSizeIfNeeded()
+    }
+    
+    private func updateItemSizeIfNeeded() {
+        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        let inset = collectionView.adjustedContentInset
+        let itemSize = CGSize(
+            width: collectionView.bounds.width - inset.left - inset.right,
+            height: collectionView.bounds.height - inset.top - inset.bottom
+        )
+        guard itemSize.width > 0, itemSize.height > 0, layout.itemSize != itemSize else { return }
+        
+        layout.itemSize = itemSize
+        layout.invalidateLayout()
+    }
+    
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = PhotoDetailCell.Layout.size
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         

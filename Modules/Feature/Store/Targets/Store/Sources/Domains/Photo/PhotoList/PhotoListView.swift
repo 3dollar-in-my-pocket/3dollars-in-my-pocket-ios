@@ -73,7 +73,7 @@ final class PhotoListView: BaseView {
         }
         
         backButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(16)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(16)
             $0.bottom.equalTo(topContainer).offset(-16)
             $0.size.equalTo(24)
         }
@@ -84,8 +84,8 @@ final class PhotoListView: BaseView {
         }
         
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(topContainer.snp.bottom)
             $0.bottom.equalTo(uploadButton.snp.top)
         }
@@ -105,10 +105,24 @@ final class PhotoListView: BaseView {
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateItemSizeIfNeeded()
+    }
+    
+    private func updateItemSizeIfNeeded() {
+        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        let inset = collectionView.adjustedContentInset
+        let itemSize = PhotoListCell.Layout.size(containerWidth: collectionView.bounds.width - inset.left - inset.right)
+        guard itemSize.width > 0, layout.itemSize != itemSize else { return }
+        
+        layout.itemSize = itemSize
+        layout.invalidateLayout()
+    }
+    
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = PhotoListCell.Layout.size
         layout.minimumInteritemSpacing = PhotoListCell.Layout.itemSpace
         layout.minimumLineSpacing = PhotoListCell.Layout.itemSpace
         

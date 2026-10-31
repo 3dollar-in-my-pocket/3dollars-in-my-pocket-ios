@@ -62,12 +62,12 @@ final class CouponTabViewController: BaseViewController {
 
         myPageNavigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
 
         tabView.snp.makeConstraints {
             $0.top.equalTo(myPageNavigationBar.snp.bottom)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         lineView.snp.makeConstraints {
@@ -92,7 +92,7 @@ final class CouponTabViewController: BaseViewController {
         view.addSubview(pageContainerView)
         pageContainerView.snp.makeConstraints {
             $0.top.equalTo(tabView.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         

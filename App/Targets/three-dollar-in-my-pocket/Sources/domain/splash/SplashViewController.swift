@@ -116,8 +116,10 @@ final class SplashViewController: BaseViewController {
         if let width = image.width,
            let height = image.height {
             let ratio = Double(height) / Double(width)
-            adView.snp.updateConstraints {
-                $0.height.equalTo(UIUtils.windowBounds.width * ratio)
+            adView.snp.remakeConstraints {
+                $0.leading.trailing.equalToSuperview()
+                $0.bottom.equalTo(view.safeAreaLayoutGuide)
+                $0.height.equalTo(adView.snp.width).multipliedBy(ratio)
             }
         } else {
             adView.snp.updateConstraints {

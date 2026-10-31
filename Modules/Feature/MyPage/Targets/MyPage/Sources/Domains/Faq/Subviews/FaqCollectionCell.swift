@@ -6,13 +6,13 @@ import Model
 
 final class FaqCollectionCell: BaseCollectionViewCell {
     enum Layout {
-        static func calculateSize(faq: FaqResponse) -> CGSize {
+        static func calculateSize(faq: FaqResponse, width: CGFloat) -> CGSize {
             let style = NSMutableParagraphStyle()
             style.maximumLineHeight = 20
             style.minimumLineHeight = 20
             
             let questionHeight = NSString(string: faq.question).boundingRect(
-                with: CGSize(width: UIUtils.windowBounds.width - 110, height: CGFloat.greatestFiniteMagnitude),
+                with: CGSize(width: width - 110, height: CGFloat.greatestFiniteMagnitude),
                 options: .usesLineFragmentOrigin,
                 attributes: [
                     .font: Fonts.semiBold.font(size: 14),
@@ -21,7 +21,7 @@ final class FaqCollectionCell: BaseCollectionViewCell {
                 context: nil
             ).height
             let answserHeight = NSString(string: faq.answer).boundingRect(
-                with: CGSize(width: UIUtils.windowBounds.width - 110, height: CGFloat.greatestFiniteMagnitude),
+                with: CGSize(width: width - 110, height: CGFloat.greatestFiniteMagnitude),
                 options: .usesLineFragmentOrigin,
                 attributes: [
                     .font: Fonts.semiBold.font(size: 14),
@@ -31,7 +31,7 @@ final class FaqCollectionCell: BaseCollectionViewCell {
             ).height
             
             let height = questionHeight + answserHeight + 40
-            return CGSize(width: UIUtils.windowBounds.width, height: height)
+            return CGSize(width: width, height: height)
         }
     }
     

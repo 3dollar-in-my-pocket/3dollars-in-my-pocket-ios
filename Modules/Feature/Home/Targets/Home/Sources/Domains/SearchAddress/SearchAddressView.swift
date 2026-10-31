@@ -86,19 +86,19 @@ final class SearchAddressView: BaseView {
         }
         
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.bottom.equalTo(navigationView).offset(-16)
             $0.size.equalTo(24)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.centerY.equalTo(closeButton)
         }
         
         inputBoxContainer.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.height.equalTo(52)
             $0.top.equalTo(navigationView.snp.bottom).offset(16)
         }
@@ -123,8 +123,8 @@ final class SearchAddressView: BaseView {
         
         addressCollectionView.snp.makeConstraints {
             $0.top.equalTo(inputBoxContainer.snp.bottom).offset(16)
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
     }
@@ -138,7 +138,7 @@ final class SearchAddressView: BaseView {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0

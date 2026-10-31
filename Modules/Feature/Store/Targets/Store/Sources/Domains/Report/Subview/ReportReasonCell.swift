@@ -5,7 +5,12 @@ import Model
 
 final class ReportReasonCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width - 40, height: 44)
+        static let horizontalInset: CGFloat = 20
+        static let height: CGFloat = 44
+        
+        static func size(containerWidth: CGFloat) -> CGSize {
+            CGSize(width: containerWidth - horizontalInset * 2, height: height)
+        }
     }
     
     private let containerView: UIView = {
@@ -58,7 +63,7 @@ final class ReportReasonCell: BaseCollectionViewCell {
             $0.trailing.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.height.equalTo(Layout.size.height)
+            $0.height.equalTo(Layout.height)
         }
         
         titleLabel.snp.makeConstraints {

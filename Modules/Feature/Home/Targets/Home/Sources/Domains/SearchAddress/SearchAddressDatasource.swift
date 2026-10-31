@@ -110,20 +110,22 @@ extension SearchAddressDatasource: UICollectionViewDelegate {
 
 extension SearchAddressDatasource: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width
+
         switch itemIdentifier(for: indexPath) {
         case .address, .recentSearch:
-            AddressCell.Layout.size
+            return CGSize(width: width, height: AddressCell.Layout.height)
         case .banner:
-            SearchAddressBannerCell.Layout.size
+            return CGSize(width: width, height: SearchAddressBannerCell.Layout.height)
         case .none:
-            .zero
+            return .zero
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         switch sectionIdentifier(section: section)?.type {
         case .recentSearch:
-            SearchAddressHeaderCell.Layout.size
+            CGSize(width: collectionView.bounds.width, height: SearchAddressHeaderCell.Layout.height)
         default:
             .zero
         }

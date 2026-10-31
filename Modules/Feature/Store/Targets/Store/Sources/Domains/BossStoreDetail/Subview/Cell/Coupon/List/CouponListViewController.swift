@@ -111,7 +111,7 @@ final class CouponListViewController: BaseViewController {
     }
 
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
@@ -132,7 +132,7 @@ extension CouponListViewController: UICollectionViewDelegate {
 
 extension CouponListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let containerWidth = UIScreen.main.bounds.width
+        let containerWidth = collectionView.bounds.width
 
         switch dataSource.itemIdentifier(for: indexPath) {
         case .coupon(let viewModel):

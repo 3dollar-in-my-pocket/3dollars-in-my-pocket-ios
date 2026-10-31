@@ -53,7 +53,7 @@ final class CommunityPopularStoreNeighborhoodsContentViewController: BaseViewCon
     }
     
     private func generateLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 6
         layout.minimumLineSpacing = 6

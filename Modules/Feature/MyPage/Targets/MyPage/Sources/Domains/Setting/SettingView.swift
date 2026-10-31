@@ -56,15 +56,14 @@ final class SettingView: BaseView {
         }
         
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(backButton.snp.bottom).offset(16)
-            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0

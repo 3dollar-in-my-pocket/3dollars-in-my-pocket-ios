@@ -1,12 +1,10 @@
 import UIKit
 
-import Common
-
 import SnapKit
 
 final class FeedDemoCollectionViewCell: UICollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 24)
+        static let height: CGFloat = 24
     }
     
     private let titleLabel = UILabel()

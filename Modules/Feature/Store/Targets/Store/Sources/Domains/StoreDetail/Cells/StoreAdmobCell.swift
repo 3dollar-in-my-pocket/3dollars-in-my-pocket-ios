@@ -21,10 +21,19 @@ final class StoreAdmobCell: BaseCollectionViewCell {
 
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
     private var hasLoadedAd = false
+    private weak var rootViewController: UIViewController?
+    private var pendingAdHeight: CGFloat?
 
     override func prepareForReuse() {
         super.prepareForReuse()
         hasLoadedAd = false
+        rootViewController = nil
+        pendingAdHeight = nil
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        loadAdIfNeeded()
     }
 
     override func setup() {
@@ -50,8 +59,17 @@ final class StoreAdmobCell: BaseCollectionViewCell {
         }
 
         guard isDisplayed, hasLoadedAd.isNot else { return }
+        self.rootViewController = rootViewController
+        pendingAdHeight = height
+        loadAdIfNeeded()
+    }
+
+    private func loadAdIfNeeded() {
+        guard hasLoadedAd.isNot, let rootViewController, let height = pendingAdHeight else { return }
+        let width = contentView.bounds.width - Layout.horizontalInset * 2
+        guard width > 0 else { return }
+
         hasLoadedAd = true
-        let size = CGSize(width: UIUtils.windowBounds.width - Layout.horizontalInset * 2, height: height)
-        adBannerView.load(in: rootViewController, size: size)
+        adBannerView.load(in: rootViewController, size: CGSize(width: width, height: height))
     }
 }

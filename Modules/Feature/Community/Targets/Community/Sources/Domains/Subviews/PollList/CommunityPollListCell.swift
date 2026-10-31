@@ -7,7 +7,7 @@ import DesignSystem
 final class CommunityPollListCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 426)
+        static let height: CGFloat = 426
         static let sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
     }
 
@@ -91,7 +91,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
     }
 
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.itemSize = PollItemCell.Layout.size
         layout.scrollDirection = .horizontal
         layout.sectionInset = Layout.sectionInset

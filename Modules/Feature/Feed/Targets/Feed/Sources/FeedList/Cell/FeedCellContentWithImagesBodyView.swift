@@ -7,8 +7,8 @@ import ZMarkupParser
 
 final class FeedCellContentWithImagesBodyView: BaseView {
     enum Layout {
-        static func calculateHeight(body: ContentWithImagesFeedBodyResponse) -> CGFloat {
-            let width = UIUtils.windowBounds.width - 56
+        static func calculateHeight(body: ContentWithImagesFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
+            let width = cellWidth - 24
             let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
 
             return contentHeight + 188
@@ -30,7 +30,7 @@ final class FeedCellContentWithImagesBodyView: BaseView {
     }()
     
     private func createLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 12

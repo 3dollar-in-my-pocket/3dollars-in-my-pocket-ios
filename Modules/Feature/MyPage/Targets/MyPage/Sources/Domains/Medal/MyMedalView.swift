@@ -55,14 +55,13 @@ final class MyMedalView: BaseView {
         
         self.collectionView.snp.makeConstraints { (make) in
             make.bottom.equalTo(self.safeAreaLayoutGuide)
-            make.trailing.equalToSuperview()
-            make.leading.equalToSuperview()
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide)
             make.top.equalTo(self.backButton.snp.bottom).offset(10)
         }
     }
     
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 16
         layout.minimumLineSpacing = 20

@@ -5,7 +5,7 @@ import AppInterface
 
 final class SearchAddressBannerCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 49)
+        static let height: CGFloat = 49
     }
     
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .searchAddress)
@@ -24,6 +24,7 @@ final class SearchAddressBannerCell: BaseCollectionViewCell {
     
     func bind(in rootViewController: UIViewController?) {
         guard let rootViewController else { return }
+        layoutIfNeeded()
         adBannerView.load(in: rootViewController)
     }
 }

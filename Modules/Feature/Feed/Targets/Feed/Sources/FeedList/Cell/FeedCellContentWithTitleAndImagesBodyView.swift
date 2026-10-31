@@ -6,8 +6,8 @@ import DesignSystem
 
 final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     enum Layout {
-        static func calculateHeight(body: ContentWithTitleAndImagesFeedBodyResponse) -> CGFloat {
-            let width = UIUtils.windowBounds.width - 56
+        static func calculateHeight(body: ContentWithTitleAndImagesFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
+            let width = cellWidth - 24
             let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
             
             return contentHeight + 116
@@ -100,7 +100,7 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     }
     
     private func createLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 8

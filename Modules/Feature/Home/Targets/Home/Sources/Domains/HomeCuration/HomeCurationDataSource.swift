@@ -43,7 +43,7 @@ final class HomeCurationDataSource: UICollectionViewDiffableDataSource<Int, Home
             case .admobCard(let card):
                 let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 if let rootViewController {
-                    cell.bind(card, rootViewController: rootViewController)
+                    cell.bind(card, width: collectionView.bounds.width, rootViewController: rootViewController)
                 }
                 cell.onClickAd = { [weak viewModel] in
                     viewModel?.input.didTapAdmobItem.send(card.cardId)
@@ -93,7 +93,7 @@ extension HomeCurationDataSource: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let width = UIUtils.windowBounds.width
+        let width = collectionView.bounds.width
         guard let identifier = itemIdentifier(for: indexPath) else { return .zero }
 
         switch items[identifier] {

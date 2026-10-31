@@ -37,7 +37,7 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
                 return cell
             case .admobCard(let card):
                 let cell: HomeListAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(card, rootViewController: rootViewController)
+                cell.bind(card, width: collectionView.bounds.width, rootViewController: rootViewController)
                 cell.onClickAd = { [weak viewModel, weak collectionView, weak cell] in
                     guard let cell, let indexPath = collectionView?.indexPath(for: cell) else { return }
                     viewModel?.input.didTapCard.send(indexPath.item)
@@ -88,11 +88,11 @@ extension HomeListDataSource: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIUtils.windowBounds.width
+        let width = collectionView.bounds.width
         
         switch itemIdentifier(for: indexPath) {
         case .basicCard(let response):
-            let height = HomeListStoreCell.Layout.height(response: response)
+            let height = HomeListStoreCell.Layout.height(response: response, cellWidth: width)
             return CGSize(width: width, height: height)
         case .admobCard(let card):
             let height = HomeListAdmobCell.Layout.height(card)

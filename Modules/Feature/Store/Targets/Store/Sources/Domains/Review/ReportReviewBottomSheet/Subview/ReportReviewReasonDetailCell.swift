@@ -9,7 +9,12 @@ final class ReportReviewReasonDetailCell: BaseCollectionViewCell {
     let didChangeText = PassthroughSubject<String, Never>()
 
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width - 40, height: 80)
+        static let horizontalInset: CGFloat = 20
+        static let height: CGFloat = 80
+
+        static func size(containerWidth: CGFloat) -> CGSize {
+            CGSize(width: containerWidth - horizontalInset * 2, height: height)
+        }
 
         enum Placeholder {
             static let text = Strings.ReportReviewBottomSheet.placeholder

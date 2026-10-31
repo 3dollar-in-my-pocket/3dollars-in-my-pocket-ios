@@ -114,20 +114,20 @@ public final class ContributorsViewController: BaseViewController {
         }
 
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(60)
-            $0.trailing.equalToSuperview().offset(-60)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(60)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-60)
             $0.bottom.equalToSuperview().offset(-16)
         }
 
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(24)
             $0.centerY.equalTo(titleLabel)
         }
 
         sduCollectionView.snp.makeConstraints {
             $0.top.equalTo(topContainerView.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(editButton.snp.top)
         }
 
@@ -138,7 +138,7 @@ public final class ContributorsViewController: BaseViewController {
         }
 
         editButton.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.top.equalToSuperview().offset(12)
             $0.height.equalTo(48)
         }

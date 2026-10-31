@@ -5,7 +5,7 @@ import DesignSystem
 
 final class SearchAddressHeaderCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 44)
+        static let height: CGFloat = 44
     }
 
     private let titleLabel: UILabel = {

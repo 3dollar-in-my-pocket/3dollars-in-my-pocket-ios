@@ -70,12 +70,12 @@ final class PollDetailViewController: BaseViewController {
 
         communityNavigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
 
         collectionView.snp.makeConstraints {
             $0.top.equalTo(communityNavigationBar.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(writeCommentView.snp.top)
         }
 
@@ -168,7 +168,7 @@ final class PollDetailViewController: BaseViewController {
     }
 
     private func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
@@ -215,24 +215,27 @@ final class PollDetailViewController: BaseViewController {
 
 extension PollDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = UIScreen.main.bounds.width
+        let width = collectionView.bounds.width
 
         switch dataSource.itemIdentifier(for: indexPath) {
         case .detail:
             return CGSize(width: width, height: PollDetailContentCell.Layout.height)
         case .comment(let viewModel):
-            return CGSize(width: width, height: PollDetailCommentCell.Layout.height(content: viewModel.output.item.comment.content))
+            return CGSize(
+                width: width,
+                height: PollDetailCommentCell.Layout.height(content: viewModel.output.item.comment.content, width: width)
+            )
         case .blindComment:
             return CGSize(width: width, height: PollDetailBlindCommentCell.Layout.height)
         case .banner:
-            return PollDetailBannerCell.Layout.size
+            return CGSize(width: width, height: PollDetailBannerCell.Layout.height)
         default:
             return .zero
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let width = UIScreen.main.bounds.width
+        let width = collectionView.bounds.width
 
         switch dataSource.sectionIdentifier(section: section)?.type {
         case .comment:

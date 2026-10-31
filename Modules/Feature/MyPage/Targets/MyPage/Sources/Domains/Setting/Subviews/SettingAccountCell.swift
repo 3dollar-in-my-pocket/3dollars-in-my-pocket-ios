@@ -6,7 +6,7 @@ import Model
 
 final class SettingAccountCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 104)
+        static let height: CGFloat = 104
     }
     
     private let socialLogo = UIImageView()

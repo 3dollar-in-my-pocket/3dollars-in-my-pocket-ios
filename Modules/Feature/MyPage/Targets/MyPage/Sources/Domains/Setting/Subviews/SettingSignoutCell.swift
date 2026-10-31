@@ -4,7 +4,7 @@ import Common
 
 final class SettingSignoutCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 34)
+        static let height: CGFloat = 34
     }
     
     let signoutButton: UIButton = {

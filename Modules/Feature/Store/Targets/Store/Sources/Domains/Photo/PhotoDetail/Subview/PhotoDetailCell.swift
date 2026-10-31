@@ -5,10 +5,6 @@ import DesignSystem
 import Model
 
 final class PhotoDetailCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: UIUtils.windowBounds.width)
-    }
-    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit

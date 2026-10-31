@@ -9,10 +9,6 @@ import NMapsMap
 final class WriteDetailMapCell: BaseCollectionViewCell {
     var marker: NMFMarker?
     
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 166)
-    }
-    
     let mapView: NMFMapView = {
         let mapView = NMFMapView()
         mapView.positionMode = .direction

@@ -74,17 +74,17 @@ final class UploadPhotoView: BaseView {
         }
         
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.centerY.equalTo(titleLabel)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalTo(topContainerView).offset(-16)
         }
         
         photoCollectionView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalTo(uploadButton.snp.top)
             $0.top.equalTo(topContainerView.snp.bottom)
         }
@@ -124,13 +124,29 @@ final class UploadPhotoView: BaseView {
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateItemSizeIfNeeded()
+    }
+    
+    private func updateItemSizeIfNeeded() {
+        guard let layout = photoCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        let inset = photoCollectionView.adjustedContentInset
+        let itemSize = UploadPhotoCell.Layout.itemSize(
+            containerWidth: photoCollectionView.bounds.width - inset.left - inset.right
+        )
+        guard itemSize.width > 0, layout.itemSize != itemSize else { return }
+        
+        layout.itemSize = itemSize
+        layout.invalidateLayout()
+    }
+    
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = UploadPhotoCell.Layout.space
         layout.minimumLineSpacing = UploadPhotoCell.Layout.space
-        layout.itemSize = UploadPhotoCell.Layout.itemSize
         return layout
     }
 }
