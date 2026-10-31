@@ -25,3 +25,12 @@ extension DeeplinkPath {
         rawValue
     }
 }
+
+enum StoreLandingSheet: String {
+    case expanded
+    case collapsed
+
+    init(param: String?) {
+        self = param.flatMap(StoreLandingSheet.init(rawValue:)) ?? .collapsed
+    }
+}
