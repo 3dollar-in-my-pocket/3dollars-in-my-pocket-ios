@@ -125,6 +125,10 @@ public final class HomeViewController: BaseViewController {
         viewModel.input.applyPreset.send(preset)
     }
 
+    public func landStoreFromDeepLink(storeId: Int, isExpanded: Bool) {
+        viewModel.input.landStoreFromDeepLink.send((storeId: storeId, isExpanded: isExpanded))
+    }
+
     public override func sendPageView() {
         super.sendPageView()
 
@@ -652,6 +656,18 @@ extension HomeViewController {
         case .presentStorePreview(let storeId, let latitude, let longitude):
             presentStorePreview(storeId: storeId, latitude: latitude, longitude: longitude)
 
+        case .presentLandingStorePreview(let storeId, let location, let isExpanded):
+            presentStorePreview(
+                storeId: storeId,
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude
+            ) { [weak self] in
+                self?.moveStorePreview(isExpanded: isExpanded)
+            }
+
+        case .pushStoreDetail(let storeId):
+            pushStoreDetail(storeId: String(storeId))
+
         case .dismissStorePreview:
             dismissStorePreview()
 
@@ -846,7 +862,12 @@ extension HomeViewController {
     /// 재실행되기 때문에, fpc.view 를 tabBarController.view subtree 로 옮길 방법은 사실상 없다.
     /// 대신 StorePreview 가 노출되는 동안 탭바를 숨겨 시각적으로 패널이 탭바 위에 떠 있는 효과를 낸다
     /// (UIKit 의 hidesBottomBarWhenPushed 와 동일한 패턴).
-    private func presentStorePreview(storeId: Int, latitude: Double, longitude: Double) {
+    private func presentStorePreview(
+        storeId: Int,
+        latitude: Double,
+        longitude: Double,
+        completion: (() -> Void)? = nil
+    ) {
         let config = StorePreviewBottomSheetViewModel.Config(
             storeId: storeId,
             latitude: latitude,
@@ -859,6 +880,7 @@ extension HomeViewController {
         if let existing = storePreviewBottomSheet,
            storePreviewBottomSheetController?.parent != nil {
             existing.update(viewModel: newViewModel)
+            completion?()
             return
         }
 
@@ -885,7 +907,7 @@ extension HomeViewController {
         tabBarController?.tabBar.isHidden = true
         homeView.mapControlView.isHidden = true
         homeView.writeButton.isHidden = true
-        fpc.addPanel(toParent: self, animated: true)
+        fpc.addPanel(toParent: self, animated: true, completion: completion)
         fpc.view.isHidden = false
     }
 
@@ -998,12 +1020,7 @@ extension HomeViewController {
 
     private func wireStorePreviewCallbacks(_ viewController: StorePreviewBottomSheetViewController) {
         viewController.onRequestExpandPanel = { [weak self] in
-            guard let self, let fpc = self.storePreviewBottomSheetController else { return }
-            self.isMovingStorePreviewToFull = true
-            fpc.move(to: .full, animated: true) { [weak self] in
-                self?.isMovingStorePreviewToFull = false
-                self?.storePreviewBottomSheet?.didReachFullState()
-            }
+            self?.expandStorePreviewToFull()
         }
         viewController.onRequestCollapsePanel = { [weak self] in
             self?.storePreviewBottomSheetController?.move(to: .tip, animated: true)
@@ -1046,6 +1063,23 @@ extension HomeViewController {
         }
         viewController.onContentHeightChanged = { [weak self] height in
             self?.updateStorePreviewPanelHeight(height)
+        }
+    }
+
+    private func expandStorePreviewToFull() {
+        guard let fpc = storePreviewBottomSheetController else { return }
+        isMovingStorePreviewToFull = true
+        fpc.move(to: .full, animated: true) { [weak self] in
+            self?.isMovingStorePreviewToFull = false
+            self?.storePreviewBottomSheet?.didReachFullState()
+        }
+    }
+
+    private func moveStorePreview(isExpanded: Bool) {
+        if isExpanded {
+            expandStorePreviewToFull()
+        } else if storePreviewBottomSheetController?.state == .full {
+            storePreviewBottomSheetController?.move(to: .tip, animated: true)
         }
     }
 

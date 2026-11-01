@@ -42,6 +42,7 @@ extension HomeViewModel {
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         let didTapWriteButton = PassthroughSubject<Void, Never>()
         let applyPreset = PassthroughSubject<String, Never>()
+        let landStoreFromDeepLink = PassthroughSubject<(storeId: Int, isExpanded: Bool), Never>()
 
         // From bottom sheet
         let bottomSheetWillLoadMore = PassthroughSubject<Void, Never>()
@@ -100,6 +101,14 @@ extension HomeViewModel {
         var nextCursor: String?
         var isLoading: Bool = false
         var user: UserDetailResponse?
+        var hasMovedInitialCamera = false
+        var pendingLandingStore: LandingStore?
+    }
+
+    struct LandingStore {
+        let storeId: Int
+        let location: CLLocation
+        let isExpanded: Bool
     }
 
     enum Route {
@@ -108,6 +117,8 @@ extension HomeViewModel {
         case presentPolicy
         case presentMarkerAdvertisement
         case presentStorePreview(storeId: Int, latitude: Double, longitude: Double)
+        case presentLandingStorePreview(storeId: Int, location: CLLocation, isExpanded: Bool)
+        case pushStoreDetail(storeId: Int)
         case dismissStorePreview
         case presentSearchAddress(SearchAddressViewModel)
         case showErrorAlert(Error)
@@ -120,6 +131,7 @@ extension HomeViewModel {
 
     struct Dependency {
         let screenRepository: ScreenRepository
+        let storeRepository: StoreRepository
         let advertisementRepository: AdvertisementRepository
         let userRepository: UserRepository
         let mapRepository: MapRepository
@@ -130,6 +142,7 @@ extension HomeViewModel {
 
         init(
             screenRepository: ScreenRepository = ScreenRepositoryImpl(),
+            storeRepository: StoreRepository = StoreRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
             userRepository: UserRepository = UserRepositoryImpl(),
             mapRepository: MapRepository = MapRepositoryImpl(),
@@ -139,6 +152,7 @@ extension HomeViewModel {
             appModuleInterface: AppModuleInterface = Environment.appModuleInterface
         ) {
             self.screenRepository = screenRepository
+            self.storeRepository = storeRepository
             self.advertisementRepository = advertisementRepository
             self.userRepository = userRepository
             self.mapRepository = mapRepository
@@ -172,6 +186,7 @@ final class HomeViewModel: BaseViewModel {
     private let filterScreenLoaded = PassthroughSubject<Void, Never>()
     private var loadTask: Task<Void, Never>?
     private var loadMoreTask: Task<Void, Never>?
+    private var landingTask: Task<Void, Never>?
     
     private var allBars: [any HomeFilterBar] {
         state.filterSections
@@ -232,8 +247,9 @@ final class HomeViewModel: BaseViewModel {
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, values) in
                 let location = values.0
-                owner.state.resultCameraPosition = location
                 owner.state.currentLocation = location
+                if owner.applyPendingLandingStoreIfNeeded() { return }
+                owner.state.resultCameraPosition = location
                 owner.state.newCameraPosition = location
                 owner.output.initialCameraPosition.send((location, owner.state.initialMapZoomLevel))
                 owner.output.curationLocation.send(location)
@@ -243,6 +259,8 @@ final class HomeViewModel: BaseViewModel {
         input.onInitialMapDistanceReady
             .withUnretained(self)
             .sink(receiveValue: { (owner: HomeViewModel, distance: Double) in
+                owner.state.hasMovedInitialCamera = true
+                if owner.applyPendingLandingStoreIfNeeded() { return }
                 owner.state.mapMaxDistance = distance
                 owner.state.newMapMaxDistance = distance
                 owner.fetchInitialCards()
@@ -262,6 +280,19 @@ final class HomeViewModel: BaseViewModel {
                 owner.output.preset.send(preset)
                 owner.fetchFilterScreen(shouldRefreshCards: true)
             })
+            .store(in: &cancellables)
+
+        input.landStoreFromDeepLink
+            .withUnretained(self)
+            .sink { (owner: HomeViewModel, value: (storeId: Int, isExpanded: Bool)) in
+                owner.landingTask?.cancel()
+                owner.state.pendingLandingStore = nil
+                let task = Task<Void, Never> { [weak owner] in
+                    await owner?.fetchLandingStore(storeId: value.storeId, isExpanded: value.isExpanded)
+                }
+                task.store(in: owner.taskBag)
+                owner.landingTask = task
+            }
             .store(in: &cancellables)
 
         input.changeMaxDistance
@@ -734,6 +765,59 @@ final class HomeViewModel: BaseViewModel {
         guard dependency.preference.isShownFilterTooltip.isNot else { return }
         dependency.preference.isShownFilterTooltip = true
         output.isShowFilterTooltip.send(false)
+    }
+
+    @MainActor
+    private func fetchLandingStore(storeId: Int, isExpanded: Bool) async {
+        let deviceLocation = dependency.preference.userCurrentLocation
+        let input = FetchStoreScreenInput(
+            storeId: String(storeId),
+            latitude: deviceLocation.coordinate.latitude,
+            longitude: deviceLocation.coordinate.longitude
+        )
+        let result = await dependency.storeRepository.fetchStorePreview(input: input)
+
+        guard !Task.isCancelled else { return }
+
+        guard case .success(let response) = result,
+              let marker = response.sections.compactMap({ $0 as? StorePreviewSection }).first?.markers?.first else {
+            output.route.send(.pushStoreDetail(storeId: storeId))
+            return
+        }
+
+        let landingStore = LandingStore(
+            storeId: storeId,
+            location: CLLocation(latitude: marker.location.latitude, longitude: marker.location.longitude),
+            isExpanded: isExpanded
+        )
+
+        if state.hasMovedInitialCamera {
+            applyLandingStore(landingStore)
+        } else {
+            state.pendingLandingStore = landingStore
+        }
+    }
+
+    private func applyPendingLandingStoreIfNeeded() -> Bool {
+        guard let landingStore = state.pendingLandingStore else { return false }
+        state.pendingLandingStore = nil
+        applyLandingStore(landingStore)
+        return true
+    }
+
+    private func applyLandingStore(_ landingStore: LandingStore) {
+        let location = landingStore.location
+        state.newCameraPosition = location
+        state.resultCameraPosition = location
+        output.curationLocation.send(location)
+        output.isHiddenResearchButton.send(true)
+        output.initialCameraPosition.send((location, state.initialMapZoomLevel))
+        fetchAddress(location: location)
+        output.route.send(.presentLandingStorePreview(
+            storeId: landingStore.storeId,
+            location: location,
+            isExpanded: landingStore.isExpanded
+        ))
     }
 
     private func fetchAddress(location: CLLocation) {

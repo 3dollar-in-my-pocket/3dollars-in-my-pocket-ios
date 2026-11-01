@@ -186,7 +186,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         
         if let deepLink = userInfo["link"] as? String {
-            DeepLinkHandler.shared.handle(deepLink)
+            DeepLinkHandler.shared.handleExternal(deepLink)
         }
     }
 }

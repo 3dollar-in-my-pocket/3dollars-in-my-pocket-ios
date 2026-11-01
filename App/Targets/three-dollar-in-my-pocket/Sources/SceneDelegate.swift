@@ -45,14 +45,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     Preference.shared.shareLink = storeId
                 }
             }
-            DeepLinkHandler.shared.handle(url.absoluteString)
+            DeepLinkHandler.shared.handleExternal(url.absoluteString)
         }
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL else { return }
 
-        DeepLinkHandler.shared.handle(incomingURL.absoluteString)
+        DeepLinkHandler.shared.handleExternal(incomingURL.absoluteString)
     }
 
     func goToMain() {
@@ -78,7 +78,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func reserveUniversialLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         for userActivity in connectionOptions.userActivities {
             if let incomingURL = userActivity.webpageURL {
-                DeepLinkHandler.shared.handle(incomingURL.absoluteString)
+                DeepLinkHandler.shared.handleExternal(incomingURL.absoluteString)
                 break
             }
         }
@@ -87,12 +87,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func reserveDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         guard let url = connectionOptions.urlContexts.first?.url else { return }
 
-        DeepLinkHandler.shared.handle(url.absoluteString)
+        DeepLinkHandler.shared.handleExternal(url.absoluteString)
     }
 
     private func reserveNotificationDeepLinkIfExisted(connectionOptions: UIScene.ConnectionOptions) {
         guard let userInfo = connectionOptions.notificationResponse?.notification.request.content.userInfo,
               let deepLink = userInfo["link"] as? String else { return }
-        DeepLinkHandler.shared.handle(deepLink)
+        DeepLinkHandler.shared.handleExternal(deepLink)
     }
 }
