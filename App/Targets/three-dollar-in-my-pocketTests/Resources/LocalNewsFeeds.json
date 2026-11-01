@@ -1,0 +1,193 @@
+{
+  "contents": [
+    {
+      "feedId": "6ad7645103e011c1ebc9ffd5",
+      "category": {
+        "categoryId": "NEW_STORE",
+        "name": {
+          "text": "🔥 새로운 가게가 등록되었어요!",
+          "isHtml": false,
+          "fontColor": "#FFFFFF"
+        },
+        "style": {
+          "backgroundColor": "#FF6B54"
+        }
+      },
+      "header": {
+        "image": {
+          "imageUrl": "https://storage.threedollars.co.kr/menu/v1_bungeoppang.png?version=1",
+          "width": 60,
+          "height": 60
+        },
+        "top": {
+          "text": "#붕어빵 #분식 #호떡",
+          "isHtml": false,
+          "fontColor": "#B7B7B7"
+        },
+        "content": {
+          "text": "TH1486 test store",
+          "isHtml": false,
+          "fontColor": "#0F0F0F"
+        },
+        "metadata": [
+          {
+            "icon": {
+              "imageUrl": "https://storage.threedollars.co.kr/app/review.png",
+              "width": 12,
+              "height": 12
+            },
+            "content": {
+              "text": "0개",
+              "isHtml": false,
+              "fontColor": "#B7B7B7"
+            }
+          },
+          {
+            "icon": {
+              "imageUrl": "https://storage.threedollars.co.kr/app/star_solid.png",
+              "width": 12,
+              "height": 12
+            },
+            "content": {
+              "text": "0.0",
+              "isHtml": false,
+              "fontColor": "#B7B7B7"
+            }
+          },
+          {
+            "icon": {
+              "imageUrl": "https://storage.threedollars.co.kr/app/location_soild.png",
+              "width": 12,
+              "height": 12
+            },
+            "content": {
+              "text": "0m",
+              "isHtml": false,
+              "fontColor": "#B7B7B7"
+            }
+          }
+        ],
+        "type": "GENERAL"
+      },
+      "body": {
+        "content": {
+          "text": "<span style=\"font-size:14px; font-weight:600; color:#2E2E2E\">렌검카카</span><span style=\"font-size:14px; font-weight:400; color:#2E2E2E\">님이 제보해주셨어요!</span>",
+          "isHtml": true,
+          "fontColor": "#2E2E2E"
+        },
+        "contentLeadingImage": {
+          "imageUrl": "https://storage.threedollars.co.kr/medal/v1-newbie-default.png?version=1",
+          "width": 16,
+          "height": 16
+        },
+        "style": {
+          "backgroundColor": "#F4F4F4"
+        },
+        "additionalInfos": {},
+        "type": "CONTENT_ONLY"
+      },
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12806246&storeType=USER_STORE"
+      },
+      "createdAt": "2026-10-20T21:53:37",
+      "updatedAt": "2026-10-20T21:53:37"
+    },
+    {
+      "feedId": "6ad390b8279bd19eba6157f5",
+      "category": {
+        "categoryId": "NEW_STORE",
+        "name": {
+          "text": "🔥 새로운 가게가 등록되었어요!",
+          "isHtml": false,
+          "fontColor": "#FFFFFF"
+        },
+        "style": {
+          "backgroundColor": "#FF6B54"
+        }
+      },
+      "header": {
+        "image": {
+          "imageUrl": "https://storage.threedollars.co.kr/menu/v1-etc.png",
+          "width": 60,
+          "height": 60
+        },
+        "top": {
+          "text": "#기타 #꼬치 #붕어빵 #분식 #호떡",
+          "isHtml": false,
+          "fontColor": "#B7B7B7"
+        },
+        "content": {
+          "text": "TH1485 test store",
+          "isHtml": false,
+          "fontColor": "#0F0F0F"
+        },
+        "metadata": [
+          {
+            "icon": {
+              "imageUrl": "https://storage.threedollars.co.kr/app/review.png",
+              "width": 12,
+              "height": 12
+            },
+            "content": {
+              "text": "0개",
+              "isHtml": false,
+              "fontColor": "#B7B7B7"
+            }
+          },
+          {
+            "icon": {
+              "imageUrl": "https://storage.threedollars.co.kr/app/star_solid.png",
+              "width": 12,
+              "height": 12
+            },
+            "content": {
+              "text": "0.0",
+              "isHtml": false,
+              "fontColor": "#B7B7B7"
+            }
+          },
+          {
+            "icon": {
+              "imageUrl": "https://storage.threedollars.co.kr/app/location_soild.png",
+              "width": 12,
+              "height": 12
+            },
+            "content": {
+              "text": "0m",
+              "isHtml": false,
+              "fontColor": "#B7B7B7"
+            }
+          }
+        ],
+        "type": "GENERAL"
+      },
+      "body": {
+        "content": {
+          "text": "<span style=\"font-size:14px; font-weight:600; color:#2E2E2E\">익명의 제보자</span><span style=\"font-size:14px; font-weight:400; color:#2E2E2E\">님이 제보해주셨어요!</span>",
+          "isHtml": true,
+          "fontColor": "#2E2E2E"
+        },
+        "contentLeadingImage": {
+          "imageUrl": "https://storage.threedollars.co.kr/medal/v1-newbie-default.png?version=1",
+          "width": 16,
+          "height": 16
+        },
+        "style": {
+          "backgroundColor": "#F4F4F4"
+        },
+        "additionalInfos": {},
+        "type": "CONTENT_ONLY"
+      },
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=12806244&storeType=USER_STORE"
+      },
+      "createdAt": "2026-10-18T00:13:59",
+      "updatedAt": "2026-10-18T00:13:59"
+    }
+  ],
+  "cursor": {
+    "hasMore": false
+  }
+}

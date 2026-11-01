@@ -344,6 +344,7 @@ let project = Project(
                 .Feature.store,
                 .Feature.home,
                 .Feature.community,
+                .Feature.feed,
                 .Feature.write
             ],
             settings: .settings(

@@ -4,9 +4,8 @@ import DependencyInjection
 import FeedInterface
 
 public final class FeedInterfaceImpl: FeedInterface {
-    public func createFeedListViewController(config: FeedListViewModelConfig) -> UIViewController {
-        let viewModel = FeedListViewModel(config: config)
-        return FeedListViewController(viewModel: viewModel)
+    public func createLocalNewsViewController() -> LocalNewsViewControllerType {
+        return FeedListViewController(viewModel: FeedListViewModel())
     }
 
     public static func registerFeedInterface() {

@@ -4,17 +4,15 @@ import Common
 import Networking
 
 public protocol FeedInterface {
-    func createFeedListViewController(config: FeedListViewModelConfig) -> UIViewController
+    func createLocalNewsViewController() -> LocalNewsViewControllerType
 }
 
-public struct FeedListViewModelConfig {
-    public var mapLatitude: Double?
-    public var mapLongitude: Double?
-    
-    public init(mapLatitude: Double? = nil, mapLongitude: Double? = nil) {
-        self.mapLatitude = mapLatitude
-        self.mapLongitude = mapLongitude
-    }
+public protocol LocalNewsViewControllerType: UIViewController {
+    var scrollView: UIScrollView { get }
+
+    func load(mapLatitude: Double, mapLongitude: Double)
+    func setVisible(_ isVisible: Bool)
+    func scrollToTop()
 }
 
 public struct FeedListViewModelDependency {

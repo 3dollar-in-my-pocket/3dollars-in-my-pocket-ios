@@ -81,13 +81,10 @@ extension FeedDemoViewController: UICollectionViewDelegateFlowLayout {
         
         switch viewType {
         case .feedList:
-            let config = FeedListViewModelConfig(
-                mapLatitude: 37.287934,
-                mapLongitude: 127.056573
-            )
-            let viewModel = FeedListViewModel(config: config)
-            let viewController = FeedListViewController(viewModel: viewModel)
+            let viewController = FeedListViewController(viewModel: FeedListViewModel())
             present(viewController, animated: true)
+            viewController.setVisible(true)
+            viewController.load(mapLatitude: 37.287934, mapLongitude: 127.056573)
         }
     }
 }

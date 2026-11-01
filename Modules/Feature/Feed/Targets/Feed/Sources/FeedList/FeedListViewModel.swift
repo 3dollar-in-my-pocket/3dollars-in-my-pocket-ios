@@ -9,117 +9,177 @@ import Log
 
 extension FeedListViewModel {
     struct Input {
-        let load = PassthroughSubject<Void, Never>()
-        let reload = PassthroughSubject<Void, Never>()
+        let load = PassthroughSubject<(latitude: Double, longitude: Double), Never>()
+        let retry = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
-        let didTapFeed = PassthroughSubject<Int, Never>()
+        let didTapFeed = PassthroughSubject<FeedResponse, Never>()
     }
-    
+
     struct Output {
         let screenName: ScreenName = .feedList
         let datasource = CurrentValueSubject<[FeedListSection], Never>([])
+        let scrollToTop = PassthroughSubject<Void, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
-    
+
+    enum ContentState: Equatable {
+        case loading
+        case loaded
+        case failed
+    }
+
     struct State {
         var cursor: CursorString?
         var feeds: [FeedResponse] = []
         var mapLatitude: Double?
         var mapLongitude: Double?
         var advertisement: AdvertisementResponse?
+        var hasFetchedAdvertisement = false
+        var contentState: ContentState = .loading
+        var isLoadingMore = false
     }
-    
+
     enum Route {
-        case showErrorAlert(Error)
         case deepLink(SDLink)
     }
 }
 
 public final class FeedListViewModel: BaseViewModel {
+    static let skeletonCount = 3
+
     let input = Input()
     let output = Output()
-    private var state: State
+    private var state = State()
     private let dependency: FeedListViewModelDependency
-    
-    public init(config: FeedListViewModelConfig, dependency: FeedListViewModelDependency = FeedListViewModelDependency()) {
-        self.state = State(mapLatitude: config.mapLatitude, mapLongitude: config.mapLongitude)
+    private var loadTask: Task<Void, Never>?
+
+    public init(dependency: FeedListViewModelDependency = FeedListViewModelDependency()) {
         self.dependency = dependency
-        
+
         super.init()
     }
-    
+
     public override func bind() {
         input.load
             .withUnretained(self)
-            .sink { (owner: FeedListViewModel, _) in
-                owner.state.cursor = nil
-                owner.fetchAdvertisement()
-                owner.loadFeedList()
+            .sink { (owner: FeedListViewModel, location) in
+                owner.state.mapLatitude = location.latitude
+                owner.state.mapLongitude = location.longitude
+                owner.fetchAdvertisementIfNeeded()
+                owner.loadFirstPage()
+                owner.output.scrollToTop.send(())
             }
             .store(in: &cancellables)
-        
-        input.reload
+
+        input.retry
             .withUnretained(self)
             .sink { (owner: FeedListViewModel, _) in
-                owner.state.cursor = nil
-                owner.state.feeds = []
-                owner.loadFeedList()
+                owner.loadFirstPage()
             }
             .store(in: &cancellables)
-        
+
         input.willDisplayCell
             .withUnretained(self)
             .sink { (owner: FeedListViewModel, index: Int) in
                 guard owner.canLoadMore(index: index) else { return }
-                owner.loadFeedList()
+                owner.loadNextPage()
             }
             .store(in: &cancellables)
-        
+
         input.didTapFeed
             .withUnretained(self)
-            .sink { (owner: FeedListViewModel, index: Int) in
-                guard let feed = owner.state.feeds[safe: index - 1] else { return }
+            .sink { (owner: FeedListViewModel, feed: FeedResponse) in
                 owner.output.route.send(.deepLink(feed.link))
             }
             .store(in: &cancellables)
     }
-    
-    private func fetchAdvertisement() {
-        Task {
-            let advertisementResponse = try? await dependency.advertisementRepository.fetchAdvertisements(input: .init(position: .localNewsFeed)).get()
-            state.advertisement = advertisementResponse?.advertisements.first
+
+    private func fetchAdvertisementIfNeeded() {
+        guard state.hasFetchedAdvertisement.isNot else { return }
+        state.hasFetchedAdvertisement = true
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let response = try? await dependency.advertisementRepository.fetchAdvertisements(input: .init(position: .localNewsFeed)).get()
+            state.advertisement = response?.advertisements.first
+            refreshDatasource()
         }
     }
-    
-    private func loadFeedList() {
-        Task {
-            let input = FetchFeedInput(
-                cursor: state.cursor?.nextCursor,
-                mapLatitude: state.mapLatitude,
-                mapLongitude: state.mapLongitude
-            )
+
+    private func loadFirstPage() {
+        state.cursor = nil
+        state.feeds = []
+        state.isLoadingMore = false
+        state.contentState = .loading
+        refreshDatasource()
+
+        let input = makeFetchInput(cursor: nil)
+        loadTask?.cancel()
+        loadTask = Task { @MainActor [weak self] in
+            guard let self else { return }
             let result = await dependency.feedRepository.fetchFeed(input: input)
-            
+            guard Task.isCancelled.isNot else { return }
+
             switch result {
             case .success(let response):
                 state.cursor = response.cursor
-                state.feeds.append(contentsOf: response.contents)
-                refreshDatasource()
-            case .failure(let error):
-                output.route.send(.showErrorAlert(error))
+                state.feeds = response.contents
+                state.contentState = .loaded
+            case .failure:
+                state.contentState = .failed
             }
+            refreshDatasource()
         }
     }
-    
-    private func refreshDatasource() {
-        let advertisementItem = FeedListSectionItem.advertisement(state.advertisement)
-        let feedItemList = state.feeds.map { FeedListSectionItem.feed($0) }
-        
-        output.datasource.send([.init(items: [advertisementItem] + feedItemList)])
+
+    private func loadNextPage() {
+        state.isLoadingMore = true
+        let input = makeFetchInput(cursor: state.cursor?.nextCursor)
+
+        loadTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let result = await dependency.feedRepository.fetchFeed(input: input)
+            guard Task.isCancelled.isNot else { return }
+            state.isLoadingMore = false
+
+            guard case .success(let response) = result else { return }
+            let loadedIds = Set(state.feeds.map(\.feedId))
+            state.cursor = response.cursor
+            state.feeds.append(contentsOf: response.contents.filter { loadedIds.contains($0.feedId).isNot })
+            refreshDatasource()
+        }
     }
-    
+
+    private func makeFetchInput(cursor: String?) -> FetchFeedInput {
+        return FetchFeedInput(
+            cursor: cursor,
+            mapLatitude: state.mapLatitude,
+            mapLongitude: state.mapLongitude
+        )
+    }
+
+    private func refreshDatasource() {
+        var items: [FeedListSectionItem] = [.header, .advertisement(state.advertisement)]
+
+        switch state.contentState {
+        case .loading:
+            items += (0..<Self.skeletonCount).map { FeedListSectionItem.skeleton($0) }
+        case .failed:
+            items.append(.error)
+        case .loaded where state.feeds.isEmpty:
+            items.append(.empty)
+        case .loaded:
+            items += state.feeds.map { FeedListSectionItem.feed($0) }
+        }
+
+        output.datasource.send([.init(items: items)])
+    }
+
     private func canLoadMore(index: Int) -> Bool {
-        return index >= state.feeds.count
+        let itemCount = output.datasource.value.first?.items.count ?? 0
+        return index >= itemCount - 1
+        && state.contentState == .loaded
+        && state.isLoadingMore.isNot
         && state.cursor?.hasMore == true
         && state.cursor?.nextCursor != nil
     }
