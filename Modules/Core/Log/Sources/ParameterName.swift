@@ -22,6 +22,7 @@ public extension ParameterName {
     static let categoryId = ParameterName(rawValue: "category_id")
     static let count = ParameterName(rawValue: "count")
     static let reviewId = ParameterName(rawValue: "review_id")
+    static let visitId = ParameterName(rawValue: "visit_id")
     static let rating = ParameterName(rawValue: "rating")
     static let pollId = ParameterName(rawValue: "poll_id")
     static let optionId = ParameterName(rawValue: "option_id")

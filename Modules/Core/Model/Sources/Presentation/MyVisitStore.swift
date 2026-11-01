@@ -1,12 +1,14 @@
 import Foundation
 
 public struct MyVisitStore: Hashable {
+    public let visitId: String
     public let type: VisitType
     public let visitDate: String
     public let createdAt: String
     public let store: PlatformStore
     
     public init(response: StoreVisitWithStoreApiResponse) {
+        self.visitId = response.visit.visitId
         self.type = response.visit.type
         self.visitDate = response.visit.visitDate
         self.createdAt = response.visit.createdAt
