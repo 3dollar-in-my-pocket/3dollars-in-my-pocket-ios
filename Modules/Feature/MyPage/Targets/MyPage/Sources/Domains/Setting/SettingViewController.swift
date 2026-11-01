@@ -126,7 +126,7 @@ public final class SettingViewController: BaseViewController {
     }
     
     private func pushTeamInfo() {
-        let viewController = TeamInfoViewController(nibName: nil, bundle: nil)
+        let viewController = TeamInfoViewController(viewModel: TeamInfoViewModel())
         
         navigationController?.pushViewController(viewController, animated: true)
     }

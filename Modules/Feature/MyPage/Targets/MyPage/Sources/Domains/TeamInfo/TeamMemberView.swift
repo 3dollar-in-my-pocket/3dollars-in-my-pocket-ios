@@ -5,11 +5,10 @@ import DesignSystem
 
 final class TeamMemberView: BaseView {
     enum Layout {
-        static let size = CGSize(width: 136, height: 66)
-        static let largeSize = CGSize(width: 136, height: 86)
+        static let width: CGFloat = 136
+        static let horizontalInset: CGFloat = 20
+        static let membersPerRow = 2
     }
-
-    private let memberCount: Int
 
     private let containerView: UIView = {
         let view = UIView()
@@ -24,43 +23,19 @@ final class TeamMemberView: BaseView {
 
         label.textColor = Colors.pink200.color
         label.font = Fonts.medium.font(size: 10)
+        label.textAlignment = .center
         return label
     }()
 
-    private let firstMemberLabel: UILabel = {
-        let label = UILabel()
+    private let memberStackView: UIStackView = {
+        let stackView = UIStackView()
 
-        label.font = Fonts.bold.font(size: 16)
-        label.textColor = Colors.systemWhite.color
-        return label
-    }()
-
-    private let secondMemberLabel: UILabel = {
-        let label = UILabel()
-
-        label.font = Fonts.bold.font(size: 16)
-        label.textColor = Colors.systemWhite.color
-        return label
-    }()
-
-    private let thirdMemberLabel: UILabel = {
-        let label = UILabel()
-
-        label.font = Fonts.bold.font(size: 16)
-        label.textColor = Colors.systemWhite.color
-        return label
-    }()
-
-    private let fourthMemberLabel: UILabel = {
-        let label = UILabel()
-
-        label.font = Fonts.bold.font(size: 16)
-        label.textColor = Colors.systemWhite.color
-        return label
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        return stackView
     }()
 
     init(teamName: String, members: [String]) {
-        self.memberCount = members.count
         super.init(frame: .zero)
 
         bind(teamName: teamName, members: members)
@@ -74,10 +49,7 @@ final class TeamMemberView: BaseView {
         addSubViews([
             containerView,
             titleLabel,
-            firstMemberLabel,
-            secondMemberLabel,
-            thirdMemberLabel,
-            fourthMemberLabel
+            memberStackView
         ])
     }
 
@@ -87,82 +59,60 @@ final class TeamMemberView: BaseView {
         }
 
         titleLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(Layout.horizontalInset)
             $0.top.equalToSuperview().offset(12)
         }
 
-        switch memberCount {
-        case 1:
-            setupSingleMemberLayout()
-        case 4:
-            setupFourMembersLayout()
-        default:
-            setupTwoMembersLayout()
-        }
-    }
-
-    private func setupSingleMemberLayout() {
-        firstMemberLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+        memberStackView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(Layout.horizontalInset)
             $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+            $0.bottom.equalToSuperview().offset(-16)
         }
 
-        secondMemberLabel.isHidden = true
-        thirdMemberLabel.isHidden = true
-        fourthMemberLabel.isHidden = true
-    }
-
-    private func setupTwoMembersLayout() {
-        firstMemberLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-        }
-
-        secondMemberLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
-            $0.centerY.equalTo(firstMemberLabel)
-        }
-
-        thirdMemberLabel.isHidden = true
-        fourthMemberLabel.isHidden = true
-    }
-
-    private func setupFourMembersLayout() {
-        firstMemberLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-        }
-
-        secondMemberLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
-            $0.centerY.equalTo(firstMemberLabel)
-        }
-
-        thirdMemberLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.top.equalTo(firstMemberLabel.snp.bottom).offset(4)
-        }
-
-        fourthMemberLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
-            $0.centerY.equalTo(thirdMemberLabel)
+        snp.makeConstraints {
+            $0.width.equalTo(Layout.width)
         }
     }
 
     private func bind(teamName: String, members: [String]) {
         titleLabel.text = teamName
 
-        if members.count >= 1 {
-            firstMemberLabel.text = members[0]
+        stride(from: 0, to: members.count, by: Layout.membersPerRow)
+            .map { Array(members[$0..<min($0 + Layout.membersPerRow, members.count)]) }
+            .forEach { memberStackView.addArrangedSubview(makeRowView(members: $0)) }
+    }
+
+    private func makeRowView(members: [String]) -> UIView {
+        let rowView = UIView()
+        let labels = members.map(makeMemberLabel)
+        rowView.addSubViews(labels)
+
+        if let leadingLabel = labels.first, labels.count == 1 {
+            leadingLabel.snp.makeConstraints {
+                $0.centerX.top.bottom.equalToSuperview()
+            }
+        } else if let leadingLabel = labels.first, let trailingLabel = labels.last {
+            leadingLabel.snp.makeConstraints {
+                $0.leading.top.bottom.equalToSuperview()
+            }
+
+            trailingLabel.snp.makeConstraints {
+                $0.trailing.equalToSuperview()
+                $0.leading.greaterThanOrEqualTo(leadingLabel.snp.trailing).offset(8)
+                $0.centerY.equalTo(leadingLabel)
+            }
         }
-        if members.count >= 2 {
-            secondMemberLabel.text = members[1]
-        }
-        if members.count >= 3 {
-            thirdMemberLabel.text = members[2]
-        }
-        if members.count >= 4 {
-            fourthMemberLabel.text = members[3]
-        }
+        return rowView
+    }
+
+    private func makeMemberLabel(name: String) -> UILabel {
+        let label = UILabel()
+
+        label.font = Fonts.bold.font(size: 16)
+        label.textColor = Colors.systemWhite.color
+        label.text = name
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.7
+        return label
     }
 }
