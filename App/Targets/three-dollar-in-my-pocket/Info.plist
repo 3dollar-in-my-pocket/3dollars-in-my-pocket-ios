@@ -68,7 +68,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakaoa0ce3cecac62e2dedf50751d5abc5740</string>
+				<string>kakao$(KAKAO_APP_KEY)</string>
 			</array>
 		</dict>
 		<dict>
@@ -87,14 +87,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.1014726034007-cr8jiho91de2ctkvqttro93oem0gddqf</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>kakao95f91f9656806e132796f0071ab99aaa</string>
 			</array>
 		</dict>
 		<dict>
@@ -126,7 +118,7 @@
 	<string>$(KAKAO_APP_KEY)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakaoa0ce3cecac62e2dedf50751d5abc5740</string>
+		<string>kakao$(KAKAO_APP_KEY)</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>
 		<string>kakaolink</string>
@@ -136,7 +128,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NMFNcpKeyId</key>
-	<string>1ev5u0jcqy</string>
+	<string>$(NCP_CLIENT_ID)</string>
+	<key>NCP_CLIENT_ID</key>
+	<string>$(NCP_CLIENT_ID)</string>
+	<key>NCP_CLIENT_SECRET</key>
+	<string>$(NCP_CLIENT_SECRET)</string>
+	<key>KAKAO_REST_API_KEY</key>
+	<string>$(KAKAO_REST_API_KEY)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
