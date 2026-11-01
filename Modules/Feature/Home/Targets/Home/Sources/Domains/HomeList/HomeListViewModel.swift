@@ -17,7 +17,7 @@ extension HomeListViewModel {
         let didTapMapView = PassthroughSubject<Void, Never>()
         let setTabSection = PassthroughSubject<HomeBottomSheetTabSection?, Never>()
         let didTapTab = PassthroughSubject<Int, Never>()
-        let setCurationLocation = PassthroughSubject<CLLocation, Never>()
+        let setMapLocation = PassthroughSubject<CLLocation, Never>()
         let receiveSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
     }
 
@@ -34,6 +34,7 @@ extension HomeListViewModel {
         let tabs = CurrentValueSubject<[HomeBottomSheetTabItem], Never>([])
         let selectedViewType = CurrentValueSubject<HomeBottomTabViewType, Never>(.storeList)
         let didSelectCurationStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
+        let loadNews = PassthroughSubject<CLLocation, Never>()
     }
 
     struct State {
@@ -41,6 +42,9 @@ extension HomeListViewModel {
         var tabs: [HomeBottomTab] = []
         var selectedTabId: String?
         var pendingSectionImpressionLog: SDImpressionLog?
+        var mapLocation: CLLocation?
+        var newsLoadedLocation: CLLocation?
+        var latestNewsFeedId: String?
     }
 
     public struct Config {
@@ -50,16 +54,22 @@ extension HomeListViewModel {
     struct Dependency {
         let screenRepository: ScreenRepository
         let storeRepository: StoreRepository
+        let feedRepository: FeedRepository
         let logManager: LogManagerProtocol
+        let preference: Preference
 
         init(
             screenRepository: ScreenRepository = ScreenRepositoryImpl(),
             storeRepository: StoreRepository = StoreRepositoryImpl(),
-            logManager: LogManagerProtocol = LogManager.shared
+            feedRepository: FeedRepository = FeedRepositoryImpl(),
+            logManager: LogManagerProtocol = LogManager.shared,
+            preference: Preference = .shared
         ) {
             self.screenRepository = screenRepository
             self.storeRepository = storeRepository
+            self.feedRepository = feedRepository
             self.logManager = logManager
+            self.preference = preference
         }
     }
 }
@@ -144,8 +154,15 @@ final class HomeListViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.setCurationLocation
-            .subscribe(curationViewModel.input.setLocation)
+        input.setMapLocation
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, location: CLLocation) in
+                owner.curationViewModel.input.setLocation.send(location)
+                owner.state.mapLocation = location
+                owner.state.latestNewsFeedId = nil
+                owner.loadNewsIfVisible()
+                owner.fetchLatestNewsFeedIdIfNeeded()
+            }
             .store(in: &cancellables)
 
         curationViewModel.output.didSelectStore
@@ -164,6 +181,7 @@ final class HomeListViewModel: BaseViewModel {
         let defaultTab = tabs.first(where: \.defaultSelected) ?? tabs.first
         state.selectedTabId = defaultTab?.tabId
         emitTabs()
+        fetchLatestNewsFeedIdIfNeeded()
     }
 
     private func selectTab(at index: Int) {
@@ -177,13 +195,73 @@ final class HomeListViewModel: BaseViewModel {
         let selectedTab = state.tabs.first { $0.tabId == state.selectedTabId }
         let curationTabId = selectedTab?.viewType == .curation ? selectedTab?.tabId : nil
         curationViewModel.input.setTabId.send(curationTabId)
-        output.tabs.send(state.tabs.map { HomeBottomSheetTabItem(tab: $0, isSelected: $0.tabId == selectedTab?.tabId) })
 
         let viewType = selectedTab?.viewType ?? .storeList
         if output.selectedViewType.value != viewType {
             output.selectedViewType.send(viewType)
         }
+        markNewsSeenIfVisible()
+        emitTabItems()
+        loadNewsIfVisible()
         sendSectionImpressionLogIfVisible()
+    }
+
+    private func emitTabItems() {
+        output.tabs.send(state.tabs.map {
+            HomeBottomSheetTabItem(
+                tab: $0,
+                isSelected: $0.tabId == state.selectedTabId,
+                hasNewBadge: $0.viewType == .news && $0.tabId != state.selectedTabId && hasUnseenNews
+            )
+        })
+    }
+
+    private var hasUnseenNews: Bool {
+        guard let latestNewsFeedId = state.latestNewsFeedId else { return false }
+        guard let lastSeenFeedId = dependency.preference.lastSeenLocalNewsFeedId else { return true }
+        return latestNewsFeedId > lastSeenFeedId
+    }
+
+    private var hasNewsTab: Bool {
+        state.tabs.contains { $0.viewType == .news }
+    }
+
+    private func markNewsSeenIfVisible() {
+        guard output.selectedViewType.value == .news, hasUnseenNews else { return }
+        dependency.preference.lastSeenLocalNewsFeedId = state.latestNewsFeedId
+    }
+
+    private func loadNewsIfVisible() {
+        guard output.selectedViewType.value == .news,
+              let location = state.mapLocation,
+              isSameCoordinate(state.newsLoadedLocation, location).isNot else { return }
+        state.newsLoadedLocation = location
+        output.loadNews.send(location)
+    }
+
+    private func fetchLatestNewsFeedIdIfNeeded() {
+        guard hasNewsTab, state.latestNewsFeedId == nil, let location = state.mapLocation else { return }
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let input = FetchFeedInput(
+                size: 1,
+                mapLatitude: location.coordinate.latitude,
+                mapLongitude: location.coordinate.longitude
+            )
+            let result = await dependency.feedRepository.fetchFeed(input: input)
+            guard isSameCoordinate(state.mapLocation, location),
+                  case .success(let response) = result else { return }
+            state.latestNewsFeedId = response.contents.first?.feedId
+            markNewsSeenIfVisible()
+            emitTabItems()
+        }
+    }
+
+    private func isSameCoordinate(_ lhs: CLLocation?, _ rhs: CLLocation) -> Bool {
+        guard let lhs else { return false }
+        return lhs.coordinate.latitude == rhs.coordinate.latitude
+            && lhs.coordinate.longitude == rhs.coordinate.longitude
     }
 
     private func sendSectionImpressionLogIfVisible() {

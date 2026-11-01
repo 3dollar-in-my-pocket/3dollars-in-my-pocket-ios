@@ -58,6 +58,12 @@ final class HomeListView: BaseView {
         return view
     }()
 
+    let newsContainerView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        return view
+    }()
+
     let mapViewButton: MapViewButton = {
         let button = MapViewButton()
         button.alpha = 0
@@ -82,7 +88,7 @@ final class HomeListView: BaseView {
         backgroundColor = .clear
 
         tabContainerView.addSubview(tabView)
-        pageContainerView.addSubViews([collectionView, curationView])
+        pageContainerView.addSubViews([collectionView, curationView, newsContainerView])
         contentStackView.addArrangedSubview(tabContainerView)
         contentStackView.addArrangedSubview(pageContainerView)
 
@@ -123,6 +129,10 @@ final class HomeListView: BaseView {
             $0.edges.equalToSuperview()
         }
 
+        newsContainerView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
         mapViewButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             mapViewButtonBottomConstraint = $0.bottom.equalToSuperview()
@@ -153,9 +163,9 @@ final class HomeListView: BaseView {
     }
 
     func showPage(viewType: HomeBottomTabViewType) {
-        let isCuration = viewType == .curation
-        curationView.isHidden = !isCuration
-        collectionView.isHidden = isCuration
+        curationView.isHidden = viewType != .curation
+        newsContainerView.isHidden = viewType != .news
+        collectionView.isHidden = viewType == .curation || viewType == .news
     }
 
     func updateBottomBarCoveringHeight(_ height: CGFloat) {

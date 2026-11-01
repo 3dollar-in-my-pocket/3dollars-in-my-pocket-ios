@@ -63,6 +63,15 @@ public final class Preference {
         return instance.string(forKey: "KEY_SHOWN_MAIN_BANNER_\(id)")
     }
     
+    public var lastSeenLocalNewsFeedId: String? {
+        get {
+            return instance.string(forKey: "KEY_LAST_SEEN_LOCAL_NEWS_FEED_ID")
+        }
+        set {
+            instance.set(newValue, forKey: "KEY_LAST_SEEN_LOCAL_NEWS_FEED_ID")
+        }
+    }
+
     public var isShownFilterTooltip: Bool {
         set {
             instance.set(newValue, forKey: "KEY_IS_SHOWN_FILTER_TOOLTIP")

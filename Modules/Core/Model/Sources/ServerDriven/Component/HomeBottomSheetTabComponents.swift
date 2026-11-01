@@ -3,6 +3,7 @@ import Foundation
 public enum HomeBottomTabViewType: String, Decodable {
     case curation = "CURATION"
     case storeList = "STORE_LIST"
+    case news = "NEWS"
     case unknown
 
     public init(from decoder: Decoder) throws {
