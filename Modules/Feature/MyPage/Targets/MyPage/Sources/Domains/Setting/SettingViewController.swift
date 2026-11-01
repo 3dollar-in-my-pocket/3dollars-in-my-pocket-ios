@@ -251,15 +251,15 @@ extension SettingViewController: UICollectionViewDelegateFlowLayout {
         guard let cellType = cellTypes[safe: indexPath.item] else { return .zero }
         switch cellType {
         case .account:
-            return SettingAccountCell.Layout.size
+            return CGSize(width: collectionView.bounds.width, height: SettingAccountCell.Layout.height)
         case .activityNotification, .marketingNotification:
-            return SettingNotificationCell.Layout.size
+            return CGSize(width: collectionView.bounds.width, height: SettingNotificationCell.Layout.height)
         case .qna, .agreement, .teamInfo, .accountInfo:
-            return SettingMenuCell.Layout.size
+            return CGSize(width: collectionView.bounds.width, height: SettingMenuCell.Layout.height)
         case .advertisement:
-            return SettingAdBannerCell.Layout.size
+            return CGSize(width: collectionView.bounds.width, height: SettingAdBannerCell.Layout.height)
         case .signout:
-            return SettingSignoutCell.Layout.size
+            return CGSize(width: collectionView.bounds.width, height: SettingSignoutCell.Layout.height)
         }
     }
     

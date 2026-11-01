@@ -125,7 +125,7 @@ final class StoreBottomActionBarView: UIView {
         }
         scrollView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(Layout.topInset)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide)
             $0.height.equalTo(Layout.buttonHeight)
             scrollViewBottomConstraint = $0.bottom.equalToSuperview().inset(Layout.bottomInset).constraint
         }

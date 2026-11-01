@@ -6,10 +6,15 @@ import Model
 
 final class CategoryFilterCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(
-            width: (UIScreen.main.bounds.width - 48 - 36)/4,
-            height: (UIScreen.main.bounds.width - 48 - 36)/4 + 2
-        )
+        static let columnCount: CGFloat = 4
+        static let horizontalInset: CGFloat = 24
+        static let spacing: CGFloat = 12
+
+        static func size(containerWidth: CGFloat) -> CGSize {
+            let totalSpacing = spacing * (columnCount - 1)
+            let width = (containerWidth - horizontalInset * 2 - totalSpacing) / columnCount
+            return CGSize(width: width, height: width + 2)
+        }
     }
     
     private let newBadge = UIImageView(image: HomeAsset.imageNewBadge.image)

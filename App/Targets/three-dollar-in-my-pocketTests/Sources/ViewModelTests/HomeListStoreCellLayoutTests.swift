@@ -27,15 +27,18 @@ final class HomeListStoreCellLayoutTests: XCTestCase {
 
         // Then
         XCTAssertEqual(visibleBodies.count, 2)
-        XCTAssertEqual(Layout.bodyWidth(bodyCount: visibleBodies.count), Layout.multipleBodyWidth)
+        XCTAssertEqual(Layout.bodyWidth(bodyCount: visibleBodies.count, availableWidth: 335), Layout.multipleBodyWidth)
     }
 
     func test_TH1357_TC2_리뷰가하나면_기존처럼_가용폭전체를쓴다() {
-        // Given / When
-        let width = Layout.bodyWidth(bodyCount: 1)
+        // Given
+        let availableWidth = Layout.availableWidth(cellWidth: 375)
+
+        // When
+        let width = Layout.bodyWidth(bodyCount: 1, availableWidth: availableWidth)
 
         // Then
-        XCTAssertEqual(width, Layout.imageAvailableWidth)
+        XCTAssertEqual(width, availableWidth)
     }
 
     func test_TH1357_TC3_리뷰가여러개면_가장긴리뷰높이에맞춘다() throws {
@@ -45,7 +48,7 @@ final class HomeListStoreCellLayoutTests: XCTestCase {
         let labelWidth = Layout.multipleBodyWidth - Layout.bodyLabelInset * 2
 
         // When
-        let height = Layout.bodiesHeight(bodies: [shortBody, longBody])
+        let height = Layout.bodiesHeight(bodies: [shortBody, longBody], availableWidth: 335)
 
         // Then
         XCTAssertEqual(height, Layout.bodyHeight(body: longBody, labelWidth: labelWidth))

@@ -7,7 +7,7 @@ import Model
 final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 156)
+        static let height: CGFloat = 156
         static let itemSpacing: CGFloat = 9
     }
 

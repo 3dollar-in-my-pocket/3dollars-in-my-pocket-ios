@@ -60,8 +60,8 @@ final class SigninBottomSheetView: BaseView {
         }
         
         appleButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
             $0.height.equalTo(48)
         }
@@ -74,12 +74,12 @@ final class SigninBottomSheetView: BaseView {
         }
         
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-40)
         }
         
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-72)
             $0.size.equalTo(24)
         }

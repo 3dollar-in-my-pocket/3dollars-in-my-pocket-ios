@@ -6,9 +6,9 @@ import DesignSystem
 
 final class WriteDetailMenuItemCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width - 40 - 24, height: 44)
+        static let height: CGFloat = 44
         static let space: CGFloat = 12
-        static let nameWidth = (size.width - space) * 0.3
+        static let nameWidthRatio: CGFloat = 0.3
     }
     
     let nameField = TextField(placeholder: "ex) 슈크림")
@@ -34,7 +34,7 @@ final class WriteDetailMenuItemCell: BaseCollectionViewCell {
             $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.width.equalTo(Layout.nameWidth)
+            $0.width.equalToSuperview().multipliedBy(Layout.nameWidthRatio).offset(-Layout.space * Layout.nameWidthRatio)
         }
         
         priceField.snp.makeConstraints {

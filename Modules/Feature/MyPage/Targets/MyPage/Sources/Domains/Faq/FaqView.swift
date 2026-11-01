@@ -35,6 +35,9 @@ final class FaqView: BaseView {
     
     let faqCollectionView = FaqCollectionView()
     
+    private var categories: [FaqCategoryResponse] = []
+    private var categoryViewHeight: CGFloat = 0
+    
     override func setup() {
         backgroundColor = Colors.gray100.color
         
@@ -66,22 +69,37 @@ final class FaqView: BaseView {
         
         categoryView.snp.makeConstraints {
             $0.top.equalTo(mainTitleLabel.snp.bottom).offset(24)
-            $0.centerX.equalToSuperview()
-            $0.leading.lessThanOrEqualToSuperview().offset(44)
-            $0.trailing.lessThanOrEqualToSuperview().offset(-44)
+            $0.centerX.equalTo(safeAreaLayoutGuide)
+            $0.leading.lessThanOrEqualTo(safeAreaLayoutGuide).offset(44)
+            $0.trailing.lessThanOrEqualTo(safeAreaLayoutGuide).offset(-44)
             $0.height.equalTo(0)
         }
         
         faqCollectionView.snp.makeConstraints {
             $0.top.equalTo(categoryView.snp.bottom)
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalTo(safeAreaLayoutGuide)
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard categories.isNotEmpty else { return }
+        updateCategoryViewHeight()
+    }
+    
     func updateCategoryViewHeight(categories: [FaqCategoryResponse]) {
-        let height = FaqCategoryView.Layout.calculateHeight(categories: categories)
+        self.categories = categories
+        updateCategoryViewHeight()
+    }
+    
+    private func updateCategoryViewHeight() {
+        let width = safeAreaLayoutGuide.layoutFrame.width - 88
+        let height = FaqCategoryView.Layout.calculateHeight(categories: categories, width: width)
+        guard height != categoryViewHeight else { return }
+        
+        categoryViewHeight = height
         categoryView.snp.updateConstraints {
             $0.height.equalTo(height)
         }

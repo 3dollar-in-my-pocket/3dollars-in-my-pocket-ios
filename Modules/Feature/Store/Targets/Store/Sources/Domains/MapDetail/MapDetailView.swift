@@ -77,13 +77,13 @@ final class MapDetailView: BaseView {
         }
         
         titleLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalTo(topContainer).offset(-16)
         }
         
         closeButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(24)
         }
         

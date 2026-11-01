@@ -97,34 +97,34 @@ final class BossStorePhotoViewController: BaseViewController {
         closeButton.snp.makeConstraints {
             $0.size.equalTo(24)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-16)
         }
         
         view.addSubview(leftButton)
         leftButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
         }
         
         view.addSubview(rightButton)
         rightButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
             $0.size.equalTo(44)
         }
         
         view.addSubview(countLabel)
         countLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
             $0.centerY.equalTo(leftButton)
         }
         
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
+            $0.leading.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(closeButton.snp.bottom).offset(16)
-            $0.trailing.equalToSuperview()
+            $0.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(leftButton.snp.top).offset(-16)
         }
     }
@@ -189,7 +189,7 @@ final class BossStorePhotoViewController: BaseViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = .zero
         layout.minimumLineSpacing = .zero

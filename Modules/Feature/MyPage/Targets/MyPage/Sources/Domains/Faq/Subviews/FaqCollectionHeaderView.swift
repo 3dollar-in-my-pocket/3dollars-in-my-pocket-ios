@@ -6,7 +6,7 @@ import DesignSystem
 
 final class FaqCollectionHeaderView: UICollectionReusableView {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 90)
+        static let height: CGFloat = 90
     }
     
     private let titleLabel: UILabel = {

@@ -89,8 +89,12 @@ extension QnaViewController: UICollectionViewDataSource {
     }
 }
 
-extension QnaViewController: UICollectionViewDelegate {
+extension QnaViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.input.didTapCell.send(indexPath.item)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: QnaCell.Layout.height)
     }
 }

@@ -17,7 +17,7 @@ final class StoreRelatedStoresV2Cell: BaseCollectionViewCell {
     var onAction: ((StoreSectionAction) -> Void)?
     private let titleLabel = StoreSectionTextLabel(font: Fonts.bold.font(size: 16))
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.itemSpacing
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)

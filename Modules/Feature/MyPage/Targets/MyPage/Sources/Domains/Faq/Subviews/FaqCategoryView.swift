@@ -7,13 +7,13 @@ import DesignSystem
 
 final class FaqCategoryView: BaseView {
     enum Layout {
-        static func calculateHeight(categories: [FaqCategoryResponse]) -> CGFloat {
+        static func calculateHeight(categories: [FaqCategoryResponse], width maxRowWidth: CGFloat) -> CGFloat {
             var row = 1
             var rowWidth: CGFloat = 0
             for category in categories {
                 let width = FaqCategoryCell.Layout.calculateSize(category: category).width
                 
-                if rowWidth + width >= (UIUtils.windowBounds.width - 88) {
+                if rowWidth + width >= maxRowWidth {
                     row += 1
                     rowWidth = width
                 } else {
@@ -65,7 +65,7 @@ final class FaqCategoryView: BaseView {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let layout =  UICollectionViewFlowLayout()
+        let layout =  WidthAdaptiveFlowLayout()
         
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 8

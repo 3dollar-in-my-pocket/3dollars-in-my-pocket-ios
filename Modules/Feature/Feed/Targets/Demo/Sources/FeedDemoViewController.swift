@@ -51,7 +51,6 @@ final class FeedDemoViewController: UIViewController {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.itemSize = FeedDemoCollectionViewCell.Layout.size
         return layout
     }
 }
@@ -72,7 +71,11 @@ extension FeedDemoViewController: UICollectionViewDataSource {
     }
 }
 
-extension FeedDemoViewController: UICollectionViewDelegate {
+extension FeedDemoViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: FeedDemoCollectionViewCell.Layout.height)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let viewType = dataSource[safe: indexPath.item] else { return }
         

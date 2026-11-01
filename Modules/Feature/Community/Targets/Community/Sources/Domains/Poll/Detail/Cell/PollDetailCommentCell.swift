@@ -8,8 +8,8 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
     private let feedbackGenerator = UISelectionFeedbackGenerator()
     
     enum Layout {
-        static func height(content: String) -> CGFloat {
-            return content.height(font: Fonts.regular.font(size: 14), width: UIScreen.main.bounds.width - 40) + 106
+        static func height(content: String, width: CGFloat) -> CGFloat {
+            return content.height(font: Fonts.regular.font(size: 14), width: width - 40) + 106
         }
     }
 

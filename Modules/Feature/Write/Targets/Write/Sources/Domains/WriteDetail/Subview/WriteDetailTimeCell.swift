@@ -5,10 +5,6 @@ import Model
 import DesignSystem
 
 final class WriteDetailTimeCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 72)
-    }
-    
     let startTimeField = TimeField(placeholder: Strings.writeDetailTimeFromPlaceholder)
     
     private let fromLabel: UILabel = {

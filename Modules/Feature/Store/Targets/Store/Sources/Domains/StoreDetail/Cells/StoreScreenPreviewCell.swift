@@ -12,9 +12,6 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         static let actionBarSpacing: CGFloat = 4
         static let defaultImageSize = CGSize(width: 120, height: 120)
         static let horizontalMargin: CGFloat = 20
-        static var imageAvailableWidth: CGFloat {
-            return UIUtils.windowBounds.width - horizontalMargin * 2
-        }
     }
 
     var onAction: ((StoreSectionAction) -> Void)?
@@ -84,7 +81,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         return button
     }()
     private let actionCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.actionBarSpacing
         layout.minimumInteritemSpacing = Layout.actionBarSpacing
@@ -101,7 +98,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         return collectionView
     }()
     private let imageCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing
@@ -238,7 +235,7 @@ final class StoreScreenPreviewCell: BaseCollectionViewCell {
         return PreviewImageLayout.itemSize(
             style: images[safe: index]?.style,
             count: images.count,
-            availableWidth: Layout.imageAvailableWidth,
+            availableWidth: contentView.bounds.width - Layout.horizontalMargin * 2,
             spacing: Layout.imageSpacing,
             defaultSize: Layout.defaultImageSize
         )

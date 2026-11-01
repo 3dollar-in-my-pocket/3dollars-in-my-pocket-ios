@@ -49,22 +49,22 @@ final class SigninAnonymousView: BaseView {
     
     override func bindConstraints() {
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.width.equalTo(24)
             $0.height.equalTo(24)
         }
         
         logoImage.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.size.equalTo(Layout.logoSize)
             $0.bottom.equalTo(kakaoButton.snp.top).offset(-48)
         }
         
         kakaoButton.snp.makeConstraints {
             $0.centerY.equalToSuperview().offset(48)
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.height.equalTo(48)
         }
         
@@ -76,7 +76,7 @@ final class SigninAnonymousView: BaseView {
         }
         
         anonymousLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(appleButton.snp.bottom).offset(36)
         }
     }

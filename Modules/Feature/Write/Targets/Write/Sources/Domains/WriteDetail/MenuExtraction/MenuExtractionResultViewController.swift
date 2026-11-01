@@ -115,13 +115,13 @@ final class MenuExtractionResultViewController: BaseViewController {
 
         scrollView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(bottomContainerView.snp.top)
         }
 
         stackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
-            $0.width.equalTo(UIUtils.windowBounds.width)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
         }
 
         bottomContainerView.snp.makeConstraints {
@@ -135,7 +135,7 @@ final class MenuExtractionResultViewController: BaseViewController {
 
         registerButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(12)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(48)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
         }

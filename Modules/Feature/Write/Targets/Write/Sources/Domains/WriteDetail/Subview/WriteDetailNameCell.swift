@@ -4,10 +4,6 @@ import Common
 import DesignSystem
 
 final class WriteDetailNameCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
-    }
-    
     private let containerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = Colors.gray10.color

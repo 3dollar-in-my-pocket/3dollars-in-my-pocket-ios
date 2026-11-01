@@ -10,8 +10,8 @@ final class FeedCellContentOnlyBodyView: BaseView {
         static let contentLeadingImageWidth: CGFloat = 20
         static let contentLineHeight: CGFloat = 20
 
-        static func calculateHeight(body: ContentOnlyFeedBodyResponse) -> CGFloat {
-            var width = UIUtils.windowBounds.width - 88
+        static func calculateHeight(body: ContentOnlyFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
+            var width = cellWidth - 56
             if body.contentLeadingImage != nil {
                 width -= contentLeadingImageWidth
             }

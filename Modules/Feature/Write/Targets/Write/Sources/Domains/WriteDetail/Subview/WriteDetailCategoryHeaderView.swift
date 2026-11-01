@@ -5,10 +5,6 @@ import Common
 import DesignSystem
 
 final class WriteDetailCategoryHeaderView: BaseCollectionViewReusableView {
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
-    }
-    
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.font = Fonts.semiBold.font(size: 14)

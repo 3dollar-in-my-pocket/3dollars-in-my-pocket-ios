@@ -7,7 +7,7 @@ import SnapKit
 
 final class HomeCurationView: BaseView {
     lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)

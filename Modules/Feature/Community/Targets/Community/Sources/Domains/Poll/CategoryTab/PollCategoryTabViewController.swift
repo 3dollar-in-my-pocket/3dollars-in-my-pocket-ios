@@ -80,12 +80,12 @@ final class PollCategoryTabViewController: BaseViewController {
 
         communityNavigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
 
         tabView.snp.makeConstraints {
             $0.top.equalTo(communityNavigationBar.snp.bottom)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         lineView.snp.makeConstraints {
@@ -96,7 +96,7 @@ final class PollCategoryTabViewController: BaseViewController {
 
         createPollButton.snp.makeConstraints {
             $0.height.equalTo(44)
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-12)
         }
 
@@ -118,7 +118,7 @@ final class PollCategoryTabViewController: BaseViewController {
         view.addSubview(pageContainerView)
         pageContainerView.snp.makeConstraints {
             $0.top.equalTo(tabView.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }

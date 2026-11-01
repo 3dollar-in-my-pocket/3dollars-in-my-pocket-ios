@@ -41,8 +41,8 @@ final class WriteNavigationController: UINavigationController {
         navigationBar.addSubview(progressView)
         
         progressView.snp.makeConstraints {
-            $0.leading.equalTo(navigationBar)
-            $0.trailing.equalTo(navigationBar)
+            $0.leading.equalTo(navigationBar.safeAreaLayoutGuide)
+            $0.trailing.equalTo(navigationBar.safeAreaLayoutGuide)
             $0.bottom.equalTo(navigationBar)
             $0.height.equalTo(2)
         }

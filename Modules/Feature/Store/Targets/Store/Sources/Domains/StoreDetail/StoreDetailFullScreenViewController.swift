@@ -69,7 +69,8 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         // 스크롤 시 상태바 영역까지 컨텐츠가 비쳐 보인다.
         sectionsViewController.view.snp.makeConstraints {
             $0.top.equalTo(detailNavigationBar.snp.bottom)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
         }
 
         backButton.snp.makeConstraints {

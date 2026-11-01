@@ -135,13 +135,13 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         
         scrollView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(finishButton.snp.top)
         }
         
         stackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
-            $0.width.equalTo(UIUtils.windowBounds.width)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
         }
         
         skipButton.snp.makeConstraints {

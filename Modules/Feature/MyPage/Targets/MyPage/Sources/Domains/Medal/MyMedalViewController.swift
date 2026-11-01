@@ -121,16 +121,16 @@ extension MyMedalViewController: UICollectionViewDelegateFlowLayout {
         case .currentMedal:
             return .zero
         default:
-            return MedalHeaderView.size
+            return CGSize(width: collectionView.bounds.width, height: MedalHeaderView.height)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .currentMedal:
-            return MyMedalCollectionCell.size
+            return CGSize(width: collectionView.bounds.width, height: MyMedalCollectionCell.height)
         case .medal:
-            return MedalCollectionCell.size
+            return MedalCollectionCell.size(width: collectionView.bounds.width)
         default:
             return .zero
         }

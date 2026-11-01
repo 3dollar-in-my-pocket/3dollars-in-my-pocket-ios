@@ -5,8 +5,8 @@ import Model
 
 final class FeedCell: BaseCollectionViewCell {
     enum Layout {
-        static func calculateHeight(feed: FeedResponse) -> CGFloat {
-            return feed.calculateContentHeight()
+        static func calculateHeight(feed: FeedResponse, cellWidth: CGFloat) -> CGFloat {
+            return feed.calculateContentHeight(cellWidth: cellWidth)
         }
     }
     
@@ -39,7 +39,7 @@ final class FeedCell: BaseCollectionViewCell {
         contentView.layer.shadowOffset = .zero
     }
     
-    func bind(feed: FeedResponse) {
+    func bind(feed: FeedResponse, cellWidth: CGFloat) {
         if let category = feed.category {
             bindCategory(category: category, updatedAt: feed.updatedAt)
         }
@@ -49,7 +49,7 @@ final class FeedCell: BaseCollectionViewCell {
         }
         
         if let body = feed.body {
-            bindBody(body: body)
+            bindBody(body: body, cellWidth: cellWidth)
         }
     }
     
@@ -74,35 +74,35 @@ final class FeedCell: BaseCollectionViewCell {
         }
     }
     
-    private func bindBody(body: FeedBodyResponse) {
+    private func bindBody(body: FeedBodyResponse, cellWidth: CGFloat) {
         switch body {
         case let body as ContentWithTitleFeedBodyResponse:
             let bodyView = FeedCellContentWithTitleBodyView()
             bodyView.bind(body: body)
             stackView.addArrangedSubview(bodyView, previousSpace: 12)
             bodyView.snp.makeConstraints {
-                $0.height.equalTo(FeedCellContentWithTitleBodyView.Layout.calculateHeight(body: body))
+                $0.height.equalTo(FeedCellContentWithTitleBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth))
             }
         case let body as ContentWithTitleAndImagesFeedBodyResponse:
             let bodyView = FeedCellContentWithTitleAndImagesBodyView()
             bodyView.bind(body: body)
             stackView.addArrangedSubview(bodyView, previousSpace: 12)
             bodyView.snp.makeConstraints {
-                $0.height.equalTo(FeedCellContentWithTitleAndImagesBodyView.Layout.calculateHeight(body: body))
+                $0.height.equalTo(FeedCellContentWithTitleAndImagesBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth))
             }
         case let body as ContentWithImagesFeedBodyResponse:
             let bodyView = FeedCellContentWithImagesBodyView()
             bodyView.bind(body: body)
             stackView.addArrangedSubview(bodyView, previousSpace: 12)
             bodyView.snp.makeConstraints {
-                $0.height.equalTo(FeedCellContentWithImagesBodyView.Layout.calculateHeight(body: body))
+                $0.height.equalTo(FeedCellContentWithImagesBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth))
             }
         case let body as ContentOnlyFeedBodyResponse:
             let bodyView = FeedCellContentOnlyBodyView()
             bodyView.bind(body: body)
             stackView.addArrangedSubview(bodyView, previousSpace: 12)
             bodyView.snp.makeConstraints {
-                $0.height.equalTo(FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body))
+                $0.height.equalTo(FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth))
             }
         default:
             return
@@ -111,7 +111,7 @@ final class FeedCell: BaseCollectionViewCell {
 }
 
 extension FeedResponse {
-    func calculateContentHeight() -> CGFloat {
+    func calculateContentHeight(cellWidth: CGFloat) -> CGFloat {
         var height: CGFloat = 0
         
         height += 16 // Top padding
@@ -122,7 +122,7 @@ extension FeedResponse {
         
         if body.isNotNil {
             height += 12 // Body top padding
-            height += calculateBodyHeight()
+            height += calculateBodyHeight(cellWidth: cellWidth)
         }
         
         height += 16 // Bottom padding
@@ -143,18 +143,18 @@ extension FeedResponse {
         return headerHeight
     }
     
-    func calculateBodyHeight() -> CGFloat {
+    func calculateBodyHeight(cellWidth: CGFloat) -> CGFloat {
         var bodyHeight: CGFloat = 0
         
         switch body {
         case let body as ContentWithTitleFeedBodyResponse:
-            bodyHeight = FeedCellContentWithTitleBodyView.Layout.calculateHeight(body: body)
+            bodyHeight = FeedCellContentWithTitleBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth)
         case let body as ContentWithTitleAndImagesFeedBodyResponse:
-            bodyHeight = FeedCellContentWithTitleAndImagesBodyView.Layout.calculateHeight(body: body)
+            bodyHeight = FeedCellContentWithTitleAndImagesBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth)
         case let body as ContentWithImagesFeedBodyResponse:
-            bodyHeight = FeedCellContentWithImagesBodyView.Layout.calculateHeight(body: body)
+            bodyHeight = FeedCellContentWithImagesBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth)
         case let body as ContentOnlyFeedBodyResponse:
-            bodyHeight = FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body)
+            bodyHeight = FeedCellContentOnlyBodyView.Layout.calculateHeight(body: body, cellWidth: cellWidth)
         default:
             bodyHeight = 0
         }

@@ -6,7 +6,12 @@ import DesignSystem
 final class ReportReviewReasonCell: BaseCollectionViewCell {
 
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width - 40, height: 44)
+        static let horizontalInset: CGFloat = 20
+        static let height: CGFloat = 44
+
+        static func size(containerWidth: CGFloat) -> CGSize {
+            CGSize(width: containerWidth - horizontalInset * 2, height: height)
+        }
     }
 
     private let containerView: UIView = {

@@ -6,10 +6,6 @@ import DesignSystem
 import Model
 
 final class WriteDetailDayCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 64)
-    }
-    
     var tapPublisher: PassthroughSubject<AppearanceDay, Never> {
         return dayStackView.tapPublisher
     }

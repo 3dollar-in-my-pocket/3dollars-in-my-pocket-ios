@@ -51,7 +51,7 @@ final class CategorySelectionView: BaseView {
     
     override func bindConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             $0.top.equalToSuperview().offset(24)
         }
         
@@ -61,28 +61,29 @@ final class CategorySelectionView: BaseView {
         }
         
         categoryCollectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(titleLabel.snp.bottom).offset(17)
             $0.bottom.equalTo(selectButton.snp.top).offset(-28)
         }
         
         selectButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
         }
     }
     
     private func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { _, _ in
+        return UICollectionViewCompositionalLayout { _, environment in
+            let itemSize = CategorySelectionCell.size(containerWidth: environment.container.contentSize.width)
             let item = NSCollectionLayoutItem(layoutSize: .init(
-                widthDimension: .absolute(CategorySelectionCell.size.width),
-                heightDimension: .absolute(CategorySelectionCell.size.height)
+                widthDimension: .absolute(itemSize.width),
+                heightDimension: .absolute(itemSize.height)
             ))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(CategorySelectionCell.size.height)
+                heightDimension: .absolute(itemSize.height)
             ), subitems: [item])
             group.interItemSpacing = NSCollectionLayoutSpacing.fixed(12)
             let section = NSCollectionLayoutSection(group: group)

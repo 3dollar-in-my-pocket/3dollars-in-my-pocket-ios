@@ -32,23 +32,23 @@ final class CategoryFilterView: BaseView {
         }
         
         collectionView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(indicatorView.snp.bottom).offset(8)
-            $0.trailing.equalToSuperview()
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
     }
     
     private func generateCollectionLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, _ in
+        return UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
             if sectionIndex == 0 {
                 let item = NSCollectionLayoutItem(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(CategoryBannerCell.Layout.size.height)
+                    heightDimension: .absolute(CategoryBannerCell.Layout.height)
                 ))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(CategoryBannerCell.Layout.size.height)
+                    heightDimension: .absolute(CategoryBannerCell.Layout.height)
                 ), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
@@ -62,18 +62,22 @@ final class CategoryFilterView: BaseView {
                 
                 return section
             } else {
+                let cellSize = CategoryFilterCell.Layout.size(
+                    containerWidth: layoutEnvironment.container.effectiveContentSize.width
+                )
                 let item = NSCollectionLayoutItem(layoutSize: .init(
-                    widthDimension: .absolute(CategoryFilterCell.Layout.size.width),
-                    heightDimension: .absolute(CategoryFilterCell.Layout.size.height)
+                    widthDimension: .absolute(cellSize.width),
+                    heightDimension: .absolute(cellSize.height)
                 ))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(CategoryFilterCell.Layout.size.height)
+                    heightDimension: .absolute(cellSize.height)
                 ), subitems: [item])
-                group.interItemSpacing = NSCollectionLayoutSpacing.fixed(12)
+                group.interItemSpacing = NSCollectionLayoutSpacing.fixed(CategoryFilterCell.Layout.spacing)
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 24, bottom: 0, trailing: 24)
-                section.interGroupSpacing = 12
+                let horizontalInset = CategoryFilterCell.Layout.horizontalInset
+                section.contentInsets = .init(top: 0, leading: horizontalInset, bottom: 0, trailing: horizontalInset)
+                section.interGroupSpacing = CategoryFilterCell.Layout.spacing
                 section.boundarySupplementaryItems = [ .init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),

@@ -31,7 +31,8 @@ final class FeedListDatasource: UICollectionViewDiffableDataSource<FeedListSecti
             switch itemIdentifier {
             case .feed(let feed):
                 let cell: FeedCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(feed: feed)
+                let cellWidth = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
+                cell.bind(feed: feed, cellWidth: cellWidth)
                 return cell
             case .advertisement(let advertisement):
                 let cell: FeedAdvertisementCell = collectionView.dequeueReusableCell(indexPath: indexPath)

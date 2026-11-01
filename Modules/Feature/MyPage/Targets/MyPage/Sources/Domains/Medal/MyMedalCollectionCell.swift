@@ -7,10 +7,7 @@ import DesignSystem
 import Common
 
 final class MyMedalCollectionCell: BaseCollectionViewCell {
-    static let size = CGSize(
-        width: UIScreen.main.bounds.width,
-        height: 148
-    )
+    static let height: CGFloat = 148
     
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()

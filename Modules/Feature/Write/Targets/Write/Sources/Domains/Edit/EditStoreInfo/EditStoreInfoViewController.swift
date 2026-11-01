@@ -92,8 +92,8 @@ final class EditStoreInfoViewController: BaseViewController {
         stackView.addArrangedSubview(openingHoursView, previousSpace: 28)
         
         scrollView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(view.safeAreaLayoutGuide)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(saveButton.snp.top)
         }
@@ -102,7 +102,7 @@ final class EditStoreInfoViewController: BaseViewController {
             $0.leading.equalToSuperview()
             $0.top.equalToSuperview()
             $0.trailing.equalToSuperview()
-            $0.width.equalTo(UIUtils.windowBounds.width)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
         }
 
         nameTextField.snp.makeConstraints {
