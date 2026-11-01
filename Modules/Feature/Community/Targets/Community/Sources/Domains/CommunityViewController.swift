@@ -5,7 +5,6 @@ import Model
 import DesignSystem
 import Common
 import StoreInterface
-import FeedInterface
 
 public final class CommunityViewController: BaseViewController {
     private let communityView = CommunityView()
@@ -81,8 +80,6 @@ public final class CommunityViewController: BaseViewController {
                     owner.pushStoreDetail(storeId: storeId)
                 case .bossStoreDetail(let storeId):
                     owner.pushStoreDetail(storeId: storeId)
-                case .feedList(let config):
-                    owner.presentFeedList(config: config)
                 }
             }
             .store(in: &cancellables)
@@ -101,14 +98,6 @@ public final class CommunityViewController: BaseViewController {
             .store(in: &cancellables)
     }
     
-    public override func bindViewModelInput() {
-        communityView.feedButton
-            .controlPublisher(for: .touchUpInside)
-            .mapVoid
-            .subscribe(viewModel.input.didTapFeedButton)
-            .store(in: &cancellables)
-    }
-
     public override func bindViewModelOutput() {
         viewModel.output.showErrorAlert
             .main
@@ -128,14 +117,5 @@ public final class CommunityViewController: BaseViewController {
     private func pushStoreDetail(storeId: String) {
         guard let storeId = Int(storeId) else { return }
         pushStoreDetail(storeId: storeId)
-    }
-
-    private func presentFeedList(config: FeedListViewModelConfig) {
-        let viewController = Environment.feedInterface.createFeedListViewController(config: config)
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .overCurrentContext
-        navigationController.isNavigationBarHidden = true
-
-        tabBarController?.present(navigationController, animated: true)
     }
 }

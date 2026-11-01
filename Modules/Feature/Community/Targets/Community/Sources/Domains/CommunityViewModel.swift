@@ -1,12 +1,10 @@
 import Foundation
 import Combine
-import CoreLocation
 
 import Networking
 import Model
 import Common
 import Log
-import FeedInterface
 
 final class CommunityViewModel: BaseViewModel {
     struct Input {
@@ -16,7 +14,6 @@ final class CommunityViewModel: BaseViewModel {
         let didSelectPollItem = PassthroughSubject<String, Never>()
         let didTapDistrictButton = PassthroughSubject<Void, Never>()
         let didSelect = PassthroughSubject<IndexPath, Never>()
-        let didTapFeedButton = PassthroughSubject<Void, Never>()
     }
 
     struct Output {
@@ -41,7 +38,6 @@ final class CommunityViewModel: BaseViewModel {
         case popularStoreNeighborhoods(CommunityPopularStoreNeighborhoodsViewModel)
         case storeDetail(Int)
         case bossStoreDetail(String)
-        case feedList(FeedListViewModelConfig)
     }
 
     let input = Input()
@@ -130,25 +126,6 @@ final class CommunityViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
-
-        input.didTapFeedButton
-            .withUnretained(self)
-            .sink { (owner: CommunityViewModel, _) in
-                let config = FeedListViewModelConfig(
-                    mapLatitude: owner.lastKnownLocation?.coordinate.latitude,
-                    mapLongitude: owner.lastKnownLocation?.coordinate.longitude
-                )
-                owner.sendClickFeedButtonLog()
-                owner.output.route.send(.feedList(config))
-            }
-            .store(in: &cancellables)
-    }
-
-    /// 홈이 아직 위치를 저장하지 않았으면 (0, 0) 이 돌아오므로 nil 로 취급해 서버 기본 동작에 맡긴다.
-    private var lastKnownLocation: CLLocation? {
-        let location = preference.userCurrentLocation
-        guard location.coordinate.latitude != 0 || location.coordinate.longitude != 0 else { return nil }
-        return location
     }
 
     private func reloadDataSource() {
@@ -300,14 +277,6 @@ extension CommunityViewModel {
             objectType: .tab,
             objectId: .filter,
             extraParameters: [.value: type.rawValue]
-        ))
-    }
-
-    private func sendClickFeedButtonLog() {
-        logManager.sendEvent(event: ClickEvent(
-            screen: output.screenName,
-            objectType: .button,
-            objectId: .feed
         ))
     }
 
