@@ -164,6 +164,9 @@ final class WriteDetailCategoryViewModel: BaseViewModel {
         let viewModel = MenuExtractionLoadingViewModel(config: config)
 
         viewModel.output.finishExtraction
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.config.menuExtractionUsage.registerMenuImage(image)
+            })
             .withUnretained(self)
             .map { (owner: WriteDetailCategoryViewModel, result: MenuExtractionResult) in
                 owner.mergeWithSelectedCategories(result)
