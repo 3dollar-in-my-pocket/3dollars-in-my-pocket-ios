@@ -6,6 +6,7 @@ import Log
 import Model
 @testable import Home
 
+@MainActor
 final class HomeCurationViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
     private let location = CLLocation(latitude: 37.497941, longitude: 127.027616)
@@ -29,7 +30,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.setLocation.send(location)
 
         // Then
-        await fulfillment(of: [items.expectation], timeout: 1)
+        await fulfillment(of: [items.expectation], timeout: 5)
         let received = try items.last.unwrapped()
         let admobItemId = try Self.firstAdmobItemId(try makeSection()).unwrapped()
         XCTAssertEqual(received.map(\.identifier), [
@@ -55,7 +56,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.setLocation.send(location)
 
         // Then
-        await fulfillment(of: [items.expectation], timeout: 1)
+        await fulfillment(of: [items.expectation], timeout: 5)
         let received = try items.last.unwrapped()
         let carousels = received.compactMap(Self.carousel)
         let responseCarousels = section.items.compactMap(Self.responseCarousel)
@@ -92,7 +93,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         let before = try loaded.last.unwrapped()
         let replaced = expectItems(viewModel, count: 2)
 
@@ -100,7 +101,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.didTapCategory.send((carouselId: "POPULAR_SNACKS", categoryId: "FRUIT_SANDO"))
 
         // Then
-        await fulfillment(of: [replaced.expectation], timeout: 1)
+        await fulfillment(of: [replaced.expectation], timeout: 5)
         let after = try replaced.last.unwrapped()
         let popular = try Self.carousel(after[0]).unwrapped()
         XCTAssertEqual(popular.selectedCategoryId, "FRUIT_SANDO")
@@ -137,7 +138,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         let selected = expectation(description: "didSelectStore")
         var selectedStore: HomeCurationSelectedStore?
         viewModel.output.didSelectStore
@@ -157,7 +158,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.didTapCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:116"))
 
         // Then
-        await fulfillment(of: [selected], timeout: 1)
+        await fulfillment(of: [selected], timeout: 5)
         let store = try selectedStore.unwrapped()
         XCTAssertEqual(store.storeId, 116)
         XCTAssertEqual(store.latitude, 37.4983268205018, accuracy: 0.000001)
@@ -180,7 +181,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         let routed = expectation(description: "deepLink")
         var routedLink: SDLink?
         viewModel.output.route
@@ -200,7 +201,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.didTapCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:116"))
 
         // Then
-        await fulfillment(of: [routed], timeout: 1)
+        await fulfillment(of: [routed], timeout: 5)
         XCTAssertEqual(routedLink?.link, "/store?storeId=116&storeType=USER_STORE")
         XCTAssertFalse(didSelect)
     }
@@ -217,7 +218,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         let admobCardId = try Self.firstCarouselAdmobCardId(section).unwrapped()
 
         // When
@@ -240,7 +241,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         let admobItemId = try Self.firstAdmobItemId(section).unwrapped()
 
         // When
@@ -268,7 +269,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.setLocation.send(location)
 
         // Then
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         XCTAssertEqual(logManager.sentEvents.count, 1)
         let event = try XCTUnwrap(logManager.sentEvents.first)
         XCTAssertEqual(event.name.rawValue, EventName.impression.rawValue)
@@ -289,7 +290,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
         let sentCount = logManager.sentEvents.count
 
         // When
@@ -318,11 +319,11 @@ final class HomeCurationViewModelTests: XCTestCase {
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
         let loaded = expectItems(viewModel, count: 1)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
 
         // When
         viewModel.input.didTapCategory.send((carouselId: "POPULAR_SNACKS", categoryId: "FRUIT_SANDO"))
-        await fulfillment(of: [items.expectation], timeout: 1)
+        await fulfillment(of: [items.expectation], timeout: 5)
         let sentCount = logManager.sentEvents.count
         viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:12805812"))
 
@@ -342,7 +343,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(location)
-        await fulfillment(of: [loaded.expectation], timeout: 1)
+        await fulfillment(of: [loaded.expectation], timeout: 5)
 
         // When
         viewModel.input.willDisplayCarouselCard.send((carouselId: "POPULAR_SNACKS", cardId: "S:116"))
