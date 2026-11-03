@@ -1,0 +1,39 @@
+{
+  "review": {
+    "reviewId": 1515,
+    "storeId": 153,
+    "userId": 483,
+    "rating": 5,
+    "contents": "ㅊㄹㄹㅊ",
+    "images": [],
+    "feedbacks": [],
+    "status": "POSTED",
+    "isOwner": false,
+    "createdAt": "2024-06-30T12:42:00",
+    "updatedAt": "2024-06-30T12:42:00"
+  },
+  "reviewWriter": {
+    "name": "사라진 제보자",
+    "medal": {
+      "name": "사무치게 그리운",
+      "iconUrl": "https://storage.threedollars.co.kr/medal/v1-newbie-default.png?version=1",
+      "disableIconUrl": "https://storage.threedollars.co.kr/medal/v2-newbie-disabled.png?version=1",
+      "introduction": "사무치게 그리운",
+      "acquisition": {}
+    }
+  },
+  "reviewReport": {
+    "reportedByMe": false
+  },
+  "stickers": [
+    {
+      "stickerId": "LIKE",
+      "emoji": "",
+      "count": 0,
+      "reactedByMe": false
+    }
+  ],
+  "comments": {
+    "contents": []
+  }
+}
