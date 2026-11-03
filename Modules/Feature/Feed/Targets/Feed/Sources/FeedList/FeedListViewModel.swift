@@ -46,6 +46,7 @@ extension FeedListViewModel {
 
 public final class FeedListViewModel: BaseViewModel {
     static let skeletonCount = 3
+    static let advertisementIndex = 1
 
     let input = Input()
     let output = Output()
@@ -159,20 +160,21 @@ public final class FeedListViewModel: BaseViewModel {
     }
 
     private func refreshDatasource() {
-        var items: [FeedListSectionItem] = [.header, .advertisement(state.advertisement)]
+        var contentItems: [FeedListSectionItem]
 
         switch state.contentState {
         case .loading:
-            items += (0..<Self.skeletonCount).map { FeedListSectionItem.skeleton($0) }
+            contentItems = (0..<Self.skeletonCount).map { FeedListSectionItem.skeleton($0) }
         case .failed:
-            items.append(.error)
+            contentItems = [.error]
         case .loaded where state.feeds.isEmpty:
-            items.append(.empty)
+            contentItems = [.empty]
         case .loaded:
-            items += state.feeds.map { FeedListSectionItem.feed($0) }
+            contentItems = state.feeds.map { FeedListSectionItem.feed($0) }
         }
 
-        output.datasource.send([.init(items: items)])
+        contentItems.insert(.advertisement(state.advertisement), at: min(Self.advertisementIndex, contentItems.count))
+        output.datasource.send([.init(items: [.header] + contentItems)])
     }
 
     private func canLoadMore(index: Int) -> Bool {

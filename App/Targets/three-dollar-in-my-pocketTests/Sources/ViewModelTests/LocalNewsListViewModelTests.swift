@@ -134,12 +134,12 @@ final class LocalNewsListViewModelTests: XCTestCase {
         viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
 
         // Then
-        XCTAssertEqual(currentItems(viewModel), [.header, .advertisement(nil), .skeleton(0), .skeleton(1), .skeleton(2)])
+        XCTAssertEqual(currentItems(viewModel), [.header, .skeleton(0), .advertisement(nil), .skeleton(1), .skeleton(2)])
     }
 
     // MARK: TH-1426 TC18
 
-    func test_TH1426_TC18_소식목록맨위에_지역소식광고슬롯이있다() async throws {
+    func test_TH1426_TC18_소식이있으면_첫소식아래두번째자리에_지역소식광고슬롯이있다() async throws {
         // Given
         let feedRepository = MockFeedRepository()
         feedRepository.fetchFeedResults = [.success(try makeFeeds())]
@@ -151,7 +151,28 @@ final class LocalNewsListViewModelTests: XCTestCase {
 
         // Then
         await fulfillment(of: [loaded], timeout: 1)
-        XCTAssertEqual(Array(currentItems(viewModel).prefix(2)), [.header, .advertisement(nil)])
+        let items = currentItems(viewModel)
+        XCTAssertEqual(items.first, .header)
+        XCTAssertEqual(items[1].feedId, "6ad7645103e011c1ebc9ffd5")
+        XCTAssertEqual(items[2], .advertisement(nil))
+        XCTAssertEqual(items[3].feedId, "6ad390b8279bd19eba6157f5")
+    }
+
+    // MARK: TH-1426 TC20
+
+    func test_TH1426_TC20_소식이없으면_빈상태아래에_지역소식광고슬롯이있다() async throws {
+        // Given
+        let feedRepository = MockFeedRepository()
+        feedRepository.fetchFeedResults = [.success(try makeFeeds(contents: []))]
+        let viewModel = makeViewModel(feedRepository: feedRepository)
+        let loaded = expectItems(viewModel) { $0.contains(.empty) }
+
+        // When
+        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+
+        // Then
+        await fulfillment(of: [loaded], timeout: 1)
+        XCTAssertEqual(currentItems(viewModel), [.header, .empty, .advertisement(nil)])
     }
 
     // MARK: - Helpers
