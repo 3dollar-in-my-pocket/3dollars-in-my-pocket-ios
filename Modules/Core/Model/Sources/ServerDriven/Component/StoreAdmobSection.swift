@@ -14,4 +14,5 @@ public struct StoreAdmobCard: Decodable, Equatable, Hashable {
     public let clickLog: SDClickLog
     public let impressionLog: SDImpressionLog
     public let height: Int?
+    public let adUnitId: String?
 }
