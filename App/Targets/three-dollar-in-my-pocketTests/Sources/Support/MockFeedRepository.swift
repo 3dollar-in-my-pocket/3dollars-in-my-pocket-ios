@@ -4,12 +4,24 @@ import Model
 import Networking
 
 final class MockFeedRepository: FeedRepository {
-    var fetchFeedResults: [Result<ContentsWithCursorResponse<FeedResponse>, Error>] = []
-    private(set) var requestedInputs: [FetchFeedInput] = []
+    private let lock = NSLock()
+    private var _fetchFeedResults: [Result<ContentsWithCursorResponse<FeedResponse>, Error>] = []
+    private var _requestedInputs: [FetchFeedInput] = []
+
+    var fetchFeedResults: [Result<ContentsWithCursorResponse<FeedResponse>, Error>] {
+        get { lock.withLock { _fetchFeedResults } }
+        set { lock.withLock { _fetchFeedResults = newValue } }
+    }
+
+    var requestedInputs: [FetchFeedInput] {
+        lock.withLock { _requestedInputs }
+    }
 
     func fetchFeed(input: FetchFeedInput) async -> Result<ContentsWithCursorResponse<FeedResponse>, Error> {
-        requestedInputs.append(input)
-        if fetchFeedResults.isEmpty { return .failure(MockError.notStubbed()) }
-        return fetchFeedResults.count == 1 ? fetchFeedResults[0] : fetchFeedResults.removeFirst()
+        lock.withLock {
+            _requestedInputs.append(input)
+            if _fetchFeedResults.isEmpty { return .failure(MockError.notStubbed()) }
+            return _fetchFeedResults.count == 1 ? _fetchFeedResults[0] : _fetchFeedResults.removeFirst()
+        }
     }
 }

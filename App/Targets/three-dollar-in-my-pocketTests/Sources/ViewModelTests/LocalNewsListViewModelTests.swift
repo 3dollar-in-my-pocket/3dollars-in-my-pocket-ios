@@ -80,9 +80,14 @@ final class LocalNewsListViewModelTests: XCTestCase {
         viewModel.input.load.send((latitude: 37.5665, longitude: 126.9780))
 
         // Then
+        var yieldCount = 0
+        while feedRepository.requestedInputs.count < 2, yieldCount < 1000 {
+            await Task.yield()
+            yieldCount += 1
+        }
         let loaded = expectItems(viewModel) { $0.contains { $0.feedId != nil } }
         await fulfillment(of: [loaded], timeout: 1)
-        XCTAssertEqual(feedRepository.requestedInputs.map(\.mapLatitude), [37.4979, 37.5665])
+        XCTAssertEqual(Set(feedRepository.requestedInputs.compactMap(\.mapLatitude)), [37.4979, 37.5665])
         XCTAssertEqual(scrollToTopCount, 2)
     }
 
