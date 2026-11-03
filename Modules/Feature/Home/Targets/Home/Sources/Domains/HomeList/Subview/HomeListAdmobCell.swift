@@ -33,6 +33,7 @@ final class HomeListAdmobCell: BaseCollectionViewCell {
 
     func bind(_ card: HomeListAdmobCardResponse, width: CGFloat, rootViewController: UIViewController) {
         adBannerView.isLoaded = false
+        adBannerView.setServerAdUnitId(card.adUnitId)
         let size = CGSize(width: width, height: Layout.height(card))
         adBannerView.load(in: rootViewController, size: size)
     }
