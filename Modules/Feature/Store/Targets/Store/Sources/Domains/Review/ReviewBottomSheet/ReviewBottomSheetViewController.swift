@@ -37,6 +37,7 @@ final class ReviewBottomSheetViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        reviewBottomSheet.photoListView.containerViewController = self
         addKeyboardObservers()
         viewModel.input.load.send(())
     }
@@ -66,6 +67,14 @@ final class ReviewBottomSheetViewController: BaseViewController {
             .throttleClick()
             .subscribe(viewModel.input.didTapWrite)
             .store(in: &cancellables)
+        
+        reviewBottomSheet.photoListView.didTapUploadPhoto
+            .subscribe(viewModel.input.didTapUploadPhoto)
+            .store(in: &cancellables)
+        
+        reviewBottomSheet.photoListView.removeImage
+            .subscribe(viewModel.input.removeImage)
+            .store(in: &cancellables)
     }
     
     override func bindViewModelOutput() {
@@ -83,6 +92,25 @@ final class ReviewBottomSheetViewController: BaseViewController {
             .sink { (owner: ReviewBottomSheetViewController, contents) in
                 owner.reviewBottomSheet.setContents(contents)
             }
+            .store(in: &cancellables)
+        
+        viewModel.output.images
+            .main
+            .withUnretained(self)
+            .sink { (owner: ReviewBottomSheetViewController, images) in
+                owner.reviewBottomSheet.photoListView.setImages(images)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.output.showToast
+            .main
+            .sink { ToastManager.shared.show(message: $0) }
+            .store(in: &cancellables)
+        
+        viewModel.output.showLoading
+            .removeDuplicates()
+            .main
+            .sink { LoadingManager.shared.showLoading(isShow: $0) }
             .store(in: &cancellables)
         
         viewModel.output.isEnableWriteButton
@@ -105,6 +133,9 @@ final class ReviewBottomSheetViewController: BaseViewController {
                 switch route {
                 case .dismiss:
                     owner.dismiss(animated: true)
+                case .uploadPhoto(let viewModel):
+                    let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
+                    owner.present(viewController, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -148,11 +179,11 @@ extension ReviewBottomSheetViewController: PanModalPresentable {
     }
     
     var shortFormHeight: PanModalHeight {
-        return .contentHeight(316 - UIUtils.bottomSafeAreaInset + keyboardHeight)
+        return .contentHeight(ReviewBottomSheet.Layout.contentHeight - UIUtils.bottomSafeAreaInset + keyboardHeight)
     }
     
     var longFormHeight: PanModalHeight {
-        return .contentHeight(316 - UIUtils.bottomSafeAreaInset + keyboardHeight)
+        return .contentHeight(ReviewBottomSheet.Layout.contentHeight - UIUtils.bottomSafeAreaInset + keyboardHeight)
     }
     
     var cornerRadius: CGFloat {
