@@ -8,4 +8,10 @@ enum AdUnitIdResolver {
 
         return serverAdUnitId
     }
+
+    static func retryAdUnitId(afterFailureOf failedAdUnitId: String?, fallback: String) -> String? {
+        guard failedAdUnitId != fallback else { return nil }
+
+        return fallback
+    }
 }

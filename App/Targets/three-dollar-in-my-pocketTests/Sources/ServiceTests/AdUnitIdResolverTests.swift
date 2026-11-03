@@ -34,6 +34,22 @@ final class AdUnitIdResolverTests: XCTestCase {
         XCTAssertEqual(unitId, fallbackUnitId)
     }
 
+    func test_TH1564_TC10_서버유닛로드가실패하면_기본유닛으로다시시도한다() {
+        // When
+        let retryUnitId = AdUnitIdResolver.retryAdUnitId(afterFailureOf: serverUnitId, fallback: fallbackUnitId)
+
+        // Then
+        XCTAssertEqual(retryUnitId, fallbackUnitId)
+    }
+
+    func test_TH1564_TC10_기본유닛로드가실패하면_다시시도하지않는다() {
+        // When
+        let retryUnitId = AdUnitIdResolver.retryAdUnitId(afterFailureOf: fallbackUnitId, fallback: fallbackUnitId)
+
+        // Then
+        XCTAssertNil(retryUnitId)
+    }
+
     func test_TH1564_TC5_Debug에서서버adUnitId가있어도_테스트유닛을쓴다() {
         // When
         let unitId = AdUnitIdResolver.resolve(

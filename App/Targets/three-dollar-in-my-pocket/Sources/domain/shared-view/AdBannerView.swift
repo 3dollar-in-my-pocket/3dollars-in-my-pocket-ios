@@ -96,6 +96,17 @@ extension AdBannerView: BannerViewDelegate {
             from: bannerView.rootViewController,
             error: error
         )
+        retryWithDefaultAdUnitIfNeeded(bannerView)
+    }
+
+    private func retryWithDefaultAdUnitIfNeeded(_ bannerView: BannerView) {
+        guard let retryAdUnitId = AdUnitIdResolver.retryAdUnitId(
+            afterFailureOf: bannerView.adUnitID,
+            fallback: defaultAdUnitId
+        ) else { return }
+
+        bannerView.adUnitID = retryAdUnitId
+        bannerView.load(Request())
     }
 
     func bannerViewDidRecordClick(_ bannerView: BannerView) {
