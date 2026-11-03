@@ -15,14 +15,26 @@ import Foundation
 public enum FeedStrings: Sendable {
 
   public enum FeedList: Sendable {
-    /// 우리 동네 소식
-    public static let title = FeedStrings.tr("Localization", "feed_list.title")
-
+  
     public enum Empty: Sendable {
       /// 가게 등록, 리뷰 작성으로 가게 소식을 직접 등록해보세요!
       public static let description = FeedStrings.tr("Localization", "feed_list.empty.description")
       /// 아직 동네 가게 소식이 없어요.
       public static let title = FeedStrings.tr("Localization", "feed_list.empty.title")
+    }
+
+    public enum Error: Sendable {
+      /// 다시 시도
+      public static let retry = FeedStrings.tr("Localization", "feed_list.error.retry")
+      /// 소식을 불러오지 못했어요
+      public static let title = FeedStrings.tr("Localization", "feed_list.error.title")
+    }
+
+    public enum Header: Sendable {
+      /// 내 주변 가게들의 소식을 확인해요.
+      public static let description = FeedStrings.tr("Localization", "feed_list.header.description")
+      /// 우리 동네 가게 소식
+      public static let title = FeedStrings.tr("Localization", "feed_list.header.title")
     }
   }
 }

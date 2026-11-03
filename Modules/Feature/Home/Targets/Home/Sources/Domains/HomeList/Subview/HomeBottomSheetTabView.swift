@@ -67,6 +67,11 @@ final class HomeBottomSheetTabView: BaseView {
 }
 
 private final class TabItemView: BaseView {
+    enum Layout {
+        static let newBadgeSize: CGFloat = 6
+        static let newBadgeSpacing: CGFloat = 2
+    }
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.regular.font(size: 16)
@@ -75,11 +80,19 @@ private final class TabItemView: BaseView {
         return label
     }()
 
+    private let newBadgeView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Colors.mainRed.color
+        view.layer.cornerRadius = Layout.newBadgeSize / 2
+        view.isHidden = true
+        return view
+    }()
+
     override func setup() {
         layer.cornerRadius = (HomeBottomSheetTabView.Layout.height - HomeBottomSheetTabView.Layout.contentInset * 2) / 2
         layer.masksToBounds = true
         isAccessibilityElement = true
-        addSubview(titleLabel)
+        addSubViews([titleLabel, newBadgeView])
     }
 
     override func bindConstraints() {
@@ -87,6 +100,12 @@ private final class TabItemView: BaseView {
             $0.center.equalToSuperview()
             $0.leading.greaterThanOrEqualToSuperview().offset(8)
             $0.trailing.lessThanOrEqualToSuperview().offset(-8)
+        }
+
+        newBadgeView.snp.makeConstraints {
+            $0.size.equalTo(Layout.newBadgeSize)
+            $0.leading.equalTo(titleLabel.snp.trailing).offset(Layout.newBadgeSpacing)
+            $0.top.equalTo(titleLabel.snp.top).offset(-Layout.newBadgeSpacing)
         }
     }
 
@@ -97,6 +116,7 @@ private final class TabItemView: BaseView {
         layer.borderColor = nil
         backgroundColor = .clear
         setSDSurfaceStyle(state.style)
+        newBadgeView.isHidden = item.hasNewBadge.isNot
         accessibilityLabel = titleLabel.text
         accessibilityTraits = item.isSelected ? [.button, .selected] : .button
     }

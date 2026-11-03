@@ -296,7 +296,7 @@ public final class HomeViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: HomeViewController, location: CLLocation) in
-                owner.bottomSheetViewController?.updateCurationLocation(location)
+                owner.bottomSheetViewController?.updateMapLocation(location)
             }
             .store(in: &cancellables)
     }
