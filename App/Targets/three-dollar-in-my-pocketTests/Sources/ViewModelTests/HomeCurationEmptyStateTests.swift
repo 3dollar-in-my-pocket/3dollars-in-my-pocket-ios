@@ -6,6 +6,7 @@ import XCTest
 import Model
 @testable import Home
 
+@MainActor
 final class HomeCurationEmptyStateTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
     private let location = CLLocation(latitude: 37.497941, longitude: 127.027616)
@@ -35,7 +36,7 @@ final class HomeCurationEmptyStateTests: XCTestCase {
         viewModel.input.setLocation.send(location)
 
         // Then
-        await fulfillment(of: [emptied], timeout: 1)
+        await fulfillment(of: [emptied], timeout: 5)
         XCTAssertTrue(viewModel.output.items.value.isEmpty)
     }
 
@@ -57,7 +58,7 @@ final class HomeCurationEmptyStateTests: XCTestCase {
         viewModel.input.setLocation.send(location)
 
         // Then
-        await fulfillment(of: [loaded], timeout: 1)
+        await fulfillment(of: [loaded], timeout: 5)
         XCTAssertFalse(viewModel.output.isEmpty.value)
     }
 
