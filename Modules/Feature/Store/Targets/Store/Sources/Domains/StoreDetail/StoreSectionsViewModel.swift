@@ -297,7 +297,7 @@ final class StoreSectionsViewModel: BaseViewModel {
         case .storeEditMapEnlarge:
             output.route.send(.presentMapDetail(makeMapDetailViewModel()))
         case .storeReviewWrite, .storePreviewReviewWrite:
-            output.route.send(.presentWriteReview(makeReviewBottomSheetViewModel()))
+            output.route.send(.presentWriteReview(makeReviewBottomSheetViewModel(storeName: action.stringParam("STORE_NAME"))))
         case .storeImageAddImage:
             output.route.send(.presentUploadPhoto(makeUploadPhotoViewModel()))
         case .storeImageEnlarge:
@@ -400,8 +400,8 @@ final class StoreSectionsViewModel: BaseViewModel {
         }
     }
 
-    private func makeReviewBottomSheetViewModel() -> ReviewBottomSheetViewModel {
-        let viewModel = ReviewBottomSheetViewModel(config: .init(storeId: config.storeId, review: nil))
+    private func makeReviewBottomSheetViewModel(storeName: String?) -> ReviewBottomSheetViewModel {
+        let viewModel = ReviewBottomSheetViewModel(config: .init(storeId: config.storeId, storeName: storeName, review: nil))
         viewModel.output.onSuccessWriteReview
             .withUnretained(self)
             .sink { (owner: StoreSectionsViewModel, _) in

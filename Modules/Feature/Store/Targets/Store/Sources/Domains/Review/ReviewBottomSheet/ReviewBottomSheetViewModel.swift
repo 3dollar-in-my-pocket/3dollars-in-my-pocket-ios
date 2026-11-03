@@ -24,6 +24,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     
     struct Output {
         let screenName: ScreenName = .reviewBottomSheet
+        let storeName: String?
         let rating: CurrentValueSubject<Int?, Never>
         let contents: CurrentValueSubject<String?, Never>
         let isEnableWriteButton: CurrentValueSubject<Bool, Never>
@@ -49,7 +50,14 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
     
     struct Config {
         let storeId: Int
+        let storeName: String?
         let review: StoreDetailReview?
+
+        init(storeId: Int, storeName: String? = nil, review: StoreDetailReview?) {
+            self.storeId = storeId
+            self.storeName = storeName
+            self.review = review
+        }
     }
     
     let input = Input()
@@ -73,6 +81,7 @@ final class ReviewBottomSheetViewModel: BaseViewModel {
         
         let isEnableWriteButton = (config.review?.contents != nil) && (config.review?.rating != nil)
         self.output = Output(
+            storeName: config.storeName,
             rating: .init(config.review?.rating),
             contents: .init(config.review?.contents),
             isEnableWriteButton: .init(isEnableWriteButton),

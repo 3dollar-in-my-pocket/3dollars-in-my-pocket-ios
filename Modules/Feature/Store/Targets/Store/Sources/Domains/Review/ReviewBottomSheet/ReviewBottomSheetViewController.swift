@@ -78,6 +78,8 @@ final class ReviewBottomSheetViewController: BaseViewController {
     }
     
     override func bindViewModelOutput() {
+        reviewBottomSheet.setStoreName(viewModel.output.storeName)
+
         viewModel.output.rating
             .main
             .withUnretained(self)
@@ -179,15 +181,20 @@ extension ReviewBottomSheetViewController: PanModalPresentable {
     }
     
     var shortFormHeight: PanModalHeight {
-        return .contentHeight(ReviewBottomSheet.Layout.contentHeight - UIUtils.bottomSafeAreaInset + keyboardHeight)
+        return .contentHeight(sheetHeight)
     }
     
     var longFormHeight: PanModalHeight {
-        return .contentHeight(ReviewBottomSheet.Layout.contentHeight - UIUtils.bottomSafeAreaInset + keyboardHeight)
+        return .contentHeight(sheetHeight)
     }
     
     var cornerRadius: CGFloat {
         return 24
+    }
+
+    private var sheetHeight: CGFloat {
+        let storeNameHeight = reviewBottomSheet.storeNameLabel.isHidden ? 0 : ReviewBottomSheet.Layout.storeNameHeight
+        return ReviewBottomSheet.Layout.contentHeight + storeNameHeight - UIUtils.bottomSafeAreaInset + keyboardHeight
     }
     
     var showDragIndicator: Bool {

@@ -11,6 +11,7 @@ final class ReviewBottomSheet: BaseView {
     enum Layout {
         static let photoSize = CGSize(width: 72, height: 72)
         static let contentHeight: CGFloat = 528
+        static let storeNameHeight: CGFloat = 32
     }
 
     private let titleLabel: UILabel = {
@@ -27,6 +28,23 @@ final class ReviewBottomSheet: BaseView {
         button.setImage(Icons.deleteX.image.withTintColor(Colors.gray40.color), for: .normal)
 
         return button
+    }()
+
+    private let ratingStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.spacing = 8
+        return stackView
+    }()
+
+    let storeNameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Colors.gray100.color
+        label.font = Fonts.semiBold.font(size: 16)
+        label.textAlignment = .center
+        label.isHidden = true
+        return label
     }()
 
     let ratingInputView = RatingInputView()
@@ -57,13 +75,15 @@ final class ReviewBottomSheet: BaseView {
         addSubViews([
             titleLabel,
             closeButton,
-            ratingInputView,
+            ratingStackView,
             photoListView,
             textView,
             countLabel,
             writeButton
         ])
 
+        ratingStackView.addArrangedSubview(storeNameLabel)
+        ratingStackView.addArrangedSubview(ratingInputView)
         textView.delegate = self
         updateCount(0)
     }
@@ -80,15 +100,16 @@ final class ReviewBottomSheet: BaseView {
             $0.width.height.equalTo(30)
         }
 
-        ratingInputView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+        ratingStackView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(closeButton.snp.bottom).offset(28)
         }
 
         photoListView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
-            $0.top.equalTo(ratingInputView.snp.bottom).offset(28)
+            $0.top.equalTo(ratingStackView.snp.bottom).offset(28)
             $0.height.equalTo(Layout.photoSize.height)
         }
 
@@ -109,6 +130,12 @@ final class ReviewBottomSheet: BaseView {
             $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(countLabel.snp.bottom).offset(28)
         }
+    }
+
+    func setStoreName(_ storeName: String?) {
+        let storeName = storeName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        storeNameLabel.text = storeName
+        storeNameLabel.isHidden = storeName.isEmpty
     }
 
     func setRating(_ rating: Int?) {

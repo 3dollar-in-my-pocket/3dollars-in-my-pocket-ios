@@ -207,8 +207,36 @@ final class ReviewBottomSheetViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.output.isEnableWriteButton.value)
     }
 
+    func test_TH1421_TC16_가게명이전달되면_시트에가게명이보인다() throws {
+        // Given
+        let viewModel = try makeViewModel(storeName: "강남역 주변 가게")
+        let viewController = ReviewBottomSheetViewController.instance(viewModel: viewModel)
+
+        // When
+        viewController.loadViewIfNeeded()
+
+        // Then
+        let sheet = try XCTUnwrap(viewController.view as? ReviewBottomSheet)
+        XCTAssertEqual(sheet.storeNameLabel.text, "강남역 주변 가게")
+        XCTAssertFalse(sheet.storeNameLabel.isHidden)
+    }
+
+    func test_TH1421_TC16_가게명이없으면_가게명줄이숨겨진다() throws {
+        // Given
+        let viewModel = try makeViewModel()
+        let sheet = ReviewBottomSheet()
+
+        // When
+        sheet.setStoreName(viewModel.output.storeName)
+
+        // Then
+        XCTAssertNil(viewModel.output.storeName)
+        XCTAssertTrue(sheet.storeNameLabel.isHidden)
+    }
+
     private func makeViewModel(
         repository: MockStoreRepository = MockStoreRepository(),
+        storeName: String? = nil,
         review: StoreDetailReview? = nil
     ) throws -> ReviewBottomSheetViewModel {
         let commonRepository = MockCommonRepository()
@@ -217,13 +245,12 @@ final class ReviewBottomSheetViewModelTests: XCTestCase {
             from: Data(#"{"nonce":"test-nonce"}"#.utf8)
         ))
         return ReviewBottomSheetViewModel(
-            config: .init(storeId: 153, review: review),
+            config: .init(storeId: 153, storeName: storeName, review: review),
             storeService: repository,
             logManager: MockLogManager(),
             commonRepository: commonRepository
         )
     }
-
 
     private func attachImages(count: Int, to viewModel: ReviewBottomSheetViewModel) throws {
         var uploadViewModel: UploadPhotoViewModel?
