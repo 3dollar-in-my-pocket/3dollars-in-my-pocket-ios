@@ -1,4 +1,5 @@
 import Combine
+import UIKit
 import XCTest
 
 import Model
@@ -232,6 +233,62 @@ final class ReviewBottomSheetViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.output.storeName)
         XCTAssertTrue(sheet.storeNameLabel.isHidden)
+    }
+
+    func test_TH1421_TC17_업로드응답에크기가없으면_업로드한이미지의실제크기로채운다() {
+        // Given
+        let response = ImageUploadResponse(imageUrl: imageUrl(0), width: nil, height: nil)
+        let data = makeJpegData(width: 400, height: 300)
+
+        // When
+        let images = UploadPhotoViewModel.measuredImages([response], datas: [data])
+
+        // Then
+        XCTAssertEqual(images.first?.imageUrl, imageUrl(0))
+        XCTAssertEqual(images.first?.width, 400)
+        XCTAssertEqual(images.first?.height, 300)
+    }
+
+    func test_TH1421_TC17_크기없는사진을첨부해등록하면_실제크기가요청에담긴다() async throws {
+        // Given
+        let repository = MockStoreRepository()
+        repository.writeReviewResult = .success(try FixtureLoader.decode(StoreReviewWithWriterResponse.self, from: "StoreReviewWithWriter"))
+        let viewModel = try makeViewModel(repository: repository)
+        var uploadViewModel: UploadPhotoViewModel?
+        viewModel.output.route.sink {
+            if case .uploadPhoto(let viewModel) = $0 { uploadViewModel = viewModel }
+        }.store(in: &cancellables)
+        viewModel.input.didTapUploadPhoto.send(())
+        let measured = UploadPhotoViewModel.measuredImages(
+            [ImageUploadResponse(imageUrl: imageUrl(0), width: nil, height: nil)],
+            datas: [makeJpegData(width: 400, height: 300)]
+        )
+        uploadViewModel?.output.onSuccessUploadImages.send(measured)
+        viewModel.input.didTapRating.send(4)
+        viewModel.input.inputReview.send("바삭해요")
+        let dismissed = expectation(description: "dismiss")
+        viewModel.output.route.sink {
+            if case .dismiss = $0 { dismissed.fulfill() }
+        }.store(in: &cancellables)
+
+        // When
+        viewModel.input.didTapWrite.send(())
+
+        // Then
+        await fulfillment(of: [dismissed], timeout: 2)
+        let image = try XCTUnwrap(repository.writeReviewInputs.first?.images.first)
+        XCTAssertEqual(image.width, 400)
+        XCTAssertEqual(image.height, 300)
+    }
+
+    private func makeJpegData(width: Int, height: Int) -> Data {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format)
+        return renderer.jpegData(withCompressionQuality: 0.8) { context in
+            UIColor.orange.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        }
     }
 
     private func makeViewModel(
