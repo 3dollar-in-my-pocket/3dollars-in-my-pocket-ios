@@ -7,10 +7,11 @@ import DesignSystem
 import Common
 
 final class MedalCollectionCell: BaseCollectionViewCell {
-    static let size = CGSize(
-        width: (UIScreen.main.bounds.width - 40 - 16) / 2,
-        height: 161
-    )
+    static let height: CGFloat = 161
+    
+    static func size(width: CGFloat) -> CGSize {
+        return CGSize(width: (width - 40 - 16) / 2, height: height)
+    }
     
     private let containerView: UIView = {
         let containerView = UIView()

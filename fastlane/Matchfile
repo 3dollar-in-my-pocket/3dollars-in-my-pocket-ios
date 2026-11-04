@@ -1,5 +1,5 @@
 # 인증서/프로파일을 암호화 저장할 "별도" private git repo URL
-git_url("https://github.com/3dollar-in-my-pocket/fastlane-match.git")
+git_url(ENV.fetch("MATCH_GIT_URL"))
 
 storage_mode("git")
 git_branch("main")

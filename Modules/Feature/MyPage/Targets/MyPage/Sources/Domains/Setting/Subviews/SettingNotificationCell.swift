@@ -5,7 +5,7 @@ import Common
 
 final class SettingNotificationCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 72)
+        static let height: CGFloat = 72
     }
     
     let switchValue = PassthroughSubject<Bool, Never>()

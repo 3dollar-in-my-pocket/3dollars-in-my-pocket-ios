@@ -7,8 +7,8 @@ import SnapKit
 
 final class HomeCurationAdmobCardCell: BaseCollectionViewCell {
     enum Layout {
-        static func size(_ card: HomeListAdmobCardResponse, maxHeight: CGFloat) -> CGSize {
-            let width = UIUtils.windowBounds.width - HomeCurationCarouselCell.Layout.horizontalInset * 2
+        static func size(_ card: HomeListAdmobCardResponse, containerWidth: CGFloat, maxHeight: CGFloat) -> CGSize {
+            let width = containerWidth - HomeCurationCarouselCell.Layout.horizontalInset * 2
             let height = min(HomeListAdmobCell.Layout.height(card), maxHeight)
             return CGSize(width: width, height: height)
         }

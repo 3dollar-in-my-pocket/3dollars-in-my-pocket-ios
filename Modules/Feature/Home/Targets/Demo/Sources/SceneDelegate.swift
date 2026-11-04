@@ -30,8 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationViewController.isNavigationBarHidden = true
         navigationViewController.interactivePopGestureRecognizer?.delegate = nil
         
-        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        window?.windowScene = windowScene
+        window = UIWindow(windowScene: windowScene)
         window?.rootViewController = navigationViewController
         window?.makeKeyAndVisible()
     }

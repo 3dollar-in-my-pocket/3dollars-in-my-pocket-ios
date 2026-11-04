@@ -9,14 +9,14 @@ struct VisitStoreListSection: Hashable {
 }
 
 enum VisitStoreListSectionItem: Hashable {
-    case store(MyVisitStore)
+    case store(MyVisitStore, canDelete: Bool)
 }
 
 final class VisitStoreListDataSource: UICollectionViewDiffableDataSource<VisitStoreListSection, VisitStoreListSectionItem> {
 
     typealias Snapshot = NSDiffableDataSourceSnapshot<VisitStoreListSection, VisitStoreListSectionItem>
 
-    init(collectionView: UICollectionView) {
+    init(collectionView: UICollectionView, onTapDelete: @escaping (MyVisitStore) -> Void) {
         collectionView.register([
             VisitStoreItemCell.self
         ])
@@ -27,9 +27,12 @@ final class VisitStoreListDataSource: UICollectionViewDiffableDataSource<VisitSt
 
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .store(let item):
+            case .store(let item, let canDelete):
                 let cell: VisitStoreItemCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(item: item)
+                cell.bind(item: item, canDelete: canDelete)
+                cell.deleteButton.controlPublisher(for: .touchUpInside)
+                    .sink { _ in onTapDelete(item) }
+                    .store(in: &cell.cancellables)
                 return cell
             }
         }

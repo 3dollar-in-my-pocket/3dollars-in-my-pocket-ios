@@ -11,10 +11,14 @@ final class MockStoreRepository: StoreRepository {
     var fetchStorePhotosResult: Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> = .failure(MockError.notStubbed())
     var deletePhotoResult: Result<String?, Error> = .failure(MockError.notStubbed())
     var patchStoreResult: Result<UserStoreResponse, Error> = .failure(MockError.notStubbed())
+    var createStoreResult: Result<UserStoreResponse, Error> = .failure(MockError.notStubbed())
+    var uploadPhotosResult: Result<[StoreImageResponse], Error> = .failure(MockError.notStubbed())
+    private(set) var uploadPhotosArguments: [(storeId: Int, photos: [Data])] = []
     private(set) var fetchStoreScreenV2CallCount = 0
     var fetchStoreResult: Result<StoreDetailResponse, Error> = .failure(MockError.notStubbed())
     private(set) var fetchStoreInputs: [FetchStoreInput] = []
     var fetchStorePreviewResult: Result<StorePreviewScreenResponse, Error> = .failure(MockError.notStubbed())
+    private(set) var fetchStorePreviewCallCount = 0
     private(set) var reportStoreCallCount = 0
     private(set) var lastReportStoreArguments: (storeId: Int, reportReason: String)?
 
@@ -34,7 +38,7 @@ final class MockStoreRepository: StoreRepository {
         fetchStoreScreenV2CallCount += 1
         return fetchStoreScreenV2Result
     }
-    func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> { .failure(MockError.notStubbed()) }
+    func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> { createStoreResult }
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error> { .failure(MockError.notStubbed()) }
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error> { .failure(MockError.notStubbed()) }
     func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> { .failure(MockError.notStubbed()) }
@@ -44,7 +48,10 @@ final class MockStoreRepository: StoreRepository {
         return reportStoreResult
     }
     func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> { .failure(MockError.notStubbed()) }
-    func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> { .failure(MockError.notStubbed()) }
+    func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> {
+        uploadPhotosArguments.append((storeId, photos))
+        return uploadPhotosResult
+    }
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { fetchStorePhotosResult }
     func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> { .failure(MockError.notStubbed()) }
     func deletePhoto(photoId: Int) async -> Result<String?, Error> { deletePhotoResult }
@@ -58,6 +65,9 @@ final class MockStoreRepository: StoreRepository {
     func patchStore(storeId: String, input: UserStorePatchRequestV3) async -> Result<UserStoreResponse, Error> { patchStoreResult }
     func fetchDisplayItems(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<ContentListStoreDisplayResponse, Error> { .failure(MockError.notStubbed()) }
     func recordDisplayItemImpression(storeId: Int, itemTypes: [StoreDisplayItemType]) async -> Result<String?, Error> { .failure(MockError.notStubbed()) }
-    func fetchStorePreview(input: FetchStoreScreenInput) async -> Result<StorePreviewScreenResponse, Error> { fetchStorePreviewResult }
+    func fetchStorePreview(input: FetchStoreScreenInput) async -> Result<StorePreviewScreenResponse, Error> {
+        fetchStorePreviewCallCount += 1
+        return fetchStorePreviewResult
+    }
     func fetchStoreContributorHistories(storeId: Int, cursor: String?) async -> Result<StoreContributorHistoriesSection, Error> { .failure(MockError.notStubbed()) }
 }

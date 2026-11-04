@@ -253,6 +253,10 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
                     _ = try uploadResult.get()
                 }
 
+                if state.editedMenus.isNotNil {
+                    await uploadMenuImageIfNeeded(storeId: storeId)
+                }
+
                 sendEditStoreCompleteLog()
                 output.onEdit.send(patchResponse)
                 output.isLoading.send(false)
@@ -263,6 +267,11 @@ final class EditStoreViewModel: BaseViewModel, EditStoreViewModelInterface {
                 output.route.send(.showErrorAlert(error))
             }
         }
+    }
+    
+    private func uploadMenuImageIfNeeded(storeId: Int) async {
+        guard let menuImage = state.menuExtractionUsage.consumeMenuImage() else { return }
+        _ = await dependency.storeRepository.uploadPhotos(storeId: storeId, photos: [menuImage])
     }
     
     private func didUpdatedAddress(address: String, location: CLLocation) {

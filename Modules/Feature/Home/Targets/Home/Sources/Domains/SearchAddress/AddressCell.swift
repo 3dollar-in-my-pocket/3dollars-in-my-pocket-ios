@@ -6,7 +6,7 @@ import Model
 
 final class AddressCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIUtils.windowBounds.width, height: 70)
+        static let height: CGFloat = 70
     }
     
     private let buildingName: UILabel = {

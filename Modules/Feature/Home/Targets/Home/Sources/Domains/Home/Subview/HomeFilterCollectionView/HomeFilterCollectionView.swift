@@ -9,7 +9,7 @@ extension HomeFilterCollectionView {
         static let interItemSpacing: CGFloat = 10
 
         static func createLayout() -> UICollectionViewFlowLayout {
-            let layout = UICollectionViewFlowLayout()
+            let layout = WidthAdaptiveFlowLayout()
             layout.minimumInteritemSpacing = Layout.interItemSpacing
             layout.scrollDirection = .horizontal
             return layout

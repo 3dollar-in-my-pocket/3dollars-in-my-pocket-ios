@@ -185,7 +185,7 @@ private final class StoreReviewCardView: UIView {
     }()
     private let starsStack = UIStackView()
     private lazy var imageCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = StoreReviewCell.Layout.imageSpacing
         layout.minimumInteritemSpacing = StoreReviewCell.Layout.imageSpacing

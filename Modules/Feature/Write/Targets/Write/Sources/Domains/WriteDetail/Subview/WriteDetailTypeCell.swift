@@ -6,10 +6,6 @@ import Model
 import DesignSystem
 
 final class WriteDetailTypeCell: BaseCollectionViewCell {
-    enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 60)
-    }
-    
     var tapPublisher: PassthroughSubject<SalesType, Never> {
         return typeStackView.tapPublisher
     }

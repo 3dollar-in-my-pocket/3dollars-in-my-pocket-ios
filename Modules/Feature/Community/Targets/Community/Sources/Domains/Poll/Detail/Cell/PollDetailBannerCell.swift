@@ -5,7 +5,7 @@ import AppInterface
 
 final class PollDetailBannerCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width, height: 49)
+        static let height: CGFloat = 49
     }
     
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .pollDetail)

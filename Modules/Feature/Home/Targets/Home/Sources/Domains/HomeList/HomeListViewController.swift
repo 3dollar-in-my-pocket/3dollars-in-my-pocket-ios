@@ -6,6 +6,7 @@ import Common
 import DesignSystem
 import Model
 import Log
+import FeedInterface
 
 import SnapKit
 
@@ -29,6 +30,8 @@ final class HomeListViewController: BaseViewController {
         rootViewController: self
     )
 
+    private let newsViewController = Environment.feedInterface.createLocalNewsViewController()
+
     var onChangeTrackingScrollView: ((UIScrollView) -> Void)?
     var onChangeCollapsedVisibleHeight: ((CGFloat) -> Void)?
 
@@ -37,6 +40,8 @@ final class HomeListViewController: BaseViewController {
         switch viewModel.output.selectedViewType.value {
         case .curation:
             return homeListView.curationView.collectionView
+        case .news:
+            return newsViewController.scrollView
         case .storeList, .unknown:
             return homeListView.collectionView
         }
@@ -59,6 +64,16 @@ final class HomeListViewController: BaseViewController {
         super.viewDidLoad()
         _ = dataSource
         _ = curationDataSource
+        embedNewsViewController()
+    }
+
+    private func embedNewsViewController() {
+        addChild(newsViewController)
+        homeListView.newsContainerView.addSubview(newsViewController.view)
+        newsViewController.view.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        newsViewController.didMove(toParent: self)
     }
 
     override func bindViewModelInput() {
@@ -86,7 +101,7 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, _) in
                 owner.dataSource.reloadAdmobCards()
-                owner.scrollToTop()
+                owner.scrollToTop(owner.homeListView.collectionView)
             }
             .store(in: &cancellables)
 
@@ -111,7 +126,20 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, viewType: HomeBottomTabViewType) in
                 owner.homeListView.showPage(viewType: viewType)
+                owner.newsViewController.setVisible(viewType == .news)
+                owner.scrollToTop(owner.trackingScrollView)
                 owner.onChangeTrackingScrollView?(owner.trackingScrollView)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.loadNews
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, location: CLLocation) in
+                owner.newsViewController.load(
+                    mapLatitude: location.coordinate.latitude,
+                    mapLongitude: location.coordinate.longitude
+                )
             }
             .store(in: &cancellables)
     }
@@ -162,8 +190,8 @@ final class HomeListViewController: BaseViewController {
         viewModel.input.setTabSection.send(section)
     }
 
-    func updateCurationLocation(_ location: CLLocation) {
-        viewModel.input.setCurationLocation.send(location)
+    func updateMapLocation(_ location: CLLocation) {
+        viewModel.input.setMapLocation.send(location)
     }
 
     func updateCards(_ cards: [any HomeListCardComponent]) {
@@ -178,10 +206,9 @@ final class HomeListViewController: BaseViewController {
         viewModel.input.didReplaceCards.send(())
     }
 
-    private func scrollToTop() {
-        let collectionView = homeListView.collectionView
-        collectionView.setContentOffset(
-            CGPoint(x: collectionView.contentOffset.x, y: -collectionView.adjustedContentInset.top),
+    private func scrollToTop(_ scrollView: UIScrollView) {
+        scrollView.setContentOffset(
+            CGPoint(x: scrollView.contentOffset.x, y: -scrollView.adjustedContentInset.top),
             animated: false
         )
     }

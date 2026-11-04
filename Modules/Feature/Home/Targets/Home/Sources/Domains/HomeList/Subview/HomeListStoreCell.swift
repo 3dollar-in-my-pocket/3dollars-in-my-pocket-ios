@@ -18,25 +18,27 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         static let multipleBodyWidth: CGFloat = 300
         static let bodyTrailingInset: CGFloat = 20
         static let bodyLabelInset: CGFloat = 12
-        static var imageAvailableWidth: CGFloat {
-            return UIUtils.windowBounds.width - 40
+        static let contentHorizontalInset: CGFloat = 40
+
+        static func availableWidth(cellWidth: CGFloat) -> CGFloat {
+            return cellWidth - contentHorizontalInset
         }
 
         static func imageRowHeight(images: [SDImage]) -> CGFloat {
             return PreviewImageLayout.rowHeight(images: images, defaultHeight: defaultImageSize.height)
         }
 
-        static func imageSize(images: [SDImage], at index: Int) -> CGSize {
+        static func imageSize(images: [SDImage], at index: Int, availableWidth: CGFloat) -> CGSize {
             return PreviewImageLayout.itemSize(
                 style: images[safe: index]?.style,
                 count: images.count,
-                availableWidth: imageAvailableWidth,
+                availableWidth: availableWidth,
                 spacing: imageSpacing,
                 defaultSize: defaultImageSize
             )
         }
 
-        static func height(response: HomeListBasicCardResponse) -> CGFloat {
+        static func height(response: HomeListBasicCardResponse, cellWidth: CGFloat) -> CGFloat {
             var height: CGFloat = 16 // top padding
 
             let hasHeader = response.header.title != nil || response.header.badge != nil
@@ -66,7 +68,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
                 if hasHeader || hasPrimary || hasSecondary || response.images.isNotEmpty {
                     height += 8
                 }
-                height += bodiesHeight(bodies: bodies)
+                height += bodiesHeight(bodies: bodies, availableWidth: availableWidth(cellWidth: cellWidth))
             }
 
             height += 16 // bottom padding
@@ -77,15 +79,15 @@ final class HomeListStoreCell: BaseCollectionViewCell {
             return bodies.filter { $0.text.text.isNotEmpty }
         }
 
-        static func bodyWidth(bodyCount: Int) -> CGFloat {
+        static func bodyWidth(bodyCount: Int, availableWidth: CGFloat) -> CGFloat {
             guard bodyCount > 1 else {
-                return imageAvailableWidth
+                return availableWidth
             }
             return multipleBodyWidth
         }
 
-        static func bodiesHeight(bodies: [HomeListCardBody]) -> CGFloat {
-            let labelWidth = bodyWidth(bodyCount: bodies.count) - bodyLabelInset * 2
+        static func bodiesHeight(bodies: [HomeListCardBody], availableWidth: CGFloat) -> CGFloat {
+            let labelWidth = bodyWidth(bodyCount: bodies.count, availableWidth: availableWidth) - bodyLabelInset * 2
             return bodies.map { bodyHeight(body: $0, labelWidth: labelWidth) }.max() ?? 0
         }
 
@@ -159,7 +161,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }()
 
     private lazy var imagesCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing
@@ -193,6 +195,8 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }()
 
     private var bodiesHeightConstraint: Constraint?
+    private var visibleBodies: [HomeListCardBody] = []
+    private var appliedBodiesWidth: CGFloat = 0
     
     private let bottomBorderView: UIView = {
         let view = UIView()
@@ -255,11 +259,18 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         }
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard contentView.bounds.width != appliedBodiesWidth else { return }
+        updateBodiesHeight()
+    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
         primaryMetadataStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         secondaryMetadataStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         images = []
+        visibleBodies = []
         bodiesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         bodiesScrollView.isHidden = true
         badgeImageView.kf.cancelDownloadTask()
@@ -384,23 +395,34 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     private func bindBodies(_ bodies: [HomeListCardBody]) {
         bodiesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        let visibleBodies = Layout.visibleBodies(bodies)
+        visibleBodies = Layout.visibleBodies(bodies)
         guard visibleBodies.isNotEmpty else {
             bodiesScrollView.isHidden = true
             return
         }
         bodiesScrollView.isHidden = false
-        bodiesHeightConstraint?.update(offset: Layout.bodiesHeight(bodies: visibleBodies))
+        updateBodiesHeight()
 
-        let bodyWidth = Layout.bodyWidth(bodyCount: visibleBodies.count)
+        let isSingleBody = visibleBodies.count == 1
         for body in visibleBodies {
             let bodyView = makeBodyView(body: body)
-            bodyView.snp.makeConstraints {
-                $0.width.equalTo(bodyWidth)
-            }
             bodiesStackView.addArrangedSubview(bodyView)
+            bodyView.snp.makeConstraints {
+                if isSingleBody {
+                    $0.width.equalTo(bodiesScrollView.frameLayoutGuide).offset(-Layout.bodyTrailingInset)
+                } else {
+                    $0.width.equalTo(Layout.multipleBodyWidth)
+                }
+            }
         }
         bodiesScrollView.setContentOffset(.zero, animated: false)
+    }
+
+    private func updateBodiesHeight() {
+        appliedBodiesWidth = contentView.bounds.width
+        guard visibleBodies.isNotEmpty else { return }
+        let availableWidth = Layout.availableWidth(cellWidth: appliedBodiesWidth)
+        bodiesHeightConstraint?.update(offset: Layout.bodiesHeight(bodies: visibleBodies, availableWidth: availableWidth))
     }
 
     @objc private func didTapBodies() {
@@ -457,6 +479,10 @@ extension HomeListStoreCell: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        return Layout.imageSize(images: images, at: indexPath.item)
+        return Layout.imageSize(
+            images: images,
+            at: indexPath.item,
+            availableWidth: collectionView.bounds.width - Layout.bodyTrailingInset
+        )
     }
 }

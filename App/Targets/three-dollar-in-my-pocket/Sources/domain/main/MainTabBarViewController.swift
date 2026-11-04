@@ -113,6 +113,10 @@ final class MainTabBarViewController: UITabBarController {
         homeViewController.applyPreset(preset)
     }
 
+    func landStoreOnHome(storeId: Int, isExpanded: Bool) {
+        homeViewController.landStoreFromDeepLink(storeId: storeId, isExpanded: isExpanded)
+    }
+
     func showLoading(isShow: Bool) {
         LoadingManager.shared.showLoading(isShow: isShow)
     }

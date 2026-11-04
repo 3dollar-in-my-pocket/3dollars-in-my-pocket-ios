@@ -30,15 +30,24 @@ final class WebView: BaseView {
     
     private let webView = WKWebView()
     
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = Colors.gray50.color
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
     override func setup() {
         backgroundColor = Colors.gray90.color
         addSubViews([
             backButton,
             titleLabel,
             topLineView,
-            webView
+            webView,
+            loadingIndicator
         ])
         webView.uiDelegate = self
+        webView.navigationDelegate = self
     }
     
     override func bindConstraints() {
@@ -62,6 +71,10 @@ final class WebView: BaseView {
             $0.leading.trailing.bottom.equalToSuperview()
             $0.top.equalTo(topLineView.snp.bottom)
         }
+        
+        loadingIndicator.snp.makeConstraints {
+            $0.center.equalTo(webView)
+        }
     }
     
     func bind(title: String?, url: String) {
@@ -70,6 +83,7 @@ final class WebView: BaseView {
         guard let url = URL(string: url) else { return }
         let request = URLRequest(url: url)
         
+        loadingIndicator.startAnimating()
         webView.load(request)
     }
     
@@ -79,6 +93,7 @@ final class WebView: BaseView {
         guard let url = URL(string: webviewType.url) else { return }
         let request = URLRequest(url: url)
 
+        loadingIndicator.startAnimating()
         webView.load(request)
     }
 }
@@ -95,5 +110,27 @@ extension WebView: WKUIDelegate {
             webView.load(navigationAction.request)
         }
         return nil
+    }
+}
+
+extension WebView: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        loadingIndicator.startAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        loadingIndicator.stopAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        loadingIndicator.stopAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        loadingIndicator.stopAnimating()
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        webView.reload()
     }
 }

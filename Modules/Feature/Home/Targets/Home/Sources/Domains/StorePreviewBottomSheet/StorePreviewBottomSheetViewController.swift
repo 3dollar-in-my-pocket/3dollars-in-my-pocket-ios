@@ -19,19 +19,16 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         static let imageSpacing: CGFloat = 8
         static let horizontalMargin: CGFloat = 20
         static let defaultImageSize = CGSize(width: 158, height: 158)
-        static var imageAvailableWidth: CGFloat {
-            return UIUtils.windowBounds.width - horizontalMargin * 2
-        }
 
         static func imageRowHeight(images: [SDImage]) -> CGFloat {
             return PreviewImageLayout.rowHeight(images: images, defaultHeight: defaultImageSize.height)
         }
 
-        static func imageSize(images: [SDImage], at index: Int) -> CGSize {
+        static func imageSize(images: [SDImage], at index: Int, availableWidth: CGFloat) -> CGSize {
             return PreviewImageLayout.itemSize(
                 style: images[safe: index]?.style,
                 count: images.count,
-                availableWidth: imageAvailableWidth,
+                availableWidth: availableWidth,
                 spacing: imageSpacing,
                 defaultSize: defaultImageSize
             )
@@ -114,7 +111,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     )
 
     private let imagesCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = Layout.imageSpacing
         layout.minimumInteritemSpacing = Layout.imageSpacing
@@ -819,7 +816,7 @@ extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UIC
             return CGSize(width: rowHeight, height: rowHeight)
         }
 
-        return Layout.imageSize(images: imageItems, at: indexPath.item)
+        return Layout.imageSize(images: imageItems, at: indexPath.item, availableWidth: collectionView.bounds.width)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

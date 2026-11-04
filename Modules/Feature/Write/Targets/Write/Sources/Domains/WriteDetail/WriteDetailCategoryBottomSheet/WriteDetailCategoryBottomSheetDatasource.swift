@@ -53,7 +53,7 @@ extension WriteDetailCategoryBottomSheetDatasource: UICollectionViewDelegateFlow
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return WriteDetailCategorySectionHeaderView.Layout.size
+        return CGSize(width: collectionView.bounds.width, height: WriteDetailCategorySectionHeaderView.Layout.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

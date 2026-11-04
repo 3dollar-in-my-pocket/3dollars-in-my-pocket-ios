@@ -171,6 +171,7 @@ public enum LogObjectId: String {
     case like
     case sort
     case deleteReview = "delete_review"
+    case deleteVisit = "delete_visit"
     case visitSuccess = "visit_success"
     case visitFail = "visit_fail"
     case sns

@@ -5,10 +5,10 @@ import DesignSystem
 import Model
 
 final class CategorySelectionCell: BaseCollectionViewCell {
-    static let size = CGSize(
-        width: (UIScreen.main.bounds.width - 48 - 36)/4,
-        height: (UIScreen.main.bounds.width - 48 - 36)/4 + 2
-    )
+    static func size(containerWidth: CGFloat) -> CGSize {
+        let width = (containerWidth - 48 - 36) / 4
+        return CGSize(width: width, height: width + 2)
+    }
     
     private let categoryImage = UIImageView()
     

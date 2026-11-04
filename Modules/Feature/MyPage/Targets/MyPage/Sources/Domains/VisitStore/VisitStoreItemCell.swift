@@ -4,6 +4,8 @@ import Common
 import DesignSystem
 import Model
 
+import SnapKit
+
 final class VisitStoreItemCell: BaseCollectionViewCell {
 
     enum Layout {
@@ -68,6 +70,16 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         imageView.backgroundColor = .clear
         return imageView
     }()
+
+    let deleteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Images.iconDelete.image, for: .normal)
+        button.accessibilityLabel = "삭제"
+        button.isHidden = true
+        return button
+    }()
+
+    private var titleTrailingToDeleteButtonConstraint: Constraint?
     
     override func setup() {
         super.setup()
@@ -87,7 +99,8 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
         storeView.addSubViews([
             imageView,
             titleStackView,
-            tagStackView
+            tagStackView,
+            deleteButton
         ])
         
         titleStackView.addArrangedSubview(tagStackView)
@@ -132,10 +145,24 @@ final class VisitStoreItemCell: BaseCollectionViewCell {
             $0.centerY.equalTo(imageView)
             $0.leading.equalTo(imageView.snp.trailing).offset(16)
             $0.trailing.lessThanOrEqualToSuperview().inset(16)
+            titleTrailingToDeleteButtonConstraint = $0.trailing.lessThanOrEqualTo(deleteButton.snp.leading).offset(-8).constraint
+        }
+        titleTrailingToDeleteButtonConstraint?.deactivate()
+
+        deleteButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(16)
+            $0.size.equalTo(24)
         }
     }
 
-    func bind(item: MyVisitStore) {
+    func bind(item: MyVisitStore, canDelete: Bool) {
+        deleteButton.isHidden = canDelete.isNot
+        if canDelete {
+            titleTrailingToDeleteButtonConstraint?.activate()
+        } else {
+            titleTrailingToDeleteButtonConstraint?.deactivate()
+        }
         imageView.setImage(urlString: item.store.categories.first?.imageUrl)
         titleLabel.text = item.store.name
         tagLabel.text = item.store.categories.map { "#\($0.name)" }.joined(separator: " ")

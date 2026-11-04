@@ -5,14 +5,8 @@ import DesignSystem
 import Model
 
 final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
-    enum Layout {
-        static let width = (UIScreen.main.bounds.width - 40 - 24 - 40)/5
-        static let size = CGSize(width: width, height: width - 14 + 22)
-    }
-    
     let categoryButton: UIButton = {
         let categoryButton = UIButton()
-        categoryButton.layer.cornerRadius = (Layout.width - 14) / 2
         categoryButton.layer.masksToBounds = true
         categoryButton.layer.borderColor = Colors.mainPink.color.cgColor
         categoryButton.contentEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
@@ -45,6 +39,12 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         categoryButton.layer.borderWidth = 0
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        categoryButton.layer.cornerRadius = categoryButton.bounds.width / 2
+    }
+    
     override func setup() {
         contentView.addSubViews([
             categoryButton,
@@ -57,7 +57,8 @@ final class WriteDetailCollectionItemCell: BaseCollectionViewCell {
         categoryButton.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
-            $0.width.height.equalTo(Layout.width - 14)
+            $0.width.equalToSuperview().offset(-14)
+            $0.height.equalTo(categoryButton.snp.width)
         }
         
         closeButton.snp.makeConstraints {

@@ -25,6 +25,9 @@ else
   echo "✅ Tuist already installed!"
 fi
 
+echo "🔧 Restoring app config..."
+sh "$CI_PRIMARY_REPOSITORY_PATH/scripts/app-config.sh" unpack || exit 1
+
 echo "🛠 Generating project with tuist..."
 
 # 재시도 로직 함수

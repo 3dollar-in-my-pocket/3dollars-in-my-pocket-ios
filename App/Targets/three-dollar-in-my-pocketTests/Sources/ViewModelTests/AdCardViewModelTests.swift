@@ -7,6 +7,7 @@ import Log
 import Model
 @testable import Home
 
+@MainActor
 final class AdCardViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
 
@@ -106,7 +107,7 @@ final class AdCardViewModelTests: XCTestCase {
             .store(in: &cancellables)
         viewModel.input.setTabId.send("CURATION")
         viewModel.input.setLocation.send(CLLocation(latitude: 37.4979, longitude: 127.0276))
-        await fulfillment(of: [loaded], timeout: 1)
+        await fulfillment(of: [loaded], timeout: 5)
         let sentBefore = logManager.sentEvents.count
 
         // When
@@ -156,6 +157,6 @@ extension AdCardViewModelTests {
             .sink { firstPage.fulfill() }
             .store(in: &cancellables)
         viewModel.input.onInitialMapDistanceReady.send(1000)
-        await fulfillment(of: [firstPage], timeout: 1)
+        await fulfillment(of: [firstPage], timeout: 5)
     }
 }

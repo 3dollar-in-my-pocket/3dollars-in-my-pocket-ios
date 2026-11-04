@@ -8,7 +8,7 @@ final class ReportBottomSheet: BaseView {
     enum Layout {
         static let space: CGFloat = 6
         static func calculateCollectionViewHeight(itemCount: Int) -> CGFloat {
-            let itemHeight = ReportReasonCell.Layout.size.height * CGFloat(itemCount)
+            let itemHeight = ReportReasonCell.Layout.height * CGFloat(itemCount)
             let space: CGFloat = Layout.space * CGFloat(itemCount - 1)
             
             return itemHeight + space
@@ -45,9 +45,8 @@ final class ReportBottomSheet: BaseView {
     }()
     
     let collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = ReportReasonCell.Layout.size
         layout.minimumInteritemSpacing = ReportBottomSheet.Layout.space
         layout.minimumLineSpacing = ReportBottomSheet.Layout.space
         
@@ -103,6 +102,20 @@ final class ReportBottomSheet: BaseView {
             $0.trailing.equalToSuperview().offset(-20).priority(.high)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-20)
         }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateItemSizeIfNeeded()
+    }
+    
+    private func updateItemSizeIfNeeded() {
+        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        let itemSize = ReportReasonCell.Layout.size(containerWidth: collectionView.bounds.width)
+        guard itemSize.width > 0, layout.itemSize != itemSize else { return }
+        
+        layout.itemSize = itemSize
+        layout.invalidateLayout()
     }
     
     func updateCollectionViewHeight(itemCount: Int) {

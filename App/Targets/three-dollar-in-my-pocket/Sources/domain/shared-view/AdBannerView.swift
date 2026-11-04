@@ -35,16 +35,22 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     
     private func bindConstraints() {
         admobView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.bottom.centerX.equalToSuperview()
+            $0.width.equalToSuperview().priority(.high)
+            $0.width.lessThanOrEqualTo(Self.maxBannerWidth)
         }
     }
     
     func load(in rootViewController: UIViewController) {
-        load(in: rootViewController, adSize: currentOrientationAnchoredAdaptiveBanner(width: frame.width))
+        load(in: rootViewController, adSize: currentOrientationAnchoredAdaptiveBanner(width: min(frame.width, Self.maxBannerWidth)))
     }
 
     func load(in rootViewController: UIViewController, size: CGSize) {
-        load(in: rootViewController, adSize: inlineAdaptiveBanner(width: size.width, maxHeight: size.height))
+        load(in: rootViewController, adSize: inlineAdaptiveBanner(width: min(size.width, Self.maxBannerWidth), maxHeight: size.height))
+    }
+
+    private static var maxBannerWidth: CGFloat {
+        UIScreen.main.bounds.width
     }
 
     private func load(in rootViewController: UIViewController, adSize: AdSize) {

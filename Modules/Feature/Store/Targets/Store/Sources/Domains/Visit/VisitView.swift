@@ -170,13 +170,13 @@ final class VisitView: BaseView {
     
     override func bindConstraints() {
         closeButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-16)
             $0.top.equalTo(safeAreaLayoutGuide).offset(16)
             $0.size.equalTo(24)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(safeAreaLayoutGuide)
             $0.top.equalTo(closeButton.snp.bottom).offset(16)
         }
         
@@ -189,7 +189,7 @@ final class VisitView: BaseView {
         
         bottomRightCircleView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(26)
-            $0.trailing.equalToSuperview().offset(-40)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-40)
             $0.size.equalTo(48)
         }
         
@@ -206,7 +206,7 @@ final class VisitView: BaseView {
         progressBackgroundView.snp.makeConstraints {
             $0.height.equalTo(12)
             $0.centerY.equalTo(bottomRightCircleView)
-            $0.leading.equalToSuperview().offset(40)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(40)
             $0.trailing.equalTo(bottomRightCircleView.snp.leading).offset(4)
         }
         
@@ -226,8 +226,8 @@ final class VisitView: BaseView {
         }
         
         mapContainerView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(24)
-            $0.trailing.equalToSuperview().offset(-24)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-24)
             $0.height.equalTo(111)
             $0.top.equalTo(titleLabel.snp.bottom).offset(28)
         }
@@ -270,16 +270,16 @@ final class VisitView: BaseView {
         }
         
         existedButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(24)
-            $0.trailing.equalTo(snp.centerX).offset(-8)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.trailing.equalTo(safeAreaLayoutGuide.snp.centerX).offset(-8)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-8)
             $0.height.equalTo(existedButton.snp.width)
         }
         
         notExistedButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-24)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-24)
             $0.centerY.equalTo(existedButton)
-            $0.leading.equalTo(snp.centerX).offset(8)
+            $0.leading.equalTo(safeAreaLayoutGuide.snp.centerX).offset(8)
             $0.height.equalTo(notExistedButton.snp.width)
         }
     }

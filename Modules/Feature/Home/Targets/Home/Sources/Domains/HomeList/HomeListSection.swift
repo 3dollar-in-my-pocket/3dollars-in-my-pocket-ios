@@ -16,4 +16,5 @@ enum HomeListSectionItem: Hashable {
 struct HomeBottomSheetTabItem: Hashable {
     let tab: HomeBottomTab
     let isSelected: Bool
+    let hasNewBadge: Bool
 }

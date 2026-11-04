@@ -30,7 +30,12 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
 
-    private var reservedDeepLink: String?
+    private enum LinkSource {
+        case inApp
+        case external
+    }
+
+    private var reservedDeepLink: (urlString: String, source: LinkSource)?
 
     private var mainTabBarViewController: MainTabBarViewController? {
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
@@ -73,8 +78,16 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     }
 
     func handle(_ urlString: String) {
+        handle(urlString, source: .inApp)
+    }
+
+    func handleExternal(_ urlString: String) {
+        handle(urlString, source: .external)
+    }
+
+    private func handle(_ urlString: String, source: LinkSource) {
         guard canHandleDeepLink else {
-            reservedDeepLink = urlString
+            reservedDeepLink = (urlString, source)
             return
         }
 
@@ -105,10 +118,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             navigationController.modalPresentationStyle = .overCurrentContext
             route(navigationController)
         case .store:
-            guard let params = url.params(),
-                  let storeId = intParam(params, key: "storeId") else { return }
-
-            route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
+            handleStoreLink(url: url, source: source)
         case .home:
             if let params = url.params(),
                let preset = params["preset"] as? String {
@@ -195,8 +205,8 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     func handleReservedDeepLink() {
         guard let reservedDeepLink, canHandleDeepLink else { return }
 
-        handle(reservedDeepLink)
         self.reservedDeepLink = nil
+        handle(reservedDeepLink.urlString, source: reservedDeepLink.source)
     }
 
     /// "stores/{storeId}#section" 형태 링크. 같은 가게 상세가 이미 떠 있으면 해당 섹션으로 스크롤만 하고,
@@ -252,6 +262,47 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             }
         }
         return nil
+    }
+
+    private func handleStoreLink(url: URL, source: LinkSource) {
+        guard let params = url.params(),
+              let storeId = intParam(params, key: "storeId") else { return }
+
+        if source == .external {
+            let rootNavigationController = SceneDelegate.shared?.window?.rootViewController as? UINavigationController
+            guard rootNavigationController?.viewControllers.first is MainTabBarViewController else {
+                reservedDeepLink = (url.absoluteString, source)
+                return
+            }
+            let sheet = StoreLandingSheet(param: params["view"] as? String)
+            landStoreOnHome(storeId: storeId, isExpanded: sheet == .expanded)
+        } else {
+            route(Environment.storeInterface.getStoreDetailFullScreenViewController(storeId: storeId))
+        }
+    }
+
+    private func landStoreOnHome(storeId: Int, isExpanded: Bool) {
+        guard let navigationController = SceneDelegate.shared?.window?.rootViewController as? UINavigationController else { return }
+
+        navigationController.popToRootViewController(animated: false)
+        let mainTabBarViewController = mainTabBarViewController
+        (mainTabBarViewController?.viewControllers?[safe: TabBarTag.home.rawValue] as? UINavigationController)?
+            .popToRootViewController(animated: false)
+
+        let land = {
+            mainTabBarViewController?.selectTab(tab: .home)
+            mainTabBarViewController?.landStoreOnHome(storeId: storeId, isExpanded: isExpanded)
+        }
+
+        let presentingViewController = [navigationController, mainTabBarViewController]
+            .compactMap { $0 }
+            .first { $0.presentedViewController.isNotNil }
+
+        if let presentingViewController {
+            presentingViewController.dismiss(animated: true, completion: land)
+        } else {
+            land()
+        }
     }
 
     private func moveTab(_ tab: TabBarTag) {

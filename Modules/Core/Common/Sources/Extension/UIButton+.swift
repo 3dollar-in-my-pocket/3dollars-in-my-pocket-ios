@@ -50,7 +50,7 @@ public extension UIButton {
             kf.setImage(
                 with: imageUrl,
                 for: .normal,
-                options: [.processor(processor), .scaleFactor(UIScreen.main.scale)]
+                options: [.processor(processor), .scaleFactor(traitCollection.displayScale)]
             )
         } else {
             setImage(nil, for: .normal)

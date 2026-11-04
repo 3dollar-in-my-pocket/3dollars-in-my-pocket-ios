@@ -42,7 +42,7 @@ final class MedalInfoView: BaseView {
     
     override func bindConstraints() {
         self.closeButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-24)
+            make.trailing.equalTo(self.safeAreaLayoutGuide).offset(-24)
             make.top.equalTo(self.safeAreaLayoutGuide).offset(14)
             make.width.height.equalTo(24)
         }
@@ -53,8 +53,7 @@ final class MedalInfoView: BaseView {
         }
         
         self.tableView.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide)
             make.top.equalTo(self.titleLabel.snp.bottom).offset(32)
             make.bottom.equalToSuperview()
         }

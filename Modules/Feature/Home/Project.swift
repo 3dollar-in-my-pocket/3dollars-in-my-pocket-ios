@@ -18,6 +18,7 @@ let project = Project.makeFeatureModule(
         .Interface.storeInterface,
         .Interface.membershipInterface,
         .Interface.writeInterface,
+        .Interface.feedInterface,
         .SPM.snapKit,
         .SPM.panModal,
         .SPM.combineCocoa,

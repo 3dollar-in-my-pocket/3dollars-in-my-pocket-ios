@@ -1,4 +1,7 @@
-"feed_list.title" = "우리 동네 소식";
+"feed_list.header.title" = "우리 동네 가게 소식";
+"feed_list.header.description" = "내 주변 가게들의 소식을 확인해요.";
+"feed_list.error.title" = "소식을 불러오지 못했어요";
+"feed_list.error.retry" = "다시 시도";
 "feed_list.empty.title" = "아직 동네 가게 소식이 없어요.";
 "feed_list.empty.description" = "가게 등록, 리뷰 작성으로 가게 소식을 직접 등록해보세요!";
 

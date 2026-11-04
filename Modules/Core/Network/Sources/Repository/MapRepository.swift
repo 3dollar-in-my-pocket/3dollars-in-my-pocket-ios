@@ -31,8 +31,8 @@ public final class MapRepositoryImpl: MapRepository {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.allHTTPHeaderFields = [
-            "x-ncp-apigw-api-key-id": "1ev5u0jcqy",
-            "x-ncp-apigw-api-key": "zr1XgVVKeYsUYMr71EFornncoHEfS9iSjCZaBR1P"
+            "x-ncp-apigw-api-key-id": infoValue(key: "NCP_CLIENT_ID"),
+            "x-ncp-apigw-api-key": infoValue(key: "NCP_CLIENT_SECRET")
         ]
         
         do {
@@ -66,7 +66,7 @@ public final class MapRepositoryImpl: MapRepository {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.allHTTPHeaderFields = [
-            "Authorization": "KakaoAK 5bbbafb84c73c6be5b181b6f3d514129"
+            "Authorization": "KakaoAK \(infoValue(key: "KAKAO_REST_API_KEY"))"
         ]
         
         do {
@@ -99,7 +99,7 @@ public final class MapRepositoryImpl: MapRepository {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.allHTTPHeaderFields = [
-            "Authorization": "KakaoAK 5bbbafb84c73c6be5b181b6f3d514129"
+            "Authorization": "KakaoAK \(infoValue(key: "KAKAO_REST_API_KEY"))"
         ]
         
         do {
@@ -115,5 +115,9 @@ public final class MapRepositoryImpl: MapRepository {
         } catch {
             return .failure(error)
         }
+    }
+    
+    private func infoValue(key: String) -> String {
+        return Bundle.main.object(forInfoDictionaryKey: key) as? String ?? ""
     }
 }

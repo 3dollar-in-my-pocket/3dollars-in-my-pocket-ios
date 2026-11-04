@@ -7,7 +7,7 @@ import DesignSystem
 import Common
 
 final class MedalHeaderView: BaseCollectionViewReusableView {
-    static let size = CGSize(width: UIScreen.main.bounds.width, height: 28 + 8 + 54)
+    static let height: CGFloat = 28 + 8 + 54
     
     private let dividorView: UIView = {
         let dividorView = UIView()

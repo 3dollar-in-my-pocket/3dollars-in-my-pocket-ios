@@ -5,10 +5,7 @@ import DesignSystem
 
 final class MyPageOverviewCountButton: UIButton {
     
-    static let size = CGSize(
-        width: ((UIScreen.main.bounds.width - 24) / 3),
-        height: 68
-    )
+    static let height: CGFloat = 68
     
     enum CountType {
         case store

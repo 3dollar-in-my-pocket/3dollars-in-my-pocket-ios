@@ -7,7 +7,7 @@ import AppInterface
 
 final class CategoryBannerCell: BaseCollectionViewCell {
     enum Layout {
-        static let size = CGSize(width: UIScreen.main.bounds.width - 48, height: 100)
+        static let height: CGFloat = 100
     }
     
     private let containerView: UIView = {
