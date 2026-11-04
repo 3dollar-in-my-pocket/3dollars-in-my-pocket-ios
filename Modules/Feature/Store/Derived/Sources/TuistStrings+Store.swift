@@ -173,6 +173,8 @@ public enum StoreStrings: Sendable {
   public enum ReviewBottomSheet: Sendable {
     /// 사진 첨부하기
     public static let attachPhoto = StoreStrings.tr("Localization", "review_bottom_sheet.attach_photo")
+    /// 300자 이내로 작성해주세요.
+    public static let lengthGuide = StoreStrings.tr("Localization", "review_bottom_sheet.length_guide")
     /// 10개까지만 등록 가능해요!
     public static let photoLimit = StoreStrings.tr("Localization", "review_bottom_sheet.photo_limit")
     /// 주문한 메뉴는 어땠나요? 맛, 분위기, 서비스에 대한 후기를 남겨주세요.

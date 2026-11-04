@@ -90,6 +90,7 @@
 "review_bottom_sheet.write_button" = "등록하기";
 "review_bottom_sheet.attach_photo" = "사진 첨부하기";
 "review_bottom_sheet.photo_limit" = "10개까지만 등록 가능해요!";
+"review_bottom_sheet.length_guide" = "300자 이내로 작성해주세요.";
 
 // 지도 상세 화면
 "map_detail.title" = "지도 보기";

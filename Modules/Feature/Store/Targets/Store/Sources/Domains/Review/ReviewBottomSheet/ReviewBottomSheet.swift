@@ -55,7 +55,8 @@ final class ReviewBottomSheet: BaseView {
         let textView = UITextView()
         textView.text = Strings.ReviewBottomSheet.placeholder
         textView.font = Fonts.regular.font(size: 14)
-        textView.textContainerInset = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+        textView.textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
+        textView.textContainer.lineFragmentPadding = 0
         textView.backgroundColor = Colors.gray0.color
         textView.textColor = Colors.gray40.color
         textView.returnKeyType = .done
@@ -64,6 +65,14 @@ final class ReviewBottomSheet: BaseView {
         textView.layer.borderColor = Colors.gray20.color.cgColor
 
         return textView
+    }()
+
+    private let lengthGuideLabel: UILabel = {
+        let label = UILabel()
+        label.text = Strings.ReviewBottomSheet.lengthGuide
+        label.textColor = Colors.gray70.color
+        label.font = Fonts.regular.font(size: 12)
+        return label
     }()
 
     private let countLabel = UILabel()
@@ -78,6 +87,7 @@ final class ReviewBottomSheet: BaseView {
             ratingStackView,
             photoListView,
             textView,
+            lengthGuideLabel,
             countLabel,
             writeButton
         ])
@@ -118,6 +128,12 @@ final class ReviewBottomSheet: BaseView {
             $0.trailing.equalToSuperview().offset(-20)
             $0.top.equalTo(photoListView.snp.bottom).offset(16)
             $0.height.equalTo(140)
+        }
+
+        lengthGuideLabel.snp.makeConstraints {
+            $0.leading.equalTo(textView)
+            $0.top.equalTo(textView.snp.bottom).offset(4)
+            $0.trailing.lessThanOrEqualTo(countLabel.snp.leading).offset(-4)
         }
 
         countLabel.snp.makeConstraints {
@@ -167,13 +183,13 @@ final class ReviewBottomSheet: BaseView {
             attributes: [.font: Fonts.regular.font(size: 12), .foregroundColor: Colors.gray50.color]
         ))
         countLabel.attributedText = text
-        textView.layer.borderColor = (count > 0 ? Colors.mainPink.color : Colors.gray20.color).cgColor
     }
 }
 
 // MARK: UITextViewDelegate
 extension ReviewBottomSheet: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.layer.borderColor = Colors.mainPink.color.cgColor
         if textView.text == Strings.ReviewBottomSheet.placeholder {
             textView.text = ""
             textView.textColor = Colors.gray70.color
@@ -181,6 +197,7 @@ extension ReviewBottomSheet: UITextViewDelegate {
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
+        textView.layer.borderColor = Colors.gray20.color.cgColor
         if textView.text == "" {
             textView.text = Strings.ReviewBottomSheet.placeholder
             textView.textColor = Colors.gray40.color
