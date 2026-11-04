@@ -1,0 +1,22 @@
+name: Cleanup Temp Branches
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 릴리즈에 작업이 모두 들어간 temp 브랜치 삭제
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: sh scripts/cleanup-released-temp-branches.sh "$TAG"
