@@ -137,6 +137,8 @@ final class ReviewBottomSheetViewController: BaseViewController {
                     owner.dismiss(animated: true)
                 case .uploadPhoto(let viewModel):
                     let viewController = UploadPhotoViewController.instance(viewModel: viewModel)
+                    viewController.modalPresentationStyle = .overFullScreen
+                    owner.view.endEditing(true)
                     owner.present(viewController, animated: true)
                 }
             }
