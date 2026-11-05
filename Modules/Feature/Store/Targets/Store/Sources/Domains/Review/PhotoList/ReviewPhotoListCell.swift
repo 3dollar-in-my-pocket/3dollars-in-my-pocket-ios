@@ -9,7 +9,7 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
     
     let removeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Icons.deleteX.image.withTintColor(Colors.mainRed.color), for: .normal)
+        button.setImage(Icons.deletePhoto.image, for: .normal)
         
         return button
     }()
@@ -31,8 +31,8 @@ final class ReviewPhotoListCell: BaseCollectionViewCell {
         }
         
         removeButton.snp.makeConstraints {
-            $0.top.trailing.equalToSuperview().inset(4)
-            $0.size.equalTo(20)
+            $0.top.trailing.equalToSuperview()
+            $0.size.equalTo(28)
         }
     }
 
@@ -53,23 +53,19 @@ final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
     
     private let plusBackgroundView: UIView = {
         let plusBackgroundView = UIView()
-        plusBackgroundView.backgroundColor = Colors.gray100.color
+        plusBackgroundView.backgroundColor = Colors.gray60.color
         plusBackgroundView.clipsToBounds = true
-        plusBackgroundView.layer.cornerRadius = 14
+        plusBackgroundView.layer.cornerRadius = 11
         return plusBackgroundView
     }()
     
     private let plusImageView: UIImageView = {
         let plusImageView = UIImageView()
-        plusImageView.image = Icons.plus.image.withTintColor(Colors.mainPink.color)
+        plusImageView.image = Icons.plus.image.withTintColor(Colors.systemWhite.color)
         return plusImageView
     }()
-    private let countLabel: UILabel = {
-        let countLabel = UILabel()
-        countLabel.font = Fonts.medium.font(size: 12)
-        countLabel.textColor = Colors.gray95.color
-        return countLabel
-    }()
+
+    private let countLabel = UILabel()
     
     override func setup() {
         super.setup()
@@ -83,29 +79,39 @@ final class ReviewPhotoListHeaderView: BaseCollectionViewReusableView {
         
         clipsToBounds = true
         layer.cornerRadius = 10
+        layer.borderWidth = 1
+        layer.borderColor = Colors.gray20.color.cgColor
         backgroundColor = Colors.gray10.color
         
         plusBackgroundView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(11)
-            $0.size.equalTo(28)
+            $0.top.equalToSuperview().inset(13)
+            $0.size.equalTo(22)
             $0.centerX.equalToSuperview()
         }
         
         plusImageView.snp.makeConstraints {
             $0.center.equalToSuperview()
-            $0.size.equalTo(20)
+            $0.size.equalTo(16)
         }
         
         countLabel.snp.makeConstraints {
-            $0.top.equalTo(plusBackgroundView.snp.bottom).offset(4)
+            $0.top.equalTo(plusBackgroundView.snp.bottom).offset(5)
             $0.centerX.equalToSuperview()
         }
 
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
     }
     
-    func bind(totalCount: Int) {
-        countLabel.text = "\(totalCount)/10"
+    func bind(totalCount: Int, maxCount: Int) {
+        let text = NSMutableAttributedString(
+            string: "\(totalCount)",
+            attributes: [.font: Fonts.bold.font(size: 16), .foregroundColor: Colors.mainPink.color]
+        )
+        text.append(NSAttributedString(
+            string: "/\(maxCount)",
+            attributes: [.font: Fonts.regular.font(size: 16), .foregroundColor: Colors.gray40.color]
+        ))
+        countLabel.attributedText = text
     }
 
     @objc private func didTap() {

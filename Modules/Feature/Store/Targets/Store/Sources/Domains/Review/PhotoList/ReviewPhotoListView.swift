@@ -14,6 +14,7 @@ final class ReviewPhotoListView: BaseView {
     struct Config {
         let size: CGSize
         let canEdit: Bool
+        var maxCount: Int = 10
     }
     
     private lazy var collectionView: UICollectionView = {
@@ -90,9 +91,9 @@ final class ReviewPhotoListView: BaseView {
     private func generateLayout() -> UICollectionViewFlowLayout {
         let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        layout.sectionInset.left = config.canEdit ? 8 : .zero
+        layout.minimumInteritemSpacing = config.canEdit ? 4 : 8
+        layout.minimumLineSpacing = config.canEdit ? 4 : 8
+        layout.sectionInset.left = config.canEdit ? 4 : .zero
         return layout
     }
     
@@ -128,7 +129,7 @@ extension ReviewPhotoListView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerView: ReviewPhotoListHeaderView = collectionView.dequeueReusableSupplementaryView(ofkind: UICollectionView.elementKindSectionHeader, indexPath: indexPath)
-        headerView.bind(totalCount: imageList.count)
+        headerView.bind(totalCount: imageList.count, maxCount: config.maxCount)
         headerView.didTapEvent
             .subscribe(didTapUploadPhoto)
             .store(in: &headerView.cancellables)
@@ -158,8 +159,10 @@ extension ReviewPhotoListView: UICollectionViewDelegateFlowLayout {
 final class ReviewPhotoAddButtonView: UIControl {
     private let containerView: UIView = {
         let containerView = UIView()
-        containerView.backgroundColor = Colors.gray10.color
-        containerView.layer.cornerRadius = 10
+        containerView.backgroundColor = Colors.systemWhite.color
+        containerView.layer.cornerRadius = 12
+        containerView.layer.borderWidth = 1
+        containerView.layer.borderColor = Colors.gray20.color.cgColor
         containerView.isUserInteractionEnabled = false
         return containerView
     }()
@@ -168,21 +171,21 @@ final class ReviewPhotoAddButtonView: UIControl {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 4
+        stackView.spacing = 8
         return stackView
     }()
     
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
-        titleLabel.font = Fonts.regular.font(size: 14)
-        titleLabel.textColor = Colors.gray60.color
-        titleLabel.text = "사진 추가하기"
+        titleLabel.font = Fonts.semiBold.font(size: 14)
+        titleLabel.textColor = Colors.gray70.color
+        titleLabel.text = Strings.ReviewBottomSheet.attachPhoto
         return titleLabel
     }()
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Icons.camera.image.resizeImage(scaledTo: 21).withTintColor(Colors.gray60.color)
+        imageView.image = Icons.imageAdd.image
         return imageView
     }()
     
@@ -203,9 +206,12 @@ final class ReviewPhotoAddButtonView: UIControl {
         stackView.addArrangedSubview(titleLabel)
         
         containerView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.centerY.equalToSuperview()
-            $0.height.equalTo(53)
+            $0.leading.trailing.top.equalToSuperview()
+            $0.height.equalTo(48)
+        }
+        
+        imageView.snp.makeConstraints {
+            $0.size.equalTo(20)
         }
         
         stackView.snp.makeConstraints {

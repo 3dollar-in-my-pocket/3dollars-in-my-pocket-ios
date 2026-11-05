@@ -21,6 +21,10 @@ final class MockStoreRepository: StoreRepository {
     private(set) var fetchStorePreviewCallCount = 0
     private(set) var reportStoreCallCount = 0
     private(set) var lastReportStoreArguments: (storeId: Int, reportReason: String)?
+    var writeReviewResult: Result<StoreReviewWithWriterResponse, Error> = .failure(MockError.notStubbed())
+    private(set) var writeReviewInputs: [WriteReviewRequestInput] = []
+    var editReviewResult: Result<StoreReviewResponse, Error> = .failure(MockError.notStubbed())
+    private(set) var editReviewArguments: [(reviewId: Int, input: EditReviewRequestInput)] = []
 
     init(
         fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error>? = nil,
@@ -47,13 +51,19 @@ final class MockStoreRepository: StoreRepository {
         lastReportStoreArguments = (storeId: storeId, reportReason: reportReason)
         return reportStoreResult
     }
-    func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> { .failure(MockError.notStubbed()) }
+    func writeReview(input: WriteReviewRequestInput) async -> Result<StoreReviewWithWriterResponse, Error> {
+        writeReviewInputs.append(input)
+        return writeReviewResult
+    }
     func uploadPhotos(storeId: Int, photos: [Data]) async -> Result<[StoreImageResponse], Error> {
         uploadPhotosArguments.append((storeId, photos))
         return uploadPhotosResult
     }
     func fetchStorePhotos(storeId: Int, cursor: String?) async -> Result<ContentsWithCursorResponse<StoreImageWithApiResponse>, Error> { fetchStorePhotosResult }
-    func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> { .failure(MockError.notStubbed()) }
+    func editReview(reviewId: Int, input: EditReviewRequestInput) async -> Result<StoreReviewResponse, Error> {
+        editReviewArguments.append((reviewId, input))
+        return editReviewResult
+    }
     func deletePhoto(photoId: Int) async -> Result<String?, Error> { deletePhotoResult }
     func fetchNewPosts(storeId: String, cursor: CursorRequestInput) async -> Result<ContentsWithCursorResponse<PostWithStoreResponse>, Error> { .failure(MockError.notStubbed()) }
     func togglePostSticker(storeId: String, postId: String, input: StoreNewsPostStickersReplaceRequest) async -> Result<String, Error> { .failure(MockError.notStubbed()) }

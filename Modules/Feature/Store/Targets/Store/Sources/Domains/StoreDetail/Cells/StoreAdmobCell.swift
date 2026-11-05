@@ -61,6 +61,7 @@ final class StoreAdmobCell: BaseCollectionViewCell {
         adBannerView.isHidden = isDisplayed.isNot
 
         guard hasLoadedAd.isNot else { return }
+        adBannerView.setServerAdUnitId(section.cards.first?.adUnitId)
         self.rootViewController = rootViewController
         pendingAdHeight = height
         loadAdIfNeeded()

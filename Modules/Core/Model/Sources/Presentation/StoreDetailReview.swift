@@ -12,7 +12,7 @@ public struct StoreDetailReview: Hashable {
     public var likeCount: Int
     public var reactedByMe: Bool
     public let stickerId: String
-    public let images: [ImageResponse]
+    public var images: [ImageResponse]
     public let comment: StoreDetailReviewComment?
     
     public init(response: StoreReviewWithWriterResponse) {

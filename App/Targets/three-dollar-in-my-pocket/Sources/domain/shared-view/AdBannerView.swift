@@ -11,12 +11,14 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     let admobView = BannerView()
     
     private let adType: AdType
+    private let defaultAdUnitId: String
     
     var isLoaded: Bool = false
     var onClick: (() -> Void)?
     
     required init(adType: AdType) {
         self.adType = adType
+        self.defaultAdUnitId = Bundle.getAdmobId(adType: adType)
         super.init(frame: .zero)
         
         setup()
@@ -28,11 +30,30 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     }
     
     private func setup() {
-        admobView.adUnitID = Bundle.getAdmobId(adType: adType)
+        admobView.adUnitID = defaultAdUnitId
         backgroundColor = Colors.gray10.color
         addSubview(admobView)
     }
     
+    func setServerAdUnitId(_ adUnitId: String?) {
+        let resolvedAdUnitId = AdUnitIdResolver.resolve(
+            serverAdUnitId: adUnitId,
+            fallback: defaultAdUnitId,
+            usesServerAdUnitId: Self.usesServerAdUnitId
+        )
+        guard admobView.adUnitID != resolvedAdUnitId else { return }
+        admobView.adUnitID = resolvedAdUnitId
+        isLoaded = false
+    }
+
+    private static var usesServerAdUnitId: Bool {
+        #if DEBUG
+        return false
+        #else
+        return true
+        #endif
+    }
+
     private func bindConstraints() {
         admobView.snp.makeConstraints {
             $0.top.bottom.centerX.equalToSuperview()
@@ -75,6 +96,17 @@ extension AdBannerView: BannerViewDelegate {
             from: bannerView.rootViewController,
             error: error
         )
+        retryWithDefaultAdUnitIfNeeded(bannerView)
+    }
+
+    private func retryWithDefaultAdUnitIfNeeded(_ bannerView: BannerView) {
+        guard let retryAdUnitId = AdUnitIdResolver.retryAdUnitId(
+            afterFailureOf: bannerView.adUnitID,
+            fallback: defaultAdUnitId
+        ) else { return }
+
+        bannerView.adUnitID = retryAdUnitId
+        bannerView.load(Request())
     }
 
     func bannerViewDidRecordClick(_ bannerView: BannerView) {
