@@ -1031,8 +1031,8 @@ extension HomeViewController {
         viewController.onRequestPresentVisit = { [weak self] storeId in
             self?.presentVisit(storeId: storeId)
         }
-        viewController.onRequestPresentReviewWrite = { [weak self] storeId in
-            self?.presentStorePreviewReviewWrite(storeId: storeId)
+        viewController.onRequestPresentReviewWrite = { [weak self] storeId, storeName in
+            self?.presentStorePreviewReviewWrite(storeId: storeId, storeName: storeName)
         }
         viewController.onRequestShare = { storeId, storeName, latitude, longitude in
             // 가게 상세 "공유하기"와 동일한 카카오 공유. 미리보기엔 overview 가 없어 이름/좌표만 받는 오버로드를 사용한다.
@@ -1106,8 +1106,11 @@ extension HomeViewController {
     }
 
     /// 가게 상세 "리뷰쓰기"와 동일한 리뷰 작성 바텀시트(PanModal)를 띄운다.
-    private func presentStorePreviewReviewWrite(storeId: Int) {
-        let reviewViewController = Environment.storeInterface.getReviewBottomSheetViewController(storeId: storeId) { [weak self] in
+    private func presentStorePreviewReviewWrite(storeId: Int, storeName: String?) {
+        let reviewViewController = Environment.storeInterface.getReviewBottomSheetViewController(
+            storeId: storeId,
+            storeName: storeName
+        ) { [weak self] in
             // 리뷰 작성 성공 시 미리보기 시트를 최신 데이터로 갱신한다.
             self?.storePreviewBottomSheet?.reload()
         }

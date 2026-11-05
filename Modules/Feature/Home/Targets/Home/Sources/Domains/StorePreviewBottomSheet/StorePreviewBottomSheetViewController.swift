@@ -176,7 +176,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     var onRequestCollapsePanel: (() -> Void)?
     var onRequestTrackDetailScroll: ((UIScrollView) -> Void)?
     var onRequestPresentVisit: ((Int) -> Void)?
-    var onRequestPresentReviewWrite: ((Int) -> Void)?
+    var onRequestPresentReviewWrite: ((Int, String?) -> Void)?
     var onRequestShare: ((_ storeId: Int, _ storeName: String, _ latitude: Double, _ longitude: Double) -> Void)?
     var onRequestPresentNavigation: ((Double, Double, String) -> Void)?
     var onRequestOpenLink: ((SDLink) -> Void)?
@@ -482,8 +482,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
                     self.onRequestExpandPanel?()
                 case .presentVisit(let storeId):
                     self.onRequestPresentVisit?(storeId)
-                case .presentReviewWrite(let storeId):
-                    self.onRequestPresentReviewWrite?(storeId)
+                case .presentReviewWrite(let storeId, let storeName):
+                    self.onRequestPresentReviewWrite?(storeId, storeName)
                 case .share(let storeId, let storeName, let lat, let lng):
                     self.onRequestShare?(storeId, storeName, lat, lng)
                 case .presentShareSheet(let url):

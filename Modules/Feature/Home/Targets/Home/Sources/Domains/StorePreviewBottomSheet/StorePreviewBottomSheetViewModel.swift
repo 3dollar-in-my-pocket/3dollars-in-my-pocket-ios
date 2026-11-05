@@ -31,7 +31,7 @@ extension StorePreviewBottomSheetViewModel {
     enum Route {
         case expandPanel
         case presentVisit(storeId: Int)
-        case presentReviewWrite(storeId: Int)
+        case presentReviewWrite(storeId: Int, storeName: String?)
         case share(storeId: Int, storeName: String, latitude: Double, longitude: Double)
         case presentShareSheet(URL)
         case presentNavigation(latitude: Double, longitude: Double, storeName: String)
@@ -264,7 +264,10 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                     ))
                 }
             case .storePreviewReviewWrite:
-                output.route.send(.presentReviewWrite(storeId: config.storeId))
+                output.route.send(.presentReviewWrite(
+                    storeId: config.storeId,
+                    storeName: customAction.extraParams["STORE_NAME"]?.stringValue
+                ))
             default:
                 // 미리보기 섹션과 무관한 액션(상세 전용 섹션의 커스텀 액션 등)은 상세 확장으로 처리한다.
                 output.route.send(.expandPanel)

@@ -25,6 +25,17 @@ public struct ImageUtils {
         return dataArray
     }
     
+    public static func pixelSize(of data: Data) -> (width: Int, height: Int)? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let width = properties[kCGImagePropertyPixelWidth] as? Int,
+              let height = properties[kCGImagePropertyPixelHeight] as? Int,
+              width > 0, height > 0 else { return nil }
+
+        let orientation = properties[kCGImagePropertyOrientation] as? UInt32 ?? 1
+        return (5...8).contains(orientation) ? (height, width) : (width, height)
+    }
+
     public static func getImage(from asset: PHAsset) -> UIImage {
         let options = PHImageRequestOptions()
         var resultImage = UIImage()

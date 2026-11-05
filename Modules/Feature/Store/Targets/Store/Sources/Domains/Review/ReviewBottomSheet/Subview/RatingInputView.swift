@@ -6,65 +6,23 @@ import DesignSystem
 
 final class RatingInputView: BaseView {
     enum Layout {
-        static let size = CGSize(width: 176, height: 32)
+        static let size = CGSize(width: 216, height: 40)
     }
     
     let ratingPublisher = PassthroughSubject<Int, Never>()
     
-    private let star1: UIButton = {
-        let button = UIButton()
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: .normal)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: [.normal, .highlighted])
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: .selected)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: [.selected, .highlighted])
-        button.showsTouchWhenHighlighted = false
-        
-        return button
-    }()
+    private static let normalStarImage = Icons.starSolid.image
+        .resizeImage(scaledTo: Layout.size.height)
+        .withTintColor(Colors.gray20.color)
+    private static let selectedStarImage = Icons.starSolid.image
+        .resizeImage(scaledTo: Layout.size.height)
+        .withTintColor(Colors.mainPink.color)
     
-    private let star2: UIButton = {
-        let button = UIButton()
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: .normal)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: [.normal, .highlighted])
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: .selected)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: [.selected, .highlighted])
-        button.showsTouchWhenHighlighted = false
-        
-        return button
-    }()
-    
-    private let star3: UIButton = {
-        let button = UIButton()
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: .normal)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: [.normal, .highlighted])
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: .selected)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: [.selected, .highlighted])
-        button.showsTouchWhenHighlighted = false
-        
-        return button
-    }()
-    
-    private let star4: UIButton = {
-        let button = UIButton()
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: .normal)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: [.normal, .highlighted])
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: .selected)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: [.selected, .highlighted])
-        button.showsTouchWhenHighlighted = false
-        
-        return button
-    }()
-    
-    private let star5: UIButton = {
-        let button = UIButton()
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: .normal)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.gray20.color), for: [.normal, .highlighted])
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: .selected)
-        button.setImage(Icons.starSolid.image.withTintColor(Colors.mainPink.color), for: [.selected, .highlighted])
-        button.showsTouchWhenHighlighted = false
-        
-        return button
-    }()
+    private let star1 = RatingInputView.makeStarButton()
+    private let star2 = RatingInputView.makeStarButton()
+    private let star3 = RatingInputView.makeStarButton()
+    private let star4 = RatingInputView.makeStarButton()
+    private let star5 = RatingInputView.makeStarButton()
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -127,23 +85,23 @@ final class RatingInputView: BaseView {
     
     override func bindConstraints() {
         star1.snp.makeConstraints {
-            $0.width.height.equalTo(32)
+            $0.width.height.equalTo(40)
         }
         
         star2.snp.makeConstraints {
-            $0.width.height.equalTo(32)
+            $0.width.height.equalTo(40)
         }
         
         star3.snp.makeConstraints {
-            $0.width.height.equalTo(32)
+            $0.width.height.equalTo(40)
         }
         
         star4.snp.makeConstraints {
-            $0.width.height.equalTo(32)
+            $0.width.height.equalTo(40)
         }
         
         star5.snp.makeConstraints {
-            $0.width.height.equalTo(32)
+            $0.width.height.equalTo(40)
         }
         
         stackView.snp.makeConstraints {
@@ -171,5 +129,15 @@ final class RatingInputView: BaseView {
         star3.isSelected = false
         star4.isSelected = false
         star5.isSelected = false
+    }
+    
+    private static func makeStarButton() -> UIButton {
+        let button = UIButton()
+        button.setImage(normalStarImage, for: .normal)
+        button.setImage(normalStarImage, for: [.normal, .highlighted])
+        button.setImage(selectedStarImage, for: .selected)
+        button.setImage(selectedStarImage, for: [.selected, .highlighted])
+        button.showsTouchWhenHighlighted = false
+        return button
     }
 }
