@@ -29,6 +29,8 @@ final class WebView: BaseView {
     }()
     
     private let webView = WKWebView()
+
+    private let requestBuilder = WebViewRequestBuilder()
     
     private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
@@ -81,20 +83,19 @@ final class WebView: BaseView {
         titleLabel.text = title
         
         guard let url = URL(string: url) else { return }
-        let request = URLRequest(url: url)
-        
-        loadingIndicator.startAnimating()
-        webView.load(request)
+        load(url: url)
     }
     
     func bind(webviewType: WebViewType) {
         titleLabel.text = webviewType.title
 
         guard let url = URL(string: webviewType.url) else { return }
-        let request = URLRequest(url: url)
+        load(url: url)
+    }
 
+    private func load(url: URL) {
         loadingIndicator.startAnimating()
-        webView.load(request)
+        webView.load(requestBuilder.build(url: url))
     }
 }
 
@@ -107,7 +108,7 @@ extension WebView: WKUIDelegate {
         windowFeatures _: WKWindowFeatures
     ) -> WKWebView? {
         if navigationAction.targetFrame.isNil {
-            webView.load(navigationAction.request)
+            webView.load(requestBuilder.build(request: navigationAction.request))
         }
         return nil
     }
