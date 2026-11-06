@@ -23,20 +23,18 @@ struct WebViewRequestBuilder {
         self.userAgent = userAgent
     }
 
-    func build(url: URL) -> URLRequest {
-        return build(request: URLRequest(url: url))
-    }
-
     func build(request: URLRequest) -> URLRequest {
         var request = request
 
-        guard let url = request.url, Self.isTrusted(url: url) else { return request }
+        guard let url = request.url, Self.isTrusted(url: url), authToken.isNotEmpty else { return request }
 
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-        if authToken.isNotEmpty {
-            request.setValue(authToken, forHTTPHeaderField: "Authorization")
-        }
+        request.setValue(authToken, forHTTPHeaderField: "Authorization")
         return request
+    }
+
+    func customUserAgent(for url: URL?) -> String? {
+        guard let url, Self.isTrusted(url: url) else { return nil }
+        return userAgent
     }
 
     static func isTrusted(url: URL) -> Bool {

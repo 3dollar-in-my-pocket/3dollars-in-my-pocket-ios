@@ -6,10 +6,17 @@ final class WebViewRequestBuilderTests: XCTestCase {
     private let token = "test-token"
     private let userAgent = "4.52.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 27.0.0)"
 
+    private func makeBuilder(token: String? = nil) -> WebViewRequestBuilder {
+        return WebViewRequestBuilder(authToken: token ?? self.token, userAgent: userAgent)
+    }
+
     private func makeRequest(_ urlString: String, token: String? = nil) throws -> URLRequest {
         let url = try XCTUnwrap(URL(string: urlString))
-        let builder = WebViewRequestBuilder(authToken: token ?? self.token, userAgent: userAgent)
-        return builder.build(url: url)
+        return makeBuilder(token: token).build(request: URLRequest(url: url))
+    }
+
+    private func customUserAgent(_ urlString: String) -> String? {
+        return makeBuilder().customUserAgent(for: URL(string: urlString))
     }
 
     // MARK: TH-1580 TC1 — 허용 도메인은 첫 요청에 Authorization·User-Agent 가 실린다
@@ -26,7 +33,7 @@ final class WebViewRequestBuilderTests: XCTestCase {
 
             // Then
             XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), token, host)
-            XCTAssertEqual(request.value(forHTTPHeaderField: "User-Agent"), userAgent, host)
+            XCTAssertEqual(customUserAgent(host), userAgent, host)
         }
     }
 
@@ -43,7 +50,7 @@ final class WebViewRequestBuilderTests: XCTestCase {
 
             // Then
             XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), token, url)
-            XCTAssertEqual(request.value(forHTTPHeaderField: "User-Agent"), userAgent, url)
+            XCTAssertEqual(customUserAgent(url), userAgent, url)
         }
     }
 
@@ -65,7 +72,7 @@ final class WebViewRequestBuilderTests: XCTestCase {
 
             // Then
             XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"), url)
-            XCTAssertNil(request.value(forHTTPHeaderField: "User-Agent"), url)
+            XCTAssertNil(customUserAgent(url), url)
         }
     }
 
@@ -73,10 +80,11 @@ final class WebViewRequestBuilderTests: XCTestCase {
 
     func test_TH1580_TC3_토큰이_비어있으면_Authorization없이_UA만_실린다() throws {
         // Given / When
-        let request = try makeRequest("https://boong-village.3dollarinmypocket.workers.dev/", token: "")
+        let url = "https://boong-village.3dollarinmypocket.workers.dev/"
+        let request = try makeRequest(url, token: "")
 
         // Then
         XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
-        XCTAssertEqual(request.value(forHTTPHeaderField: "User-Agent"), userAgent)
+        XCTAssertEqual(customUserAgent(url), userAgent)
     }
 }

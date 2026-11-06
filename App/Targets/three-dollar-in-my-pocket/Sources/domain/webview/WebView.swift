@@ -83,19 +83,20 @@ final class WebView: BaseView {
         titleLabel.text = title
         
         guard let url = URL(string: url) else { return }
-        load(url: url)
+        load(URLRequest(url: url))
     }
     
     func bind(webviewType: WebViewType) {
         titleLabel.text = webviewType.title
 
         guard let url = URL(string: webviewType.url) else { return }
-        load(url: url)
+        load(URLRequest(url: url))
     }
 
-    private func load(url: URL) {
+    private func load(_ request: URLRequest) {
         loadingIndicator.startAnimating()
-        webView.load(requestBuilder.build(url: url))
+        webView.customUserAgent = requestBuilder.customUserAgent(for: request.url)
+        webView.load(requestBuilder.build(request: request))
     }
 }
 
@@ -108,7 +109,7 @@ extension WebView: WKUIDelegate {
         windowFeatures _: WKWindowFeatures
     ) -> WKWebView? {
         if navigationAction.targetFrame.isNil {
-            webView.load(requestBuilder.build(request: navigationAction.request))
+            load(navigationAction.request)
         }
         return nil
     }
