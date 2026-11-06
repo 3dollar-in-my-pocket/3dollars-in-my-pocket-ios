@@ -5,52 +5,64 @@ import XCTest
 final class WebViewRequestBuilderTests: XCTestCase {
     private let token = "test-token"
     private let userAgent = "4.52.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 27.0.0)"
+    private let debugGameURL = "https://boong-village-dev.3dollarinmypocket.workers.dev/"
+    private let releaseGameURL = "https://boong-village.3dollarinmypocket.workers.dev/"
 
-    private func makeBuilder(token: String? = nil) -> WebViewRequestBuilder {
-        return WebViewRequestBuilder(authToken: token ?? self.token, userAgent: userAgent)
+    private func makeBuilder(token: String? = nil, isDebugBuild: Bool = true) -> WebViewRequestBuilder {
+        return WebViewRequestBuilder(authToken: token ?? self.token, userAgent: userAgent, isDebugBuild: isDebugBuild)
     }
 
-    private func makeRequest(_ urlString: String, token: String? = nil) throws -> URLRequest {
+    private func makeRequest(_ urlString: String, token: String? = nil, isDebugBuild: Bool = true) throws -> URLRequest {
         let url = try XCTUnwrap(URL(string: urlString))
-        return makeBuilder(token: token).build(request: URLRequest(url: url))
+        return makeBuilder(token: token, isDebugBuild: isDebugBuild).build(request: URLRequest(url: url))
     }
 
-    private func customUserAgent(_ urlString: String) -> String? {
-        return makeBuilder().customUserAgent(for: URL(string: urlString))
+    private func customUserAgent(_ urlString: String, isDebugBuild: Bool = true) -> String? {
+        return makeBuilder(isDebugBuild: isDebugBuild).customUserAgent(for: URL(string: urlString))
     }
 
     // MARK: TH-1580 TC1 — 허용 도메인은 첫 요청에 Authorization·User-Agent 가 실린다
 
-    func test_TH1580_TC1_게임도메인이면_토큰과_앱UA가_실린다() throws {
-        let hosts = [
-            "https://boong-village-dev.3dollarinmypocket.workers.dev/",
-            "https://boong-village.3dollarinmypocket.workers.dev/"
-        ]
+    func test_TH1580_TC1_Debug빌드는_dev게임도메인에만_토큰과_앱UA가_실린다() throws {
+        // Given / When
+        let devRequest = try makeRequest(debugGameURL, isDebugBuild: true)
+        let prodRequest = try makeRequest(releaseGameURL, isDebugBuild: true)
 
-        for host in hosts {
-            // Given / When
-            let request = try makeRequest(host)
-
-            // Then
-            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), token, host)
-            XCTAssertEqual(customUserAgent(host), userAgent, host)
-        }
+        // Then
+        XCTAssertEqual(devRequest.value(forHTTPHeaderField: "Authorization"), token)
+        XCTAssertEqual(customUserAgent(debugGameURL, isDebugBuild: true), userAgent)
+        XCTAssertNil(prodRequest.value(forHTTPHeaderField: "Authorization"))
+        XCTAssertNil(customUserAgent(releaseGameURL, isDebugBuild: true))
     }
 
-    func test_TH1580_TC1_가슴속3천원_도메인과_서브도메인이면_토큰이_실린다() throws {
+    func test_TH1580_TC1_Release빌드는_prod게임도메인에만_토큰과_앱UA가_실린다() throws {
+        // Given / When
+        let prodRequest = try makeRequest(releaseGameURL, isDebugBuild: false)
+        let devRequest = try makeRequest(debugGameURL, isDebugBuild: false)
+
+        // Then
+        XCTAssertEqual(prodRequest.value(forHTTPHeaderField: "Authorization"), token)
+        XCTAssertEqual(customUserAgent(releaseGameURL, isDebugBuild: false), userAgent)
+        XCTAssertNil(devRequest.value(forHTTPHeaderField: "Authorization"))
+        XCTAssertNil(customUserAgent(debugGameURL, isDebugBuild: false))
+    }
+
+    func test_TH1580_TC1_가슴속3천원_도메인과_서브도메인이면_빌드와_무관하게_토큰이_실린다() throws {
         let urls = [
             "https://threedollars.co.kr/event",
             "https://dev.threedollars.co.kr/event",
             "https://app.threedollars.co.kr/store?storeId=1"
         ]
 
-        for url in urls {
-            // Given / When
-            let request = try makeRequest(url)
+        for isDebugBuild in [true, false] {
+            for url in urls {
+                // Given / When
+                let request = try makeRequest(url, isDebugBuild: isDebugBuild)
 
-            // Then
-            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), token, url)
-            XCTAssertEqual(customUserAgent(url), userAgent, url)
+                // Then
+                XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), token, url)
+                XCTAssertEqual(customUserAgent(url, isDebugBuild: isDebugBuild), userAgent, url)
+            }
         }
     }
 
@@ -63,7 +75,8 @@ final class WebViewRequestBuilderTests: XCTestCase {
             "https://evil-threedollars.co.kr",
             "https://threedollars.co.kr.evil.com",
             "https://other.3dollarinmypocket.workers.dev",
-            "http://threedollars.co.kr/event"
+            "http://threedollars.co.kr/event",
+            "http://boong-village-dev.3dollarinmypocket.workers.dev/"
         ]
 
         for url in urls {
@@ -76,15 +89,77 @@ final class WebViewRequestBuilderTests: XCTestCase {
         }
     }
 
+    func test_TH1580_TC2_외부도메인_요청에_실려온_Authorization은_제거한다() throws {
+        // Given
+        var request = URLRequest(url: try XCTUnwrap(URL(string: "https://www.google.com")))
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+
+        // When
+        let built = makeBuilder().build(request: request)
+
+        // Then
+        XCTAssertNil(built.value(forHTTPHeaderField: "Authorization"))
+    }
+
+    func test_TH1580_TC2_허용페이지에서_외부도메인으로_이동하면_다시_로드해_앱UA를_뗀다() throws {
+        // Given
+        let builder = makeBuilder()
+        let request = URLRequest(url: try XCTUnwrap(URL(string: "https://www.google.com/ad")))
+
+        // When
+        let needsReload = builder.needsReload(request: request, currentUserAgent: userAgent)
+
+        // Then
+        XCTAssertTrue(needsReload)
+        XCTAssertNil(builder.customUserAgent(for: request.url))
+    }
+
+    func test_TH1580_TC2_외부도메인으로_리다이렉트되며_Authorization이_실려오면_다시_로드한다() throws {
+        // Given
+        let builder = makeBuilder()
+        var request = URLRequest(url: try XCTUnwrap(URL(string: "https://www.google.com")))
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+
+        // When
+        let needsReload = builder.needsReload(request: request, currentUserAgent: nil)
+
+        // Then
+        XCTAssertTrue(needsReload)
+    }
+
+    func test_TH1580_TC2_외부페이지에서_허용도메인으로_이동하면_다시_로드해_앱UA를_붙인다() throws {
+        // Given
+        let builder = makeBuilder()
+        let request = URLRequest(url: try XCTUnwrap(URL(string: "https://threedollars.co.kr/event")))
+
+        // When
+        let needsReload = builder.needsReload(request: request, currentUserAgent: nil)
+
+        // Then
+        XCTAssertTrue(needsReload)
+        XCTAssertEqual(builder.build(request: request).value(forHTTPHeaderField: "Authorization"), token)
+    }
+
+    func test_TH1580_TC2_같은_허용범위_안의_이동은_다시_로드하지_않는다() throws {
+        // Given
+        let builder = makeBuilder()
+        let trustedRequest = URLRequest(url: try XCTUnwrap(URL(string: "https://threedollars.co.kr/event")))
+        let externalRequest = URLRequest(url: try XCTUnwrap(URL(string: "https://www.google.com")))
+
+        // When / Then
+        XCTAssertFalse(builder.needsReload(request: trustedRequest, currentUserAgent: userAgent))
+        XCTAssertFalse(builder.needsReload(request: externalRequest, currentUserAgent: nil))
+        XCTAssertFalse(builder.needsReload(request: externalRequest, currentUserAgent: ""))
+    }
+
     // MARK: TH-1580 TC3 — 비로그인이면 Authorization 없이 로드한다
 
     func test_TH1580_TC3_토큰이_비어있으면_Authorization없이_UA만_실린다() throws {
         // Given / When
-        let url = "https://boong-village.3dollarinmypocket.workers.dev/"
-        let request = try makeRequest(url, token: "")
+        let request = try makeRequest(debugGameURL, token: "")
 
         // Then
         XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
-        XCTAssertEqual(customUserAgent(url), userAgent)
+        XCTAssertEqual(customUserAgent(debugGameURL), userAgent)
     }
 }

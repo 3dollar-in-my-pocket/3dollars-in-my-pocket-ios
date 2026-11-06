@@ -116,6 +116,22 @@ extension WebView: WKUIDelegate {
 }
 
 extension WebView: WKNavigationDelegate {
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        let request = navigationAction.request
+        guard navigationAction.targetFrame?.isMainFrame == true,
+              requestBuilder.needsReload(request: request, currentUserAgent: webView.customUserAgent) else {
+            decisionHandler(.allow)
+            return
+        }
+
+        decisionHandler(.cancel)
+        load(request)
+    }
+
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingIndicator.startAnimating()
     }
