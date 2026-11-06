@@ -22,7 +22,7 @@ final class SDUILogTests: XCTestCase {
         let viewModel = try makeHomeViewModel(fixture: "HomeListSectionWithFocusBounds")
 
         // When
-        viewModel.input.applyPreset.send("event")
+        viewModel.input.applyDeepLink.send(.init(preset: "event", tabId: nil))
 
         // Then
         XCTAssertEqual(viewModel.output.preset.value, "event")
