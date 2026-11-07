@@ -75,6 +75,25 @@ final class StoreSectionsViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
+    func test_TH1421_TC16_리뷰작성액션에가게명이있으면_리뷰시트에가게명이전달된다() throws {
+        // Given
+        let repository = MockStoreRepository(fetchStoreScreenV2Result: .failure(NSError(domain: "unused", code: 0)))
+        let viewModel = makeViewModel(repository: repository)
+        var reviewViewModel: ReviewBottomSheetViewModel?
+        viewModel.output.route.sink {
+            if case .presentWriteReview(let viewModel) = $0 { reviewViewModel = viewModel }
+        }.store(in: &cancellables)
+
+        // When
+        viewModel.input.didSelectAction.send(.custom(
+            .init(actionType: .storeReviewWrite, extraParams: ["STORE_ID": .string("153"), "STORE_NAME": .string("강남역 주변 가게")]),
+            clickLog: nil
+        ))
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(reviewViewModel).output.storeName, "강남역 주변 가게")
+    }
+
     // MARK: TH-1337 — 삭제된 가게 처리
 
     func test_TH1337_TC5_삭제된가게면_서버메시지와함께_상세를닫는Route가발행된다() async {

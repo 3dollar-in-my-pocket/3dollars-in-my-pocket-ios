@@ -243,6 +243,7 @@ public final class ReviewListViewModel: BaseViewModel {
         
         state.reviews[targetIndex].rating = review.rating
         state.reviews[targetIndex].contents = review.contents
+        state.reviews[targetIndex].images = review.images
         output.sections.send(getReviewListSection())
     }
     

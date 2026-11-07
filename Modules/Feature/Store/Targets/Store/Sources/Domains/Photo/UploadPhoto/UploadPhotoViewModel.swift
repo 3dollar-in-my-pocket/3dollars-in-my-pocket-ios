@@ -227,13 +227,20 @@ final class UploadPhotoViewModel: BaseViewModel {
             switch result {
             case .success(let imageResponse):
                 output.showLoading.send(false)
-                output.onSuccessUploadImages.send(imageResponse)
+                output.onSuccessUploadImages.send(Self.measuredImages(imageResponse, datas: datas))
                 output.route.send(.dismiss)
                 
             case .failure(let error):
                 output.showLoading.send(false)
                 output.showErrorAlert.send(error)
             }
+        }
+    }
+
+    static func measuredImages(_ responses: [ImageUploadResponse], datas: [Data]) -> [ImageUploadResponse] {
+        responses.enumerated().map { index, response in
+            guard let size = datas[safe: index].flatMap(ImageUtils.pixelSize(of:)) else { return response }
+            return ImageUploadResponse(imageUrl: response.imageUrl, width: size.width, height: size.height)
         }
     }
 }

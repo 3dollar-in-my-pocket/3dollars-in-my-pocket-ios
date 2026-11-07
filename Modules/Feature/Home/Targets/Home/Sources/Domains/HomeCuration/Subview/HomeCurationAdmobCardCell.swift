@@ -37,6 +37,7 @@ final class HomeCurationAdmobCardCell: BaseCollectionViewCell {
             $0.size.equalTo(size)
         }
         adBannerView.isLoaded = false
+        adBannerView.setServerAdUnitId(card.adUnitId)
         adBannerView.load(in: rootViewController, size: size)
     }
 }

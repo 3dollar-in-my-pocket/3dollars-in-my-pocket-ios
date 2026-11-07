@@ -45,6 +45,14 @@ PR 본문 첫 줄 `위험도:`에 적는다. `/3dollars:pr-body`가 아래 기�
 - **릴리즈 브랜치**(`release/`): 버전·빌드 번호 변경만이면 경량.
 - **의존성 업데이트**: `Tuist/Package.resolved`만 바뀌면 경량, `Project.swift`까지 바뀌면 풀코스.
 
+## 개발 배포와 릴리즈 마무리
+
+- **개발 배포**: 확인할 브랜치가 여럿이면 `temp/{티켓키들}-verify`로 합쳐 Xcode Cloud "Dev앱 배포"(TestFlight 개발 앱)로 올린다(`/3dollars:deploy-dev-build`). temp 브랜치는 확인용이라 PR을 만들지 않는다.
+- **심사 통과 후 finish** (git-flow CLI 없이 수동): master에 `release/vX.Y.Z` 머지(`--no-ff`) → `vX.Y.Z` 태그 → develop에 태그 머지 → master·develop·태그 push → 원격 release 브랜치 삭제 → `gh release create vX.Y.Z --verify-tag --generate-notes --notes-start-tag <이전 태그> --latest` → 포함 티켓 Done, 지라 버전 `[유저앱/iOS] vX.Y.Z` 릴리즈.
+- **릴리즈 공개 때 자동으로 도는 것**
+  - `discord-release-notify.yml`: 디스코드 출시 알림
+  - `cleanup-temp-branches.yml`: `temp/*` 중 작업(병합 커밋 제외)이 전부 이번 릴리즈 태그에 들어간 브랜치를 지운다. 아직 릴리즈에 없는 작업이 하나라도 있는 temp는 남는다. 미리 보려면 `sh scripts/cleanup-released-temp-branches.sh vX.Y.Z --dry-run`
+
 ## 규칙을 바꾸고 싶을 때
 
 이 문서, `RULES.md`, `.swiftlint.yml`, 디렉터리별 `CLAUDE.md`는 **함께** 바뀐다. 입구는 `/3dollars:review-digest`(반복 지적) 또는 `verification-change` 라벨이 붙는 PR이며, 린트·CI 변경은 적용 전에 확인받는다.

@@ -85,9 +85,10 @@ public final class StoreInterfaceImpl: StoreInterface {
 
     public func getReviewBottomSheetViewController(
         storeId: Int,
+        storeName: String?,
         onSuccessWriteReview: @escaping (() -> Void)
     ) -> UIViewController {
-        let config = ReviewBottomSheetViewModel.Config(storeId: storeId, review: nil)
+        let config = ReviewBottomSheetViewModel.Config(storeId: storeId, storeName: storeName, review: nil)
         let viewModel = ReviewBottomSheetViewModel(config: config)
 
         viewModel.output.onSuccessWriteReview

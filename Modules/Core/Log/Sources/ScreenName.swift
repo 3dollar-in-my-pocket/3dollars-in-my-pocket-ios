@@ -54,7 +54,6 @@ public extension ScreenName {
     static let visitStore = ScreenName(rawValue: "visit_store")
     static let bossStoreDetail = ScreenName(rawValue: "boss_store_detail")
     static let bossStoreReview = ScreenName(rawValue: "boss_store_review")
-    static let bossStoreReviewWrite = ScreenName(rawValue: "boss_store_review_write")
     static let bossStorePhoto = ScreenName(rawValue: "boss_store_photo")
     static let storeDetailBridge = ScreenName(rawValue: "store_detail_bridge")
     static let storeContributors = ScreenName(rawValue: "store_contributors")

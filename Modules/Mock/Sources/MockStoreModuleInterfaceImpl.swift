@@ -31,6 +31,7 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
 
     public func getReviewBottomSheetViewController(
         storeId: Int,
+        storeName: String?,
         onSuccessWriteReview: @escaping () -> Void
     ) -> UIViewController {
         EmptyViewController()

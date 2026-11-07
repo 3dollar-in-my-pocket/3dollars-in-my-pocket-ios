@@ -8,8 +8,12 @@ import Log
 
 public final class FeedListViewController: BaseViewController, LocalNewsViewControllerType {
     enum Layout {
-        static let contentInset = UIEdgeInsets(top: 16, left: 20, bottom: 24, right: 20)
+        static let sectionInset = UIEdgeInsets(top: 16, left: 20, bottom: 24, right: 20)
         static let itemSpacing: CGFloat = 16
+
+        static func cellWidth(in collectionView: UICollectionView) -> CGFloat {
+            collectionView.bounds.width - sectionInset.left - sectionInset.right
+        }
     }
 
     public override var screenName: ScreenName {
@@ -23,7 +27,6 @@ public final class FeedListViewController: BaseViewController, LocalNewsViewCont
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.backgroundColor = .clear
-        collectionView.contentInset = Layout.contentInset
         collectionView.showsVerticalScrollIndicator = false
         collectionView.alwaysBounceVertical = true
         return collectionView
@@ -134,6 +137,7 @@ public final class FeedListViewController: BaseViewController, LocalNewsViewCont
         let layout = WidthAdaptiveFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = Layout.itemSpacing
+        layout.sectionInset = Layout.sectionInset
         return layout
     }
 }
@@ -150,7 +154,7 @@ extension FeedListViewController {
 
 extension FeedListViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
+        let width = Layout.cellWidth(in: collectionView)
 
         switch datasource.itemIdentifier(for: indexPath) {
         case .header:

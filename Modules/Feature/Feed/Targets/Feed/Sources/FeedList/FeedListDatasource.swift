@@ -68,8 +68,7 @@ final class FeedListDatasource: UICollectionViewDiffableDataSource<FeedListSecti
                 return cell
             case .feed(let feed):
                 let cell: FeedCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                let cellWidth = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
-                cell.bind(feed: feed, cellWidth: cellWidth)
+                cell.bind(feed: feed, cellWidth: FeedListViewController.Layout.cellWidth(in: collectionView))
                 return cell
             }
         }
