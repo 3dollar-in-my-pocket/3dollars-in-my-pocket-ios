@@ -117,7 +117,7 @@ final class HomeListViewModel: BaseViewModel {
         input.updateFavorite
             .withUnretained(self)
             .sink { (owner: HomeListViewModel, favorite: (storeId: String, isFavorited: Bool)) in
-                guard owner.state.favoriteOverrides[favorite.storeId] != favorite.isFavorited else { return }
+                guard owner.isFavorited(storeId: favorite.storeId) != favorite.isFavorited else { return }
                 owner.state.favoriteOverrides[favorite.storeId] = favorite.isFavorited
                 owner.output.favoriteUpdated.send(favorite.storeId)
             }
@@ -300,6 +300,16 @@ final class HomeListViewModel: BaseViewModel {
     func isFavorited(_ card: HomeListBasicCardResponse) -> Bool {
         guard let storeId = card.additionalInfos?.storeId else { return false }
         return state.favoriteOverrides[storeId] ?? card.additionalInfos?.isSubscriber ?? false
+    }
+
+    private func isFavorited(storeId: String) -> Bool {
+        if let override = state.favoriteOverrides[storeId] {
+            return override
+        }
+        let card = state.cards
+            .compactMap { $0 as? HomeListBasicCardResponse }
+            .first { $0.additionalInfos?.storeId == storeId }
+        return card?.additionalInfos?.isSubscriber ?? false
     }
 
     private func toggleFavorite(cardId: String) {

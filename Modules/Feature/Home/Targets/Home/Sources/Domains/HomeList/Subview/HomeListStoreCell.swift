@@ -371,6 +371,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }
 
     private func bindPrimaryMetadata(_ metadata: HomeListCardMetadata) {
+        primaryMetadataStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let chips = metadata.primary
         if chips.isEmpty {
             primaryMetadataStackView.isHidden = true
@@ -390,6 +391,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
     }
 
     private func bindSecondaryMetadata(_ metadata: HomeListCardMetadata) {
+        secondaryMetadataStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let chips = metadata.secondary
         if chips.isEmpty {
             secondaryMetadataStackView.isHidden = true

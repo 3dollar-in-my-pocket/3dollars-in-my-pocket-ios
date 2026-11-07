@@ -270,4 +270,22 @@ final class HomeListFavoriteTests: XCTestCase {
         XCTAssertTrue(viewModel.isFavorited(cards[0]))
         XCTAssertEqual(updatedStoreIds, ["120027"])
     }
+
+    func test_TH1588_TC13_미리보기시트가서버와같은찜상태를보내면_카드를다시그리지않는다() throws {
+        // Given
+        let cards = try makeCards()
+        let viewModel = makeViewModel(storeRepository: MockStoreRepository())
+        viewModel.input.updateCards.send(cards)
+        var updatedCount = 0
+        viewModel.output.favoriteUpdated
+            .sink { _ in updatedCount += 1 }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.updateFavorite.send((storeId: "120027", isFavorited: false))
+        viewModel.input.updateFavorite.send((storeId: "120009", isFavorited: true))
+
+        // Then
+        XCTAssertEqual(updatedCount, 0)
+    }
 }
