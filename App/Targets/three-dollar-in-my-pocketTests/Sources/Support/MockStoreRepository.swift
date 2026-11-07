@@ -25,6 +25,8 @@ final class MockStoreRepository: StoreRepository {
     private(set) var writeReviewInputs: [WriteReviewRequestInput] = []
     var editReviewResult: Result<StoreReviewResponse, Error> = .failure(MockError.notStubbed())
     private(set) var editReviewArguments: [(reviewId: Int, input: EditReviewRequestInput)] = []
+    var saveStoreResult: Result<String, Error> = .failure(MockError.notStubbed())
+    private(set) var saveStoreArguments: [(storeId: String, isDelete: Bool)] = []
 
     init(
         fetchStoreScreenV2Result: Result<StoreScreenV2Response, Error>? = nil,
@@ -45,7 +47,10 @@ final class MockStoreRepository: StoreRepository {
     func createStore(input: UserStoreCreateRequestV3, nonceToken: String) async -> Result<UserStoreResponse, Error> { createStoreResult }
     func fetchAroundStores(input: FetchAroundStoreInput) async -> Result<ContentsWithCursorResponse<StoreWithExtraResponse>, Error> { .failure(MockError.notStubbed()) }
     func fetchStoreDetail(input: FetchStoreDetailInput) async -> Result<UserStoreDetailResponse, Error> { .failure(MockError.notStubbed()) }
-    func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> { .failure(MockError.notStubbed()) }
+    func saveStore(storeId: String, isDelete: Bool) async -> Result<String, Error> {
+        saveStoreArguments.append((storeId: storeId, isDelete: isDelete))
+        return saveStoreResult
+    }
     func reportStore(storeId: Int, reportReason: String) async -> Result<StoreDeleteResponse, Error> {
         reportStoreCallCount += 1
         lastReportStoreArguments = (storeId: storeId, reportReason: reportReason)

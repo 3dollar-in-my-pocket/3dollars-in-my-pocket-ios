@@ -26,7 +26,10 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
             switch item {
             case .basicCard(let card):
                 let cell: HomeListStoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(card)
+                cell.bind(card, isFavorited: viewModel.isFavorited(card))
+                cell.onTapFavorite = { [weak viewModel] in
+                    viewModel?.input.didTapFavorite.send(card.cardId)
+                }
                 cell.onTapImage = { [weak viewModel] images, index in
                     viewModel?.input.didTapImage.send((images: images, index: index))
                 }
@@ -62,6 +65,17 @@ final class HomeListDataSource: UICollectionViewDiffableDataSource<HomeListSecti
             snapshot.appendSections([section])
             snapshot.appendItems(section.items, toSection: section)
         }
+        apply(snapshot, animatingDifferences: false)
+    }
+
+    func reconfigureCards(storeId: String) {
+        var snapshot = snapshot()
+        let items = snapshot.itemIdentifiers.filter {
+            if case .basicCard(let card) = $0 { return card.additionalInfos?.storeId == storeId }
+            return false
+        }
+        guard items.isNotEmpty else { return }
+        snapshot.reconfigureItems(items)
         apply(snapshot, animatingDifferences: false)
     }
 

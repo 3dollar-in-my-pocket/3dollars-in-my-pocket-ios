@@ -882,6 +882,7 @@ extension HomeViewController {
             longitude: longitude
         )
         let newViewModel = StorePreviewBottomSheetViewModel(config: config)
+        bottomSheetViewController?.syncFavorite(storeId: String(storeId), with: newViewModel.output.isFavoriteOverride)
         clearStorePreviewMarkers()
 
         // 부착된 상태(연속 마커 탭) 라면 VM 만 교체하고 종료.
