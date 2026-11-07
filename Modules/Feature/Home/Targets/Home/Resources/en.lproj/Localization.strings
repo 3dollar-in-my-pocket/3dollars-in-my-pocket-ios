@@ -26,6 +26,9 @@
 "home_list.empty.title" = "주변 2km 이내에 가게가 없어요.";
 "home_list.empty.description" = "다른 주소로 검색하거나 직접 제보해보세요!";
 "home_list.map_view_button" = "지도 보기";
+"home_list.favorite_button" = "즐겨찾기";
+"home_list.toast.add_favorite" = "즐겨찾기가 추가되었습니다!";
+"home_list.toast.remove_favorite" = "즐겨찾기가 삭제되었습니다!";
 
 // 주소 검색 화면
 "search_address.title" = "위치 검색";

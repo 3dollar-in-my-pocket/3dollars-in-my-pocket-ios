@@ -10,6 +10,7 @@ import SnapKit
 final class HomeListStoreCell: BaseCollectionViewCell {
     var onTapImage: (([SDImage], Int) -> Void)?
     var onTapBody: (() -> Void)?
+    var onTapFavorite: (() -> Void)?
 
     enum Layout {
         static let defaultImageSize = CGSize(width: 120, height: 120)
@@ -19,6 +20,10 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         static let bodyTrailingInset: CGFloat = 20
         static let bodyLabelInset: CGFloat = 12
         static let contentHorizontalInset: CGFloat = 40
+        static let headerHeight: CGFloat = 24
+        static let favoriteButtonSize: CGFloat = 32
+        static let favoriteIconSize: CGFloat = 20
+        static let headerTrailingInset: CGFloat = 20
 
         static func availableWidth(cellWidth: CGFloat) -> CGFloat {
             return cellWidth - contentHorizontalInset
@@ -38,13 +43,24 @@ final class HomeListStoreCell: BaseCollectionViewCell {
             )
         }
 
+        static func hasFavoriteButton(_ response: HomeListBasicCardResponse) -> Bool {
+            return response.additionalInfos?.storeId != nil
+        }
+
+        static func headerRowHeight(response: HomeListBasicCardResponse) -> CGFloat {
+            if hasFavoriteButton(response) {
+                return favoriteButtonSize
+            }
+            let hasTitleOrBadge = response.header.title != nil || response.header.badge != nil
+            return hasTitleOrBadge ? headerHeight : 0
+        }
+
         static func height(response: HomeListBasicCardResponse, cellWidth: CGFloat) -> CGFloat {
             var height: CGFloat = 16 // top padding
 
-            let hasHeader = response.header.title != nil || response.header.badge != nil
-            if hasHeader {
-                height += 24
-            }
+            let headerRowHeight = headerRowHeight(response: response)
+            let hasHeader = headerRowHeight > 0
+            height += headerRowHeight
 
             let hasPrimary = response.metadata.primary.isNotEmpty
             if hasPrimary {
@@ -119,12 +135,33 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         return stackView
     }()
 
+    private let headerRowStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 4
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.insetsLayoutMarginsFromSafeArea = false
+        return stackView
+    }()
+
     private let headerStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .leading
         stackView.spacing = 4
         return stackView
+    }()
+
+    private let favoriteButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = Colors.gray10.color
+        button.layer.cornerRadius = Layout.favoriteButtonSize / 2
+        button.clipsToBounds = true
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        button.accessibilityLabel = HomeStrings.HomeList.favoriteButton
+        return button
     }()
 
     private let titleLabel: UILabel = {
@@ -208,7 +245,7 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         contentView.addSubview(contentStackView)
         contentView.addSubview(bottomBorderView)
 
-        contentStackView.addArrangedSubview(headerStackView)
+        contentStackView.addArrangedSubview(headerRowStackView)
         contentStackView.addArrangedSubview(primaryMetadataStackView, previousSpace: 4)
         contentStackView.addArrangedSubview(secondaryMetadataStackView, previousSpace: 4)
         contentStackView.addArrangedSubview(imagesCollectionView, previousSpace: 8)
@@ -217,6 +254,10 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         headerStackView.addArrangedSubview(titleLabel)
         headerStackView.addArrangedSubview(badgeImageView)
         headerStackView.addArrangedSubview(UIView())
+
+        headerRowStackView.addArrangedSubview(headerStackView)
+        headerRowStackView.addArrangedSubview(favoriteButton)
+        favoriteButton.addTarget(self, action: #selector(didTapFavorite), for: .touchUpInside)
 
         bodiesScrollView.addSubview(bodiesStackView)
         bodiesScrollView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapBodies)))
@@ -234,7 +275,11 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         }
         
         headerStackView.snp.makeConstraints { make in
-            make.height.equalTo(24)
+            make.height.equalTo(Layout.headerHeight)
+        }
+
+        favoriteButton.snp.makeConstraints { make in
+            make.size.equalTo(Layout.favoriteButtonSize)
         }
         
         primaryMetadataStackView.snp.makeConstraints { make in
@@ -277,11 +322,13 @@ final class HomeListStoreCell: BaseCollectionViewCell {
         badgeImageView.image = nil
         onTapImage = nil
         onTapBody = nil
+        onTapFavorite = nil
     }
 
-    func bind(_ card: HomeListBasicCardResponse) {
+    func bind(_ card: HomeListBasicCardResponse, isFavorited: Bool) {
         contentView.setSDSurfaceStyle(card.style)
         bindHeader(card.header)
+        bindFavorite(isVisible: Layout.hasFavoriteButton(card), isFavorited: isFavorited)
         bindPrimaryMetadata(card.metadata)
         bindSecondaryMetadata(card.metadata)
         bindImages(card.images)
@@ -305,8 +352,22 @@ final class HomeListStoreCell: BaseCollectionViewCell {
             badgeImageView.snp.removeConstraints()
             badgeImageView.isHidden = true
         }
+    }
 
-        headerStackView.isHidden = (titleLabel.isHidden && badgeImageView.isHidden)
+    private func bindFavorite(isVisible: Bool, isFavorited: Bool) {
+        favoriteButton.isHidden = isVisible.isNot
+        headerRowStackView.layoutMargins = .init(top: 0, left: 0, bottom: 0, right: isVisible ? Layout.headerTrailingInset : 0)
+        headerRowStackView.isHidden = titleLabel.isHidden && badgeImageView.isHidden && favoriteButton.isHidden
+        guard isVisible else { return }
+
+        let icon = isFavorited ? Icons.bookmarkSolid.image : Icons.bookmarkLine.image
+        let color = isFavorited ? Colors.mainRed.color : Colors.gray100.color
+        favoriteButton.setImage(icon.resizeImage(scaledTo: Layout.favoriteIconSize).withTintColor(color), for: .normal)
+        favoriteButton.accessibilityTraits = isFavorited ? [.button, .selected] : .button
+    }
+
+    @objc private func didTapFavorite() {
+        onTapFavorite?()
     }
 
     private func bindPrimaryMetadata(_ metadata: HomeListCardMetadata) {

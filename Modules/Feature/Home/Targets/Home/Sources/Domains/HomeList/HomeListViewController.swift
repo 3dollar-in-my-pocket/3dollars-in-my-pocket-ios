@@ -31,6 +31,7 @@ final class HomeListViewController: BaseViewController {
     )
 
     private let newsViewController = Environment.feedInterface.createLocalNewsViewController()
+    private var favoriteSyncCancellable: AnyCancellable?
 
     var onChangeTrackingScrollView: ((UIScrollView) -> Void)?
     var onChangeCollapsedVisibleHeight: ((CGFloat) -> Void)?
@@ -102,6 +103,21 @@ final class HomeListViewController: BaseViewController {
             .sink { (owner: HomeListViewController, _) in
                 owner.dataSource.reloadAdmobCards()
                 owner.scrollToTop(owner.homeListView.collectionView)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.favoriteUpdated
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, storeId: String) in
+                owner.dataSource.reconfigureCards(storeId: storeId)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.toast
+            .main
+            .sink { message in
+                ToastManager.shared.show(message: message)
             }
             .store(in: &cancellables)
 
@@ -204,6 +220,13 @@ final class HomeListViewController: BaseViewController {
 
     func didReplaceCards() {
         viewModel.input.didReplaceCards.send(())
+    }
+
+    func syncFavorite(storeId: String, with isFavorited: some Publisher<Bool, Never>) {
+        favoriteSyncCancellable = isFavorited
+            .main
+            .map { (storeId: storeId, isFavorited: $0) }
+            .subscribe(viewModel.input.updateFavorite)
     }
 
     private func scrollToTop(_ scrollView: UIScrollView) {
