@@ -647,6 +647,189 @@
         },
         "eventType": "IMPRESSION"
       }
+    },
+    {
+      "type": "BASIC_CARD",
+      "cardId": "S:120027-long",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">산본역 2번 출구 앞 아주아주 오래된 원조 팥붕 슈붕 붕어빵 가게</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        }
+      },
+      "metadata": {
+        "primary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">분식, 붕어빵</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/star_solid_bold.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">4.0 (1)</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 2.0,
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">도보 1분</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "separator": {
+          "url": "https://storage.threedollars.co.kr/app/rectangle_465.png",
+          "style": {
+            "width": 2.0,
+            "height": 2.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "images": [
+        {
+          "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-56f1c4ca-9031-4323-8f93-a462b181ead3.jpeg",
+          "style": {
+            "width": 120.0,
+            "height": 120.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      ],
+      "bodies": [
+        {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">리뷰 갤신되나요</span>",
+            "isHtml": true,
+            "fontColor": "#5A5A5A"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        }
+      ],
+      "marker": {
+        "focused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_focused_13.png",
+            "style": {
+              "width": 32.0,
+              "height": 40.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "unfocused": {
+          "image": {
+            "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_unfocused_13.png",
+            "style": {
+              "width": 28.0,
+              "height": 28.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "style": {
+            "backgroundColor": "#FF5C43"
+          }
+        },
+        "location": {
+          "latitude": 37.36944367238794,
+          "longitude": 126.93163515418847
+        },
+        "link": {
+          "type": "APP_SCHEME",
+          "link": "/store?storeId=120027&storeType=USER_STORE&view=collapsed"
+        },
+        "clickLog": {
+          "screenName": "home",
+          "objectType": "marker",
+          "objectId": "store",
+          "extraParameters": {
+            "tabId": "DEFAULT",
+            "store_id": "120027",
+            "store_type": "USER_STORE"
+          },
+          "eventType": "CLICK"
+        }
+      },
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=120027&storeType=USER_STORE&view=collapsed"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "refs": [
+        {
+          "type": "STORE",
+          "storeId": "120027",
+          "storeType": "USER_STORE"
+        }
+      ],
+      "additionalInfos": {
+        "type": "STORE",
+        "isSubscriber": false,
+        "storeId": "120027",
+        "storeType": "USER_STORE"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "120027",
+          "store_type": "USER_STORE",
+          "position": "1"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "store",
+        "extraParameters": {
+          "tabId": "DEFAULT",
+          "store_id": "120027",
+          "store_type": "USER_STORE",
+          "position": "1"
+        },
+        "eventType": "IMPRESSION"
+      }
     }
   ],
   "cursor": null

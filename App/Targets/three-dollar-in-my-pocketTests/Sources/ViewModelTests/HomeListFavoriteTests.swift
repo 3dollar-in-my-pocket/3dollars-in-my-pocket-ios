@@ -1,4 +1,5 @@
 import Combine
+import UIKit
 import XCTest
 
 import Log
@@ -69,6 +70,43 @@ final class HomeListFavoriteTests: XCTestCase {
         // Then
         XCTAssertFalse(hasButton)
         XCTAssertEqual(headerHeight, Layout.headerHeight)
+    }
+
+    // MARK: TC-9 — 긴 가게명
+
+    func test_TH1588_TC9_가게명이길면_말줄임되고_찜버튼은오른쪽끝에그대로있다() throws {
+        // Given
+        let cards = try makeCards()
+        let card = try XCTUnwrap(cards.last)
+        let width: CGFloat = 375
+        let cell = HomeListStoreCell(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: width,
+            height: Layout.height(response: card, cellWidth: width)
+        ))
+
+        // When
+        cell.bind(card, isFavorited: false)
+        cell.layoutIfNeeded()
+
+        // Then
+        let subviews = allSubviews(of: cell.contentView)
+        let button = try XCTUnwrap(subviews.compactMap { $0 as? UIButton }
+            .first { $0.accessibilityLabel == HomeStrings.HomeList.favoriteButton })
+        let titleLabel = try XCTUnwrap(subviews.compactMap { $0 as? UILabel }
+            .first { ($0.attributedText?.string ?? $0.text ?? "").contains("원조 팥붕") })
+        let buttonFrame = button.convert(button.bounds, to: cell.contentView)
+        let titleFrame = titleLabel.convert(titleLabel.bounds, to: cell.contentView)
+
+        XCTAssertEqual(buttonFrame.size, CGSize(width: Layout.favoriteButtonSize, height: Layout.favoriteButtonSize))
+        XCTAssertEqual(buttonFrame.maxX, width - Layout.headerTrailingInset, accuracy: 0.5)
+        XCTAssertLessThanOrEqual(titleFrame.maxX, buttonFrame.minX - 4 + 0.5)
+        XCTAssertGreaterThan(titleLabel.intrinsicContentSize.width, titleFrame.width)
+    }
+
+    private func allSubviews(of view: UIView) -> [UIView] {
+        return view.subviews + view.subviews.flatMap { allSubviews(of: $0) }
     }
 
     // MARK: TC-2 — 초기 찜 상태
