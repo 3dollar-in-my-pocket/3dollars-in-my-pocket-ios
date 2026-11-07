@@ -29,6 +29,8 @@ final class WebView: BaseView {
     }()
     
     private let webView = WKWebView()
+
+    private let requestBuilder = WebViewRequestBuilder()
     
     private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
@@ -81,20 +83,20 @@ final class WebView: BaseView {
         titleLabel.text = title
         
         guard let url = URL(string: url) else { return }
-        let request = URLRequest(url: url)
-        
-        loadingIndicator.startAnimating()
-        webView.load(request)
+        load(URLRequest(url: url))
     }
     
     func bind(webviewType: WebViewType) {
         titleLabel.text = webviewType.title
 
         guard let url = URL(string: webviewType.url) else { return }
-        let request = URLRequest(url: url)
+        load(URLRequest(url: url))
+    }
 
+    private func load(_ request: URLRequest) {
         loadingIndicator.startAnimating()
-        webView.load(request)
+        webView.customUserAgent = requestBuilder.customUserAgent(for: request.url)
+        webView.load(requestBuilder.build(request: request))
     }
 }
 
@@ -107,13 +109,29 @@ extension WebView: WKUIDelegate {
         windowFeatures _: WKWindowFeatures
     ) -> WKWebView? {
         if navigationAction.targetFrame.isNil {
-            webView.load(navigationAction.request)
+            load(navigationAction.request)
         }
         return nil
     }
 }
 
 extension WebView: WKNavigationDelegate {
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        let request = navigationAction.request
+        guard navigationAction.targetFrame?.isMainFrame == true,
+              requestBuilder.needsReload(request: request, currentUserAgent: webView.customUserAgent) else {
+            decisionHandler(.allow)
+            return
+        }
+
+        decisionHandler(.cancel)
+        load(request)
+    }
+
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         loadingIndicator.startAnimating()
     }

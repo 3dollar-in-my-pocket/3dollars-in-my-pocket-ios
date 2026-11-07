@@ -206,6 +206,10 @@ final class HomeListViewController: BaseViewController {
         viewModel.input.setTabSection.send(section)
     }
 
+    func resetTabSelection() {
+        viewModel.input.resetTabSelection.send(())
+    }
+
     func updateMapLocation(_ location: CLLocation) {
         viewModel.input.setMapLocation.send(location)
     }

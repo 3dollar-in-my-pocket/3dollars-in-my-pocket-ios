@@ -18,6 +18,7 @@ extension HomeListViewModel {
         let updateFavorite = PassthroughSubject<(storeId: String, isFavorited: Bool), Never>()
         let didTapMapView = PassthroughSubject<Void, Never>()
         let setTabSection = PassthroughSubject<HomeBottomSheetTabSection?, Never>()
+        let resetTabSelection = PassthroughSubject<Void, Never>()
         let didTapTab = PassthroughSubject<Int, Never>()
         let setMapLocation = PassthroughSubject<CLLocation, Never>()
         let receiveSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
@@ -170,6 +171,13 @@ final class HomeListViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: HomeListViewModel, section: HomeBottomSheetTabSection?) in
                 owner.applyTabSection(section)
+            }
+            .store(in: &cancellables)
+
+        input.resetTabSelection
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, _) in
+                owner.state.selectedTabId = nil
             }
             .store(in: &cancellables)
 

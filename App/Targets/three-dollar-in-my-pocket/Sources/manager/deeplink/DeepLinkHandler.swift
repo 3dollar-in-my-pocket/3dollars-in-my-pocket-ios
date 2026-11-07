@@ -120,9 +120,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         case .store:
             handleStoreLink(url: url, source: source)
         case .home:
-            if let params = url.params(),
-               let preset = params["preset"] as? String {
-                mainTabBarViewController?.applyHomePreset(preset)
+            let params = url.params()
+            let preset = params?["preset"] as? String
+            let tabId = (params?["tabId"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+            if preset.isNotNil || tabId.isNotNil {
+                mainTabBarViewController?.applyHomeDeepLink(preset: preset, tabId: tabId)
             }
 
             moveTab(.home)
