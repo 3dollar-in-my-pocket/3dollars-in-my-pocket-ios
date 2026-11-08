@@ -27,6 +27,7 @@ public struct HomeListBasicCardResponse: Decodable, Hashable, HomeListCardCompon
     public let marker: HomeListCardMarker?
     public let link: SDLink?
     public let style: SDSurfaceStyle
+    public let additionalInfos: HomeListCardAdditionalInfos?
     public let clickLog: SDClickLog
     public let impressionLog: SDImpressionLog
 }
@@ -61,6 +62,13 @@ public struct HomeListCardMetadata: Decodable, Hashable, Equatable {
 public struct HomeListCardBody: Decodable, Hashable, Equatable {
     public let text: SDText
     public let style: SDSurfaceStyle
+}
+
+public struct HomeListCardAdditionalInfos: Decodable, Hashable, Equatable {
+    public let type: String
+    public let storeId: String?
+    public let storeType: String?
+    public let isSubscriber: Bool?
 }
 
 public struct HomeListCardMarker: Decodable, Hashable, Equatable {

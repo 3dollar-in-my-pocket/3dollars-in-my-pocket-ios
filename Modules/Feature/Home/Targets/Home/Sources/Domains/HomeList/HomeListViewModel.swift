@@ -14,6 +14,8 @@ extension HomeListViewModel {
         let willDisplay = PassthroughSubject<Int, Never>()
         let didTapCard = PassthroughSubject<Int, Never>()
         let didTapImage = PassthroughSubject<(images: [SDImage], index: Int), Never>()
+        let didTapFavorite = PassthroughSubject<String, Never>()
+        let updateFavorite = PassthroughSubject<(storeId: String, isFavorited: Bool), Never>()
         let didTapMapView = PassthroughSubject<Void, Never>()
         let setTabSection = PassthroughSubject<HomeBottomSheetTabSection?, Never>()
         let resetTabSelection = PassthroughSubject<Void, Never>()
@@ -31,6 +33,8 @@ extension HomeListViewModel {
         /// 부모(HomeViewModel) 가 카드 탭 라우팅을 처리하도록 인덱스 를 전달한다.
         let didTapCardAt = PassthroughSubject<Int, Never>()
         let didTapImageAt = PassthroughSubject<(images: [SDImage], index: Int), Never>()
+        let favoriteUpdated = PassthroughSubject<String, Never>()
+        let toast = PassthroughSubject<String, Never>()
         let didTapMapView = PassthroughSubject<Void, Never>()
         let tabs = CurrentValueSubject<[HomeBottomSheetTabItem], Never>([])
         let selectedViewType = CurrentValueSubject<HomeBottomTabViewType, Never>(.storeList)
@@ -46,6 +50,8 @@ extension HomeListViewModel {
         var mapLocation: CLLocation?
         var newsLoadedLocation: CLLocation?
         var latestNewsFeedId: String?
+        var favoriteOverrides: [String: Bool] = [:]
+        var favoriteRequestingStoreIds: Set<String> = []
     }
 
     public struct Config {
@@ -102,7 +108,27 @@ final class HomeListViewModel: BaseViewModel {
             .store(in: &cancellables)
 
         input.didReplaceCards
-            .subscribe(output.resetList)
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, _) in
+                owner.state.favoriteOverrides.removeAll()
+                owner.output.resetList.send(())
+            }
+            .store(in: &cancellables)
+
+        input.updateFavorite
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, favorite: (storeId: String, isFavorited: Bool)) in
+                guard owner.isFavorited(storeId: favorite.storeId) != favorite.isFavorited else { return }
+                owner.state.favoriteOverrides[favorite.storeId] = favorite.isFavorited
+                owner.output.favoriteUpdated.send(favorite.storeId)
+            }
+            .store(in: &cancellables)
+
+        input.didTapFavorite
+            .withUnretained(self)
+            .sink { (owner: HomeListViewModel, cardId: String) in
+                owner.toggleFavorite(cardId: cardId)
+            }
             .store(in: &cancellables)
 
         input.willDisplay
@@ -279,6 +305,42 @@ final class HomeListViewModel: BaseViewModel {
         dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
     }
 
+    func isFavorited(_ card: HomeListBasicCardResponse) -> Bool {
+        guard let storeId = card.additionalInfos?.storeId else { return false }
+        return state.favoriteOverrides[storeId] ?? card.additionalInfos?.isSubscriber ?? false
+    }
+
+    private func isFavorited(storeId: String) -> Bool {
+        if let override = state.favoriteOverrides[storeId] {
+            return override
+        }
+        let card = state.cards
+            .compactMap { $0 as? HomeListBasicCardResponse }
+            .first { $0.additionalInfos?.storeId == storeId }
+        return card?.additionalInfos?.isSubscriber ?? false
+    }
+
+    private func toggleFavorite(cardId: String) {
+        guard let card = state.cards.first(where: { $0.cardId == cardId }) as? HomeListBasicCardResponse,
+              let storeId = card.additionalInfos?.storeId,
+              state.favoriteRequestingStoreIds.insert(storeId).inserted else { return }
+
+        let isDelete = isFavorited(card)
+        sendClickFavoriteLog(card: card, isOn: isDelete.isNot)
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let result = await dependency.storeRepository.saveStore(storeId: storeId, isDelete: isDelete)
+            state.favoriteRequestingStoreIds.remove(storeId)
+
+            guard case .success = result else { return }
+            state.favoriteOverrides[storeId] = isDelete.isNot
+            output.favoriteUpdated.send(storeId)
+            output.toast.send(isDelete ? HomeStrings.HomeList.Toast.removeFavorite : HomeStrings.HomeList.Toast.addFavorite)
+        }
+        .store(in: taskBag)
+    }
+
     private func emitDataSource() {
         // DiffableDataSource 는 중복 identifier 가 들어오면 crash 하므로,
         // cardId 기준으로 한 번 더 디듭해 스냅샷에 같은 카드가 두 번 들어가지 않게 한다.
@@ -333,6 +395,18 @@ extension HomeListViewModel {
             screen: output.screenName,
             objectType: .button,
             objectId: .mapView
+        ))
+    }
+
+    private func sendClickFavoriteLog(card: HomeListBasicCardResponse, isOn: Bool) {
+        var extraParameters: [ParameterName: Any] = [.value: isOn ? "on" : "off"]
+        extraParameters[.storeId] = card.additionalInfos?.storeId
+        extraParameters[.storeType] = card.additionalInfos?.storeType
+        dependency.logManager.sendEvent(event: ClickEvent(
+            screen: output.screenName,
+            objectType: .button,
+            objectId: .favorite,
+            extraParameters: extraParameters
         ))
     }
 }

@@ -68,6 +68,8 @@ public enum HomeStrings: Sendable {
   }
 
   public enum HomeList: Sendable {
+    /// 즐겨찾기
+    public static let favoriteButton = HomeStrings.tr("Localization", "home_list.favorite_button")
     /// 지도 보기
     public static let mapViewButton = HomeStrings.tr("Localization", "home_list.map_view_button")
 
@@ -76,6 +78,13 @@ public enum HomeStrings: Sendable {
       public static let description = HomeStrings.tr("Localization", "home_list.empty.description")
       /// 주변 2km 이내에 가게가 없어요.
       public static let title = HomeStrings.tr("Localization", "home_list.empty.title")
+    }
+
+    public enum Toast: Sendable {
+      /// 즐겨찾기가 추가되었습니다!
+      public static let addFavorite = HomeStrings.tr("Localization", "home_list.toast.add_favorite")
+      /// 즐겨찾기가 삭제되었습니다!
+      public static let removeFavorite = HomeStrings.tr("Localization", "home_list.toast.remove_favorite")
     }
   }
 
