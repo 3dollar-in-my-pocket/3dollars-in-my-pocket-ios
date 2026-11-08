@@ -12,8 +12,17 @@ public struct StoreScreenV2Response: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        var sectionsArray = try container.nestedUnkeyedContainer(forKey: .sections)
-        var tempContainer = sectionsArray
+        self.sections = try StoreSectionComponentsDecoder.decode(
+            container.nestedUnkeyedContainer(forKey: .sections)
+        )
+        self.viewLog = try container.decode(SDPageViewLog.self, forKey: .viewLog)
+    }
+}
+
+enum StoreSectionComponentsDecoder {
+    static func decode(_ container: UnkeyedDecodingContainer) throws -> [any StoreSectionComponent] {
+        var sectionsArray = container
+        var tempContainer = container
         var sections: [any StoreSectionComponent] = []
 
         while !sectionsArray.isAtEnd {
@@ -65,8 +74,7 @@ public struct StoreScreenV2Response: Decodable {
             sections.append(component)
         }
 
-        self.sections = sections
-        self.viewLog = try container.decode(SDPageViewLog.self, forKey: .viewLog)
+        return sections
     }
 }
 
