@@ -41,6 +41,27 @@ public protocol StoreDetailSectionsLoadable: AnyObject {
     func markSectionsDisplayed()
 }
 
+/// 가게 미리보기 시트가 공용 섹션 뷰에서 받는 사용자 이벤트.
+public enum StorePreviewSectionsEvent {
+    case tapActionBar(index: Int)
+    case tapImage(index: Int)
+    case tapAddPhoto
+    case tapBody
+    case tapSave
+    case tapClose
+    case clickAd(SDClickLog?)
+    case impression(SDImpressionLog?)
+}
+
+/// 가게 상세와 같은 섹션 셀을 등록한 공용 컬렉션뷰. 미리보기 시트는 이 뷰를 미리보기 스타일로 사용한다.
+public protocol StorePreviewSectionsViewProtocol: AnyObject where Self: UIView {
+    var onEvent: ((StorePreviewSectionsEvent) -> Void)? { get set }
+    /// 셀 실측 후 컨텐츠 높이가 바뀔 때 호출된다. 시트 tip 높이 계산에 사용한다.
+    var onContentHeightChanged: ((CGFloat) -> Void)? { get set }
+    func apply(_ sections: [any StoreSectionComponent])
+    func setFavorited(_ isFavorited: Bool)
+}
+
 public protocol StoreInterface {
     /// 딥링크·공유 링크 등 지도 컨텍스트가 없는 진입점용 V2 전체 화면 가게 상세다.
     func getStoreDetailFullScreenViewController(storeId: Int) -> UIViewController
@@ -54,6 +75,9 @@ public protocol StoreInterface {
         onScrollOffsetChanged: @escaping (CGFloat) -> Void,
         onSectionsLoaded: @escaping () -> Void
     ) -> UIViewController
+
+    /// 미리보기 시트가 가게 상세와 같은 섹션 셀로 서버 섹션을 렌더링할 때 사용한다.
+    func createStorePreviewSectionsView(rootViewController: UIViewController) -> any StorePreviewSectionsViewProtocol
 
     func getContributorsViewController(storeId: Int) -> UIViewController
 

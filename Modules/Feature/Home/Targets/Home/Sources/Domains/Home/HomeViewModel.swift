@@ -786,7 +786,7 @@ final class HomeViewModel: BaseViewModel {
         guard !Task.isCancelled else { return }
 
         guard case .success(let response) = result,
-              let marker = response.sections.compactMap({ $0 as? StorePreviewSection }).first?.markers?.first else {
+              let marker = response.previewSection?.markers?.first else {
             output.route.send(.pushStoreDetail(storeId: storeId))
             return
         }
