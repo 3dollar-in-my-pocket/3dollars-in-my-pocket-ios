@@ -1,0 +1,433 @@
+{
+  "sections": [
+    {
+      "type": "AD_MOB",
+      "sectionId": "AD_MOB",
+      "cards": [
+        {
+          "type": "ADMOB_CARD",
+          "cardId": "ADMOB:AD_MOB",
+          "clickLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "card",
+            "objectId": "admob",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          },
+          "impressionLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "card",
+            "objectId": "admob",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "IMPRESSION"
+          },
+          "height": 50,
+          "adUnitId": "ca-app-pub-5385646520024289/7789991453"
+        }
+      ],
+      "impressionLog": {
+        "screenName": "store_bottom_sheet",
+        "objectType": "section",
+        "objectId": "store_section",
+        "extraParameters": {
+          "store_id": "12806182",
+          "store_type": "USER_STORE",
+          "section_type": "AD_MOB",
+          "section_id": "AD_MOB"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "type": "PREVIEW",
+      "sectionId": "PREVIEW",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:20px; font-weight:700; color:#0F0F0F\">(암사시장) 잉어빵·국화빵 노점</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        },
+        "badge": {
+          "url": "https://storage.threedollars.co.kr/app/store_badge_new.png",
+          "style": {
+            "width": 16.0,
+            "height": 16.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "metadata": {
+        "primary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">붕어빵, 기타</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/star_solid_bold.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">4.0 (3)</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "contentSpacing": 2.0,
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:600; color:#FF8181\">SNS 화제</span>",
+              "isHtml": true,
+              "fontColor": "#FF8181"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">12.7km</span>",
+              "isHtml": true,
+              "fontColor": "#787878"
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF"
+            }
+          }
+        ],
+        "separator": {
+          "url": "https://storage.threedollars.co.kr/app/rectangle_465.png",
+          "style": {
+            "width": 2.0,
+            "height": 2.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      },
+      "actionBars": [
+        {
+          "type": "ACTION_BAR",
+          "button": {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:600; color:#FFFFFF\">방문 인증</span>",
+              "isHtml": true,
+              "fontColor": "#FFFFFF"
+            },
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/chevron_right_4x.png",
+              "style": {
+                "width": 12.0,
+                "height": 12.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "END",
+            "link": {
+              "type": "APP_SCHEME",
+              "link": "/visit?storeId=12806182"
+            },
+            "style": {
+              "backgroundColor": "#FF8181"
+            }
+          },
+          "clickLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "button",
+            "objectId": "visit",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "type": "ACTION_BAR",
+          "button": {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:600; color:#F57575\">리뷰 작성</span>",
+              "isHtml": true,
+              "fontColor": "#F57575"
+            },
+            "customAction": {
+              "actionType": "STORE_PREVIEW_SECTION_REVIEW_WRITE",
+              "extraParams": {
+                "STORE_ID": "12806182",
+                "STORE_NAME": "(암사시장) 잉어빵·국화빵 노점"
+              }
+            },
+            "style": {
+              "backgroundColor": "#FFECEE",
+              "border": {
+                "color": "#FFECEE",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "button",
+            "objectId": "review",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "type": "ACTION_BAR",
+          "button": {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">공유</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/share_4x.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "customAction": {
+              "actionType": "STORE_PREVIEW_SECTION_SHARE",
+              "extraParams": {
+                "STORE_ID": "12806182",
+                "STORE_TYPE": "USER_STORE",
+                "URL": "https://app.dev.threedollars.co.kr/store?storeId=12806182&storeType=USER_STORE&view=collapsed"
+              }
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "button",
+            "objectId": "share",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          }
+        },
+        {
+          "type": "ACTION_BAR",
+          "button": {
+            "text": {
+              "text": "<span style=\"font-size:14px; font-weight:400; color:#5A5A5A\">길안내</span>",
+              "isHtml": true,
+              "fontColor": "#5A5A5A"
+            },
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/location_line_4x.png",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "imageAlignment": "START",
+            "customAction": {
+              "actionType": "STORE_PREVIEW_SECTION_NAVIGATION",
+              "extraParams": {
+                "LATITUDE": 37.5508634,
+                "LONGITUDE": 127.128835,
+                "STORE_NAME": "(암사시장) 잉어빵·국화빵 노점"
+              }
+            },
+            "style": {
+              "backgroundColor": "#FFFFFF",
+              "border": {
+                "color": "#E2E2E2",
+                "width": 1.0
+              }
+            }
+          },
+          "clickLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "button",
+            "objectId": "navigation",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          }
+        }
+      ],
+      "images": [
+        {
+          "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-e060302c-d6ae-47a9-89f6-ed19ef10fa40.jpg",
+          "style": {
+            "width": 158.0,
+            "height": 158.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        },
+        {
+          "url": "https://storage.dev.threedollars.co.kr/store/v2/v1-18731f36-2697-416e-a0ea-7b1fd1406d74.jpeg",
+          "style": {
+            "width": 158.0,
+            "height": 158.0,
+            "dimmed": false,
+            "alpha": 1.0
+          }
+        }
+      ],
+      "bodies": [
+        {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">따끈하고 바삭해요. 사진 크기 검증용 리뷰입니다.</span>",
+            "isHtml": true,
+            "fontColor": "#5A5A5A"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        },
+        {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">Crispy and warm. Dev verification review</span>",
+            "isHtml": true,
+            "fontColor": "#5A5A5A"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        },
+        {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#5A5A5A\">바삭하고 따뜻해요. 개발 서버 검증용 리뷰입니다.</span>",
+            "isHtml": true,
+            "fontColor": "#5A5A5A"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        }
+      ],
+      "markers": [
+        {
+          "focused": {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_fire_focused_01.png",
+              "style": {
+                "width": 38.0,
+                "height": 48.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "style": {
+              "backgroundColor": "#FF5C43"
+            }
+          },
+          "unfocused": {
+            "image": {
+              "url": "https://storage.threedollars.co.kr/app/marker/boss_mappin_fire_unfocused_01.png",
+              "style": {
+                "width": 38.0,
+                "height": 48.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "style": {
+              "backgroundColor": "#FF5C43"
+            }
+          },
+          "location": {
+            "latitude": 37.5508634,
+            "longitude": 127.128835
+          },
+          "link": {
+            "type": "APP_SCHEME",
+            "link": "/store?storeId=12806182&storeType=USER_STORE&view=collapsed"
+          },
+          "clickLog": {
+            "screenName": "store_bottom_sheet",
+            "objectType": "marker",
+            "objectId": "store",
+            "extraParameters": {
+              "store_id": "12806182",
+              "store_type": "USER_STORE"
+            },
+            "eventType": "CLICK"
+          }
+        }
+      ],
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "additionalInfos": {
+        "type": "STORE",
+        "isSubscriber": false,
+        "storeId": "12806182",
+        "storeType": "USER_STORE"
+      }
+    },
+    {
+      "type": "PREVIEW_MORE",
+      "sectionId": "PREVIEW_MORE",
+      "header": {
+        "title": {
+          "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">가게 정보 &amp; 메뉴</span>",
+          "isHtml": true,
+          "fontColor": "#0F0F0F"
+        }
+      },
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      }
+    }
+  ],
+  "viewLog": {
+    "screenName": "store_bottom_sheet",
+    "extraParameters": {
+      "store_id": "12806182",
+      "store_type": "USER_STORE"
+    },
+    "eventType": "PAGE_VIEW"
+  }
+}
