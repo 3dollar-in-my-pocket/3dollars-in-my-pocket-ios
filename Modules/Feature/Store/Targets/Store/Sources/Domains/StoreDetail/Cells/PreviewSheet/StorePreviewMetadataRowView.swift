@@ -4,7 +4,6 @@ import Common
 import DesignSystem
 import Model
 
-import Kingfisher
 import SnapKit
 
 final class StorePreviewMetadataRowView: BaseView {

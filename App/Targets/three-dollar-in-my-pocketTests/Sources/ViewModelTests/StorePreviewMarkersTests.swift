@@ -72,7 +72,8 @@ final class StorePreviewMarkersTests: XCTestCase {
               "metadata": { "primary": [], "secondary": [], "separator": { "url": "https://example.com/dot.png", "style": { "width": 2.0, "height": 2.0 } } },
               "actionBars": [],
               "images": [],
-              "bodies": []
+              "bodies": [],
+              "additionalInfos": { "type": "STORE", "isSubscriber": false, "storeId": "55", "storeType": "USER_STORE" }
             }
           ],
           "viewLog": { "screenName": "home_store_preview", "extraParameters": {} }

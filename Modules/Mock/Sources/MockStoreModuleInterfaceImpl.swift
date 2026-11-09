@@ -25,6 +25,12 @@ public final class MockStoreModuleInterfaceImpl: StoreInterface {
         EmptyViewController()
     }
 
+    public func createStorePreviewSectionsView(
+        rootViewController: UIViewController
+    ) -> any StorePreviewSectionsViewProtocol {
+        MockStorePreviewSectionsView()
+    }
+
     public func getVisitViewController(storeId: Int, onSuccessVisit: @escaping () -> Void) -> UIViewController {
         EmptyViewController()
     }
@@ -74,4 +80,11 @@ extension MockStoreModuleInterfaceImpl {
             return MockStoreModuleInterfaceImpl()
         }
     }
+}
+
+private final class MockStorePreviewSectionsView: UIView, StorePreviewSectionsViewProtocol {
+    var onEvent: ((StorePreviewSectionsEvent) -> Void)?
+    var onContentHeightChanged: ((CGFloat) -> Void)?
+    func apply(_ sections: [any StoreSectionComponent]) { }
+    func setFavorited(_ isFavorited: Bool) { }
 }

@@ -11,6 +11,8 @@ public struct StoreScreenPreviewSection: Decodable, Equatable, Hashable, StoreSe
     public let additionalInfos: StoreScreenPreviewAdditionalInfos
     public let contributorActionBar: SDActionBar?
     public let impressionLog: SDImpressionLog?
+    public let bodies: [StorePreviewBody]?
+    public let markers: [HomeListCardMarker]?
 }
 
 public struct StoreScreenPreviewAdditionalInfos: Decodable, Equatable, Hashable {
@@ -21,25 +23,54 @@ public struct StoreScreenPreviewAdditionalInfos: Decodable, Equatable, Hashable 
 }
 
 extension StoreScreenPreviewSection {
-    public init(preview: StorePreviewSection, storeId: Int) {
+    private enum CodingKeys: String, CodingKey {
+        case type
+        case sectionId
+        case header
+        case metadata
+        case actionBars
+        case images
+        case style
+        case additionalInfos
+        case contributorActionBar
+        case impressionLog
+        case bodies
+        case markers
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
-            type: .preview,
-            sectionId: nil,
-            header: preview.header,
-            metadata: preview.metadata,
-            actionBars: preview.actionBars.map {
-                SDActionBar(type: .actionBar, button: $0.button, clickLog: $0.clickLog)
-            },
-            images: preview.images,
-            style: preview.style,
-            additionalInfos: StoreScreenPreviewAdditionalInfos(
-                type: preview.additionalInfos?.type ?? "STORE",
-                isSubscriber: preview.additionalInfos?.isSubscriber,
-                storeId: String(storeId),
-                storeType: preview.additionalInfos?.storeType
-            ),
+            type: try container.decode(StoreSectionType.self, forKey: .type),
+            sectionId: try container.decodeIfPresent(String.self, forKey: .sectionId),
+            header: try container.decode(StorePreviewHeader.self, forKey: .header),
+            metadata: try container.decode(StorePreviewMetadata.self, forKey: .metadata),
+            actionBars: try container.decode([SDActionBar].self, forKey: .actionBars),
+            images: try container.decode([SDImage].self, forKey: .images),
+            style: try container.decodeIfPresent(SDSurfaceStyle.self, forKey: .style),
+            additionalInfos: try container.decodeIfPresent(StoreScreenPreviewAdditionalInfos.self, forKey: .additionalInfos)
+                ?? StoreScreenPreviewAdditionalInfos(type: "STORE", isSubscriber: nil, storeId: nil, storeType: nil),
+            contributorActionBar: try container.decodeIfPresent(SDActionBar.self, forKey: .contributorActionBar),
+            impressionLog: try container.decodeIfPresent(SDImpressionLog.self, forKey: .impressionLog),
+            bodies: try container.decodeIfPresent([StorePreviewBody].self, forKey: .bodies),
+            markers: try container.decodeIfPresent([HomeListCardMarker].self, forKey: .markers)
+        )
+    }
+
+    public var placeholder: StoreScreenPreviewSection {
+        StoreScreenPreviewSection(
+            type: type,
+            sectionId: sectionId,
+            header: header,
+            metadata: metadata,
+            actionBars: actionBars,
+            images: images,
+            style: style,
+            additionalInfos: additionalInfos,
             contributorActionBar: nil,
-            impressionLog: nil
+            impressionLog: nil,
+            bodies: bodies,
+            markers: markers
         )
     }
 }
