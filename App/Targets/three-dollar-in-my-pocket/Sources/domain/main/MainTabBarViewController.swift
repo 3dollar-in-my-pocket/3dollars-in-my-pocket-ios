@@ -109,8 +109,8 @@ final class MainTabBarViewController: UITabBarController {
         self.setTabBarColor(tab: tab)
     }
 
-    func applyHomePreset(_ preset: String) {
-        homeViewController.applyPreset(preset)
+    func applyHomeDeepLink(preset: String?, tabId: String?) {
+        homeViewController.applyDeepLink(preset: preset, tabId: tabId)
     }
 
     func landStoreOnHome(storeId: Int, isExpanded: Bool) {

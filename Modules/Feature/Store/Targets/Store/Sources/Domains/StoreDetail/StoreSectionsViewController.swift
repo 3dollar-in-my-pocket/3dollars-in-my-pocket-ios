@@ -11,6 +11,7 @@ import WriteInterface
 import SnapKit
 
 /// Store v2 SDUI 응답을 순서대로 전용 셀에 렌더링하는, Home에 임베드 가능한 상세 컨테이너.
+/// 셀 등록·매핑은 공용 `StoreSectionsView` 가 맡고, 이 VC 는 상세 전용 동작(탭·하단 바·라우팅)만 다룬다.
 public final class StoreSectionsViewController: BaseViewController {
     /// Home 바텀시트의 상단 chrome이 상세 컨텐츠 스크롤에 맞춰 fade-in 하는 데 사용한다.
     public var onScrollOffsetChanged: ((CGFloat) -> Void)?
@@ -21,7 +22,7 @@ public final class StoreSectionsViewController: BaseViewController {
     public var onRequestClose: (() -> Void)?
 
     private let viewModel: StoreSectionsViewModel
-    private let collectionView: UICollectionView
+    private let sectionsView = StoreSectionsView(style: .detail)
     private let bottomActionBarView = StoreBottomActionBarView()
     private var storeIdDebugView: StoreIdDebugView?
     private var isBottomActionBarVisible = false
@@ -31,15 +32,12 @@ public final class StoreSectionsViewController: BaseViewController {
     private var hasRequestedLoad = false
     private var hasLoadedSections = false
     private var isDisplayed = false
-    private var sectionsByIdentifier: [String: any StoreSectionComponent] = [:]
-    private var displayedImpressionIdentifiers = Set<String>()
-    private var expandedMenuIdentifiers = Set<String>()
-    private var expandedPostCardIds = Set<String>()
     private var tabItemIndex: Int?
     private var tabTargetItemIndexes: [Int?] = []
-    private var selectedTabIndex = 0
-    private var threadPostHeights: [[String]: CGFloat] = [:]
-    private lazy var dataSource = makeDataSource()
+
+    private var collectionView: UICollectionView {
+        sectionsView.collectionView
+    }
 
     init(
         viewModel: StoreSectionsViewModel,
@@ -49,10 +47,6 @@ public final class StoreSectionsViewController: BaseViewController {
         self.viewModel = viewModel
         self.placeholderPreview = placeholderPreview
         self.loadsOnViewDidLoad = loadsOnViewDidLoad
-        self.collectionView = UICollectionView(
-            frame: .zero,
-            collectionViewLayout: Self.makeLayout()
-        )
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -72,8 +66,8 @@ public final class StoreSectionsViewController: BaseViewController {
 
     public override func loadView() {
         let containerView = UIView()
-        containerView.addSubViews([collectionView, bottomActionBarView])
-        collectionView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        containerView.addSubViews([sectionsView, bottomActionBarView])
+        sectionsView.snp.makeConstraints { $0.edges.equalToSuperview() }
         bottomActionBarView.snp.makeConstraints { $0.leading.trailing.bottom.equalToSuperview() }
         view = containerView
         setupStoreIdDebugViewIfNeeded(in: containerView)
@@ -104,31 +98,7 @@ public final class StoreSectionsViewController: BaseViewController {
         bottomActionBarView.onAction = { [weak self] in
             self?.viewModel.input.didSelectAction.send($0)
         }
-        collectionView.backgroundColor = .clear
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.alwaysBounceVertical = true
-        collectionView.delegate = self
-        collectionView.register([
-            StoreCalloutCell.self,
-            StoreScreenPreviewCell.self,
-            StoreEditCell.self,
-            StoreMarginCell.self,
-            StoreRelatedStoresV2Cell.self,
-            StoreAdmobCell.self,
-            StoreTabCell.self,
-            StoreCouponCell.self,
-            StoreVisitCell.self,
-            StorePostCell.self,
-            StoreImageCell.self,
-            StoreAppearanceDayCell.self,
-            StoreInfoV1Cell.self,
-            StoreInfoV2Cell.self,
-            StoreCTACell.self,
-            StoreReviewCell.self,
-            StoreSkeletonCell.self,
-            StoreThreadPostCell.self,
-            StoreAdCell.self
-        ])
+        bindSectionsView()
         if loadsOnViewDidLoad {
             markSectionsDisplayed()
             loadSectionsIfNeeded()
@@ -140,6 +110,31 @@ public final class StoreSectionsViewController: BaseViewController {
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateCollectionViewBottomInset()
+    }
+
+    private func bindSectionsView() {
+        sectionsView.rootViewController = self
+        sectionsView.onAction = { [weak self] in
+            self?.viewModel.input.didSelectAction.send($0)
+        }
+        sectionsView.onTapImageGallery = { [weak self] images, index in
+            self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
+        }
+        sectionsView.onClickAd = { [weak self] in
+            self?.viewModel.input.didClickAd.send($0)
+        }
+        sectionsView.onTapThreadPostLink = { [weak self] url, clickLog in
+            self?.viewModel.input.didTapThreadPostLink.send((url: url, clickLog: clickLog))
+        }
+        sectionsView.onImpression = { [weak self] in
+            self?.viewModel.sendImpressionLog($0)
+        }
+        sectionsView.onScroll = { [weak self] scrollView in
+            self?.onScrollOffsetChanged?(scrollView.contentOffset.y)
+            self?.updateSelectedTabIfNeeded(scrollView)
+            self?.updateBottomActionBarVisibility()
+            self?.updateCollectionViewBottomInset()
+        }
     }
 
     public func loadSectionsIfNeeded() {
@@ -166,15 +161,7 @@ public final class StoreSectionsViewController: BaseViewController {
         guard isDisplayed.isNot else { return }
         isDisplayed = true
         viewModel.input.didDisplay.send(())
-        let displayDependentIdentifiers = dataSource.snapshot().itemIdentifiers.filter {
-            sectionsByIdentifier[$0] is StoreAdmobSection || sectionsByIdentifier[$0] is StoreThreadPostEmbedSection
-        }
-        if displayDependentIdentifiers.isEmpty.isNot {
-            var snapshot = dataSource.snapshot()
-            snapshot.reconfigureItems(displayDependentIdentifiers)
-            dataSource.apply(snapshot, animatingDifferences: false)
-        }
-        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
+        sectionsView.setDisplayed()
     }
 
     private func applyPlaceholder() {
@@ -217,26 +204,6 @@ public final class StoreSectionsViewController: BaseViewController {
             .store(in: &cancellables)
     }
 
-    private static func makeLayout() -> UICollectionViewLayout {
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .estimated(120)
-        ))
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(120)
-            ),
-            subitems: [item]
-        )
-        let section = NSCollectionLayoutSection(group: group)
-        // 섹션 간 간격은 서버가 MARGIN 섹션으로 내려준다.
-        // 네비게이션 바 높이는 호스트(바텀시트/전체화면)가 컨테이너 제약으로 확보한다.
-        // 여기서는 네비 아래 여백만 준다.
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0)
-        return StickySectionLayout(section: section)
-    }
-
     private func apply(_ sections: [any StoreSectionComponent], isPlaceholder: Bool = false) {
         let title = sections
             .compactMap { ($0 as? StoreScreenPreviewSection)?.header.title }
@@ -247,34 +214,9 @@ public final class StoreSectionsViewController: BaseViewController {
             .map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         onStoreInformationChanged?(title, location)
 
-        let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
         updateTabTargets(sections)
         updateBottomActionBar(sections)
-        let previousSectionsByIdentifier = sectionsByIdentifier
-        sectionsByIdentifier = Dictionary(uniqueKeysWithValues: zip(identifiers, sections))
-        displayedImpressionIdentifiers.removeAll()
-        expandedMenuIdentifiers.formIntersection(identifiers)
-        let postCardIds = sections.compactMap { $0 as? StorePostSection }.flatMap { $0.cards.map(\.cardId) }
-        expandedPostCardIds.formIntersection(postCardIds)
-
-        if dataSource.snapshot().itemIdentifiers != identifiers {
-            (collectionView.collectionViewLayout as? StickySectionLayout)?.clear()
-        }
-
-        var snapshot = NSDiffableDataSourceSnapshot<Int, String>()
-        snapshot.appendSections([0])
-        snapshot.appendItems(identifiers)
-        let changedIdentifiers = identifiers.filter { identifier in
-            guard let previous = previousSectionsByIdentifier[identifier],
-                  let current = sectionsByIdentifier[identifier] else { return false }
-            return AnyHashable(previous) != AnyHashable(current)
-        }
-        if changedIdentifiers.isEmpty.isNot {
-            snapshot.reconfigureItems(changedIdentifiers)
-        }
-        dataSource.apply(snapshot, animatingDifferences: false)
-        collectionView.layoutIfNeeded()
-        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
+        sectionsView.apply(sections)
         updateBottomActionBarVisibility()
         if isPlaceholder.isNot {
             hasLoadedSections = true
@@ -366,226 +308,10 @@ public final class StoreSectionsViewController: BaseViewController {
             newIndex = lastIndex
         }
 
-        guard newIndex != selectedTabIndex else { return }
-        selectedTabIndex = newIndex
+        guard newIndex != sectionsView.selectedTabIndex else { return }
+        sectionsView.selectedTabIndex = newIndex
         let tabCell = collectionView.cellForItem(at: IndexPath(item: tabItemIndex, section: 0)) as? StoreTabCell
         tabCell?.setSelectedIndex(newIndex)
-    }
-
-    private func expandMenu(identifier: String) {
-        guard expandedMenuIdentifiers.insert(identifier).inserted else { return }
-        reconfigure(identifier: identifier)
-    }
-
-    private func expandPost(identifier: String, cardId: String) {
-        guard expandedPostCardIds.insert(cardId).inserted else { return }
-        reconfigure(identifier: identifier)
-    }
-
-    private func updateThreadPostHeight(_ height: CGFloat, permalinks: [String]) {
-        if let previousHeight = threadPostHeights[permalinks], abs(previousHeight - height) <= 0.5 { return }
-        threadPostHeights[permalinks] = height
-        let identifier = dataSource.snapshot().itemIdentifiers.first {
-            (sectionsByIdentifier[$0] as? StoreThreadPostEmbedSection)?.permalinks == permalinks
-        }
-        guard let identifier else { return }
-        reconfigure(identifier: identifier)
-        collectionView.indexPathsForVisibleItems.forEach { sendImpressionLogIfNeeded(at: $0) }
-    }
-
-    private func reconfigure(identifier: String) {
-        var snapshot = dataSource.snapshot()
-        snapshot.reconfigureItems([identifier])
-        dataSource.apply(snapshot, animatingDifferences: false)
-    }
-
-    private func makeDataSource() -> UICollectionViewDiffableDataSource<Int, String> {
-        UICollectionViewDiffableDataSource<Int, String>(collectionView: collectionView) { [weak self] collectionView, indexPath, identifier in
-            guard let self,
-                  let component = self.sectionsByIdentifier[identifier],
-                  let cell = self.makeCell(for: component, identifier: identifier, indexPath: indexPath, in: collectionView) else {
-                return nil
-            }
-            cell.contentView.backgroundColor = component.style.flatMap { UIColor(hex: $0.backgroundColor) } ?? Colors.systemWhite.color
-            return cell
-        }
-    }
-
-    private func makeCell(
-        for component: any StoreSectionComponent,
-        identifier: String,
-        indexPath: IndexPath,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell? {
-        let actionHandler: (StoreSectionAction) -> Void = { [weak self] in
-            self?.viewModel.input.didSelectAction.send($0)
-        }
-        if let section = component as? StoreThreadPostEmbedSection {
-            return makeThreadPostCell(section, indexPath: indexPath, in: collectionView)
-        }
-        if let section = component as? StoreAdSection {
-            return makeAdCell(section, indexPath: indexPath, in: collectionView, actionHandler: actionHandler)
-        }
-
-        switch component {
-            case let section as StoreCalloutSection:
-                let cell: StoreCalloutCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreScreenPreviewSection:
-                let cell: StoreScreenPreviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section)
-                cell.onAction = actionHandler
-                cell.onTapImage = { [weak self] images, index in
-                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
-                }
-                return cell
-            case let section as StoreEditSection:
-                let cell: StoreEditCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreMarginSection:
-                let cell: StoreMarginCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); return cell
-            case let section as StoreRelatedStoresSectionV2:
-                let cell: StoreRelatedStoresV2Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreAdmobSection:
-                let cell: StoreAdmobCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section, rootViewController: self, isDisplayed: self.isDisplayed)
-                cell.onClickAd = { [weak self] in
-                    self?.viewModel.input.didClickAd.send(section.cards.first?.clickLog)
-                }
-                return cell
-            case let section as StoreTabSection:
-                let cell: StoreTabCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section, selectedIndex: self.selectedTabIndex)
-                cell.onSelectTab = { [weak self] in self?.selectedTabIndex = $0 }
-                cell.onAction = actionHandler
-                return cell
-            case let section as StoreCouponSection:
-                let cell: StoreCouponCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreVisitSection:
-                let cell: StoreVisitCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StorePostSection:
-                let cell: StorePostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section, expandedCardIds: self.expandedPostCardIds)
-                cell.onAction = actionHandler
-                cell.onToggleBodyExpansion = { [weak self] cardId in
-                    self?.expandPost(identifier: identifier, cardId: cardId)
-                }
-                cell.onTapImage = { [weak self] images, index in
-                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
-                }
-                return cell
-            case let section as StoreImageSection:
-                let cell: StoreImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreAppearanceDaySection:
-                let cell: StoreAppearanceDayCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreInfoV1Section:
-                let cell: StoreInfoV1Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section, isMenuExpanded: self.expandedMenuIdentifiers.contains(identifier))
-                cell.onAction = actionHandler
-                cell.onToggleMenuExpansion = { [weak self] in self?.expandMenu(identifier: identifier) }
-                return cell
-            case let section as StoreInfoV2Section:
-                let cell: StoreInfoV2Cell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section, isMenuExpanded: self.expandedMenuIdentifiers.contains(identifier))
-                cell.onAction = actionHandler
-                cell.onToggleMenuExpansion = { [weak self] in self?.expandMenu(identifier: identifier) }
-                cell.onTapGalleryImage = { [weak self] images, index in
-                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
-                }
-                return cell
-            case let section as StoreCTASection:
-                let cell: StoreCTACell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section); cell.onAction = actionHandler; return cell
-            case let section as StoreReviewSection:
-                let cell: StoreReviewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(section)
-                cell.onAction = actionHandler
-                cell.onTapImage = { [weak self] images, index in
-                    self?.viewModel.input.didTapImageGallery.send((images: images, index: index))
-                }
-                return cell
-            case is StoreSkeletonSection:
-                let cell: StoreSkeletonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                return cell
-            default:
-                return nil
-        }
-    }
-
-    private func makeAdCell(
-        _ section: StoreAdSection,
-        indexPath: IndexPath,
-        in collectionView: UICollectionView,
-        actionHandler: @escaping (StoreSectionAction) -> Void
-    ) -> UICollectionViewCell {
-        let cell: StoreAdCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        cell.bind(section)
-        cell.onTap = { [weak self] card in
-            if let link = card.link {
-                actionHandler(.link(link, clickLog: card.clickLog))
-            } else {
-                self?.viewModel.input.didClickAd.send(card.clickLog)
-            }
-        }
-        return cell
-    }
-
-    private func makeThreadPostCell(
-        _ section: StoreThreadPostEmbedSection,
-        indexPath: IndexPath,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        let cell: StoreThreadPostCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        let permalinks = section.permalinks
-        cell.bind(section, height: threadPostHeights[permalinks], isDisplayed: isDisplayed)
-        cell.onHeightSettled = { [weak self] height in
-            self?.updateThreadPostHeight(height, permalinks: permalinks)
-        }
-        cell.onOpenURL = { [weak self] url, clickLog in
-            self?.viewModel.input.didTapThreadPostLink.send((url: url, clickLog: clickLog))
-        }
-        return cell
-    }
-}
-
-extension StoreSectionsViewController: UICollectionViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        onScrollOffsetChanged?(scrollView.contentOffset.y)
-        updateSelectedTabIfNeeded(scrollView)
-        updateBottomActionBarVisibility()
-        updateCollectionViewBottomInset()
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        (collectionView.collectionViewLayout as? StickySectionLayout)?.registerIfNeeded(cell: cell, indexPath: indexPath)
-        sendImpressionLogIfNeeded(at: indexPath)
-    }
-
-    private func sendImpressionLogIfNeeded(at indexPath: IndexPath) {
-        guard isDisplayed,
-              let identifier = dataSource.itemIdentifier(for: indexPath),
-              let component = sectionsByIdentifier[identifier],
-              isImpressionReady(component),
-              displayedImpressionIdentifiers.insert(identifier).inserted else { return }
-
-        viewModel.sendImpressionLog(component.impressionLog)
-        if let section = component as? StoreAdmobSection {
-            viewModel.sendImpressionLog(section.cards.first?.impressionLog)
-        }
-        if let section = component as? StoreAdSection {
-            viewModel.sendImpressionLog(section.cards.first?.impressionLog)
-        }
-    }
-
-    private func isImpressionReady(_ component: any StoreSectionComponent) -> Bool {
-        guard let section = component as? StoreThreadPostEmbedSection else { return true }
-        return (threadPostHeights[section.permalinks] ?? 0) > 0
     }
 }
 
@@ -714,8 +440,7 @@ private extension StoreSectionsViewController {
     }
 
     func scrollToSection(_ sectionType: StoreSectionType) {
-        let identifiers = dataSource.snapshot().itemIdentifiers
-        guard let index = identifiers.firstIndex(where: { sectionsByIdentifier[$0]?.type == sectionType }) else { return }
+        guard let index = sectionsView.itemIndex(where: { $0.type == sectionType }) else { return }
         let indexPath = IndexPath(item: index, section: 0)
 
         for _ in 0..<2 {

@@ -43,6 +43,20 @@ public final class StoreInterfaceImpl: StoreInterface {
         return viewController
     }
 
+    public func createStorePreviewSectionsView(
+        rootViewController: UIViewController
+    ) -> any StorePreviewSectionsViewProtocol {
+        let view = StoreSectionsView(style: .preview)
+        view.rootViewController = rootViewController
+        view.onClickAd = { [weak view] in
+            view?.onEvent?(.clickAd($0))
+        }
+        view.onImpression = { [weak view] in
+            view?.onEvent?(.impression($0))
+        }
+        return view
+    }
+
     public func getContributorsViewController(storeId: Int) -> UIViewController {
         let config = ContributorsViewModel.Config(storeId: storeId) {
             StoreInterfaceImpl.presentEditStoreFromContributors(storeId: storeId)

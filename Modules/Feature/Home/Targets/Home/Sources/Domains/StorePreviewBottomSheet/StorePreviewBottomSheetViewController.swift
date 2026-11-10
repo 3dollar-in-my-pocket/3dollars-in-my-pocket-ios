@@ -1,4 +1,3 @@
-// swiftlint:disable file_length - 가게 미리보기(tip)와 가게 상세 임베드(full)를 한 패널에서 전환하는 시트라 두 상태의 뷰·바인딩이 같은 파일에 있어야 흐름을 따라갈 수 있다
 import UIKit
 import Combine
 
@@ -8,60 +7,20 @@ import Log
 import Model
 import StoreInterface
 
-import CombineCocoa
 import SnapKit
 
-// swiftlint:disable:next type_body_length - 미리보기(tip)·상세 임베드(full) 전환을 한 패널에서 조율하는 VC. 재사용 시 이전 가게 비우기·로딩 스켈레톤이 같은 상태를 다뤄 함께 둔다
+/// 가게 미리보기(tip)와 가게 상세 임베드(full)를 한 패널에서 전환하는 시트.
+/// tip 은 가게 상세와 같은 섹션 셀을 등록한 공용 섹션 뷰(`StorePreviewSectionsViewProtocol`)로 서버 섹션을 순서대로 그린다.
 final class StorePreviewBottomSheetViewController: BaseViewController {
     private enum Layout {
         static let grabberAreaHeight: CGFloat = 12
         static let contentTop: CGFloat = grabberAreaHeight + 16
-        static let imageSpacing: CGFloat = 8
         static let horizontalMargin: CGFloat = 20
-        static let defaultImageSize = CGSize(width: 158, height: 158)
-
-        static func imageRowHeight(images: [SDImage]) -> CGFloat {
-            return PreviewImageLayout.rowHeight(images: images, defaultHeight: defaultImageSize.height)
-        }
-
-        static func imageSize(images: [SDImage], at index: Int, availableWidth: CGFloat) -> CGSize {
-            return PreviewImageLayout.itemSize(
-                style: images[safe: index]?.style,
-                count: images.count,
-                availableWidth: availableWidth,
-                spacing: imageSpacing,
-                defaultSize: defaultImageSize
-            )
-        }
     }
 
-    private let titleStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.spacing = 4
-        return stack
-    }()
+    private lazy var sectionsView = Environment.storeInterface.createStorePreviewSectionsView(rootViewController: self)
 
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.semiBold.font(size: 20)
-        label.textColor = Colors.gray100.color
-        label.numberOfLines = 1
-        label.lineBreakMode = .byTruncatingTail
-        return label
-    }()
-
-    private let badgeImageView: UIImageView = {
-        let view = UIImageView()
-        view.contentMode = .scaleAspectFit
-        view.isHidden = true
-        return view
-    }()
-
-    private let metadataView = StorePreviewMetadataRowView()
-
-    /// 우상단 버튼 행(찜 + 닫기). 서버 topActionBars 가 제거되어 클라이언트에서 고정 렌더한다.
+    /// 로딩 중(스켈레톤)에만 보이는 우상단 찜·닫기. 로드 후에는 미리보기 셀이 같은 버튼을 그린다.
     private let topButtonStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -110,67 +69,14 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         icon: Icons.close.image
     )
 
-    private let imagesCollectionView: UICollectionView = {
-        let layout = WidthAdaptiveFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = Layout.imageSpacing
-        layout.minimumInteritemSpacing = Layout.imageSpacing
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.bounces = false
-        return collectionView
-    }()
-
-    private let bodiesScrollView: UIScrollView = {
-        let scroll = UIScrollView()
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.bounces = false
-        return scroll
-    }()
-
-    private let bodiesStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.spacing = 4
-        return stack
-    }()
-
-    private let actionBarScrollView: UIScrollView = {
-        let scroll = UIScrollView()
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.bounces = false
-        scroll.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        return scroll
-    }()
-
-    private let actionBarStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.spacing = 4
-        stack.distribution = .fill
-        return stack
-    }()
-
-    private var imagesContainerHeight: Constraint?
-    private var imageItems: [SDImage] = []
-    /// "사진 추가" 셀 노출 여부. 사장님 가게는 사용자 사진 업로드를 지원하지 않아 false 로 둔다.
-    private var canAddPhoto: Bool = false
-
     private var viewModel: StorePreviewBottomSheetViewModel
     private var detailViewController: UIViewController?
-    private var previewSection: StorePreviewSection?
+    private var previewSection: StoreScreenPreviewSection?
     private var isTrackingDetailScroll = false
     private var isPanelAtFull = false
     private var displayItemModalViews: [UIView] = []
     private let skeletonView = StorePreviewSkeletonView()
     private var isLoadingPreview = true
-
-    private var previewViews: [UIView] {
-        [titleStack, topButtonStack, metadataView, imagesCollectionView, bodiesScrollView, actionBarScrollView]
-    }
 
     var onRequestExpandPanel: (() -> Void)?
     var onRequestCollapsePanel: (() -> Void)?
@@ -183,7 +89,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     var onRequestAddPhoto: ((Int) -> Void)?
     var onRequestClose: (() -> Void)?
     var onMarkersLoaded: (([HomeListCardMarker]) -> Void)?
-    /// 데이터(이미지/바디 유무)에 따라 컨텐츠 높이가 변할 때 호출. FloatingPanel anchor 갱신용.
+    /// 데이터(섹션 구성·셀 실측 높이)에 따라 컨텐츠 높이가 변할 때 호출. FloatingPanel anchor 갱신용.
     var onContentHeightChanged: ((CGFloat) -> Void)?
 
     init(viewModel: StorePreviewBottomSheetViewModel) {
@@ -197,10 +103,10 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         super.viewDidLoad()
         setupViews()
         bindConstraints()
-        bindBodyTapGesture()
         setupActions()
+        bindSectionsView()
         bind()
-        updateSkeleton()
+        updateLoadingState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -233,7 +139,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         let wasShowingDetail = isPanelAtFull
         dismissDisplayItemModals()
         resetDetail()
-        // 새 가게로 교체되면 찜 상태도 초기화한다. (preview 응답엔 찜 여부가 없어 기본 미저장으로 시작)
+        // 새 가게로 교체되면 찜 상태도 초기화한다. 실제 값은 preview 응답의 isSubscriber 로 다시 동기화된다.
         setSaveButton(isFavorited: false)
         bind()
         // 이미 화면에 떠 있는 경우(연속 마커 탭)엔 viewWillAppear 가 다시 호출되지 않으므로 직접 로드한다.
@@ -249,20 +155,17 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
 
     func clearContent() {
         previewSection = nil
-        titleLabel.text = nil
-        titleLabel.attributedText = nil
-        configureBadge(nil)
-        metadataView.clear()
-        configureImages([])
-        configureBodies([])
-        actionBarStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        sectionsView.apply([])
         setSaveButton(isFavorited: false)
         isLoadingPreview = true
-        updateSkeleton()
+        updateLoadingState()
     }
 
-    private func updateSkeleton() {
-        skeletonView.isHidden = isLoadingPreview.isNot || detailContainerView.isHidden.isNot
+    private func updateLoadingState() {
+        let isShowingDetail = detailContainerView.isHidden.isNot
+        skeletonView.isHidden = isLoadingPreview.isNot || isShowingDetail
+        topButtonStack.isHidden = isLoadingPreview.isNot || isShowingDetail
+        sectionsView.isHidden = isLoadingPreview || isShowingDetail
     }
 
     private func resetDetail() {
@@ -278,29 +181,18 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         detailNavigationTitleLabel.alpha = 0
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
-        previewViews.forEach { $0.isHidden = false }
-        updateSkeleton()
+        updateLoadingState()
     }
 
     private func setupViews() {
         // 상단 둥근 코너/그림자는 FloatingPanel SurfaceAppearance 가 처리한다.
         view.backgroundColor = Colors.systemWhite.color
 
-        (previewViews + [skeletonView, detailContainerView, detailNavigationBar])
+        [sectionsView, skeletonView, topButtonStack, detailContainerView, detailNavigationBar]
             .forEach { view.addSubview($0) }
-
-        titleStack.addArrangedSubview(titleLabel)
-        titleStack.addArrangedSubview(badgeImageView)
 
         topButtonStack.addArrangedSubview(saveButton)
         topButtonStack.addArrangedSubview(closeButton)
-
-        imagesCollectionView.register([StorePreviewImageCell.self, StorePreviewAddPhotoCell.self])
-        imagesCollectionView.dataSource = self
-        imagesCollectionView.delegate = self
-
-        bodiesScrollView.addSubview(bodiesStack)
-        actionBarScrollView.addSubview(actionBarStack)
 
         detailNavigationBar.backgroundColor = Colors.systemWhite.color
         detailNavigationBar.alpha = 0
@@ -315,15 +207,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
 
         topButtonStack.snp.makeConstraints {
             $0.top.equalToSuperview().offset(Layout.contentTop)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.trailing.equalToSuperview().offset(-Layout.horizontalMargin)
             $0.height.equalTo(32)
-        }
-
-        titleStack.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(20)
-            $0.top.equalToSuperview().offset(Layout.contentTop)
-            $0.trailing.lessThanOrEqualTo(topButtonStack.snp.leading).offset(-4)
-            $0.height.equalTo(28)
         }
 
         skeletonView.snp.makeConstraints {
@@ -333,42 +218,10 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
             $0.height.equalTo(StorePreviewSkeletonView.Layout.height)
         }
 
-        metadataView.snp.makeConstraints {
-            $0.top.equalTo(titleStack.snp.bottom).offset(4)
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.lessThanOrEqualToSuperview().offset(-20)
-        }
-
-        actionBarScrollView.snp.makeConstraints {
-            $0.top.equalTo(metadataView.snp.bottom).offset(12)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(36)
-        }
-
-        actionBarStack.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-            $0.height.equalToSuperview()
-        }
-
-        imagesCollectionView.snp.makeConstraints {
-            $0.top.equalTo(actionBarScrollView.snp.bottom).offset(12)
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.equalToSuperview().offset(-20)
-            self.imagesContainerHeight = $0.height.equalTo(0).constraint
-        }
-
-        bodiesScrollView.snp.makeConstraints {
-            $0.top.equalTo(imagesCollectionView.snp.bottom).offset(8)
-            $0.leading.trailing.equalToSuperview()
-            // FloatingPanel surface 의 .safeArea 기준 anchor 가 적용되므로 superview bottom 으로 안전하게 붙인다.
-            $0.bottom.equalToSuperview().offset(-12)
-            $0.height.equalTo(0).priority(.low)
-        }
-
-        bodiesStack.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview()
-            $0.leading.equalToSuperview().offset(20)
-            $0.trailing.lessThanOrEqualToSuperview().offset(-20)
+        // 섹션 뷰의 상단 여백(16)은 레이아웃이 주므로 그래버 영역 바로 아래부터 붙인다.
+        sectionsView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(Layout.grabberAreaHeight)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
 
         // 상세는 네비 아래에서 시작한다. 네비와 겹치면 가게명이 가려지고,
@@ -409,25 +262,49 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         }
     }
 
-    private func bindBodyTapGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapBodyArea))
-        gesture.cancelsTouchesInView = false
-        // 버튼 등 인터랙티브 요소 위 터치는 무시하도록 delegate 에서 걸러낸다.
-        gesture.delegate = self
-        view.addGestureRecognizer(gesture)
-    }
-
-    @objc private func didTapBodyArea() {
-        viewModel.input.didTapBody.send(())
+    /// 섹션 뷰 이벤트는 교체되는 ViewModel 이 아니라 현재 viewModel 로 보낸다(`update(viewModel:)` 재사용 대비).
+    private func bindSectionsView() {
+        sectionsView.onEvent = { [weak self] event in
+            guard let self else { return }
+            switch event {
+            case .tapActionBar(let index):
+                self.viewModel.input.didTapActionBar.send(index)
+            case .tapImage(let index):
+                self.viewModel.input.didTapImage.send(index)
+            case .tapAddPhoto:
+                self.viewModel.input.didTapAddPhoto.send(())
+            case .tapBody:
+                self.viewModel.input.didTapBody.send(())
+            case .tapSave:
+                self.viewModel.input.didTapSave.send(())
+            case .tapClose:
+                self.viewModel.input.didTapClose.send(())
+            case .clickAd(let clickLog):
+                self.viewModel.input.didClickAd.send(clickLog)
+            case .impression(let impressionLog):
+                self.viewModel.input.didImpression.send(impressionLog)
+            }
+        }
+        sectionsView.onContentHeightChanged = { [weak self] height in
+            guard height > 0 else { return }
+            self?.onContentHeightChanged?(Layout.grabberAreaHeight + height)
+        }
     }
 
     private func bind() {
-        viewModel.output.section
+        viewModel.output.sections
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] sections in
+                self?.render(sections: sections)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.previewSection
             .receive(on: DispatchQueue.main)
             .sink { [weak self] section in
                 guard let self else { return }
-                self.render(section: section)
-                self.bindActionBars(section.actionBars)
+                self.previewSection = section
+                (self.detailViewController as? StoreDetailSectionsLoadable)?.updatePlaceholderPreview(section.placeholder)
             }
             .store(in: &cancellables)
 
@@ -548,9 +425,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     func beginExpandingToFull() {
         guard detailContainerView.isHidden else { return }
         embedStoreSectionsIfNeeded()
-        previewViews.forEach { $0.isHidden = true }
         detailContainerView.isHidden = false
-        updateSkeleton()
+        updateLoadingState()
         showDetailNavigationBar()
         (detailViewController as? StoreDetailSectionsLoadable)?.markSectionsDisplayed()
     }
@@ -571,8 +447,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         isPanelAtFull = false
         detailContainerView.isHidden = true
         detailNavigationBar.alpha = 0
-        previewViews.forEach { $0.isHidden = false }
-        updateSkeleton()
+        updateLoadingState()
     }
 
     private func showDetailNavigationBar() {
@@ -601,7 +476,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
             storeId: storeId,
             latitude: viewModel.deviceLatitude,
             longitude: viewModel.deviceLongitude,
-            placeholderPreview: previewSection.map { StoreScreenPreviewSection(preview: $0, storeId: storeId) },
+            placeholderPreview: previewSection?.placeholder,
             onScrollOffsetChanged: { [weak self] contentOffset in
                 self?.updateDetailNavigationTitle(for: contentOffset)
             },
@@ -618,118 +493,10 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         (detailViewController as? StoreDetailSectionsLoadable)?.loadSectionsIfNeeded()
     }
 
-    private func render(section: StorePreviewSection) {
-        previewSection = section
+    private func render(sections: [any StoreSectionComponent]) {
         isLoadingPreview = false
-        updateSkeleton()
-        (detailViewController as? StoreDetailSectionsLoadable)?.updatePlaceholderPreview(
-            StoreScreenPreviewSection(preview: section, storeId: viewModel.storeId)
-        )
-        if let title = section.header.title {
-            titleLabel.setSDText(title)
-        }
-        configureBadge(section.header.badge)
-        metadataView.configure(section.metadata)
-
-        // 사장님 가게는 사용자 사진 업로드를 지원하지 않으므로 "사진 추가" 셀을 노출하지 않는다.
-        canAddPhoto = isBossStore(section).isNot
-        configureImages(section.images)
-        configureBodies(section.bodies)
-
-        onContentHeightChanged?(calculateContentHeight(for: section))
-    }
-
-    private func isBossStore(_ section: StorePreviewSection) -> Bool {
-        guard let rawValue = section.additionalInfos?.storeType else { return false }
-        return StoreType(value: rawValue) == .bossStore
-    }
-
-    /// `bindConstraints()` 에 적용된 상수와 동일하게 각 영역 높이/간격을 합산한다.
-    /// 레이아웃 상수가 바뀌면 여기도 같이 갱신되어야 한다.
-    private func calculateContentHeight(for section: StorePreviewSection) -> CGFloat {
-        var height: CGFloat = 0
-
-        // 상단 패딩 + 타이틀
-        height += Layout.contentTop + 28
-
-        // 메타데이터 (primary/secondary 각 20pt, 둘 다 있을 때 내부 spacing 4pt)
-        let hasPrimary = section.metadata.primary.isEmpty.isNot
-        let hasSecondary = section.metadata.secondary.isEmpty.isNot
-        if hasPrimary || hasSecondary {
-            height += 4 // 타이틀과의 간격
-            height += (hasPrimary ? 20 : 0) + (hasSecondary ? 20 : 0)
-        }
-
-        // 액션바
-        height += 16 + 36
-
-        if section.images.isEmpty.isNot {
-            height += 12 + Layout.imageRowHeight(images: section.images)
-        }
-
-        // 바디 (있을 때만 58pt + 8pt 간격)
-        // imagesContainer 가 숨겨져도 8pt 간격은 항상 제약에 걸려 있어 동일하게 더한다.
-        if section.bodies.isEmpty.isNot {
-            height += 8 + 58
-        }
-
-        return height
-    }
-
-    private func configureBadge(_ badge: SDImage?) {
-        guard let badge else {
-            badgeImageView.isHidden = true
-            badgeImageView.image = nil
-            return
-        }
-        badgeImageView.isHidden = false
-        badgeImageView.setSDImage(badge)
-    }
-
-    private func configureImages(_ images: [SDImage]) {
-        imageItems = images
-
-        let hasImages = images.isEmpty.isNot
-        imagesContainerHeight?.update(offset: hasImages ? Layout.imageRowHeight(images: images) : 0)
-        imagesCollectionView.isHidden = hasImages.isNot
-        imagesCollectionView.collectionViewLayout.invalidateLayout()
-        imagesCollectionView.reloadData()
-        if hasImages {
-            imagesCollectionView.setContentOffset(.zero, animated: false)
-        }
-    }
-
-    private func configureBodies(_ bodies: [StorePreviewBody]) {
-        bodiesStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
-        guard bodies.isEmpty.isNot else {
-            bodiesScrollView.isHidden = true
-            return
-        }
-        bodiesScrollView.isHidden = false
-
-        for body in bodies {
-            let card = StorePreviewBodyCardView()
-            card.configure(body: body)
-            card.snp.makeConstraints {
-                $0.width.equalTo(300)
-                $0.height.equalTo(58)
-            }
-            bodiesStack.addArrangedSubview(card)
-        }
-    }
-
-    private func bindActionBars(_ bars: [StorePreviewActionBar]) {
-        actionBarStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for (index, bar) in bars.enumerated() {
-            let button = makeActionBarButton()
-            button.setSDButton(bar.button)
-            button.controlPublisher(for: .touchUpInside)
-                .map { _ in index }
-                .subscribe(viewModel.input.didTapActionBar)
-                .store(in: &cancellables)
-            actionBarStack.addArrangedSubview(button)
-        }
+        updateLoadingState()
+        sectionsView.apply(sections)
     }
 
     /// 우상단 32pt 원형 아이콘 버튼(찜·닫기 공용). 배경 gray10, 아이콘 20pt·gray100.
@@ -764,89 +531,6 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
         let image = icon.resizeImage(scaledTo: 20).withTintColor(color)
         saveButton.setImage(image, for: .normal)
         detailSaveButton.setImage(image, for: .normal)
+        sectionsView.setFavorited(isFavorited)
     }
-
-    private func makeActionBarButton() -> UIButton {
-        let button = UIButton()
-        button.layer.cornerRadius = 18
-        button.clipsToBounds = true
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-
-        // 이미지와 타이틀 사이 4pt 간격을 만들기 위한 표준 트릭(semanticContentAttribute 가 .forceRightToLeft 이면 자동 반전).
-        let spacing: CGFloat = 4
-        let halfSpacing = spacing / 2
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12 + halfSpacing, bottom: 8, right: 12 + halfSpacing)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: halfSpacing, bottom: 0, right: -halfSpacing)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -halfSpacing, bottom: 0, right: halfSpacing)
-
-        button.snp.makeConstraints { $0.height.greaterThanOrEqualTo(36) }
-        return button
-    }
-}
-
-// MARK: UIGestureRecognizerDelegate
-extension StorePreviewBottomSheetViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(
-        _ gestureRecognizer: UIGestureRecognizer,
-        shouldReceive touch: UITouch
-    ) -> Bool {
-        // 액션바 버튼 등 UIControl, 그리고 이미지 컬렉션뷰(셀 탭을 직접 처리) 위의 터치는
-        // body 탭(가게 상세 이동)으로 처리하지 않는다.
-        var hitView = touch.view
-        while let current = hitView {
-            if current is UIControl { return false }
-            if current === imagesCollectionView { return false }
-            if current === detailContainerView { return false }
-            hitView = current.superview
-        }
-        return true
-    }
-}
-
-// MARK: UICollectionViewDataSource & Delegate
-extension StorePreviewBottomSheetViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        let rowHeight = Layout.imageRowHeight(images: imageItems)
-
-        guard imageItems[safe: indexPath.item] != nil else {
-            return CGSize(width: rowHeight, height: rowHeight)
-        }
-
-        return Layout.imageSize(images: imageItems, at: indexPath.item, availableWidth: collectionView.bounds.width)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard imageItems.isEmpty.isNot else { return 0 }
-        // 이미지가 1개 이상이고 사진 추가가 가능한 가게(일반 가게)일 때만 마지막에 "사진 추가" 셀(+1)을 노출한다.
-        return imageItems.count + (canAddPhoto ? 1 : 0)
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        if let image = imageItems[safe: indexPath.item] {
-            let cell: StorePreviewImageCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-            cell.bind(image)
-            return cell
-        }
-
-        let cell: StorePreviewAddPhotoCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        return cell
-    }
-
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard collectionView === imagesCollectionView else { return }
-        if imageItems[safe: indexPath.item] != nil {
-            viewModel.input.didTapImage.send(indexPath.item)
-        } else {
-            // 마지막 "사진 추가" 셀 탭.
-            viewModel.input.didTapAddPhoto.send(())
-        }
-    }
-
 }

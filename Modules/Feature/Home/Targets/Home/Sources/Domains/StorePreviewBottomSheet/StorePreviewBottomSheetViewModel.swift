@@ -16,10 +16,13 @@ extension StorePreviewBottomSheetViewModel {
         let didTapAddPhoto = PassthroughSubject<Void, Never>()
         let didTapImage = PassthroughSubject<Int, Never>()
         let didEnterDetail = PassthroughSubject<Void, Never>()
+        let didClickAd = PassthroughSubject<SDClickLog?, Never>()
+        let didImpression = PassthroughSubject<SDImpressionLog?, Never>()
     }
 
     struct Output {
-        let section = PassthroughSubject<StorePreviewSection, Never>()
+        let sections = PassthroughSubject<[any StoreSectionComponent], Never>()
+        let previewSection = PassthroughSubject<StoreScreenPreviewSection, Never>()
         let markers = PassthroughSubject<[HomeListCardMarker], Never>()
         let detailTitle = PassthroughSubject<String, Never>()
         let pageViewLog = PassthroughSubject<SDPageViewLog, Never>()
@@ -65,7 +68,7 @@ extension StorePreviewBottomSheetViewModel {
     }
 
     struct State {
-        var section: StorePreviewSection?
+        var section: StoreScreenPreviewSection?
         var storeName: String = ""
         var isFavorited: Bool = false
         var isLoadingPreview: Bool = false
@@ -162,6 +165,22 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
                 owner.output.route.send(.presentPhotoViewer(imageUrls: imageUrls, selectedIndex: index))
             }
             .store(in: &cancellables)
+
+        input.didClickAd
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { (owner: StorePreviewBottomSheetViewModel, clickLog: SDClickLog) in
+                owner.dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
+            }
+            .store(in: &cancellables)
+
+        input.didImpression
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { (owner: StorePreviewBottomSheetViewModel, impressionLog: SDImpressionLog) in
+                owner.dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
+            }
+            .store(in: &cancellables)
     }
 
     private func fetchPreview() async {
@@ -179,13 +198,14 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
 
         switch result {
         case .success(let response):
-            guard let preview = response.sections.compactMap({ $0 as? StorePreviewSection }).first else { return }
+            guard let preview = response.previewSection else { return }
             state.section = preview
             // header.title 은 스타일이 담긴 HTML 이라 그대로 쓰면 네비 타이틀·공유 문구에 태그가 노출된다.
             state.storeName = preview.header.title.map { $0.isHtml ? $0.text.htmlStripped : $0.text } ?? ""
             // 서버의 isSubscriber 값으로 저장 버튼 초기 선택 상태를 동기화한다.
-            state.isFavorited = preview.additionalInfos?.isSubscriber ?? false
-            output.section.send(preview)
+            state.isFavorited = preview.additionalInfos.isSubscriber ?? false
+            output.previewSection.send(preview)
+            output.sections.send(response.sections)
             output.markers.send(preview.markers ?? [])
             output.detailTitle.send(state.storeName)
             output.isFavoriteOverride.send(state.isFavorited)
@@ -240,8 +260,10 @@ final class StorePreviewBottomSheetViewModel: BaseViewModel {
         }
     }
 
-    private func handleActionBar(_ bar: StorePreviewActionBar) {
-        dependency.logManager.sendEvent(event: ClickEvent(clickLog: bar.clickLog))
+    private func handleActionBar(_ bar: SDActionBar) {
+        if let clickLog = bar.clickLog ?? bar.button.clickLog {
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
+        }
 
         if let customAction = bar.button.customAction {
             switch customAction.actionType {

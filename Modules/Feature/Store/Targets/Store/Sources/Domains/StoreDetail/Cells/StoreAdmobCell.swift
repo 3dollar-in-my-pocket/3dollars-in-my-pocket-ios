@@ -18,6 +18,7 @@ final class StoreAdmobCell: BaseCollectionViewCell {
     }
 
     var onClickAd: (() -> Void)?
+    var onLoadFailed: (() -> Void)?
 
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .storeDetail)
     private var hasLoadedAd = false
@@ -29,6 +30,8 @@ final class StoreAdmobCell: BaseCollectionViewCell {
         hasLoadedAd = false
         rootViewController = nil
         pendingAdHeight = nil
+        onClickAd = nil
+        onLoadFailed = nil
     }
 
     override func layoutSubviews() {
@@ -40,6 +43,9 @@ final class StoreAdmobCell: BaseCollectionViewCell {
         contentView.addSubview(adBannerView)
         adBannerView.onClick = { [weak self] in
             self?.onClickAd?()
+        }
+        adBannerView.onLoadFailed = { [weak self] in
+            self?.onLoadFailed?()
         }
     }
 

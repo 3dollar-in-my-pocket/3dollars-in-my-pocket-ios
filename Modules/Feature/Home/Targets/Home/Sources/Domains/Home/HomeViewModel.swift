@@ -41,7 +41,7 @@ extension HomeViewModel {
         let onTapMarker = PassthroughSubject<Int, Never>()
         let onTapCurrentMarker = PassthroughSubject<Void, Never>()
         let didTapWriteButton = PassthroughSubject<Void, Never>()
-        let applyPreset = PassthroughSubject<String, Never>()
+        let applyDeepLink = PassthroughSubject<DeepLinkParams, Never>()
         let landStoreFromDeepLink = PassthroughSubject<(storeId: Int, isExpanded: Bool), Never>()
 
         // From bottom sheet
@@ -67,6 +67,7 @@ extension HomeViewModel {
         let bottomSheetCardsReplaced = PassthroughSubject<Void, Never>()
         let listSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
         let bottomSheetTabSection = CurrentValueSubject<HomeBottomSheetTabSection?, Never>(nil)
+        let resetBottomSheetTabSelection = PassthroughSubject<Void, Never>()
         let curationLocation = PassthroughSubject<CLLocation, Never>()
         /// 지도 마커로 그릴 카드(BasicCard 만 포함). 인덱스는 cards 와 일치하지 않을 수 있다.
         let markerCards = CurrentValueSubject<[HomeListBasicCardResponse], Never>([])
@@ -103,6 +104,11 @@ extension HomeViewModel {
         var user: UserDetailResponse?
         var hasMovedInitialCamera = false
         var pendingLandingStore: LandingStore?
+    }
+
+    struct DeepLinkParams {
+        let preset: String?
+        let tabId: String?
     }
 
     struct LandingStore {
@@ -187,7 +193,8 @@ final class HomeViewModel: BaseViewModel {
     private var loadTask: Task<Void, Never>?
     private var loadMoreTask: Task<Void, Never>?
     private var landingTask: Task<Void, Never>?
-    
+    private var bottomSheetTabTask: Task<Void, Never>?
+
     private var allBars: [any HomeFilterBar] {
         state.filterSections
             .compactMap { $0 as? HomeFilterSection }
@@ -274,11 +281,10 @@ final class HomeViewModel: BaseViewModel {
             })
             .store(in: &cancellables)
 
-        input.applyPreset
+        input.applyDeepLink
             .withUnretained(self)
-            .sink(receiveValue: { (owner: HomeViewModel, preset: String) in
-                owner.output.preset.send(preset)
-                owner.fetchFilterScreen(shouldRefreshCards: true)
+            .sink(receiveValue: { (owner: HomeViewModel, params: DeepLinkParams) in
+                owner.applyDeepLink(params)
             })
             .store(in: &cancellables)
 
@@ -780,7 +786,7 @@ final class HomeViewModel: BaseViewModel {
         guard !Task.isCancelled else { return }
 
         guard case .success(let response) = result,
-              let marker = response.sections.compactMap({ $0 as? StorePreviewSection }).first?.markers?.first else {
+              let marker = response.previewSection?.markers?.first else {
             output.route.send(.pushStoreDetail(storeId: storeId))
             return
         }
@@ -879,9 +885,40 @@ extension HomeViewModel {
         output.filterDatasource.send(datasource)
     }
 
-    private func fetchFilterScreen(shouldRefreshCards: Bool = false) {
+    private func applyDeepLink(_ params: DeepLinkParams) {
+        bottomSheetTabTask?.cancel()
+        if let preset = params.preset {
+            output.preset.send(preset)
+            fetchFilterScreen(shouldRefreshCards: true, tabId: params.tabId)
+        } else if let tabId = params.tabId {
+            fetchBottomSheetTab(tabId: tabId)
+        }
+    }
+
+    private func fetchBottomSheetTab(tabId: String) {
+        let task = Task<Void, Never> { @MainActor [weak self] in
+            guard let self else { return }
+            let input = FetchHomeFilterScreenInput(preset: output.preset.value, tabId: tabId)
+            let result = await dependency.screenRepository.fetchHomeFilterScreen(input: input)
+            guard !Task.isCancelled, case .success(let response) = result else { return }
+            sendBottomSheetTabSection(from: response, resetsSelection: true)
+        }
+        task.store(in: taskBag)
+        bottomSheetTabTask = task
+    }
+
+    private func sendBottomSheetTabSection(from response: HomeFilterScreenResponse, resetsSelection: Bool) {
+        if resetsSelection {
+            output.resetBottomSheetTabSelection.send(())
+        }
+        output.bottomSheetTabSection.send(
+            response.sections.compactMap { $0 as? HomeBottomSheetTabSection }.first
+        )
+    }
+
+    private func fetchFilterScreen(shouldRefreshCards: Bool = false, tabId: String? = nil) {
         Task { @MainActor in
-            let input = FetchHomeFilterScreenInput(preset: output.preset.value)
+            let input = FetchHomeFilterScreenInput(preset: output.preset.value, tabId: tabId)
             let result = await dependency.screenRepository.fetchHomeFilterScreen(input: input)
             switch result {
             case .success(let response):
@@ -893,9 +930,7 @@ extension HomeViewModel {
                 mapControlViewModel.input.setSection.send(
                     response.sections.compactMap { $0 as? HomeMapControlSection }.first
                 )
-                output.bottomSheetTabSection.send(
-                    response.sections.compactMap { $0 as? HomeBottomSheetTabSection }.first
-                )
+                sendBottomSheetTabSection(from: response, resetsSelection: tabId.isNotNil)
 
                 if shouldRefreshCards && state.resultCameraPosition.isNotNil {
                     fetchInitialCards()

@@ -121,8 +121,8 @@ public final class HomeViewController: BaseViewController {
         storePreviewBottomSheetController?.view.isHidden = true
     }
 
-    public func applyPreset(_ preset: String) {
-        viewModel.input.applyPreset.send(preset)
+    public func applyDeepLink(preset: String?, tabId: String?) {
+        viewModel.input.applyDeepLink.send(.init(preset: preset, tabId: tabId))
     }
 
     public func landStoreFromDeepLink(storeId: Int, isExpanded: Bool) {
@@ -279,24 +279,6 @@ public final class HomeViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeViewController, isShow: Bool) in
                 owner.homeView.showFilterTooltiop(isShow: isShow)
-            }
-            .store(in: &cancellables)
-    }
-
-    private func bindBottomSheetTabOutput() {
-        viewModel.output.bottomSheetTabSection
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, section: HomeBottomSheetTabSection?) in
-                owner.bottomSheetViewController?.updateTabSection(section)
-            }
-            .store(in: &cancellables)
-
-        viewModel.output.curationLocation
-            .main
-            .withUnretained(self)
-            .sink { (owner: HomeViewController, location: CLLocation) in
-                owner.bottomSheetViewController?.updateMapLocation(location)
             }
             .store(in: &cancellables)
     }
@@ -801,6 +783,32 @@ extension HomeViewController {
             ?? HomeListView.Layout.collapsedVisibleHeight(hasTabs: false)
     }
 
+    private func bindBottomSheetTabOutput() {
+        viewModel.output.resetBottomSheetTabSelection
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, _) in
+                owner.bottomSheetViewController?.resetTabSelection()
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.bottomSheetTabSection
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, section: HomeBottomSheetTabSection?) in
+                owner.bottomSheetViewController?.updateTabSection(section)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.curationLocation
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeViewController, location: CLLocation) in
+                owner.bottomSheetViewController?.updateMapLocation(location)
+            }
+            .store(in: &cancellables)
+    }
+
     private func bindHomeListSheet(_ viewController: HomeListViewController) {
         viewController.onChangeTrackingScrollView = { [weak self] scrollView in
             self?.bottomSheetController?.track(scrollView: scrollView)
@@ -874,6 +882,7 @@ extension HomeViewController {
             longitude: longitude
         )
         let newViewModel = StorePreviewBottomSheetViewModel(config: config)
+        bottomSheetViewController?.syncFavorite(storeId: String(storeId), with: newViewModel.output.isFavoriteOverride)
         clearStorePreviewMarkers()
 
         // 부착된 상태(연속 마커 탭) 라면 VM 만 교체하고 종료.

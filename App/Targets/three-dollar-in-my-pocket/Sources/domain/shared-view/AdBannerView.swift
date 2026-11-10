@@ -15,6 +15,7 @@ class AdBannerView: UIView, AdBannerViewProtocol {
     
     var isLoaded: Bool = false
     var onClick: (() -> Void)?
+    var onLoadFailed: (() -> Void)?
     
     required init(adType: AdType) {
         self.adType = adType
@@ -103,7 +104,10 @@ extension AdBannerView: BannerViewDelegate {
         guard let retryAdUnitId = AdUnitIdResolver.retryAdUnitId(
             afterFailureOf: bannerView.adUnitID,
             fallback: defaultAdUnitId
-        ) else { return }
+        ) else {
+            onLoadFailed?()
+            return
+        }
 
         bannerView.adUnitID = retryAdUnitId
         bannerView.load(Request())
