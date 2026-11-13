@@ -68,7 +68,7 @@ extension HomeViewModel {
         let listSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
         let bottomSheetTabSection = CurrentValueSubject<HomeBottomSheetTabSection?, Never>(nil)
         let resetBottomSheetTabSelection = PassthroughSubject<Void, Never>()
-        let curationLocation = PassthroughSubject<CLLocation, Never>()
+        let searchArea = PassthroughSubject<HomeSearchArea, Never>()
         /// 지도 마커로 그릴 카드(BasicCard 만 포함). 인덱스는 cards 와 일치하지 않을 수 있다.
         let markerCards = CurrentValueSubject<[HomeListBasicCardResponse], Never>([])
         /// 마커 탭 시 바텀시트가 해당 카드로 스크롤하도록 알려준다.
@@ -259,7 +259,6 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.resultCameraPosition = location
                 owner.state.newCameraPosition = location
                 owner.output.initialCameraPosition.send((location, owner.state.initialMapZoomLevel))
-                owner.output.curationLocation.send(location)
             })
             .store(in: &cancellables)
 
@@ -271,6 +270,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.mapMaxDistance = distance
                 owner.state.newMapMaxDistance = distance
                 owner.fetchInitialCards()
+                owner.sendSearchArea()
             })
             .store(in: &cancellables)
 
@@ -414,7 +414,6 @@ final class HomeViewModel: BaseViewModel {
                 let location = CLLocation(latitude: latitude, longitude: longitude)
                 owner.state.newCameraPosition = location
                 owner.state.resultCameraPosition = location
-                owner.output.curationLocation.send(location)
                 owner.output.isHiddenResearchButton.send(true)
                 owner.output.initialCameraPosition.send((location, owner.state.initialMapZoomLevel))
             })
@@ -428,9 +427,7 @@ final class HomeViewModel: BaseViewModel {
                 owner.state.mapMaxDistance = owner.state.newMapMaxDistance
                 owner.state.resultCameraPosition = owner.state.newCameraPosition
                 owner.fetchInitialCards()
-                if let location = owner.state.resultCameraPosition {
-                    owner.output.curationLocation.send(location)
-                }
+                owner.sendSearchArea()
                 owner.output.isHiddenResearchButton.send(true)
             })
             .store(in: &cancellables)
@@ -702,6 +699,11 @@ final class HomeViewModel: BaseViewModel {
         ))
     }
 
+    private func sendSearchArea() {
+        guard let location = state.resultCameraPosition else { return }
+        output.searchArea.send(HomeSearchArea(location: location, maxDistance: state.mapMaxDistance))
+    }
+
     private func createFetchInput(cursor: String?) -> FetchHomeSectionListInput {
         var dynamicParams = collectDynamicParams()
 
@@ -815,7 +817,6 @@ final class HomeViewModel: BaseViewModel {
         let location = landingStore.location
         state.newCameraPosition = location
         state.resultCameraPosition = location
-        output.curationLocation.send(location)
         output.isHiddenResearchButton.send(true)
         output.initialCameraPosition.send((location, state.initialMapZoomLevel))
         fetchAddress(location: location)

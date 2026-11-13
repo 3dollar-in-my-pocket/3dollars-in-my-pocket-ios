@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import CoreLocation
 
 import Common
 import Model
@@ -20,7 +19,7 @@ extension HomeListViewModel {
         let setTabSection = PassthroughSubject<HomeBottomSheetTabSection?, Never>()
         let resetTabSelection = PassthroughSubject<Void, Never>()
         let didTapTab = PassthroughSubject<Int, Never>()
-        let setMapLocation = PassthroughSubject<CLLocation, Never>()
+        let setSearchArea = PassthroughSubject<HomeSearchArea, Never>()
         let receiveSectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
     }
 
@@ -39,7 +38,7 @@ extension HomeListViewModel {
         let tabs = CurrentValueSubject<[HomeBottomSheetTabItem], Never>([])
         let selectedViewType = CurrentValueSubject<HomeBottomTabViewType, Never>(.storeList)
         let didSelectCurationStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
-        let loadNews = PassthroughSubject<CLLocation, Never>()
+        let loadNews = PassthroughSubject<HomeSearchArea, Never>()
     }
 
     struct State {
@@ -47,8 +46,8 @@ extension HomeListViewModel {
         var tabs: [HomeBottomTab] = []
         var selectedTabId: String?
         var pendingSectionImpressionLog: SDImpressionLog?
-        var mapLocation: CLLocation?
-        var newsLoadedLocation: CLLocation?
+        var searchArea: HomeSearchArea?
+        var newsLoadedSearchArea: HomeSearchArea?
         var latestNewsFeedId: String?
         var favoriteOverrides: [String: Bool] = [:]
         var favoriteRequestingStoreIds: Set<String> = []
@@ -188,11 +187,11 @@ final class HomeListViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.setMapLocation
+        input.setSearchArea
             .withUnretained(self)
-            .sink { (owner: HomeListViewModel, location: CLLocation) in
-                owner.curationViewModel.input.setLocation.send(location)
-                owner.state.mapLocation = location
+            .sink { (owner: HomeListViewModel, searchArea: HomeSearchArea) in
+                owner.curationViewModel.input.setSearchArea.send(searchArea)
+                owner.state.searchArea = searchArea
                 owner.state.latestNewsFeedId = nil
                 owner.loadNewsIfVisible()
                 owner.fetchLatestNewsFeedIdIfNeeded()
@@ -267,35 +266,30 @@ final class HomeListViewModel: BaseViewModel {
 
     private func loadNewsIfVisible() {
         guard output.selectedViewType.value == .news,
-              let location = state.mapLocation,
-              isSameCoordinate(state.newsLoadedLocation, location).isNot else { return }
-        state.newsLoadedLocation = location
-        output.loadNews.send(location)
+              let searchArea = state.searchArea,
+              state.newsLoadedSearchArea != searchArea else { return }
+        state.newsLoadedSearchArea = searchArea
+        output.loadNews.send(searchArea)
     }
 
     private func fetchLatestNewsFeedIdIfNeeded() {
-        guard hasNewsTab, state.latestNewsFeedId == nil, let location = state.mapLocation else { return }
+        guard hasNewsTab, state.latestNewsFeedId == nil, let searchArea = state.searchArea else { return }
 
         Task { @MainActor [weak self] in
             guard let self else { return }
             let input = FetchFeedInput(
                 size: 1,
-                mapLatitude: location.coordinate.latitude,
-                mapLongitude: location.coordinate.longitude
+                mapLatitude: searchArea.latitude,
+                mapLongitude: searchArea.longitude,
+                maxDistanceM: searchArea.maxDistance
             )
             let result = await dependency.feedRepository.fetchFeed(input: input)
-            guard isSameCoordinate(state.mapLocation, location),
+            guard state.searchArea == searchArea,
                   case .success(let response) = result else { return }
             state.latestNewsFeedId = response.contents.first?.feedId
             markNewsSeenIfVisible()
             emitTabItems()
         }
-    }
-
-    private func isSameCoordinate(_ lhs: CLLocation?, _ rhs: CLLocation) -> Bool {
-        guard let lhs else { return false }
-        return lhs.coordinate.latitude == rhs.coordinate.latitude
-            && lhs.coordinate.longitude == rhs.coordinate.longitude
     }
 
     private func sendSectionImpressionLogIfVisible() {
