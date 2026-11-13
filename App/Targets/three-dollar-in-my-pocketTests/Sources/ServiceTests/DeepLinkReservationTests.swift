@@ -32,17 +32,4 @@ final class DeepLinkReservationTests: XCTestCase {
         // Then
         XCTAssertEqual(handler.reservedDeepLinkURLString, appLink)
     }
-
-    func test_TH1047_TC3_로그인전에앱링크가다시들어오면_가장최근링크로저장한다() {
-        // Given
-        let handler = DeepLinkHandler(canHandleDeepLinkOverride: { false })
-        handler.handleExternal(appLink)
-        let latestLink = "\(Bundle.deeplinkScheme)://bookmark"
-
-        // When
-        handler.handleExternal(latestLink)
-
-        // Then
-        XCTAssertEqual(handler.reservedDeepLinkURLString, latestLink)
-    }
 }

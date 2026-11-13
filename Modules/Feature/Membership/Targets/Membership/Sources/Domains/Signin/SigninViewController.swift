@@ -38,12 +38,6 @@ public final class SigninViewController: BaseViewController {
         self.view = self.signinView
     }
     
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        appInterface.deepLinkHandler.handleReservedDeepLink()
-    }
-    
     public override func bindViewModelInput() {
         signinView.kakaoButton
             .controlPublisher(for: .touchUpInside)

@@ -24,19 +24,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         if let canHandleDeepLinkOverride {
             return canHandleDeepLinkOverride()
         }
-        let rootViewController = SceneDelegate.shared?.window?.rootViewController
+        guard let navigationViewController = SceneDelegate.shared?.window?.rootViewController as? UINavigationController,
+              navigationViewController.viewControllers.first is MainTabBarViewController else { return false }
 
-        if let navigationViewController = rootViewController as? UINavigationController {
-            if navigationViewController.topViewController is MainTabBarViewController {
-                return true
-            } else if navigationViewController.topViewController is BaseViewController {
-                return true
-            } else {
-                return false
-            }
-        } else {
-            return false
-        }
+        return navigationViewController.topViewController is MainTabBarViewController
+            || navigationViewController.topViewController is BaseViewController
     }
 
     private enum LinkSource {
@@ -99,12 +91,13 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     }
 
     private func handle(_ urlString: String, source: LinkSource) {
+        guard let url = URL(string: urlString), isAppLink(url: url) else { return }
+
         guard canHandleDeepLink else {
-            reserveIfAppLink(urlString, source: source)
+            reservedDeepLink = (urlString, source)
             return
         }
 
-        guard let url = URL(string: urlString) else { return }
         var path: String?
 
         if isUniversalLinkHost(url: url) {
@@ -219,6 +212,14 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
     func handleReservedDeepLink() {
         guard let reservedDeepLink, canHandleDeepLink else { return }
+
+        let rootViewController = SceneDelegate.shared?.window?.rootViewController
+        if let transitionCoordinator = rootViewController?.transitionCoordinator {
+            transitionCoordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                self?.handleReservedDeepLink()
+            }
+            return
+        }
 
         self.reservedDeepLink = nil
         handle(reservedDeepLink.urlString, source: reservedDeepLink.source)
@@ -389,16 +390,12 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
         }
     }
 
-    private func reserveIfAppLink(_ urlString: String, source: LinkSource) {
-        guard let url = URL(string: urlString), isAppLink(url: url) else { return }
-        reservedDeepLink = (urlString, source)
-    }
-
     private func isAppLink(url: URL) -> Bool {
         return isAppScheme(url: url) || isUniversalLinkHost(url: url)
     }
 
     private func isUniversalLinkHost(url: URL) -> Bool {
-        return url.host == URL(string: Bundle.universialLinkHost)?.host
+        guard let host = url.host else { return false }
+        return host == URL(string: Bundle.universialLinkHost)?.host
     }
 }
