@@ -67,6 +67,8 @@ enum StoreSectionComponentsDecoder {
                 component = try StoreThreadPostSection(from: sectionDecoder)
             case .advertisement:
                 component = try StoreAdSection(from: sectionDecoder)
+            case .previewMore:
+                component = try StorePreviewMoreSection(from: sectionDecoder)
             case .unknown:
                 continue
             }
