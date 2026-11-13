@@ -14,7 +14,16 @@ import PanModal
 final class DeepLinkHandler: DeepLinkHandlerProtocol {
     static let shared = DeepLinkHandler()
 
+    private let canHandleDeepLinkOverride: (() -> Bool)?
+
+    init(canHandleDeepLinkOverride: (() -> Bool)? = nil) {
+        self.canHandleDeepLinkOverride = canHandleDeepLinkOverride
+    }
+
     private var canHandleDeepLink: Bool {
+        if let canHandleDeepLinkOverride {
+            return canHandleDeepLinkOverride()
+        }
         let rootViewController = SceneDelegate.shared?.window?.rootViewController
 
         if let navigationViewController = rootViewController as? UINavigationController {
@@ -46,6 +55,10 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
     func reservedDeepLinkExisted() -> Bool {
         return reservedDeepLink.isNotNil
+    }
+
+    var reservedDeepLinkURLString: String? {
+        reservedDeepLink?.urlString
     }
 
     func handleAdvertisementLink(_ advertisementLink: AdvertisementLinkResponse) {
@@ -87,7 +100,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
     private func handle(_ urlString: String, source: LinkSource) {
         guard canHandleDeepLink else {
-            reservedDeepLink = (urlString, source)
+            reserveIfAppLink(urlString, source: source)
             return
         }
 
@@ -374,6 +387,15 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             navigationController.modalPresentationStyle = .overCurrentContext
             topViewController.present(navigationController, animated: true)
         }
+    }
+
+    private func reserveIfAppLink(_ urlString: String, source: LinkSource) {
+        guard let url = URL(string: urlString), isAppLink(url: url) else { return }
+        reservedDeepLink = (urlString, source)
+    }
+
+    private func isAppLink(url: URL) -> Bool {
+        return isAppScheme(url: url) || isUniversalLinkHost(url: url)
     }
 
     private func isUniversalLinkHost(url: URL) -> Bool {
