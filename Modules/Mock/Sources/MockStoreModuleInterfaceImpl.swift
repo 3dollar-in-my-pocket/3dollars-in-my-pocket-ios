@@ -85,6 +85,7 @@ extension MockStoreModuleInterfaceImpl {
 private final class MockStorePreviewSectionsView: UIView, StorePreviewSectionsViewProtocol {
     var onEvent: ((StorePreviewSectionsEvent) -> Void)?
     var onContentHeightChanged: ((CGFloat) -> Void)?
+    var isPeekingNextSection: Bool { false }
     func apply(_ sections: [any StoreSectionComponent]) { }
     func setFavorited(_ isFavorited: Bool) { }
 }
