@@ -24,7 +24,7 @@ final class StorePreviewAdmobTests: XCTestCase {
         let sections = try loadSections(viewModel)
 
         // Then
-        XCTAssertEqual(sections.map(\.type), [.admob, .preview])
+        XCTAssertEqual(sections.map(\.type), [.admob, .preview, .previewMore])
     }
 
     // MARK: TC-2 — 서버 순서
@@ -38,7 +38,7 @@ final class StorePreviewAdmobTests: XCTestCase {
         let sections = try loadSections(viewModel)
 
         // Then
-        XCTAssertEqual(sections.map(\.type), [.preview, .admob])
+        XCTAssertEqual(sections.map(\.type), [.preview, .admob, .previewMore])
     }
 
     // MARK: TC-3 — 애드몹 없음
@@ -118,8 +118,13 @@ final class StorePreviewAdmobTests: XCTestCase {
     // MARK: TC-8 — 알 수 없는 섹션
 
     func test_TH1591_TC8_미리보기응답에모르는섹션이있으면_그섹션만빼고애드몹과미리보기를디코딩한다() throws {
+        // Given
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "StorePreviewWithAdmob", withExtension: "json"))
+        let json = try String(contentsOf: url, encoding: .utf8)
+            .replacingOccurrences(of: "\"PREVIEW_MORE\"", with: "\"UNKNOWN_FUTURE_SECTION\"")
+
         // When
-        let response = try FixtureLoader.decode(StorePreviewScreenResponse.self, from: "StorePreviewWithAdmob")
+        let response = try JSONDecoder().decode(StorePreviewScreenResponse.self, from: Data(json.utf8))
 
         // Then
         XCTAssertEqual(response.sections.map(\.type), [.admob, .preview])
