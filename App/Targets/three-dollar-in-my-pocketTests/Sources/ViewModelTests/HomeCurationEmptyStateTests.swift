@@ -33,7 +33,7 @@ final class HomeCurationEmptyStateTests: XCTestCase {
 
         // When
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [emptied], timeout: 5)
@@ -55,7 +55,7 @@ final class HomeCurationEmptyStateTests: XCTestCase {
 
         // When
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [loaded], timeout: 5)

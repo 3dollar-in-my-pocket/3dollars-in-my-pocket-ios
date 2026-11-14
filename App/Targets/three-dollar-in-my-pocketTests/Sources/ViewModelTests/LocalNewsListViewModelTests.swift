@@ -24,7 +24,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel) { $0.contains { $0.feedId != nil } }
 
         // When
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
 
         // Then
         await fulfillment(of: [loaded], timeout: 1)
@@ -47,7 +47,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         ]
         let viewModel = makeViewModel(feedRepository: feedRepository)
         let loaded = expectItems(viewModel) { $0.contains { $0.feedId != nil } }
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
         await fulfillment(of: [loaded], timeout: 1)
         let nextPage = expectation(description: "next page")
         viewModel.output.datasource
@@ -76,8 +76,8 @@ final class LocalNewsListViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
-        viewModel.input.load.send((latitude: 37.5665, longitude: 126.9780))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
+        viewModel.input.load.send(.init(latitude: 37.5665, longitude: 126.9780, maxDistanceM: nil))
 
         // Then
         var yieldCount = 0
@@ -101,7 +101,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel) { $0.contains(.empty) }
 
         // When
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
 
         // Then
         await fulfillment(of: [loaded], timeout: 1)
@@ -116,7 +116,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         feedRepository.fetchFeedResults = [.failure(MockError.notStubbed()), .success(try makeFeeds())]
         let viewModel = makeViewModel(feedRepository: feedRepository)
         let failed = expectItems(viewModel) { $0.contains(.error) }
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
         await fulfillment(of: [failed], timeout: 1)
         let reloaded = expectItems(viewModel) { $0.contains { $0.feedId != nil } }
 
@@ -136,7 +136,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         let viewModel = makeViewModel(feedRepository: MockFeedRepository())
 
         // When
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
 
         // Then
         XCTAssertEqual(currentItems(viewModel), [.header, .skeleton(0), .advertisement(nil), .skeleton(1), .skeleton(2)])
@@ -152,7 +152,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel) { $0.contains { $0.feedId != nil } }
 
         // When
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
 
         // Then
         await fulfillment(of: [loaded], timeout: 1)
@@ -173,7 +173,7 @@ final class LocalNewsListViewModelTests: XCTestCase {
         let loaded = expectItems(viewModel) { $0.contains(.empty) }
 
         // When
-        viewModel.input.load.send((latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: nil))
 
         // Then
         await fulfillment(of: [loaded], timeout: 1)
@@ -181,6 +181,48 @@ final class LocalNewsListViewModelTests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    // MARK: TH-1593 TC4
+
+    func test_TH1593_TC4_반경과함께불러오면_첫페이지와다음페이지요청에모두반경이담긴다() async throws {
+        // Given
+        let feedRepository = MockFeedRepository()
+        feedRepository.fetchFeedResults = [
+            .success(try makeFeeds(cursor: ["hasMore": true, "nextCursor": "NEXT"])),
+            .success(try makeFeeds(contents: []))
+        ]
+        let viewModel = makeViewModel(feedRepository: feedRepository)
+        let loaded = expectItems(viewModel) { $0.contains { $0.feedId != nil } }
+        viewModel.input.load.send(.init(latitude: 37.4979, longitude: 127.0276, maxDistanceM: 4200))
+        await fulfillment(of: [loaded], timeout: 1)
+        let nextPage = expectation(description: "next page")
+        viewModel.output.datasource
+            .dropFirst()
+            .sink { _ in nextPage.fulfill() }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.willDisplayCell.send(currentItems(viewModel).count - 1)
+
+        // Then
+        await fulfillment(of: [nextPage], timeout: 1)
+        XCTAssertEqual(feedRepository.requestedInputs.map(\.cursor), [nil, "NEXT"])
+        XCTAssertEqual(feedRepository.requestedInputs.map(\.maxDistanceM), [4200, 4200])
+    }
+
+    // MARK: TH-1593 TC6
+
+    func test_TH1593_TC6_반경을모르면_요청파라미터에maxDistanceM이없다() throws {
+        // Given
+        let input = FetchFeedInput(mapLatitude: 37.4979, mapLongitude: 127.0276, maxDistanceM: nil)
+
+        // When
+        let json = try JSONSerialization.jsonObject(with: JSONEncoder().encode(input)) as? [String: Any]
+
+        // Then
+        XCTAssertNil(json?["maxDistanceM"])
+        XCTAssertEqual(json?["mapLatitude"] as? Double, 37.4979)
+    }
 
     private func makeViewModel(feedRepository: MockFeedRepository) -> FeedListViewModel {
         FeedListViewModel(dependency: FeedListViewModelDependency(
