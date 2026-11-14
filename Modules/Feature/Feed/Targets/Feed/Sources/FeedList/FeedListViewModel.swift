@@ -9,10 +9,16 @@ import Log
 
 extension FeedListViewModel {
     struct Input {
-        let load = PassthroughSubject<(latitude: Double, longitude: Double), Never>()
+        let load = PassthroughSubject<LoadArea, Never>()
         let retry = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
         let didTapFeed = PassthroughSubject<FeedResponse, Never>()
+    }
+
+    struct LoadArea {
+        let latitude: Double
+        let longitude: Double
+        let maxDistanceM: Double?
     }
 
     struct Output {
@@ -33,6 +39,7 @@ extension FeedListViewModel {
         var feeds: [FeedResponse] = []
         var mapLatitude: Double?
         var mapLongitude: Double?
+        var maxDistanceM: Double?
         var advertisement: AdvertisementResponse?
         var hasFetchedAdvertisement = false
         var contentState: ContentState = .loading
@@ -66,6 +73,7 @@ public final class FeedListViewModel: BaseViewModel {
             .sink { (owner: FeedListViewModel, location) in
                 owner.state.mapLatitude = location.latitude
                 owner.state.mapLongitude = location.longitude
+                owner.state.maxDistanceM = location.maxDistanceM
                 owner.fetchAdvertisementIfNeeded()
                 owner.loadFirstPage()
                 owner.output.scrollToTop.send(())
@@ -155,7 +163,8 @@ public final class FeedListViewModel: BaseViewModel {
         return FetchFeedInput(
             cursor: cursor,
             mapLatitude: state.mapLatitude,
-            mapLongitude: state.mapLongitude
+            mapLongitude: state.mapLongitude,
+            maxDistanceM: state.maxDistanceM
         )
     }
 

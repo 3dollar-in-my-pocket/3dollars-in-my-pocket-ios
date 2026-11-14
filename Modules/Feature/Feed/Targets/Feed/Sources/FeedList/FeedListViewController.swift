@@ -70,8 +70,8 @@ public final class FeedListViewController: BaseViewController, LocalNewsViewCont
         super.sendPageView()
     }
 
-    public func load(mapLatitude: Double, mapLongitude: Double) {
-        viewModel.input.load.send((latitude: mapLatitude, longitude: mapLongitude))
+    public func load(mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?) {
+        viewModel.input.load.send(.init(latitude: mapLatitude, longitude: mapLongitude, maxDistanceM: maxDistanceM))
     }
 
     public func setVisible(_ isVisible: Bool) {

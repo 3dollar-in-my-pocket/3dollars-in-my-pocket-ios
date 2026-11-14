@@ -7,6 +7,7 @@ final class WebViewRequestBuilderTests: XCTestCase {
     private let userAgent = "4.52.0 (com.macgongmon.-dollar-in-my-pocket-debug; build:1; iOS 27.0.0)"
     private let debugGameURL = "https://boong-village-dev.3dollarinmypocket.workers.dev/"
     private let releaseGameURL = "https://boong-village.3dollarinmypocket.workers.dev/"
+    private let webDevURL = "https://3dollars-web-dev.netlify.app/events/my-siblings-romance-2"
 
     private func makeBuilder(token: String? = nil, isDebugBuild: Bool = true) -> WebViewRequestBuilder {
         return WebViewRequestBuilder(authToken: token ?? self.token, userAgent: userAgent, isDebugBuild: isDebugBuild)
@@ -161,5 +162,54 @@ final class WebViewRequestBuilderTests: XCTestCase {
         // Then
         XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
         XCTAssertEqual(customUserAgent(debugGameURL), userAgent)
+    }
+
+    // MARK: TH-1599 — 디버그 빌드는 웹 개발 환경에도 토큰·앱 UA 를 싣는다
+
+    func test_TH1599_TC1_Debug빌드는_웹개발환경에_토큰과_앱UA가_실린다() throws {
+        // Given / When
+        let request = try makeRequest(webDevURL, isDebugBuild: true)
+
+        // Then
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), token)
+        XCTAssertEqual(customUserAgent(webDevURL, isDebugBuild: true), userAgent)
+    }
+
+    func test_TH1599_TC2_Release빌드는_웹개발환경에_토큰과_앱UA가_실리지_않는다() throws {
+        // Given / When
+        let request = try makeRequest(webDevURL, isDebugBuild: false)
+
+        // Then
+        XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+        XCTAssertNil(customUserAgent(webDevURL, isDebugBuild: false))
+    }
+
+    func test_TH1599_TC3_Debug빌드라도_다른_netlify주소에는_토큰이_실리지_않는다() throws {
+        let urls = [
+            "https://evil.netlify.app/events/my-siblings-romance-2",
+            "https://3dollars-web.netlify.app/events/my-siblings-romance-2",
+            "https://3dollars-web-dev.netlify.app.evil.com/events/my-siblings-romance-2"
+        ]
+
+        for url in urls {
+            // Given / When
+            let request = try makeRequest(url, isDebugBuild: true)
+
+            // Then
+            XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"), url)
+            XCTAssertNil(customUserAgent(url, isDebugBuild: true), url)
+        }
+    }
+
+    func test_TH1599_TC4_Debug빌드라도_웹개발환경을_http로_열면_토큰이_실리지_않는다() throws {
+        // Given
+        let url = "http://3dollars-web-dev.netlify.app/events/my-siblings-romance-2"
+
+        // When
+        let request = try makeRequest(url, isDebugBuild: true)
+
+        // Then
+        XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+        XCTAssertNil(customUserAgent(url, isDebugBuild: true))
     }
 }

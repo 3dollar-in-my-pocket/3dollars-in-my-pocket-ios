@@ -800,11 +800,11 @@ extension HomeViewController {
             }
             .store(in: &cancellables)
 
-        viewModel.output.curationLocation
+        viewModel.output.searchArea
             .main
             .withUnretained(self)
-            .sink { (owner: HomeViewController, location: CLLocation) in
-                owner.bottomSheetViewController?.updateMapLocation(location)
+            .sink { (owner: HomeViewController, searchArea: HomeSearchArea) in
+                owner.bottomSheetViewController?.updateSearchArea(searchArea)
             }
             .store(in: &cancellables)
     }
@@ -1070,8 +1070,8 @@ extension HomeViewController {
             guard self?.isStorePreviewPresented == true else { return }
             self?.showStorePreviewMarkers(markers)
         }
-        viewController.onContentHeightChanged = { [weak self] height in
-            self?.updateStorePreviewPanelHeight(height)
+        viewController.onContentHeightChanged = { [weak self] height, isPeekingNextSection in
+            self?.updateStorePreviewPanelHeight(height, isPeekingNextSection: isPeekingNextSection)
         }
     }
 
@@ -1092,9 +1092,9 @@ extension HomeViewController {
         }
     }
 
-    private func updateStorePreviewPanelHeight(_ height: CGFloat) {
+    private func updateStorePreviewPanelHeight(_ height: CGFloat, isPeekingNextSection: Bool) {
         guard let fpc = storePreviewBottomSheetController else { return }
-        fpc.layout = StorePreviewLayout(visibleHeight: height)
+        fpc.layout = StorePreviewLayout(visibleHeight: height, isPeekingNextSection: isPeekingNextSection)
         fpc.invalidateLayout()
     }
 

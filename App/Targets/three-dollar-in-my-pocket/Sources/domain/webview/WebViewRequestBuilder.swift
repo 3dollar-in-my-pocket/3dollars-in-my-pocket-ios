@@ -8,7 +8,8 @@ struct WebViewRequestBuilder {
     ]
 
     static let trustedDebugHosts: Set<String> = [
-        "boong-village-dev.3dollarinmypocket.workers.dev"
+        "boong-village-dev.3dollarinmypocket.workers.dev",
+        "3dollars-web-dev.netlify.app"
     ]
 
     static let trustedReleaseHosts: Set<String> = [

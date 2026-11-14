@@ -58,6 +58,7 @@ public protocol StorePreviewSectionsViewProtocol: AnyObject where Self: UIView {
     var onEvent: ((StorePreviewSectionsEvent) -> Void)? { get set }
     /// 셀 실측 후 컨텐츠 높이가 바뀔 때 호출된다. 시트 tip 높이 계산에 사용한다.
     var onContentHeightChanged: ((CGFloat) -> Void)? { get set }
+    var isPeekingNextSection: Bool { get }
     func apply(_ sections: [any StoreSectionComponent])
     func setFavorited(_ isFavorited: Bool)
 }
