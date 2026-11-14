@@ -15,13 +15,14 @@ final class StorePreviewLayout: FloatingPanelLayout {
     let initialState: FloatingPanelState = .tip
 
     private let visibleHeight: CGFloat
+    private let isPeekingNextSection: Bool
 
     var anchors: [FloatingPanelState: any FloatingPanelLayoutAnchoring] {
         [
             .tip: FloatingPanelLayoutAnchor(
                 absoluteInset: visibleHeight,
                 edge: .bottom,
-                referenceGuide: .safeArea
+                referenceGuide: isPeekingNextSection ? .superview : .safeArea
             ),
             .full: FloatingPanelLayoutAnchor(
                 absoluteInset: 0,
@@ -31,7 +32,8 @@ final class StorePreviewLayout: FloatingPanelLayout {
         ]
     }
 
-    init(visibleHeight: CGFloat = Layout.defaultVisibleHeight) {
+    init(visibleHeight: CGFloat = Layout.defaultVisibleHeight, isPeekingNextSection: Bool = false) {
         self.visibleHeight = visibleHeight
+        self.isPeekingNextSection = isPeekingNextSection
     }
 }
