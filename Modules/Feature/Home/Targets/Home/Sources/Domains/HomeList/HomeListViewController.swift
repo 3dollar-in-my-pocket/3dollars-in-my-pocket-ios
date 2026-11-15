@@ -1,6 +1,5 @@
 import UIKit
 import Combine
-import CoreLocation
 
 import Common
 import DesignSystem
@@ -151,10 +150,11 @@ final class HomeListViewController: BaseViewController {
         viewModel.output.loadNews
             .main
             .withUnretained(self)
-            .sink { (owner: HomeListViewController, location: CLLocation) in
+            .sink { (owner: HomeListViewController, searchArea: HomeSearchArea) in
                 owner.newsViewController.load(
-                    mapLatitude: location.coordinate.latitude,
-                    mapLongitude: location.coordinate.longitude
+                    mapLatitude: searchArea.latitude,
+                    mapLongitude: searchArea.longitude,
+                    maxDistanceM: searchArea.maxDistance
                 )
             }
             .store(in: &cancellables)
@@ -210,8 +210,8 @@ final class HomeListViewController: BaseViewController {
         viewModel.input.resetTabSelection.send(())
     }
 
-    func updateMapLocation(_ location: CLLocation) {
-        viewModel.input.setMapLocation.send(location)
+    func updateSearchArea(_ searchArea: HomeSearchArea) {
+        viewModel.input.setSearchArea.send(searchArea)
     }
 
     func updateCards(_ cards: [any HomeListCardComponent]) {

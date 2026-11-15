@@ -106,7 +106,7 @@ final class AdCardViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(CLLocation(latitude: 37.4979, longitude: 127.0276))
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: CLLocation(latitude: 37.4979, longitude: 127.0276), maxDistance: nil))
         await fulfillment(of: [loaded], timeout: 5)
         let sentBefore = logManager.sentEvents.count
 

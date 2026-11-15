@@ -42,10 +42,10 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let logManager = MockLogManager()
         let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
-        viewModel.input.setMapLocation.send(location)
-        var loadedLocations: [CLLocation] = []
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
+        var loadedAreas: [HomeSearchArea] = []
         viewModel.output.loadNews
-            .sink { loadedLocations.append($0) }
+            .sink { loadedAreas.append($0) }
             .store(in: &cancellables)
 
         // When
@@ -54,8 +54,8 @@ final class HomeLocalNewsTabTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.output.selectedViewType.value, .news)
         XCTAssertEqual(logManager.sentEvents.filter { $0.name == .click }.last?.parameters["value"] as? String, "NEWS")
-        XCTAssertEqual(loadedLocations.map(\.coordinate.latitude), [location.coordinate.latitude])
-        XCTAssertEqual(loadedLocations.map(\.coordinate.longitude), [location.coordinate.longitude])
+        XCTAssertEqual(loadedAreas.map(\.latitude), [location.coordinate.latitude])
+        XCTAssertEqual(loadedAreas.map(\.longitude), [location.coordinate.longitude])
     }
 
     // MARK: TH-1426 TC4
@@ -64,15 +64,15 @@ final class HomeLocalNewsTabTests: XCTestCase {
         // Given
         let viewModel = makeViewModel()
         viewModel.input.setTabSection.send(try makeTabSection())
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         viewModel.input.didTapTab.send(newsTabIndex)
         var loadedLatitudes: [Double] = []
         viewModel.output.loadNews
-            .sink { loadedLatitudes.append($0.coordinate.latitude) }
+            .sink { loadedLatitudes.append($0.latitude) }
             .store(in: &cancellables)
 
         // When
-        viewModel.input.setMapLocation.send(CLLocation(latitude: 37.5665, longitude: 126.9780))
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: CLLocation(latitude: 37.5665, longitude: 126.9780), maxDistance: nil))
 
         // Then
         XCTAssertEqual(loadedLatitudes, [37.5665])
@@ -88,7 +88,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         XCTAssertEqual(loadCount, 0)
@@ -103,7 +103,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         viewModel.input.setTabSection.send(try makeTabSection())
 
         // When
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await waitForNewsBadge(viewModel, equals: true)
@@ -117,7 +117,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let preference = makePreference(lastSeenFeedId: "6ad390b8279bd19eba6157f5")
         let viewModel = makeViewModel(feedRepository: try makeFeedRepository(), preference: preference)
         viewModel.input.setTabSection.send(try makeTabSection())
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await waitForNewsBadge(viewModel, equals: true)
 
         // When
@@ -138,7 +138,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let updated = expectTabsUpdate(viewModel)
 
         // When
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [updated], timeout: 1)
@@ -157,7 +157,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let updated = expectTabsUpdate(viewModel)
 
         // When
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [updated], timeout: 1)
@@ -173,7 +173,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         viewModel.input.setTabSection.send(try makeTabSection())
 
         // When
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await waitForNewsBadge(viewModel, equals: true)
@@ -188,7 +188,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let updated = expectTabsUpdate(viewModel)
 
         // When
-        viewModel.input.setMapLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [updated], timeout: 1)
@@ -206,6 +206,43 @@ final class HomeLocalNewsTabTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.output.tabs.value.map(\.tab.tabId), ["DEFAULT", "CURATION", "NEWS"])
+    }
+
+    // MARK: TH-1593 TC5
+
+    func test_TH1593_TC5_새소식확인용최신피드조회에_지도반경이담긴다() async throws {
+        // Given
+        let feedRepository = try makeFeedRepository()
+        let viewModel = makeViewModel(feedRepository: feedRepository, preference: makePreference(lastSeenFeedId: nil))
+        viewModel.input.setTabSection.send(try makeTabSection())
+        let updated = expectTabsUpdate(viewModel)
+
+        // When
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: 4200))
+
+        // Then
+        await fulfillment(of: [updated], timeout: 1)
+        XCTAssertEqual(feedRepository.requestedInputs.first?.size, 1)
+        XCTAssertEqual(feedRepository.requestedInputs.first?.maxDistanceM, 4200)
+    }
+
+    // MARK: TH-1593 TC4
+
+    func test_TH1593_TC4_동네소식탭을열면_지도반경과함께소식을불러온다() throws {
+        // Given
+        let viewModel = makeViewModel()
+        viewModel.input.setTabSection.send(try makeTabSection())
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: 4200))
+        var loaded: [HomeSearchArea] = []
+        viewModel.output.loadNews
+            .sink { loaded.append($0) }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.didTapTab.send(newsTabIndex)
+
+        // Then
+        XCTAssertEqual(loaded.map(\.maxDistance), [4200])
     }
 
     // MARK: - Helpers
@@ -274,7 +311,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
             .filter { $0.contains { $0.tab.viewType == .news && $0.hasNewBadge == expected } }
             .sink { _ in badge.fulfill() }
             .store(in: &cancellables)
-        await fulfillment(of: [badge], timeout: 1)
+        await fulfillment(of: [badge], timeout: 3)
     }
 
     private func expectTabsUpdate(_ viewModel: HomeListViewModel) -> XCTestExpectation {

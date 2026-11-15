@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import CoreLocation
 
 import Common
 import Model
@@ -10,7 +9,7 @@ import Log
 extension HomeCurationViewModel {
     struct Input {
         let setTabId = PassthroughSubject<String?, Never>()
-        let setLocation = PassthroughSubject<CLLocation, Never>()
+        let setSearchArea = PassthroughSubject<HomeSearchArea, Never>()
         let didTapCategory = PassthroughSubject<(carouselId: String, categoryId: String), Never>()
         let didTapCarouselCard = PassthroughSubject<(carouselId: String, cardId: String), Never>()
         let willDisplayCarouselCard = PassthroughSubject<(carouselId: String, cardId: String), Never>()
@@ -33,7 +32,7 @@ extension HomeCurationViewModel {
 
     struct State {
         var tabId: String?
-        var location: CLLocation?
+        var searchArea: HomeSearchArea?
         var loadedRequest: LoadedRequest?
         var items: [HomeCurationItem] = []
         var selectedCategoryIds: [String: String] = [:]
@@ -46,8 +45,7 @@ extension HomeCurationViewModel {
 
     struct LoadedRequest: Equatable {
         let tabId: String
-        let latitude: Double
-        let longitude: Double
+        let searchArea: HomeSearchArea
     }
 
     struct Dependency {
@@ -91,10 +89,10 @@ final class HomeCurationViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.setLocation
+        input.setSearchArea
             .withUnretained(self)
-            .sink { (owner: HomeCurationViewModel, location: CLLocation) in
-                owner.state.location = location
+            .sink { (owner: HomeCurationViewModel, searchArea: HomeSearchArea) in
+                owner.state.searchArea = searchArea
                 owner.fetchSectionIfNeeded()
             }
             .store(in: &cancellables)
@@ -156,12 +154,8 @@ final class HomeCurationViewModel: BaseViewModel {
     }
 
     private func fetchSectionIfNeeded() {
-        guard let tabId = state.tabId, let location = state.location else { return }
-        let request = LoadedRequest(
-            tabId: tabId,
-            latitude: location.coordinate.latitude,
-            longitude: location.coordinate.longitude
-        )
+        guard let tabId = state.tabId, let searchArea = state.searchArea else { return }
+        let request = LoadedRequest(tabId: tabId, searchArea: searchArea)
         guard request != state.loadedRequest else { return }
         state.loadedRequest = request
         state.pendingSectionImpressionLog = nil
@@ -171,7 +165,11 @@ final class HomeCurationViewModel: BaseViewModel {
         cardTasks = [:]
         loadTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            let input = FetchHomeCurationSectionInput(mapLatitude: request.latitude, mapLongitude: request.longitude)
+            let input = FetchHomeCurationSectionInput(
+                mapLatitude: request.searchArea.latitude,
+                mapLongitude: request.searchArea.longitude,
+                maxDistanceM: request.searchArea.maxDistance
+            )
             let result = await dependency.screenRepository.fetchHomeCurationSection(
                 curationTabId: request.tabId,
                 input: input
@@ -213,7 +211,7 @@ final class HomeCurationViewModel: BaseViewModel {
               let filter = carousel.categoryFilters.first(where: { $0.categoryId == categoryId }),
               state.selectedCategoryIds[carouselId] != categoryId,
               let tabId = state.loadedRequest?.tabId,
-              let location = state.location else { return }
+              let searchArea = state.searchArea else { return }
 
         dependency.logManager.sendEvent(event: ClickEvent(clickLog: filter.clickLog))
 
@@ -225,8 +223,9 @@ final class HomeCurationViewModel: BaseViewModel {
             guard let self else { return }
             let input = FetchHomeCurationCarouselCardsInput(
                 categoryId: categoryId,
-                mapLatitude: location.coordinate.latitude,
-                mapLongitude: location.coordinate.longitude
+                mapLatitude: searchArea.latitude,
+                mapLongitude: searchArea.longitude,
+                maxDistanceM: searchArea.maxDistance
             )
             let result = await dependency.screenRepository.fetchHomeCurationCarouselCards(
                 curationTabId: tabId,

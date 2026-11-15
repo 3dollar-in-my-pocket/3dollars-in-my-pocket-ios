@@ -18,7 +18,7 @@ public final class MockFeedInterfaceImpl: FeedInterface {
 final class MockLocalNewsViewController: UIViewController, LocalNewsViewControllerType {
     let scrollView = UIScrollView()
 
-    func load(mapLatitude: Double, mapLongitude: Double) { }
+    func load(mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?) { }
 
     func setVisible(_ isVisible: Bool) { }
 

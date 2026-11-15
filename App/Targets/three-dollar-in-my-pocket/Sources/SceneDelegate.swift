@@ -38,6 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let url = URLContexts.first?.url {
             if AuthApi.isKakaoTalkLoginUrl(url) {
                 _ = AuthController.handleOpenUrl(url: url)
+                return
             } else if self.isKakaoLinkUrl(url: url) {
                 if let params = url.params(),
                    let storeId = params["storeId"] as? String {

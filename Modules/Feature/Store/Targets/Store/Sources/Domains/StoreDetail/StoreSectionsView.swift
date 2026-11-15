@@ -89,7 +89,8 @@ final class StoreSectionsView: UIView {
             StoreReviewCell.self,
             StoreSkeletonCell.self,
             StoreThreadPostCell.self,
-            StoreAdCell.self
+            StoreAdCell.self,
+            StorePreviewMoreCell.self
         ])
 
         switch style {
@@ -107,6 +108,7 @@ final class StoreSectionsView: UIView {
     // MARK: Public
 
     func apply(_ sections: [any StoreSectionComponent]) {
+        let sections = style == .preview ? sections : sections.filter { ($0 is StorePreviewMoreSection).isNot }
         let identifiers = sections.enumerated().map { "\($0.offset)-\($0.element.type.rawValue)" }
         let previousSectionsByIdentifier = sectionsByIdentifier
         let previousStoreId = Self.storeId(in: self.sections)
@@ -215,10 +217,22 @@ final class StoreSectionsView: UIView {
     }
 
     private func reportContentHeightIfNeeded() {
-        let height = dataSource.snapshot().numberOfItems == 0 ? 0 : collectionView.contentSize.height
+        let itemIdentifiers = dataSource.snapshot().itemIdentifiers
+        let height = itemIdentifiers.isEmpty
+            ? 0
+            : previewMorePeekContentHeight(itemIdentifiers: itemIdentifiers) ?? collectionView.contentSize.height
         if let lastReportedContentHeight, abs(lastReportedContentHeight - height) <= 0.5 { return }
         lastReportedContentHeight = height
         onContentHeightChanged?(height)
+    }
+
+    private func previewMorePeekContentHeight(itemIdentifiers: [String]) -> CGFloat? {
+        guard let lastIdentifier = itemIdentifiers.last,
+              sectionsByIdentifier[lastIdentifier] is StorePreviewMoreSection,
+              let attributes = collectionView.collectionViewLayout.layoutAttributesForItem(
+                at: IndexPath(item: itemIdentifiers.count - 1, section: 0)
+              ) else { return nil }
+        return attributes.frame.minY + StorePreviewMoreCell.Layout.peekHeight
     }
 
     // MARK: Impression
@@ -376,6 +390,9 @@ final class StoreSectionsView: UIView {
             cell.onAction = actionHandler
             cell.onTapImage = { [weak self] images, index in self?.onTapImageGallery?(images, index) }
             return cell
+        case let section as StorePreviewMoreSection:
+            let cell: StorePreviewMoreCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+            cell.bind(section); return cell
         case is StoreSkeletonSection:
             let cell: StoreSkeletonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
             return cell
@@ -462,6 +479,11 @@ final class StoreSectionsView: UIView {
 
 // MARK: StorePreviewSectionsViewProtocol
 extension StoreSectionsView: StorePreviewSectionsViewProtocol {
+    var isPeekingNextSection: Bool {
+        guard let lastIdentifier = dataSource.snapshot().itemIdentifiers.last else { return false }
+        return sectionsByIdentifier[lastIdentifier] is StorePreviewMoreSection
+    }
+
     func setFavorited(_ isFavorited: Bool) {
         guard self.isFavorited != isFavorited else { return }
         self.isFavorited = isFavorited

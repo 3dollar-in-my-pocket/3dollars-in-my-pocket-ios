@@ -90,7 +90,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     var onRequestClose: (() -> Void)?
     var onMarkersLoaded: (([HomeListCardMarker]) -> Void)?
     /// 데이터(섹션 구성·셀 실측 높이)에 따라 컨텐츠 높이가 변할 때 호출. FloatingPanel anchor 갱신용.
-    var onContentHeightChanged: ((CGFloat) -> Void)?
+    var onContentHeightChanged: ((_ height: CGFloat, _ isPeekingNextSection: Bool) -> Void)?
 
     init(viewModel: StorePreviewBottomSheetViewModel) {
         self.viewModel = viewModel
@@ -286,8 +286,8 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
             }
         }
         sectionsView.onContentHeightChanged = { [weak self] height in
-            guard height > 0 else { return }
-            self?.onContentHeightChanged?(Layout.grabberAreaHeight + height)
+            guard let self, height > 0 else { return }
+            self.onContentHeightChanged?(Layout.grabberAreaHeight + height, self.sectionsView.isPeekingNextSection)
         }
     }
 

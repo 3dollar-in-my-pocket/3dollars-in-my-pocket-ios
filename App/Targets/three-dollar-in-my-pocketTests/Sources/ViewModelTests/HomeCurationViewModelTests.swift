@@ -27,7 +27,7 @@ final class HomeCurationViewModelTests: XCTestCase {
 
         // When
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [items.expectation], timeout: 5)
@@ -53,7 +53,7 @@ final class HomeCurationViewModelTests: XCTestCase {
 
         // When
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [items.expectation], timeout: 5)
@@ -92,7 +92,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
         let before = try loaded.last.unwrapped()
         let replaced = expectItems(viewModel, count: 2)
@@ -137,7 +137,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, storeRepository: storeRepository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
         let selected = expectation(description: "didSelectStore")
         var selectedStore: HomeCurationSelectedStore?
@@ -180,7 +180,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, storeRepository: storeRepository)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
         let routed = expectation(description: "deepLink")
         var routedLink: SDLink?
@@ -217,7 +217,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
         let admobCardId = try Self.firstCarouselAdmobCardId(section).unwrapped()
 
@@ -240,7 +240,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
         let admobItemId = try Self.firstAdmobItemId(section).unwrapped()
 
@@ -266,7 +266,7 @@ final class HomeCurationViewModelTests: XCTestCase {
 
         // When
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
 
         // Then
         await fulfillment(of: [loaded.expectation], timeout: 5)
@@ -289,7 +289,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
         let sentCount = logManager.sentEvents.count
 
@@ -317,7 +317,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, logManager: logManager)
         let items = expectItems(viewModel, count: 3)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         let loaded = expectItems(viewModel, count: 1)
         await fulfillment(of: [loaded.expectation], timeout: 5)
 
@@ -342,7 +342,7 @@ final class HomeCurationViewModelTests: XCTestCase {
         let viewModel = makeViewModel(repository: repository, logManager: logManager)
         let loaded = expectItems(viewModel, count: 1)
         viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setLocation.send(location)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         await fulfillment(of: [loaded.expectation], timeout: 5)
 
         // When
