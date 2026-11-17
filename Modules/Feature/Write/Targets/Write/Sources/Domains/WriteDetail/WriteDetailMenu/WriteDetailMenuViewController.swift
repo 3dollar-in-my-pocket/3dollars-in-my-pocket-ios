@@ -66,7 +66,7 @@ final class WriteDetailMenuViewController: BaseViewController {
             .font: Fonts.medium.font(size: 16),
             .foregroundColor: Colors.gray70.color
         ]))
-        config.image = Icons.arrowRight.image
+        config.image = Icons.chevronRight.image
             .withRenderingMode(.alwaysTemplate)
             .withTintColor(Colors.gray70.color)
             .resizeImage(scaledTo: 16)

@@ -58,7 +58,7 @@ final class StorePreviewBottomSheetViewController: BaseViewController {
     }()
 
     private let collapseButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(
-        icon: Icons.arrowLeft.image
+        icon: Icons.chevronLeft.image
     )
 
     private let detailSaveButton = StorePreviewBottomSheetViewController.makeDetailNavigationButton(

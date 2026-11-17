@@ -118,7 +118,7 @@ final class MapDetailView: BaseView {
         let marker = NMFMarker()
         marker.width = 32
         marker.height = 40
-        marker.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)
+        marker.iconImage = NMFOverlayImage(image: Icons.mappinFocusedOn.image)
         
         let position = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
         

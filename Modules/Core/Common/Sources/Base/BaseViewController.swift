@@ -128,7 +128,7 @@ open class BaseViewController: UIViewController {
     
     open func addBackButtonIfNeeded() {
         if navigationController?.children.count ?? 0 > 1 {
-            let backImage = DesignSystemAsset.Icons.arrowLeft.image
+            let backImage = DesignSystemAsset.Icons.chevronLeft.image
                 .resizeImage(scaledTo: 24)
                 .withRenderingMode(.alwaysTemplate)
                 .withTintColor(.white)
