@@ -13,7 +13,7 @@ final class FeedCellContentWithTitleBodyView: BaseView {
         static let contentMaxLines = 5
 
         static func calculateHeight(body: ContentWithTitleFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
-            let width = cellWidth - padding * 2
+            let width = cellWidth - FeedCell.Layout.horizontalMargin * 2 - padding * 2
             let contentHeight = measureContentHeight(body.content, width: width)
 
             return padding + titleRowHeight + contentSpacing + contentHeight + padding
