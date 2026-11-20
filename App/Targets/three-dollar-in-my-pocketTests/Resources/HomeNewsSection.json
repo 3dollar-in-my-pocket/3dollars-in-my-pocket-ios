@@ -1,0 +1,11 @@
+{
+  "impressionLog": {
+    "screenName": "home",
+    "objectType": "section",
+    "objectId": "home_news",
+    "extraParameters": {
+      "tabId": "NEWS"
+    },
+    "eventType": "IMPRESSION"
+  }
+}
