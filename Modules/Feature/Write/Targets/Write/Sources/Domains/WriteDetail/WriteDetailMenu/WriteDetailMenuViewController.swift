@@ -32,7 +32,7 @@ final class WriteDetailMenuViewController: BaseViewController {
         let attributedString = NSMutableAttributedString(string: string)
 
         attributedString.addAttribute(.font, value: Fonts.bold.font(size: 16), range: range)
-        attributedString.addAttribute(.foregroundColor, value: Colors.gray50.color, range: range)
+        attributedString.addAttribute(.foregroundColor, value: Colors.gray40.color, range: range)
         label.attributedText = attributedString
         label.textAlignment = .left
         label.backgroundColor = Colors.systemWhite.color

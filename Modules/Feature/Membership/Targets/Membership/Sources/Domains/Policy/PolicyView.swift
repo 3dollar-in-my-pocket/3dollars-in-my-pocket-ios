@@ -73,7 +73,7 @@ final class PolicyView: Common.BaseView {
         return marketingButton
     }()
     
-    let nextButton = Button.Normal(size: .h48, text: Strings.policyNextButton)
+    let nextButton = Button.Normal(size: .medium, text: Strings.policyNextButton)
     
     override func setup() {
         addSubViews([

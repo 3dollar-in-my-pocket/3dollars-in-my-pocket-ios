@@ -155,7 +155,7 @@ final class CreatePollModalViewController: BaseViewController {
     }()
 
     private let createButton: Button.Normal = {
-        let createButton = Button.Normal(size: .h48, text: "투표 만들기")
+        let createButton = Button.Normal(size: .medium, text: "투표 만들기")
         createButton.isEnabled = false
         return createButton
     }()
