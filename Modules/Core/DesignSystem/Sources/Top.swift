@@ -49,6 +49,7 @@ public final class Top: UIView {
             .resized(to: Layout.iconSize)
             .withRenderingMode(.alwaysTemplate)
         let button = UIButton(configuration: configuration)
+        button.tintAdjustmentMode = .normal
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()

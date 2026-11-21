@@ -1,7 +1,7 @@
 import UIKit
 
 public final class Header: UIView {
-    public enum Layout {
+    enum Layout {
         static let insets = UIEdgeInsets(top: 20, left: 20, bottom: 16, right: 20)
         static let titleSpacing: CGFloat = 4
         static let descriptionSpacing: CGFloat = 8
@@ -119,6 +119,7 @@ public final class Header: UIView {
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.insets.left),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.insets.right),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Layout.insets.bottom),
+            titleStackView.trailingAnchor.constraint(lessThanOrEqualTo: stackView.trailingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: stackView.trailingAnchor)
         ])
     }

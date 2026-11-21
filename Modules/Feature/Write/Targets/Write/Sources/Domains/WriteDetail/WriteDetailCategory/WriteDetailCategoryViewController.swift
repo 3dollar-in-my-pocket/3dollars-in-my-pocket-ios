@@ -192,9 +192,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
         } else {
             let range = (string as NSString).range(of: "\(categoryCount)")
             
-            if categoryCount == 0 {
-                attributedString.addAttribute(.foregroundColor, value: Colors.gray50.color, range: range)
-            } else {
+            if categoryCount > 0 {
                 attributedString.addAttribute(.foregroundColor, value: Colors.mainPink.color, range: range)
             }
         }
