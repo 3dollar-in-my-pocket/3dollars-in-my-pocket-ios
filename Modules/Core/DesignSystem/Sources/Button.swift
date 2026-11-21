@@ -60,6 +60,8 @@ public class Button {
         case primary
         case secondary
         case destructive
+        case outline
+        case dark
         
         var backgroundColor: UIColor {
             switch self {
@@ -71,16 +73,35 @@ public class Button {
             
             case .destructive:
                 return DesignSystemAsset.Colors.mainRed.color
+            
+            case .outline:
+                return DesignSystemAsset.Colors.systemWhite.color
+            
+            case .dark:
+                return DesignSystemAsset.Colors.gray50.color
             }
         }
         
         var foregroundColor: UIColor {
             switch self {
-            case .primary, .destructive:
+            case .primary, .destructive, .dark:
                 return DesignSystemAsset.Colors.systemWhite.color
             
             case .secondary:
                 return DesignSystemAsset.Colors.gray70.color
+            
+            case .outline:
+                return DesignSystemAsset.Colors.gray50.color
+            }
+        }
+        
+        var borderColor: UIColor? {
+            switch self {
+            case .outline:
+                return DesignSystemAsset.Colors.gray40.color
+            
+            case .primary, .secondary, .destructive, .dark:
+                return nil
             }
         }
     }
@@ -141,6 +162,7 @@ public class Button {
             let baseForegroundColor = isEnabled ? style.foregroundColor : DesignSystemAsset.Colors.systemWhite.color
             let foregroundColor = isHighlighted ? baseForegroundColor.withAlphaComponent(0.6) : baseForegroundColor
             let backgroundColor = isEnabled ? style.backgroundColor : DesignSystemAsset.Colors.gray30.color
+            let borderColor = isEnabled ? style.borderColor : nil
             
             config.attributedTitle = text.map {
                 AttributedString($0, attributes: AttributeContainer([
@@ -152,6 +174,8 @@ public class Button {
             config.imagePlacement = iconPlacement == .leading ? .leading : .trailing
             config.baseForegroundColor = foregroundColor
             config.background.backgroundColor = backgroundColor
+            config.background.strokeColor = borderColor
+            config.background.strokeWidth = borderColor == nil ? 0 : 1
             configuration = config
         }
         
