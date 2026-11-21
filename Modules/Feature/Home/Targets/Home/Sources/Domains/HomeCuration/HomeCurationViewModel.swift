@@ -160,6 +160,7 @@ final class HomeCurationViewModel: BaseViewModel {
         guard request != state.loadedRequest else { return }
         state.loadedRequest = request
         state.pendingSectionImpressionLog = nil
+        output.resetScroll.send(())
 
         loadTask?.cancel()
         cardTasks.values.forEach { $0.cancel() }
@@ -205,7 +206,6 @@ final class HomeCurationViewModel: BaseViewModel {
             state.cards[carousel.carouselId] = carousel.cards
         }
         emitItems()
-        output.resetScroll.send(())
     }
 
     private func selectCategory(carouselId: String, categoryId: String) {

@@ -22,18 +22,18 @@ final class HomeTabScrollPositionTests: XCTestCase {
         // Given
         let repository = try makeRepository()
         let viewModel = HomeCurationViewModel(dependency: .init(screenRepository: repository))
-        let firstReset = expectResetScroll(viewModel)
-        viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: 1000))
-        await fulfillment(of: [firstReset], timeout: 5)
-        let reset = expectResetScroll(viewModel)
+        await loadSection(viewModel, searchArea: HomeSearchArea(location: location, maxDistance: 1000))
+        let resetCount = countResetScroll(viewModel)
+        let reloaded = expectItems(viewModel)
 
         // When
         viewModel.input.setSearchArea.send(HomeSearchArea(location: otherLocation, maxDistance: 1000))
 
         // Then
-        await fulfillment(of: [reset], timeout: 5)
+        XCTAssertEqual(resetCount(), 1)
+        await fulfillment(of: [reloaded], timeout: 5)
         XCTAssertEqual(repository.fetchHomeCurationSectionCalls.count, 2)
+        XCTAssertEqual(resetCount(), 1)
     }
 
     // MARK: TH-1633 TC5
@@ -42,23 +42,16 @@ final class HomeTabScrollPositionTests: XCTestCase {
         // Given
         let repository = try makeRepository()
         let viewModel = HomeCurationViewModel(dependency: .init(screenRepository: repository))
-        let loaded = expectResetScroll(viewModel)
-        viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: 1000))
-        await fulfillment(of: [loaded], timeout: 5)
-        var resetCount = 0
-        viewModel.output.resetScroll
-            .sink { _ in resetCount += 1 }
-            .store(in: &cancellables)
+        await loadSection(viewModel, searchArea: HomeSearchArea(location: location, maxDistance: 1000))
+        let resetCount = countResetScroll(viewModel)
 
         // When
         viewModel.input.setTabId.send(nil)
         viewModel.input.setTabId.send("CURATION")
-        try await Task.sleep(nanoseconds: 300_000_000)
 
         // Then
         XCTAssertEqual(repository.fetchHomeCurationSectionCalls.count, 1)
-        XCTAssertEqual(resetCount, 0)
+        XCTAssertEqual(resetCount(), 0)
     }
 
     // MARK: TH-1633 TC6
@@ -70,27 +63,37 @@ final class HomeTabScrollPositionTests: XCTestCase {
             try JSONDecoder().decode(HomeCurationCarouselCardsResponse.self, from: Data(#"{"cards":[]}"#.utf8))
         )
         let viewModel = HomeCurationViewModel(dependency: .init(screenRepository: repository))
-        let loaded = expectResetScroll(viewModel)
-        viewModel.input.setTabId.send("CURATION")
-        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: 1000))
-        await fulfillment(of: [loaded], timeout: 5)
-        var resetCount = 0
-        viewModel.output.resetScroll
-            .sink { _ in resetCount += 1 }
-            .store(in: &cancellables)
-        let cardsLoaded = expectation(description: "cards")
-        cardsLoaded.assertForOverFulfill = false
-        viewModel.output.items
-            .dropFirst()
-            .sink { _ in cardsLoaded.fulfill() }
-            .store(in: &cancellables)
+        await loadSection(viewModel, searchArea: HomeSearchArea(location: location, maxDistance: 1000))
+        let resetCount = countResetScroll(viewModel)
+        let cardsLoaded = expectItems(viewModel, count: 2)
 
         // When
         viewModel.input.didTapCategory.send((carouselId: "POPULAR_SNACKS", categoryId: "FRUIT_SANDO"))
 
         // Then
         await fulfillment(of: [cardsLoaded], timeout: 5)
-        XCTAssertEqual(resetCount, 0)
+        XCTAssertEqual(repository.fetchHomeCurationCarouselCardsCalls.count, 1)
+        XCTAssertEqual(resetCount(), 0)
+    }
+
+    // MARK: TH-1633 TC7
+
+    func test_TH1633_TC7_다른탭에있는동안지역이바뀌면_돌아올때응답전에스크롤초기화를보낸다() async throws {
+        // Given
+        let repository = try makeRepository()
+        let viewModel = HomeCurationViewModel(dependency: .init(screenRepository: repository))
+        await loadSection(viewModel, searchArea: HomeSearchArea(location: location, maxDistance: 1000))
+        viewModel.input.setTabId.send(nil)
+        let resetCount = countResetScroll(viewModel)
+        viewModel.input.setSearchArea.send(HomeSearchArea(location: otherLocation, maxDistance: 1000))
+        XCTAssertEqual(resetCount(), 0)
+
+        // When
+        viewModel.input.setTabId.send("CURATION")
+
+        // Then
+        XCTAssertEqual(resetCount(), 1)
+        XCTAssertEqual(repository.fetchHomeCurationSectionCalls.count, 1)
     }
 
     private func makeRepository() throws -> MockScreenRepository {
@@ -101,13 +104,29 @@ final class HomeTabScrollPositionTests: XCTestCase {
         return repository
     }
 
-    private func expectResetScroll(_ viewModel: HomeCurationViewModel) -> XCTestExpectation {
-        let expectation = expectation(description: "resetScroll")
+    private func loadSection(_ viewModel: HomeCurationViewModel, searchArea: HomeSearchArea) async {
+        let loaded = expectItems(viewModel)
+        viewModel.input.setTabId.send("CURATION")
+        viewModel.input.setSearchArea.send(searchArea)
+        await fulfillment(of: [loaded], timeout: 5)
+    }
+
+    private func expectItems(_ viewModel: HomeCurationViewModel, count: Int = 1) -> XCTestExpectation {
+        let expectation = expectation(description: "items")
+        expectation.expectedFulfillmentCount = count
         expectation.assertForOverFulfill = false
-        viewModel.output.resetScroll
-            .first()
+        viewModel.output.items
+            .dropFirst()
             .sink { _ in expectation.fulfill() }
             .store(in: &cancellables)
         return expectation
+    }
+
+    private func countResetScroll(_ viewModel: HomeCurationViewModel) -> () -> Int {
+        var count = 0
+        viewModel.output.resetScroll
+            .sink { _ in count += 1 }
+            .store(in: &cancellables)
+        return { count }
     }
 }
