@@ -98,7 +98,7 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 
 | 컴포넌트 | 위치 | 규격 |
 |---|---|---|
-| `Button.Normal` | `Sources/Button.swift` | 피그마 `Button`. `size:` `.medium` 48 · `.small` 34, `style:` `.primary`(`mainPink`·흰 글자) · `.secondary`(`gray10`·`gray70` 글자) · `.destructive`(`mainRed`·흰 글자). 비활성(`isEnabled = false`)은 스타일과 관계없이 배경 `gray30`·흰 글자. medium = 모서리 12 · 좌우 여백 12 · semiBold 14 · 아이콘 24, small = 모서리 10 · 좌우 여백 10 · bold 12 · 아이콘 16. 아이콘-글자 간격 4, `icon` + `iconPlacement`(`.leading`/`.trailing`)로 한쪽에만. 너비는 medium은 화면이 정하고 small은 글자 길이에 맞춤 |
+| `Button.Normal` | `Sources/Button.swift` | 피그마 `Button`. `size:` `.medium` 48 · `.small` 34, `style:` `.primary`(`mainPink`·흰 글자) · `.secondary`(`gray10`·`gray70` 글자) · `.destructive`(`mainRed`·흰 글자). 비활성(`isEnabled = false`)은 스타일과 관계없이 배경 `gray30`·흰 글자. medium = 모서리 12 · 좌우 여백 12 · semiBold 14 · 아이콘 24, small = 모서리 10 · 좌우 여백 10 · bold 12 · 아이콘 16. 아이콘-글자 간격 4, `icon` + `iconPlacement`(`.leading`/`.trailing`)로 한쪽에만. 너비는 medium은 화면이 정하고 small은 글자 길이에 맞춤. 누르는 동안 글자·아이콘이 옅어짐(피그마에 눌림 상태 없음). 빨간 강조 버튼은 삭제가 아니어도 `.destructive`를 씀 |
 | `ToastView` / `ToastManager` | `Sources/Manager/Toast/` | 배경 `gray95`, radius 10, 글자 medium 14 흰색 |
 | `TooltipView` | `Sources/TooltipView.swift` | 배경 #23242A(토큰 아님), radius 8, 제목 bold 16 · 본문 regular 14 |
 | `StarBadgeView` | `Sources/StarBadgeView.swift` | 별점 배지, radius 4, 별 `mainPink`/`gray70` |

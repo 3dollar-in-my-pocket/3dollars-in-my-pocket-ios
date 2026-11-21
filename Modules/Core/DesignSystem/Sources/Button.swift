@@ -92,6 +92,7 @@ public class Button {
     
     public class Normal: UIButton {
         public let size: Size
+        private var renderedIcon: UIImage?
         
         public var style: Style {
             didSet { setNeedsUpdateConfiguration() }
@@ -102,7 +103,10 @@ public class Button {
         }
         
         public var icon: UIImage? {
-            didSet { setNeedsUpdateConfiguration() }
+            didSet {
+                renderedIcon = makeRenderedIcon()
+                setNeedsUpdateConfiguration()
+            }
         }
         
         public var iconPlacement: IconPlacement {
@@ -123,6 +127,7 @@ public class Button {
             self.iconPlacement = iconPlacement
             
             super.init(frame: .zero)
+            renderedIcon = makeRenderedIcon()
             setup()
         }
         
@@ -133,7 +138,8 @@ public class Button {
         public override func updateConfiguration() {
             guard var config = configuration else { return }
             
-            let foregroundColor = isEnabled ? style.foregroundColor : DesignSystemAsset.Colors.systemWhite.color
+            let baseForegroundColor = isEnabled ? style.foregroundColor : DesignSystemAsset.Colors.systemWhite.color
+            let foregroundColor = isHighlighted ? baseForegroundColor.withAlphaComponent(0.6) : baseForegroundColor
             let backgroundColor = isEnabled ? style.backgroundColor : DesignSystemAsset.Colors.gray30.color
             
             config.attributedTitle = text.map {
@@ -142,7 +148,7 @@ public class Button {
                     .foregroundColor: foregroundColor
                 ]))
             }
-            config.image = icon.map { resized($0, to: size.iconSize).withRenderingMode(.alwaysTemplate) }
+            config.image = renderedIcon
             config.imagePlacement = iconPlacement == .leading ? .leading : .trailing
             config.baseForegroundColor = foregroundColor
             config.background.backgroundColor = backgroundColor
@@ -168,12 +174,14 @@ public class Button {
             heightAnchor.constraint(equalToConstant: size.height).isActive = true
         }
         
-        private func resized(_ image: UIImage, to targetSize: CGSize) -> UIImage {
-            guard image.size != targetSize else { return image }
+        private func makeRenderedIcon() -> UIImage? {
+            guard let icon else { return nil }
             
-            return UIGraphicsImageRenderer(size: targetSize).image { _ in
-                image.draw(in: CGRect(origin: .zero, size: targetSize))
+            let targetSize = size.iconSize
+            let resizedIcon = icon.size == targetSize ? icon : UIGraphicsImageRenderer(size: targetSize).image { _ in
+                icon.draw(in: CGRect(origin: .zero, size: targetSize))
             }
+            return resizedIcon.withRenderingMode(.alwaysTemplate)
         }
     }
 }
