@@ -10,6 +10,7 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 36
         static let imagePadding: CGFloat = 4
+        static let font = Fonts.semiBold.font(size: 14)
 
         static func size(for actionBar: SDActionBar) -> CGSize {
             let sizingButton = makeButton()
@@ -30,10 +31,15 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .init(top: 8, leading: 12, bottom: 8, trailing: 12)
         config.imagePadding = Layout.imagePadding
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Layout.font
+            return outgoing
+        }
         let button = UIButton(configuration: config)
         button.layer.cornerRadius = 18
         button.clipsToBounds = true
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        button.titleLabel?.font = Layout.font
         return button
     }
 

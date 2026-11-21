@@ -10,10 +10,10 @@ import SnapKit
 final class HomeFilterCell: BaseCollectionViewCell {
     enum Layout {
         static let leadingMargin: CGFloat = 10
-        static let stackViewSpacing: CGFloat = 6
+        static let stackViewSpacing: CGFloat = 4
         static let trailingMargin: CGFloat = 10
         static let height: CGFloat = 34
-        static let labelHeight: CGFloat = 18
+        static let labelHeight: CGFloat = 20
         static let defaultIconSize: CGFloat = 20
         static let closeButtonSize: CGFloat = 14
 
@@ -62,7 +62,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = Fonts.medium.font(size: 12)
+        label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray70.color
         return label
     }()
