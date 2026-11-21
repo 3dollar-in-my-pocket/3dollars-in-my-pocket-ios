@@ -161,14 +161,14 @@ public enum WriteStrings: Sendable {
     public static let saturday = WriteStrings.tr("Localization", "write_additional_info.saturday")
     /// 건너뛰기
     public static let skip = WriteStrings.tr("Localization", "write_additional_info.skip")
+    /// (선택)
+    public static let subtitle = WriteStrings.tr("Localization", "write_additional_info.subtitle")
     /// 일
     public static let sunday = WriteStrings.tr("Localization", "write_additional_info.sunday")
     /// 목
     public static let thursday = WriteStrings.tr("Localization", "write_additional_info.thursday")
-    /// 가게 상세 정보 추가 선택
+    /// 가게 상세 정보 추가
     public static let title = WriteStrings.tr("Localization", "write_additional_info.title")
-    /// 선택
-    public static let titleSmallerRange = WriteStrings.tr("Localization", "write_additional_info.title_smaller_range")
     /// 화
     public static let tuesday = WriteStrings.tr("Localization", "write_additional_info.tuesday")
     /// 수
@@ -372,10 +372,10 @@ public enum WriteStrings: Sendable {
     public static let next = WriteStrings.tr("Localization", "write_detail_menu.next")
     /// 건너뛰기
     public static let skip = WriteStrings.tr("Localization", "write_detail_menu.skip")
-    /// 메뉴 상세 정보 추가 선택
+    /// (선택)
+    public static let subtitle = WriteStrings.tr("Localization", "write_detail_menu.subtitle")
+    /// 메뉴 상세 정보 추가
     public static let title = WriteStrings.tr("Localization", "write_detail_menu.title")
-    /// 선택
-    public static let titleSmallRange = WriteStrings.tr("Localization", "write_detail_menu.title_small_range")
 
     public enum Menu: Sendable {
       /// 삭제

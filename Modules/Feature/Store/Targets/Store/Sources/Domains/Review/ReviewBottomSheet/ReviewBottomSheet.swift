@@ -77,7 +77,7 @@ final class ReviewBottomSheet: BaseView {
 
     private let countLabel = UILabel()
 
-    let writeButton = Button.Normal(size: .h48, text: Strings.ReviewBottomSheet.writeButton)
+    let writeButton = Button.Normal(size: .medium, text: Strings.ReviewBottomSheet.writeButton)
 
     override func setup() {
         backgroundColor = Colors.systemWhite.color

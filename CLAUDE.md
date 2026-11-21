@@ -95,6 +95,10 @@ make lint-fix
 
 전체 흐름(테크스펙 → 규칙 → 테스트 → 증거 → PR)과 위험도(경량/풀코스) 기준은 **[docs/process/pr-process.md](docs/process/pr-process.md)** 한 장에 있습니다. PR은 `/3dollars:pr-body`로 만듭니다.
 
+## 디자인 시스템
+
+UI 코드를 쓰거나 고치기 전에 **[DESIGN.md](DESIGN.md)** 를 읽습니다. 색·폰트·아이콘의 피그마 이름 ↔ 코드 이름 대응과 사용 규칙이 있습니다.
+
 ## 아키텍처 규칙
 
 경계에 관한 규칙 10개는 **[docs/architecture/RULES.md](docs/architecture/RULES.md)** 에 있습니다 (규칙 / 이유 / 예시 / 강제 수단 / 예외).

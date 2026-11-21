@@ -9,8 +9,8 @@ final class PollDetailViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var communityNavigationBar: CommunityNavigationBar = {
-        let communityNavigationBar = CommunityNavigationBar(rightButtons: [reportButton])
+    private lazy var communityNavigationBar: Top = {
+        let communityNavigationBar = Top(theme: .light, rightButtons: [reportButton])
         communityNavigationBar.backgroundColor = Colors.gray0.color
         return communityNavigationBar
     }()

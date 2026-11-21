@@ -34,7 +34,7 @@ final class CategorySelectionView: BaseView {
     }()
     
     let selectButton: Button.Normal = {
-        let selectButton = Button.Normal(size: .h52, text: Strings.categorySelectionOk)
+        let selectButton = Button.Normal(size: .medium, text: Strings.categorySelectionOk)
         selectButton.isEnabled = false
         return selectButton
     }()

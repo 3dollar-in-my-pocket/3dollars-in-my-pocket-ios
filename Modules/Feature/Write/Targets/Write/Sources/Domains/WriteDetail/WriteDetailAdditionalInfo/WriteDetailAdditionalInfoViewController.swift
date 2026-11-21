@@ -23,33 +23,11 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         return stackView
     }()
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.bold.font(size: 24)
-        label.textColor = Colors.gray100.color
-        
-        let string = Strings.WriteAdditionalInfo.title
-        var attributedString = NSMutableAttributedString(string: string, attributes: [
-            .font: Fonts.bold.font(size: 24),
-            .foregroundColor: Colors.gray100.color
-        ])
-        
-        let range = (string as NSString).range(of: Strings.WriteAdditionalInfo.titleSmallerRange)
-        attributedString.addAttribute(.font, value: Fonts.bold.font(size: 16), range: range)
-        attributedString.addAttribute(.foregroundColor, value: Colors.gray50.color, range: range)
-        label.attributedText = attributedString
-        label.textAlignment = .left
-        return label
-    }()
-    
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray80.color
-        label.text = Strings.WriteAdditionalInfo.description
-        label.textAlignment = .left
-        return label
-    }()
+    private let header = Header(
+        title: Strings.WriteAdditionalInfo.title,
+        subtitle: Strings.WriteAdditionalInfo.subtitle,
+        descriptionText: Strings.WriteAdditionalInfo.description
+    )
     
     private lazy var paymentMothodView = PaymentMethodSectionView()
     private lazy var appearanceDayView = AppearanceDaysSectionView()
@@ -61,7 +39,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             .font: Fonts.medium.font(size: 16),
             .foregroundColor: Colors.gray70.color
         ]))
-        config.image = Icons.arrowRight.image
+        config.image = Icons.chevronRight.image
             .withRenderingMode(.alwaysTemplate)
             .withTintColor(Colors.gray70.color)
             .resizeImage(scaledTo: 16)
@@ -125,11 +103,9 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             skipButton,
             buttonBackground
         ])
-        scrollView.addSubview(stackView)
+        scrollView.addSubViews([header, stackView])
         
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(descriptionLabel, previousSpace: 8)
-        stackView.addArrangedSubview(paymentMothodView, previousSpace: 36)
+        stackView.addArrangedSubview(paymentMothodView)
         stackView.addArrangedSubview(appearanceDayView, previousSpace: 20)
         stackView.addArrangedSubview(openingHoursView, previousSpace: 20)
         
@@ -139,8 +115,14 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             $0.bottom.equalTo(finishButton.snp.top)
         }
         
+        header.snp.makeConstraints {
+            $0.leading.top.trailing.equalToSuperview()
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
         stackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(header.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
             $0.width.equalTo(scrollView.frameLayoutGuide)
         }
         
@@ -174,7 +156,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             navigationItem.rightBarButtonItem = nil
         } else {
             title = Strings.WriteAdditionalInfo.Navigation.Title.normal
-            navigationController.updateProgress(1.0)
+            navigationController.updateProgress(step: 4)
             navigationController.setProgressHidden(false)
             
             let closeImage = DesignSystemAsset.Icons.close.image

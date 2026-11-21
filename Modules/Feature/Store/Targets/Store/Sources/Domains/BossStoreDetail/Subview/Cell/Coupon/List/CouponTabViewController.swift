@@ -11,7 +11,7 @@ final class CouponTabViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var myPageNavigationBar = CouponNavigationBar(title: "내 쿠폰함")
+    private lazy var myPageNavigationBar = Top(theme: .dark, title: "내 쿠폰함")
     private let tabView: CouponTabView = {
         let tabView = CouponTabView(titles: CouponTab.list.map { $0.title })
         tabView.isUserInteractionEnabled = false

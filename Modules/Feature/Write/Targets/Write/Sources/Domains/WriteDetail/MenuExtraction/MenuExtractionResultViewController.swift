@@ -22,14 +22,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         return stackView
     }()
 
-    private let titleLabel: PaddingLabel = {
-        let label = PaddingLabel(topInset: 20, bottomInset: 16, leftInset: 20, rightInset: 20)
-        label.font = Fonts.bold.font(size: 24)
-        label.textColor = Colors.gray100.color
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
+    private let header = Header()
 
     private let contentView = MenuFormContentView(showsFilterButton: false)
 
@@ -98,7 +91,7 @@ final class MenuExtractionResultViewController: BaseViewController {
 
     private func setupUI() {
         view.backgroundColor = Colors.systemWhite.color
-        titleLabel.text = Strings.MenuExtractionResult.titleFormat(viewModel.output.recognizedMenuCount)
+        header.title = Strings.MenuExtractionResult.titleFormat(viewModel.output.recognizedMenuCount)
         view.addSubViews([
             scrollView,
             bottomContainerView
@@ -106,7 +99,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         scrollView.addSubview(stackView)
         scrollView.delegate = self
         contentView.attachStickyHeader(to: view)
-        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(header)
         stackView.addArrangedSubview(contentView)
         bottomContainerView.addSubViews([
             bottomLineView,
