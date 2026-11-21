@@ -87,7 +87,7 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 
 **피그마와 아직 다른 것** (2026-11-16)
 - 피그마에만: `chevron_up`, `arrow_up`, `mappin_fire`, `coupon_solid`, `check_circle`, `filter`, `edit_fill`, `Iconly/Sharp/Bold/Location`, `Iconly/Sharp/Bold/Arrow - Right 2`
-- iOS에만: `badge`, `camera_colored`, `check_box_on` · `check_box_off`, `check_round_on` · `check_round_off`, `check_verified`, `delete_photo`, `image_add`
+- iOS에만: `badge`, `camera_colored`, `check_verified`, `delete_photo`, `image_add`
 - 피그마 `category` 프레임(카테고리 아이콘·지도 핀)은 Figma 플러그인으로 관리하며 이 문서 범위 밖입니다.
 
 **일러스트** (피그마 `ㄴ Illustrations`): 빈 화면 붕어빵은 `bungeoppang_default`(옛 `empty_02`), 우울한 얼굴은 `face_gloomy`(옛 `empty_100`)입니다.
