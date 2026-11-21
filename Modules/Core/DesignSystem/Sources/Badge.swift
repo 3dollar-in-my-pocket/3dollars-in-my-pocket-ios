@@ -35,19 +35,23 @@ public final class Badge: UIView {
 
     public var style: Style {
         didSet {
-            applyStyle()
+            applyBackgroundColor()
+            titleLabel.textColor = style.textColor
         }
     }
 
     public var customBackgroundColor: UIColor? {
         didSet {
-            applyStyle()
+            applyBackgroundColor()
         }
     }
 
     public var text: String? {
         get { titleLabel.text }
-        set { titleLabel.text = newValue }
+        set {
+            titleLabel.text = newValue
+            titleLabel.textColor = style.textColor
+        }
     }
 
     public var attributedText: NSAttributedString? {
@@ -105,12 +109,12 @@ public final class Badge: UIView {
         addSubview(stackView)
         stackView.addArrangedSubview(iconView)
         stackView.addArrangedSubview(titleLabel)
-        applyStyle()
+        applyBackgroundColor()
+        titleLabel.textColor = style.textColor
     }
 
     private func bindConstraints() {
         translatesAutoresizingMaskIntoConstraints = false
-        setContentHuggingPriority(.required, for: .horizontal)
 
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: Layout.height),
@@ -122,8 +126,7 @@ public final class Badge: UIView {
         ])
     }
 
-    private func applyStyle() {
+    private func applyBackgroundColor() {
         backgroundColor = customBackgroundColor ?? style.backgroundColor
-        titleLabel.textColor = style.textColor
     }
 }

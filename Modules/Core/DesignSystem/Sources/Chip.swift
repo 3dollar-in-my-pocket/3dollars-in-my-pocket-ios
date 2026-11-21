@@ -15,11 +15,18 @@ public final class Chip: UIView {
     public struct Appearance {
         public let backgroundColor: UIColor?
         public let borderColor: UIColor?
+        public let borderWidth: CGFloat
         public let textColor: UIColor?
 
-        public init(backgroundColor: UIColor?, borderColor: UIColor?, textColor: UIColor?) {
+        public init(
+            backgroundColor: UIColor?,
+            borderColor: UIColor?,
+            borderWidth: CGFloat = 1,
+            textColor: UIColor?
+        ) {
             self.backgroundColor = backgroundColor
             self.borderColor = borderColor
+            self.borderWidth = borderWidth
             self.textColor = textColor
         }
     }
@@ -27,12 +34,7 @@ public final class Chip: UIView {
     public enum Layout {
         static let spacing: CGFloat = 4
         static let closeSize: CGFloat = 14
-        static let borderWidth: CGFloat = 1
         static let font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-
-        public static func height(style: Style, size: Size) -> CGFloat {
-            return Metrics(style: style, size: size).height
-        }
 
         public static func size(
             style: Style,
@@ -195,16 +197,15 @@ public final class Chip: UIView {
     }
 
     private func applyAppearance() {
-        let base = defaultAppearance()
-        let appearance = customAppearance ?? base
-        let borderColor = appearance.borderColor
-        let textColor = appearance.textColor ?? base.textColor
+        let appearance = customAppearance ?? defaultAppearance()
 
-        self.backgroundColor = appearance.backgroundColor ?? .clear
-        layer.borderColor = borderColor?.cgColor
-        layer.borderWidth = borderColor == nil ? 0 : Layout.borderWidth
-        titleLabel.textColor = textColor
-        closeButton.tintColor = textColor
+        backgroundColor = appearance.backgroundColor ?? .clear
+        layer.borderColor = appearance.borderColor?.cgColor
+        layer.borderWidth = appearance.borderColor == nil ? 0 : appearance.borderWidth
+        if let textColor = appearance.textColor {
+            titleLabel.textColor = textColor
+            closeButton.tintColor = textColor
+        }
     }
 
     private func defaultAppearance() -> Appearance {

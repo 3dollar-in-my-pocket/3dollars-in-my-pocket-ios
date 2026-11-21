@@ -136,9 +136,10 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 | Filter · Small | `Chip(style: .filter)` | 34 · 10 · 10 · 20 | 배경 흰색, 테두리 `gray30`, 글자 `gray40` | 〃 | 홈 지도 상단 필터 — 서버 값으로 그림(아래) |
 | Save · Small | 없음 | 36 · 12 · 18 · 16 | 테두리 `gray20`, 글자 `gray70` | 배경 #FFF8F9(토큰 없음), 테두리 `pink200`, 글자 `mainPink` | 가게 상세·미리보기 저장·공유 — 서버 값으로 그림(아래) |
 
+- `size`는 Filled에만 의미가 있습니다(Outline·Filter는 크기가 하나).
 - 크기 계산은 `Chip.Layout.size(style:size:text:showsIcon:showsClose:)`.
-- 서버가 색·글자를 내려주는 칩은 `customAppearance`(배경·테두리·글자색)로 서버 값을 그대로 넣습니다. 기본 색을 강제하지 않습니다.
-- 서버 값으로 그리는 칩은 아직 화면별 코드(`HomeCurationCategoryChipCell` · `HomeFilterCell` · `StoreScreenPreviewActionCell`)에 있습니다. 글자가 피그마(semiBold 14)와 달리 medium 12인 곳이 있어 옮길 때 디자이너 확인이 필요합니다.
+- 서버가 색을 내려주는 칩은 `customAppearance`에 서버의 배경·테두리(색·두께)·글자색을 그대로 넣습니다. 빈 값은 "없음"으로 그리고 기본 색으로 채우지 않습니다. 글자색을 비우면(`textColor: nil`) 라벨에 이미 입힌 색(서버 글자 등)을 건드리지 않습니다.
+- 서버 값으로 그리는 칩(`HomeCurationCategoryChipCell` · `HomeFilterCell` · `StoreScreenPreviewActionCell`)은 아이콘 크기·글자까지 서버·화면 코드가 정하고 있어 아직 화면 코드에 그대로 둡니다. 글자가 피그마(semiBold 14)와 달리 medium 12인 곳이 있어 옮길 때 디자이너 확인이 필요합니다.
 
 ### Badge
 
