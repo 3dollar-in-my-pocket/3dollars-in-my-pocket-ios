@@ -29,7 +29,7 @@ final class EditNicknameField: BaseView {
     
     private let warningIcon: UIImageView = {
         let imageView = UIImageView()
-        let image = Icons.infomation.image.withRenderingMode(.alwaysTemplate)
+        let image = Icons.information.image.withRenderingMode(.alwaysTemplate)
         
         imageView.image = image
         imageView.tintColor = Colors.mainRed.color

@@ -48,7 +48,7 @@ final class CommunityPollListAdCell: BaseCollectionViewCell {
         moreButton.semanticContentAttribute = .forceRightToLeft
         moreButton.contentEdgeInsets = .init(top: 16, left: 12, bottom: 16, right: 12)
         moreButton.setTitleColor(Colors.gray50.color, for: .normal)
-        moreButton.setImage(Icons.arrowRight.image
+        moreButton.setImage(Icons.chevronRight.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray50.color), for: .normal)
         moreButton.isUserInteractionEnabled = false

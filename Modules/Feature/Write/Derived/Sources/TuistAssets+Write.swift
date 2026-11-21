@@ -37,7 +37,6 @@ public enum WriteAsset: Sendable {
   public static let iconClap = WriteImages(name: "icon_clap")
   public static let iconClose = WriteImages(name: "icon_close")
   public static let iconDistanceIndicator = WriteImages(name: "icon_distance_indicator")
-  public static let iconFilter = WriteImages(name: "icon_filter")
   public static let iconForkKnife = WriteImages(name: "icon_fork_knife")
   public static let iconGreenCheck = WriteImages(name: "icon_green_check")
   public static let iconImage = WriteImages(name: "icon_image")

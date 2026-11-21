@@ -48,7 +48,7 @@ final class StoreEditCell: BaseCollectionViewCell {
         let marker = NMFMarker()
         marker.width = 32
         marker.height = 40
-        marker.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)
+        marker.iconImage = NMFOverlayImage(image: Icons.mappinFocusedOn.image)
         return marker
     }()
 

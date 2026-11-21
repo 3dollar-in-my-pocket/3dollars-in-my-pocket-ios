@@ -66,7 +66,7 @@ final class WriteDetailMapCell: BaseCollectionViewCell {
         marker = NMFMarker()
         let targetLocation = NMGLatLng(lat: location.latitude, lng: location.longitude)
         marker?.position = targetLocation
-        marker?.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)
+        marker?.iconImage = NMFOverlayImage(image: Icons.mappinFocusedOn.image)
         marker?.width = 32
         marker?.height = 40
         marker?.mapView = mapView

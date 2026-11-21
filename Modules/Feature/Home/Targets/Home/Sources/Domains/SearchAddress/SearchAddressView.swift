@@ -99,7 +99,7 @@ final class SearchAddressView: BaseView {
         inputBoxContainer.snp.makeConstraints {
             $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            $0.height.equalTo(52)
+            $0.height.equalTo(50)
             $0.top.equalTo(navigationView.snp.bottom).offset(16)
         }
         

@@ -31,7 +31,7 @@ final class CommunityPollListCell: BaseCollectionViewCell {
 
     private let arrowImageView: UIImageView = {
         let arrowImageView = UIImageView()
-        arrowImageView.image = Icons.arrowRight.image
+        arrowImageView.image = Icons.chevronRight.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray80.color)
         return arrowImageView

@@ -49,7 +49,7 @@ final class BookmarkStoreCell: BaseCollectionViewCell {
     
     private let arrowImage: UIImageView = {
         let imageView = UIImageView()
-        let arrowImage = Icons.arrowRight.image.withRenderingMode(.alwaysTemplate)
+        let arrowImage = Icons.chevronRight.image.withRenderingMode(.alwaysTemplate)
         imageView.image = arrowImage
         imageView.tintColor = Colors.systemWhite.color
         imageView.isHidden = true

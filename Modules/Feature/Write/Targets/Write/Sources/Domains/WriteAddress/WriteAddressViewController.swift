@@ -18,7 +18,7 @@ public final class WriteAddressViewController: BaseViewController {
         return mapView
     }()
     
-    private let marker = UIImageView(image: Icons.markerFocuesd.image)
+    private let marker = UIImageView(image: Icons.mappinFocusedOn.image)
     
     private let currentLocationButton: UIButton = {
         var config = UIButton.Configuration.filled()

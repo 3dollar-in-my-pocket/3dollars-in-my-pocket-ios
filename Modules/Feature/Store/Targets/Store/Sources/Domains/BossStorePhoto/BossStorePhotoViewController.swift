@@ -44,7 +44,7 @@ final class BossStorePhotoViewController: BaseViewController {
     
     private let leftButton: UIButton = {
         let button = UIButton()
-        let image = Icons.arrowLeft.image
+        let image = Icons.chevronLeft.image
             .resizeImage(scaledTo: 20)
             .withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)
@@ -64,7 +64,7 @@ final class BossStorePhotoViewController: BaseViewController {
     
     private let rightButton: UIButton = {
         let button = UIButton()
-        let image = Icons.arrowRight.image
+        let image = Icons.chevronRight.image
             .resizeImage(scaledTo: 20)
             .withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)

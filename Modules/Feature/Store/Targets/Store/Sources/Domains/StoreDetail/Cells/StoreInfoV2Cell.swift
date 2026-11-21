@@ -498,7 +498,7 @@ private final class StoreInfoMenuEmptyView: UIView {
         layer.cornerRadius = Layout.cornerRadius
 
         let emptyImageView = UIImageView()
-        emptyImageView.image = Icons.empty02.image
+        emptyImageView.image = Icons.bungeoppangDefault.image
         let titleLabel = UILabel()
         titleLabel.text = Strings.BossStoreDetail.Menu.empty
         titleLabel.textColor = Colors.gray50.color

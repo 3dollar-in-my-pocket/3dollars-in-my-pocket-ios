@@ -27,7 +27,7 @@ final class ReportReviewBottomSheet: BaseView {
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     
     let reportButton: Button.Normal = {
-        let button = Button.Normal(size: .h48, text: Strings.ReportModal.button)
+        let button = Button.Normal(size: .medium, text: Strings.ReportModal.button)
         button.enabledBackgroundColor = Colors.mainRed.color
         return button
     }()
