@@ -115,8 +115,8 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 | Header | 제목 bold 24 + 서브타이틀 bold 16 gray/40 + 설명 14 gray/80 | 제보 단계 화면(`WriteDetailMenuViewController` 등)에서 직접 |
 | SearchField | 높이 50 | `SearchAddressView` (모서리 9 — Android는 12, 피그마 값 확인 필요) |
 | Bottom (하단 탭) | 탭 항목 규칙: 홈 · 가게 제보 · 커뮤니티 · 마이페이지, 아이콘 24 + 라벨 12 medium, 선택 `mainRed` · 미선택 `gray40`, My 탭 배경 `gray100` | 시스템 탭바(`MainTabBarViewController`)에 색·아이콘만 적용. 탭바 모양은 OS가 그림 |
-| Tabs | 탭 폭은 글자 길이(Hug), 선택 밑줄 2 | `CouponTabView` · `CommunityTabView` · `MyPageTabView` (아직 균등 분할) |
-| Chip · Badge · Checkbox · SelectRow · TextField · HandleBar · ProgressBar · Top · BottomCTA · IconButton · FAB | 피그마 각 페이지 참고 | 화면마다 직접 |
+| Tabs | Width 속성: Fill = 같은 폭, Hug = 글자 길이에 맞춤(넘치면 가로 스크롤). 선택 밑줄 2 | Fill: `CouponTabView` · `CommunityTabView` · `MyPageTabView` / Hug: `StoreTabCell`(가게 상세) · `MenuCategoryTabView`(가게 제보 메뉴) |
+| Chip · Badge · SelectRow · TextField · HandleBar · ProgressBar · Top · BottomCTA · IconButton · FAB | 피그마 각 페이지 참고 | 화면마다 직접 |
 
 - 홈 인디케이터(Home bar)·상태바·키보드·스위치는 시스템 요소라 디자인 시스템에 넣지 않습니다.
 
