@@ -13,7 +13,7 @@ final class NicknameView: BaseView {
     let backButton: UIButton = {
         let backButton = UIButton()
         backButton.setImage(
-            Icons.arrowLeft.image.withTintColor(Colors.systemWhite.color),
+            Icons.chevronLeft.image.withTintColor(Colors.systemWhite.color),
             for: .normal
         )
         return backButton
@@ -73,7 +73,7 @@ final class NicknameView: BaseView {
     
     private let warningImage: UIImageView = {
         let warningImage = UIImageView()
-        warningImage.image = Icons.infomation.image.withTintColor(Colors.mainRed.color)
+        warningImage.image = Icons.information.image.withTintColor(Colors.mainRed.color)
         warningImage.isHidden = true
         return warningImage
     }()

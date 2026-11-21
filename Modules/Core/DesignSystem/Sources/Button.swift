@@ -3,32 +3,25 @@ import UIKit
 public class Button {
     public class Normal: UIButton {
         public enum Size {
-            case h52
-            case h48
-            case h34
+            case medium
+            case small
             
             var height: CGFloat {
                 switch self {
-                case .h34:
+                case .small:
                     return 34
                     
-                case .h48:
+                case .medium:
                     return 48
-                    
-                case .h52:
-                    return 52
                 }
             }
             
             var iconSize: CGSize {
                 switch self {
-                case .h34:
+                case .small:
                     return CGSize(width: 16, height: 16)
                     
-                case .h48:
-                    return CGSize(width: 24, height: 24)
-                    
-                case .h52:
+                case .medium:
                     return CGSize(width: 24, height: 24)
                 }
             }
@@ -93,13 +86,10 @@ public class Button {
         
         private func setupTitleLabel() {
             switch size {
-            case .h34:
+            case .small:
                 titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
                 
-            case .h48:
-                titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-                
-            case .h52:
+            case .medium:
                 titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
             }
             

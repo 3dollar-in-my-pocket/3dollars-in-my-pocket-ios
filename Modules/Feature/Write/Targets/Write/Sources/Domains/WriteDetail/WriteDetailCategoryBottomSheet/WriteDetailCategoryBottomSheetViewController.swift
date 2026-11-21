@@ -258,7 +258,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
             for item in section.items {
                 switch item {
                 case .category(let category, _):
-                    let itemSize = WriteDetailCategoryCell.Layout.calculateSize(category: category, isSmall: false)
+                    let itemSize = WriteDetailCategoryCell.Layout.calculateSize(category: category)
                     
                     // Check if item fits in current line
                     let itemWidthWithSpacing = itemSize.width + (currentLineWidth > 0 ? minimumInteritemSpacing : 0)

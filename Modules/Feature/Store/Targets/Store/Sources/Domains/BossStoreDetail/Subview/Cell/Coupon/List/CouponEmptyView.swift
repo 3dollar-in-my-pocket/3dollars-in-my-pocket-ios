@@ -13,7 +13,7 @@ final class CouponEmptyView: BaseView {
     
     private let emptyImageView: UIImageView = {
         let emptyImageView = UIImageView()
-        emptyImageView.image = Icons.empty100.image
+        emptyImageView.image = Icons.faceGloomy.image
         return emptyImageView
     }()
     

@@ -10,10 +10,12 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
     enum Layout {
         static let height: CGFloat = 36
         static let imagePadding: CGFloat = 4
+        static let font = Fonts.semiBold.font(size: 14)
 
         static func size(for actionBar: SDActionBar) -> CGSize {
             let sizingButton = makeButton()
             sizingButton.setSDButton(actionBar.button)
+            applyFont(to: sizingButton, for: actionBar.button)
             sizingButton.kf.cancelImageDownloadTask()
             sizingButton.setImage(nil, for: .normal)
             sizingButton.configuration?.image = nil
@@ -33,8 +35,20 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
         let button = UIButton(configuration: config)
         button.layer.cornerRadius = 18
         button.clipsToBounds = true
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
+        button.titleLabel?.font = Layout.font
         return button
+    }
+
+    static func applyFont(to button: UIButton, for sdButton: SDButton) {
+        guard sdButton.text?.isHtml != true else {
+            button.configuration?.titleTextAttributesTransformer = nil
+            return
+        }
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Layout.font
+            return outgoing
+        }
     }
 
     private let button: UIButton = {
@@ -60,5 +74,6 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
 
     func bind(_ sdButton: SDButton) {
         button.setSDButton(sdButton)
+        Self.applyFont(to: button, for: sdButton)
     }
 }

@@ -6,7 +6,7 @@ import DesignSystem
 final class ReviewListView: BaseView {
     let backButton: UIButton = {
         let button = UIButton()
-        button.setImage(Icons.arrowLeft.image.withTintColor(Colors.gray100.color), for: .normal)
+        button.setImage(Icons.chevronLeft.image.withTintColor(Colors.gray100.color), for: .normal)
         
         return button
     }()

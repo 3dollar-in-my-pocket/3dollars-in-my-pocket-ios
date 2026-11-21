@@ -10,7 +10,7 @@ final class SettingSignoutCell: BaseCollectionViewCell {
     let signoutButton: UIButton = {
         let button = UIButton()
         
-        let image = Icons.infomation.image
+        let image = Icons.information.image
             .resizeImage(scaledTo: 16)
             .withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)

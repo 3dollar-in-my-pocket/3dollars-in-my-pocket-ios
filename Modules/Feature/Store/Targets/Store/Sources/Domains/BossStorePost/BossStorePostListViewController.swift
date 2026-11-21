@@ -9,7 +9,7 @@ public final class BossStorePostListViewController: BaseViewController {
     
     private let backButton: UIButton = {
         let button = UIButton()
-        let icon = Icons.arrowLeft.image.withTintColor(Colors.gray100.color)
+        let icon = Icons.chevronLeft.image.withTintColor(Colors.gray100.color)
         button.setImage(icon, for: .normal)
         return button
     }()

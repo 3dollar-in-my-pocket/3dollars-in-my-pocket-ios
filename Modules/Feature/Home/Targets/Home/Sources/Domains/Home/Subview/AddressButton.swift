@@ -21,7 +21,7 @@ public final class AddressButton: BaseView {
     
     private let rightArrowImage: UIImageView = {
         let rightArrowImage = UIImageView()
-        rightArrowImage.image = DesignSystemAsset.Icons.arrowRight.image.withTintColor(DesignSystemAsset.Colors.gray30.color)
+        rightArrowImage.image = DesignSystemAsset.Icons.chevronRight.image.withTintColor(DesignSystemAsset.Colors.gray30.color)
         return rightArrowImage
     }()
     

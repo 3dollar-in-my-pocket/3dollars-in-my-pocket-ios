@@ -46,7 +46,7 @@ final class PolicyView: Common.BaseView {
     let policyButton: UIButton = {
         let policyButton = UIButton()
         policyButton.setImage(
-            Icons.arrowRight.image.withTintColor(Colors.gray70.color),
+            Icons.chevronRight.image.withTintColor(Colors.gray70.color),
             for: .normal
         )
         return policyButton
@@ -67,13 +67,13 @@ final class PolicyView: Common.BaseView {
     let marketingButton: UIButton = {
         let marketingButton = UIButton()
         marketingButton.setImage(
-            Icons.arrowRight.image.withTintColor(Colors.gray70.color),
+            Icons.chevronRight.image.withTintColor(Colors.gray70.color),
             for: .normal
         )
         return marketingButton
     }()
     
-    let nextButton = Button.Normal(size: .h48, text: Strings.policyNextButton)
+    let nextButton = Button.Normal(size: .medium, text: Strings.policyNextButton)
     
     override func setup() {
         addSubViews([

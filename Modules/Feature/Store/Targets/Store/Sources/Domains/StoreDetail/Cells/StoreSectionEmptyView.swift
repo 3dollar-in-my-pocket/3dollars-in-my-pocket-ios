@@ -19,7 +19,7 @@ final class StoreSectionEmptyView: UIView {
 
     private let emptyImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Icons.empty02.image
+        imageView.image = Icons.bungeoppangDefault.image
         return imageView
     }()
 
