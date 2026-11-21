@@ -23,16 +23,7 @@ final class BossStoreCouponAlertView: BaseView {
         return label
     }()
     
-    let cancelButton: UIButton = {
-        let button = UIButton()
-        
-        button.setTitle("취소", for: .normal)
-        button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.backgroundColor = Colors.gray50.color
-        button.layer.cornerRadius = 12
-        return button
-    }()
+    let cancelButton = Button.Normal(size: .medium, style: .dark, text: "취소")
     
     let deleteButton = Button.Normal(size: .medium, style: .destructive, text: "사용하기")
     
@@ -62,7 +53,6 @@ final class BossStoreCouponAlertView: BaseView {
             $0.leading.equalTo(containerView).offset(28)
             $0.trailing.equalTo(snp.centerX).offset(-6)
             $0.bottom.equalTo(containerView).offset(-28)
-            $0.height.equalTo(48)
         }
         
         deleteButton.snp.makeConstraints {
@@ -70,7 +60,6 @@ final class BossStoreCouponAlertView: BaseView {
             $0.leading.equalTo(snp.centerX).offset(6)
             $0.top.equalTo(cancelButton)
             $0.bottom.equalTo(cancelButton)
-            $0.height.equalTo(cancelButton)
         }
     }
 }

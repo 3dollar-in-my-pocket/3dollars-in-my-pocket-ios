@@ -28,17 +28,7 @@ final class WriteCloseViewController: BaseViewController {
         return label
     }()
     
-    private let cancelButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.WriteCloseModal.cancel, attributes: .init([.font: Fonts.semiBold.font(size: 14)]))
-        config.baseForegroundColor = Colors.gray50.color
-        let button = UIButton(configuration: config)
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        button.layer.borderColor = Colors.gray40.color.cgColor
-        button.layer.borderWidth = 1
-        return button
-    }()
+    private let cancelButton = Button.Normal(size: .medium, style: .outline, text: Strings.WriteCloseModal.cancel)
     
     private let dismissButton = Button.Normal(size: .medium, style: .destructive, text: Strings.WriteCloseModal.dismiss)
     
@@ -96,7 +86,6 @@ final class WriteCloseViewController: BaseViewController {
         cancelButton.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.bottom.equalToSuperview().offset(-20)
-            $0.height.equalTo(48)
             $0.trailing.equalTo(containerView.snp.centerX).offset(-6)
         }
         

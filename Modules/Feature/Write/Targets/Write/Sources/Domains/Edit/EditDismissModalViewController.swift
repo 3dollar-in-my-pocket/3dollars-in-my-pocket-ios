@@ -44,17 +44,7 @@ final class EditDismissModalViewController: BaseViewController {
         return stackView
     }()
     
-    private let cancelButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("닫기", for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.setTitleColor(Colors.gray50.color, for: .normal)
-        button.layer.borderColor = Colors.gray40.color.cgColor
-        button.layer.borderWidth = 1
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let cancelButton = Button.Normal(size: .medium, style: .outline, text: "닫기")
     
     private let closeButton = Button.Normal(size: .medium, style: .destructive, text: "나가기")
     
