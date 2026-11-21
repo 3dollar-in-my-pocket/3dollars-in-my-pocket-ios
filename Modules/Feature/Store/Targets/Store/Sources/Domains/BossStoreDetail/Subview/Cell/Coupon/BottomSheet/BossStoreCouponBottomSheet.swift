@@ -32,7 +32,7 @@ final class BossStoreCouponBottomSheet: BaseView {
     
     let couponView = BossStoreCouponView()
     
-    let useButton = Button.Normal(size: .h48, text: "사용하기")
+    let useButton = Button.Normal(size: .medium, text: "사용하기")
     
     override func setup() {
         backgroundColor = Colors.gray100.color

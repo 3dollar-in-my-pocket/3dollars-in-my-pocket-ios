@@ -13,7 +13,7 @@ final class CommunityNavigationBar: BaseView {
     let backButton: UIButton = {
         let backButton = UIButton()
         backButton.setImage(
-            Icons.arrowLeft.image
+            Icons.chevronLeft.image
                 .resizeImage(scaledTo: 24)
                 .withTintColor(Colors.gray100.color), for: .normal)
         backButton.contentEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)

@@ -380,7 +380,7 @@ final class VisitView: BaseView {
     private func setupMarker(location: LocationResponse) {
         let marker = NMFMarker()
         marker.position = NMGLatLng(lat: location.latitude, lng: location.longitude)
-        marker.iconImage = NMFOverlayImage(image: Icons.markerFocuesd.image)
+        marker.iconImage = NMFOverlayImage(image: Icons.mappinFocusedOn.image)
         marker.width = 30
         marker.height = 34
         marker.mapView = mapView

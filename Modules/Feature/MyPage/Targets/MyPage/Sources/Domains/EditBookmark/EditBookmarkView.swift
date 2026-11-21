@@ -8,7 +8,7 @@ final class EditBookmarkView: BaseView {
     
     let backButton: UIButton = {
         let button = UIButton()
-        let image = Icons.arrowLeft.image.withTintColor(Colors.systemWhite.color)
+        let image = Icons.chevronLeft.image.withTintColor(Colors.systemWhite.color)
         
         button.setImage(image, for: .normal)
         button.adjustsImageWhenHighlighted = false

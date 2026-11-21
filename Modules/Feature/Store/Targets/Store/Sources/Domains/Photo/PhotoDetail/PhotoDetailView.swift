@@ -24,7 +24,7 @@ final class PhotoDetailView: BaseView {
     let leftButton: UIButton = {
         let button = UIButton()
         button.setImage(
-            Icons.arrowLeft.image.withTintColor(Colors.mainPink.color).resizeImage(scaledTo: 20),
+            Icons.chevronLeft.image.withTintColor(Colors.mainPink.color).resizeImage(scaledTo: 20),
             for: .normal
         )
         button.backgroundColor = Colors.gray95.color
@@ -37,7 +37,7 @@ final class PhotoDetailView: BaseView {
     let rightButton: UIButton = {
         let button = UIButton()
         button.setImage(
-            Icons.arrowRight.image.withTintColor(Colors.mainPink.color).resizeImage(scaledTo: 20),
+            Icons.chevronRight.image.withTintColor(Colors.mainPink.color).resizeImage(scaledTo: 20),
             for: .normal
         )
         button.backgroundColor = Colors.gray95.color

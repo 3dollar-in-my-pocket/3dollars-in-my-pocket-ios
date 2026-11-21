@@ -38,7 +38,7 @@ final class MyPageSectionHeaderView: BaseCollectionViewReusableView {
         countButton.imageEdgeInsets.left = 2
         countButton.semanticContentAttribute = .forceRightToLeft
         countButton.setTitleColor(Colors.mainPink.color, for: .normal)
-        countButton.setImage(Icons.arrowRight.image
+        countButton.setImage(Icons.chevronRight.image
             .resizeImage(scaledTo: 12)
             .withTintColor(Colors.gray20.color), for: .normal)
         return countButton
