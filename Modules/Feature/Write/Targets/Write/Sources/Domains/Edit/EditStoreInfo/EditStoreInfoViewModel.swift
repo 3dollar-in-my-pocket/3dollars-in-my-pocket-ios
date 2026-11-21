@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 import Common
+import DesignSystem
 import Model
 import Log
 
@@ -19,7 +20,7 @@ extension EditStoreInfoViewModel {
     struct Output {
         let screenName: ScreenName = .editStoreInfo
         let store: CurrentValueSubject<UserStoreResponse, Never>
-        let nameFieldState = PassthroughSubject<NameTextField.State, Never>()
+        let nameFieldState = PassthroughSubject<TextField.State, Never>()
         let editedStoreInfo = PassthroughSubject<UserStoreResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
