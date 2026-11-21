@@ -6,11 +6,23 @@ import DesignSystem
 
 final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     enum Layout {
+        static let contentHorizontalInset: CGFloat = 12
+
         static func calculateHeight(body: ContentWithTitleAndImagesFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
-            let width = cellWidth - 24
-            let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
-            
+            let width = cellWidth - FeedCell.Layout.horizontalMargin * 2 - contentHorizontalInset * 2
+            let label = makeContentLabel()
+            label.setSDText(body.content)
+            let contentHeight = ceil(label.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude)).height)
+
             return contentHeight + 116
+        }
+
+        static func makeContentLabel() -> UILabel {
+            let label = UILabel()
+            label.font = Fonts.regular.font(size: 14)
+            label.textColor = Colors.gray80.color
+            label.numberOfLines = 5
+            return label
         }
     }
     
@@ -37,13 +49,7 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     }()
     
     
-    private let contentLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray80.color
-        label.numberOfLines = 5
-        return label
-    }()
+    private let contentLabel = Layout.makeContentLabel()
     
     private var images: [ImageResponse] = []
     
@@ -79,8 +85,8 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
         }
         
         contentLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(12)
-            $0.trailing.equalToSuperview().offset(-12)
+            $0.leading.equalToSuperview().offset(Layout.contentHorizontalInset)
+            $0.trailing.equalToSuperview().offset(-Layout.contentHorizontalInset)
             $0.top.equalTo(collectionView.snp.bottom).offset(8)
         }
     }
