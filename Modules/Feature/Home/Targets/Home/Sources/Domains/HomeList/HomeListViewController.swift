@@ -141,7 +141,6 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, viewType: HomeBottomTabViewType) in
                 owner.homeListView.showPage(viewType: viewType)
-                owner.newsViewController.setVisible(viewType == .news)
                 owner.scrollToTop(owner.trackingScrollView)
                 owner.onChangeTrackingScrollView?(owner.trackingScrollView)
             }
