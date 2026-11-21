@@ -8,21 +8,7 @@ import SnapKit
 import Log
 
 final class WriteDetailCategoryViewController: BaseViewController {
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = Strings.WriteDetailCategory.title
-        label.font = Fonts.bold.font(size: 24)
-        label.textColor = Colors.gray100.color
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        return label
-    }()
-    
-    private let countLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.bold.font(size: 16)
-        label.textColor = Colors.gray100.color
-        return label
-    }()
+    private let header = Header(title: Strings.WriteDetailCategory.title)
     
     private let menuExtractionBannerView = MenuExtractionBannerView()
 
@@ -89,26 +75,19 @@ final class WriteDetailCategoryViewController: BaseViewController {
     private func setupUI() {
         view.backgroundColor = Colors.systemWhite.color
         view.addSubViews([
-            titleLabel,
-            countLabel,
+            header,
             menuExtractionBannerView,
             collectionView,
             nextButton,
             buttonBackground
         ])
         
-        titleLabel.snp.makeConstraints {
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
-        }
-        
-        countLabel.snp.makeConstraints {
-            $0.leading.equalTo(titleLabel.snp.trailing).offset(4)
-            $0.centerY.equalTo(titleLabel)
+        header.snp.makeConstraints {
+            $0.leading.trailing.top.equalTo(view.safeAreaLayoutGuide)
         }
         
         menuExtractionBannerView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(16)
+            $0.top.equalTo(header.snp.bottom)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
@@ -129,7 +108,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
     private func setupNavigationBar() {
         title = Strings.WriteDetailCategory.Navigation.title
         guard let navigationController = navigationController as? WriteNavigationController else { return }
-        navigationController.updateProgress(0.5)
+        navigationController.updateProgress(step: 2)
         navigationController.setProgressHidden(false)
         
         let closeImage = DesignSystemAsset.Icons.close.image
@@ -152,7 +131,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
             if isAvailable {
                 $0.top.equalTo(menuExtractionBannerView.snp.bottom).offset(20)
             } else {
-                $0.top.equalTo(titleLabel.snp.bottom).offset(16)
+                $0.top.equalTo(header.snp.bottom)
             }
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(nextButton.snp.top)
@@ -187,13 +166,6 @@ final class WriteDetailCategoryViewController: BaseViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.output.selectedCategoryCount
-            .main
-            .sink { [weak self] count in
-                self?.countLabel.text = "(\(count)/10)"
-            }
-            .store(in: &cancellables)
-        
         Publishers.CombineLatest(viewModel.output.selectedCategoryCount, viewModel.output.setErrorCountState)
             .main
             .sink { [weak self] (selectedCategory: Int, isErrorState: Bool) in
@@ -212,7 +184,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
     private func updateSelectedCategoryCount(_ isError: Bool, selectedCategoryCount: Int) {
         let categoryCount = viewModel.output.selectedCategoryCount.value
         let string = "(\(categoryCount)/10)"
-        let attributedString = NSMutableAttributedString(string: string)
+        let attributedString = NSMutableAttributedString(string: string, attributes: Header.subtitleAttributes)
         
         if isError {
             let range = (string as NSString).range(of: string)
@@ -226,7 +198,7 @@ final class WriteDetailCategoryViewController: BaseViewController {
                 attributedString.addAttribute(.foregroundColor, value: Colors.mainPink.color, range: range)
             }
         }
-        countLabel.attributedText = attributedString
+        header.setSubtitle(attributedString)
     }
     
     private func presentMenuPhotoPicker() {

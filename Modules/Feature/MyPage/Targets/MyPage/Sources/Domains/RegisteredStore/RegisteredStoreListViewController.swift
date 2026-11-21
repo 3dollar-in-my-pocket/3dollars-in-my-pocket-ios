@@ -16,7 +16,7 @@ public final class RegisteredStoreListViewController: BaseViewController {
     
     public override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     
-    private let myPageNavigationBar = MyPageNavigationBar(title: "제보한 가게")
+    private let myPageNavigationBar = Top(theme: .dark, title: "제보한 가게")
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
@@ -74,7 +74,7 @@ public final class RegisteredStoreListViewController: BaseViewController {
         myPageNavigationBar.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(MyPageNavigationBar.Layout.height)
+            $0.height.equalTo(Top.Layout.height)
         }
         
         collectionView.snp.makeConstraints {

@@ -15,23 +15,10 @@ final class WriteDetailInfoViewController: BaseViewController {
         return stackView
     }()
         
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = Strings.WriteDetailInfo.subTitle
-        label.font = Fonts.bold.font(size: 24)
-        label.textColor = Colors.gray100.color
-        return label
-    }()
-    
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.text = Strings.WriteDetailInfo.description
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray80.color
-        label.numberOfLines = 2
-        label.textAlignment = .left
-        return label
-    }()
+    private let header = Header(
+        title: Strings.WriteDetailInfo.subTitle,
+        descriptionText: Strings.WriteDetailInfo.description
+    )
     
     private let nameTextField = NameTextField()
     
@@ -107,10 +94,8 @@ final class WriteDetailInfoViewController: BaseViewController {
             nextButton,
             buttonBackground
         ])
-        scrollView.addSubview(stackView)
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(descriptionLabel, previousSpace: 8)
-        stackView.addArrangedSubview(nameTextField, previousSpace: 36)
+        scrollView.addSubViews([header, stackView])
+        stackView.addArrangedSubview(nameTextField)
         stackView.addArrangedSubview(storeTypeField, previousSpace: 20)
         stackView.addArrangedSubview(addressField, previousSpace: 20)
         
@@ -121,9 +106,14 @@ final class WriteDetailInfoViewController: BaseViewController {
             $0.bottom.equalTo(nextButton.snp.top)
         }
         
+        header.snp.makeConstraints {
+            $0.leading.top.trailing.equalToSuperview()
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
         stackView.snp.makeConstraints {
             $0.leading.equalToSuperview()
-            $0.top.equalToSuperview()
+            $0.top.equalTo(header.snp.bottom)
             $0.trailing.equalToSuperview()
             $0.width.equalTo(scrollView.frameLayoutGuide)
         }
@@ -157,7 +147,7 @@ final class WriteDetailInfoViewController: BaseViewController {
     private func setupNavigationBar() {
         title = Strings.WriteDetailInfo.title
         guard let navigationController = navigationController as? WriteNavigationController else { return }
-        navigationController.updateProgress(0.25)
+        navigationController.updateProgress(step: 1)
         navigationController.setProgressHidden(false)
         
         let closeImage = DesignSystemAsset.Icons.close.image

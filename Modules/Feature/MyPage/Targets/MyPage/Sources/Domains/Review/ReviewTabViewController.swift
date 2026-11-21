@@ -11,7 +11,7 @@ final class ReviewTabViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var myPageNavigationBar = MyPageNavigationBar(title: "내가 쓴 리뷰")
+    private lazy var myPageNavigationBar = Top(theme: .dark, title: "내가 쓴 리뷰")
     private let tabView: MyPageTabView = {
         let tabView = MyPageTabView(titles: ReviewTab.list.map { $0.title })
         tabView.isUserInteractionEnabled = false

@@ -10,12 +10,10 @@ import SnapKit
 /// 흰 배경 / 둥근 코너는 FloatingPanel 의 surfaceView 가 처리하므로 여기서는 transparent 로 둔다.
 final class HomeListView: BaseView {
     enum Layout {
-        static let dragIndicatorTopInset: CGFloat = 8
-        static let dragIndicatorSize = CGSize(width: 36, height: 4)
+        static let handleHeight: CGFloat = HandleBar.Layout.handleTopInset + HandleBar.Layout.handleSize.height
         static let collectionTopInset: CGFloat = 12
 
         static func collapsedVisibleHeight(hasTabs: Bool) -> CGFloat {
-            let handleHeight = dragIndicatorTopInset + dragIndicatorSize.height
             let headerHeight = hasTabs ? HomeBottomSheetTabView.Layout.containerHeight : collectionTopInset
             return handleHeight + headerHeight
         }
@@ -28,13 +26,7 @@ final class HomeListView: BaseView {
         }
     }
 
-    private let dragIndicatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.gray30.color
-        view.layer.cornerRadius = Layout.dragIndicatorSize.height / 2
-        view.layer.masksToBounds = true
-        return view
-    }()
+    private let handleBar = HandleBar()
 
     let tabView = HomeBottomSheetTabView()
 
@@ -93,22 +85,20 @@ final class HomeListView: BaseView {
         contentStackView.addArrangedSubview(pageContainerView)
 
         addSubViews([
-            dragIndicatorView,
             contentStackView,
+            handleBar,
             mapViewButton
         ])
     }
 
     override func bindConstraints() {
-        dragIndicatorView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(Layout.dragIndicatorTopInset)
-            $0.size.equalTo(Layout.dragIndicatorSize)
+        handleBar.snp.makeConstraints {
+            $0.leading.trailing.top.equalToSuperview()
         }
 
         contentStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(dragIndicatorView.snp.bottom)
+            $0.top.equalToSuperview().offset(Layout.handleHeight)
             $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
 

@@ -8,12 +8,7 @@ import DependencyInjection
 import AppInterface
 
 final class WriteNavigationController: UINavigationController {
-    private let progressView: UIProgressView = {
-        let progressView = UIProgressView(progressViewStyle: .bar)
-        progressView.trackTintColor = Colors.gray30.color
-        progressView.tintColor = Colors.mainPink.color
-        return progressView
-    }()
+    private let progressBar = ProgressBar(stepCount: 4)
     
     private let viewModel: WriteNavigationViewModel
     private var cancellables = Set<AnyCancellable>()
@@ -38,13 +33,12 @@ final class WriteNavigationController: UINavigationController {
     }
     
     private func setupUI() {
-        navigationBar.addSubview(progressView)
+        navigationBar.addSubview(progressBar)
         
-        progressView.snp.makeConstraints {
+        progressBar.snp.makeConstraints {
             $0.leading.equalTo(navigationBar.safeAreaLayoutGuide)
             $0.trailing.equalTo(navigationBar.safeAreaLayoutGuide)
             $0.bottom.equalTo(navigationBar)
-            $0.height.equalTo(2)
         }
     }
     
@@ -78,12 +72,12 @@ final class WriteNavigationController: UINavigationController {
             .store(in: &cancellables)
     }
     
-    func updateProgress(_ progress: Float) {
-        progressView.setProgress(progress, animated: true)
+    func updateProgress(step: Int) {
+        progressBar.setStep(step, animated: true)
     }
     
     func setProgressHidden(_ isHidden: Bool) {
-        progressView.isHidden = isHidden
+        progressBar.isHidden = isHidden
     }
 }
 
