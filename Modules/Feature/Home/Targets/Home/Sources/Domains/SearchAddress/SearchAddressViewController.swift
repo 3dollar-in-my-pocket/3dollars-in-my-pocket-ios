@@ -43,7 +43,7 @@ final class SearchAddressViewController: BaseViewController {
     }
     
     override func bindViewModelInput() {
-        searchAddressView.addressField.textPublisher
+        searchAddressView.searchField.textField.textPublisher
             .subscribe(viewModel.input.inputKeyword)
             .store(in: &cancellables)
     }
@@ -59,7 +59,7 @@ final class SearchAddressViewController: BaseViewController {
         
         viewModel.output.isHiddenClear
             .main
-            .assign(to: \.isHidden, on: searchAddressView.clearButton)
+            .assign(to: \.isHidden, on: searchAddressView.searchField.clearButton)
             .store(in: &cancellables)
         
         viewModel.output.hideKeyboard
@@ -96,12 +96,12 @@ final class SearchAddressViewController: BaseViewController {
             })
             .store(in: &cancellables)
         
-        searchAddressView.clearButton.controlPublisher(for: .touchUpInside)
+        searchAddressView.searchField.clearButton.controlPublisher(for: .touchUpInside)
             .main
             .withUnretained(self)
             .sink(receiveValue: { (owner: SearchAddressViewController, _) in
-                owner.searchAddressView.clearButton.isHidden = true
-                owner.searchAddressView.addressField.text = nil
+                owner.searchAddressView.searchField.clearButton.isHidden = true
+                owner.searchAddressView.searchField.textField.text = nil
                 owner.viewModel.input.didTapClearButton.send()
             })
             .store(in: &cancellables)

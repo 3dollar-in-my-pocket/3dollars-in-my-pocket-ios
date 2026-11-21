@@ -1,97 +1,46 @@
 import UIKit
 
 import Common
+import DesignSystem
 import Model
 
 final class ReportReasonCell: BaseCollectionViewCell {
     enum Layout {
         static let horizontalInset: CGFloat = 20
-        static let height: CGFloat = 44
+        static let height: CGFloat = SelectRow.Layout.height
         
         static func size(containerWidth: CGFloat) -> CGSize {
             CGSize(width: containerWidth - horizontalInset * 2, height: height)
         }
     }
     
-    private let containerView: UIView = {
-        let containerView = UIView()
-        containerView.layer.cornerRadius = 12
-        containerView.layer.borderColor = Colors.gray40.color.cgColor
-        containerView.layer.borderWidth = 1
-        containerView.backgroundColor = Colors.systemWhite.color
-        containerView.isUserInteractionEnabled = false
-        return containerView
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray80.color
-        
-        return label
-    }()
-    
-    private let checkImage: UIImageView = {
-        let checkImage = UIImageView(image: Icons.check.image.withTintColor(Colors.mainRed.color))
-        checkImage.isHidden = true
-        return checkImage
-    }()
+    private let selectRow = SelectRow()
     
     override var isSelected: Bool {
         didSet {
-            setSelected(isSelected)
+            selectRow.isSelected = isSelected
         }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        titleLabel.text = nil
+        selectRow.title = nil
     }
     
     override func setup() {
         contentView.addSubViews([
-            containerView,
-            titleLabel,
-            checkImage
+            selectRow
         ])
     }
     
     override func bindConstraints() {
-        containerView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.top.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(Layout.height)
-        }
-        
-        titleLabel.snp.makeConstraints {
-            $0.leading.equalTo(containerView).offset(12)
-            $0.centerY.equalTo(containerView)
-            $0.height.equalTo(20)
-        }
-        
-        checkImage.snp.makeConstraints {
-            $0.centerY.equalTo(containerView)
-            $0.trailing.equalTo(containerView).offset(-12)
-            $0.size.equalTo(20)
+        selectRow.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
     
     func bind(_ reason: ReportReason) {
-        titleLabel.text = reason.description
-    }
-    
-    private func setSelected(_ isSelected: Bool) {
-        if isSelected {
-            containerView.layer.borderColor = Colors.mainRed.color.cgColor
-            checkImage.isHidden = false
-            titleLabel.textColor = Colors.gray100.color
-        } else {
-            containerView.layer.borderColor = Colors.gray40.color.cgColor
-            checkImage.isHidden = true
-            titleLabel.textColor = Colors.gray80.color
-        }
+        selectRow.title = reason.description
     }
 }

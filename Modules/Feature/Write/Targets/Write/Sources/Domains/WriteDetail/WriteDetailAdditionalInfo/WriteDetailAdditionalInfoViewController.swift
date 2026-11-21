@@ -36,7 +36,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
         
         let range = (string as NSString).range(of: Strings.WriteAdditionalInfo.titleSmallerRange)
         attributedString.addAttribute(.font, value: Fonts.bold.font(size: 16), range: range)
-        attributedString.addAttribute(.foregroundColor, value: Colors.gray50.color, range: range)
+        attributedString.addAttribute(.foregroundColor, value: Colors.gray40.color, range: range)
         label.attributedText = attributedString
         label.textAlignment = .left
         return label
@@ -61,7 +61,7 @@ final class WriteDetailAdditionalInfoViewController: BaseViewController {
             .font: Fonts.medium.font(size: 16),
             .foregroundColor: Colors.gray70.color
         ]))
-        config.image = Icons.arrowRight.image
+        config.image = Icons.chevronRight.image
             .withRenderingMode(.alwaysTemplate)
             .withTintColor(Colors.gray70.color)
             .resizeImage(scaledTo: 16)
