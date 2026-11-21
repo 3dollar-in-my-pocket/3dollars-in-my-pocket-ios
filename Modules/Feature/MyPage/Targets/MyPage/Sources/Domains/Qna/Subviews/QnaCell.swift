@@ -20,7 +20,7 @@ final class QnaCell: BaseCollectionViewCell {
     private let rightArrowImage: UIImageView = {
         let imageView = UIImageView()
         
-        imageView.image = Icons.arrowRight.image.withRenderingMode(.alwaysTemplate)
+        imageView.image = Icons.chevronRight.image.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = Colors.systemWhite.color
         return imageView
     }()

@@ -53,18 +53,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         return collectionView
     }()
     
-    private let editButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.WriteDetailCategoryBottomSheet.edit, attributes: AttributeContainer([
-            .font: Fonts.semiBold.font(size: 14),
-            .foregroundColor: Colors.systemWhite.color
-        ]))
-        let button = UIButton(configuration: config)
-        button.backgroundColor = Colors.mainPink.color
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let editButton = Button.Normal(size: .medium, text: Strings.WriteDetailCategoryBottomSheet.edit)
     
     override var screenName: ScreenName {
         return .writeDetailCategoryBottomSheet

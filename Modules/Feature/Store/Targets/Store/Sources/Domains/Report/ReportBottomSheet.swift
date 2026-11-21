@@ -58,8 +58,7 @@ final class ReportBottomSheet: BaseView {
     }()
     
     let reportButton: Button.Normal = {
-        let button = Button.Normal(size: .h48, text: Strings.ReportReviewBottomSheet.report)
-        button.enabledBackgroundColor = Colors.mainRed.color
+        let button = Button.Normal(size: .medium, style: .destructive, text: Strings.ReportReviewBottomSheet.report)
         return button
     }()
     
