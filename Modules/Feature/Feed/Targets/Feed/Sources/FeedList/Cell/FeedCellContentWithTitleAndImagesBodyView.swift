@@ -21,7 +21,7 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
         return label
     }()
     
-    private let starBadgeView = StarBadgeView()
+    private let ratingView = Rating(style: .none)
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -54,7 +54,7 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
         
         addSubViews([
             titleLabel,
-            starBadgeView,
+            ratingView,
             collectionView,
             contentLabel
         ])
@@ -62,19 +62,19 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(12)
             $0.top.equalToSuperview().offset(13)
-            $0.trailing.lessThanOrEqualTo(starBadgeView.snp.leading).offset(-12)
+            $0.trailing.lessThanOrEqualTo(ratingView.snp.leading).offset(-12)
         }
         
-        starBadgeView.snp.makeConstraints {
+        ratingView.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
             $0.trailing.equalToSuperview().offset(-12)
-            $0.size.equalTo(StarBadgeView.Layout.size)
+            $0.size.equalTo(Rating.Layout.size)
         }
         
         collectionView.snp.makeConstraints {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
-            $0.top.equalTo(starBadgeView.snp.bottom).offset(8)
+            $0.top.equalTo(ratingView.snp.bottom).offset(8)
             $0.height.equalTo(56)
         }
         
@@ -88,9 +88,9 @@ final class FeedCellContentWithTitleAndImagesBodyView: BaseView {
     func bind(body: ContentWithTitleAndImagesFeedBodyResponse) {
         titleLabel.setSDText(body.title)
         
-        if let rating = body.additionalInfos?.rating?.starRating {
-            starBadgeView.bind(Int(rating))
-        }
+        let rating = body.additionalInfos?.rating?.starRating
+        ratingView.isHidden = rating == nil
+        ratingView.bind(Int(rating ?? 0))
         
         contentLabel.setSDText(body.content)
         backgroundColor = UIColor(hex: body.style.backgroundColor)

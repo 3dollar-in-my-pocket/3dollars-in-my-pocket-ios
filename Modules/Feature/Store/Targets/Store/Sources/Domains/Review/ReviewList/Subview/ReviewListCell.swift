@@ -58,9 +58,13 @@ final class ReviewListCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let medalBadge = StoreDetailMedalBadgeView()
+    private let medalBadge: Badge = {
+        let badge = Badge(style: .pink)
+        badge.isIconHidden = false
+        return badge
+    }()
     
-    private let starBadge = StoreDetailStarBadgeView()
+    private let ratingView = Rating(style: .pink)
     
     private let photoStackView = UIStackView()
     private let photoListView = ReviewPhotoListView(
@@ -93,8 +97,8 @@ final class ReviewListCell: BaseCollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        starBadge.prepareForReuse()
-        medalBadge.prepareForReuse()
+        medalBadge.iconView.clear()
+        medalBadge.text = nil
         photoListView.isHidden = true
         photoListView.setImages([])
     }
@@ -106,7 +110,7 @@ final class ReviewListCell: BaseCollectionViewCell {
             dotView,
             dateLabel,
             medalBadge,
-            starBadge,
+            ratingView,
             photoStackView,
             contentLabel,
             likeButton,
@@ -142,12 +146,12 @@ final class ReviewListCell: BaseCollectionViewCell {
         medalBadge.snp.makeConstraints {
             $0.leading.equalTo(nameLabel)
             $0.top.equalTo(nameLabel.snp.bottom).offset(2)
-            $0.height.equalTo(StoreDetailMedalBadgeView.Layout.height)
         }
 
-        starBadge.snp.makeConstraints {
+        ratingView.snp.makeConstraints {
             $0.centerY.equalTo(medalBadge)
             $0.leading.equalTo(medalBadge.snp.trailing).offset(4)
+            $0.size.equalTo(Rating.Layout.size)
         }
         
         photoStackView.snp.makeConstraints {
@@ -206,9 +210,9 @@ final class ReviewListCell: BaseCollectionViewCell {
     private func updateUI(_ review: StoreDetailReview) {
         nameLabel.text = review.user.name
         dateLabel.text = DateUtils.toString(dateString: review.createdAt, format: "yyyy.MM.dd")
-        medalBadge.bind(review.user.medal)
-        starBadge.prepareForReuse()
-        starBadge.bind(review.rating)
+        medalBadge.iconView.setImage(urlString: review.user.medal.iconUrl)
+        medalBadge.text = review.user.medal.name
+        ratingView.bind(review.rating)
         contentLabel.text = review.contents
         contentLabel.setLineHeight(lineHeight: 20)
         likeButton.bind(count: review.likeCount, reactedByMe: review.reactedByMe)
@@ -224,13 +228,13 @@ final class ReviewListCell: BaseCollectionViewCell {
         
         if review.isOwner {
             contentView.backgroundColor = Colors.pink100.color
-            medalBadge.containerView.backgroundColor = Colors.systemWhite.color
-            starBadge.containerView.backgroundColor = Colors.systemWhite.color
+            medalBadge.customBackgroundColor = Colors.systemWhite.color
+            ratingView.customBackgroundColor = Colors.systemWhite.color
             rightButton.setTitle("삭제", for: .normal)
         } else {
             contentView.backgroundColor = Colors.systemWhite.color
-            medalBadge.containerView.backgroundColor = Colors.pink100.color
-            starBadge.containerView.backgroundColor = Colors.pink100.color
+            medalBadge.customBackgroundColor = nil
+            ratingView.customBackgroundColor = nil
             rightButton.setTitle(Strings.StoreDetail.Review.report, for: .normal)
         }
     }
