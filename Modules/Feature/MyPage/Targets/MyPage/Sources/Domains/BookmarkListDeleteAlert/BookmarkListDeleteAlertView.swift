@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import DesignSystem
 
 final class BookmarkListDeleteAlertView: BaseView {
     private let containerView: UIView = {
@@ -33,16 +34,7 @@ final class BookmarkListDeleteAlertView: BaseView {
         return button
     }()
     
-    let deleteButton: UIButton = {
-        let button = UIButton()
-        
-        button.setTitle("모두 삭제", for: .normal)
-        button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.backgroundColor = Colors.mainRed.color
-        button.layer.cornerRadius = 12
-        return button
-    }()
+    let deleteButton = Button.Normal(size: .medium, style: .destructive, text: "모두 삭제")
     
     override func setup() {
         addSubViews([

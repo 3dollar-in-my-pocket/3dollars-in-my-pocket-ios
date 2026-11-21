@@ -56,16 +56,7 @@ final class EditDismissModalViewController: BaseViewController {
         return button
     }()
     
-    private let closeButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("나가기", for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.backgroundColor = Colors.mainRed.color
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let closeButton = Button.Normal(size: .medium, style: .destructive, text: "나가기")
     
     var onClose: (() -> Void)?
     

@@ -40,16 +40,7 @@ final class WriteCloseViewController: BaseViewController {
         return button
     }()
     
-    private let dismissButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.WriteCloseModal.dismiss, attributes: .init([.font: Fonts.semiBold.font(size: 14)]))
-        config.baseForegroundColor = Colors.systemWhite.color
-        let button = UIButton(configuration: config)
-        button.backgroundColor = Colors.mainRed.color
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let dismissButton = Button.Normal(size: .medium, style: .destructive, text: Strings.WriteCloseModal.dismiss)
     
     private var onDismiss: (() -> Void)?
     

@@ -1,6 +1,7 @@
 import UIKit
 
 import Common
+import DesignSystem
 
 import PanModal
 import CombineCocoa
@@ -27,16 +28,7 @@ final class BirthdayYearBottomSheetViewController: BaseViewController {
         return pickerView
     }()
     
-    private let confirmButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(Strings.Common.ok, for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.backgroundColor = Colors.mainRed.color
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let confirmButton = Button.Normal(size: .medium, style: .destructive, text: Strings.Common.ok)
     
     private let viewModel: BirthdayYearBottomSheetViewModel
     
