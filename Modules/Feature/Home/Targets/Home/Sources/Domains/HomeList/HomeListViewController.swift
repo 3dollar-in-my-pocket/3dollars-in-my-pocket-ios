@@ -141,7 +141,6 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, viewType: HomeBottomTabViewType) in
                 owner.homeListView.showPage(viewType: viewType)
-                owner.scrollToTop(owner.trackingScrollView)
                 owner.onChangeTrackingScrollView?(owner.trackingScrollView)
             }
             .store(in: &cancellables)
@@ -173,6 +172,14 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, isEmpty: Bool) in
                 owner.homeListView.curationView.setEmpty(isEmpty)
+            }
+            .store(in: &cancellables)
+
+        viewModel.curationViewModel.output.resetScroll
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, _) in
+                owner.scrollToTop(owner.homeListView.curationView.collectionView)
             }
             .store(in: &cancellables)
 

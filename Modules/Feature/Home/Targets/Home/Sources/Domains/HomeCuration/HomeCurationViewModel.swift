@@ -23,6 +23,7 @@ extension HomeCurationViewModel {
         let isEmpty = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
         let didSelectStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
+        let resetScroll = PassthroughSubject<Void, Never>()
     }
 
     enum Route {
@@ -204,6 +205,7 @@ final class HomeCurationViewModel: BaseViewModel {
             state.cards[carousel.carouselId] = carousel.cards
         }
         emitItems()
+        output.resetScroll.send(())
     }
 
     private func selectCategory(carouselId: String, categoryId: String) {
