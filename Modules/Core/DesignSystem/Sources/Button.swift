@@ -1,104 +1,179 @@
 import UIKit
 
 public class Button {
+    public enum Size {
+        case medium
+        case small
+        
+        var height: CGFloat {
+            switch self {
+            case .medium:
+                return 48
+            
+            case .small:
+                return 34
+            }
+        }
+        
+        var cornerRadius: CGFloat {
+            switch self {
+            case .medium:
+                return 12
+            
+            case .small:
+                return 10
+            }
+        }
+        
+        var horizontalInset: CGFloat {
+            switch self {
+            case .medium:
+                return 12
+            
+            case .small:
+                return 10
+            }
+        }
+        
+        var iconSize: CGSize {
+            switch self {
+            case .medium:
+                return CGSize(width: 24, height: 24)
+            
+            case .small:
+                return CGSize(width: 16, height: 16)
+            }
+        }
+        
+        var font: UIFont {
+            switch self {
+            case .medium:
+                return DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
+            
+            case .small:
+                return DesignSystemFontFamily.Pretendard.bold.font(size: 12)
+            }
+        }
+    }
+    
+    public enum Style {
+        case primary
+        case secondary
+        case destructive
+        
+        var backgroundColor: UIColor {
+            switch self {
+            case .primary:
+                return DesignSystemAsset.Colors.mainPink.color
+            
+            case .secondary:
+                return DesignSystemAsset.Colors.gray10.color
+            
+            case .destructive:
+                return DesignSystemAsset.Colors.mainRed.color
+            }
+        }
+        
+        var foregroundColor: UIColor {
+            switch self {
+            case .primary, .destructive:
+                return DesignSystemAsset.Colors.systemWhite.color
+            
+            case .secondary:
+                return DesignSystemAsset.Colors.gray70.color
+            }
+        }
+    }
+    
+    public enum IconPlacement {
+        case leading
+        case trailing
+    }
+    
     public class Normal: UIButton {
-        public enum Size {
-            case medium
-            case small
-            
-            var height: CGFloat {
-                switch self {
-                case .small:
-                    return 34
-                    
-                case .medium:
-                    return 48
-                }
-            }
-            
-            var iconSize: CGSize {
-                switch self {
-                case .small:
-                    return CGSize(width: 16, height: 16)
-                    
-                case .medium:
-                    return CGSize(width: 24, height: 24)
-                }
-            }
+        public let size: Size
+        
+        public var style: Style {
+            didSet { setNeedsUpdateConfiguration() }
         }
         
-        public override var isEnabled: Bool {
-            didSet {
-                UIView.transition(with: self, duration: 0.1) {
-                    self.backgroundColor = self.isEnabled ? self.enabledBackgroundColor : self.disabledBackgroundColor
-                }
-            }
+        public var text: String? {
+            didSet { setNeedsUpdateConfiguration() }
         }
         
-        public var enabledBackgroundColor: UIColor = DesignSystemAsset.Colors.mainPink.color
-        public var disabledBackgroundColor: UIColor = DesignSystemAsset.Colors.gray30.color
-        
-        private let size: Size
-        private var text: String?
-        public var leftIcon: UIImage? {
-            didSet {
-                setImage(leftIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
-            }
+        public var icon: UIImage? {
+            didSet { setNeedsUpdateConfiguration() }
         }
         
-        public init(size: Size, text: String? = nil, leftIcon: UIImage? = nil) {
+        public var iconPlacement: IconPlacement {
+            didSet { setNeedsUpdateConfiguration() }
+        }
+        
+        public init(
+            size: Size,
+            style: Style = .primary,
+            text: String? = nil,
+            icon: UIImage? = nil,
+            iconPlacement: IconPlacement = .leading
+        ) {
             self.size = size
+            self.style = style
             self.text = text
-            self.leftIcon = leftIcon
+            self.icon = icon
+            self.iconPlacement = iconPlacement
             
             super.init(frame: .zero)
             setup()
-            bindConstraints()
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
+        public override func updateConfiguration() {
+            guard var config = configuration else { return }
+            
+            let foregroundColor = isEnabled ? style.foregroundColor : DesignSystemAsset.Colors.systemWhite.color
+            let backgroundColor = isEnabled ? style.backgroundColor : DesignSystemAsset.Colors.gray30.color
+            
+            config.attributedTitle = text.map {
+                AttributedString($0, attributes: AttributeContainer([
+                    .font: size.font,
+                    .foregroundColor: foregroundColor
+                ]))
+            }
+            config.image = icon.map { resized($0, to: size.iconSize).withRenderingMode(.alwaysTemplate) }
+            config.imagePlacement = iconPlacement == .leading ? .leading : .trailing
+            config.baseForegroundColor = foregroundColor
+            config.background.backgroundColor = backgroundColor
+            configuration = config
+        }
+        
         private func setup() {
-            setTitle(text, for: .normal)
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = NSDirectionalEdgeInsets(
+                top: 0,
+                leading: size.horizontalInset,
+                bottom: 0,
+                trailing: size.horizontalInset
+            )
+            config.imagePadding = 4
+            config.titleLineBreakMode = .byTruncatingTail
+            config.cornerStyle = .fixed
+            config.background.cornerRadius = size.cornerRadius
+            configuration = config
+            setNeedsUpdateConfiguration()
             
-            setupIcon()
-            setupTitleLabel()
-            backgroundColor = DesignSystemAsset.Colors.mainPink.color
-            layer.cornerRadius = 12
-            layer.masksToBounds = true
-        }
-        
-        private func setupIcon() {
-            guard let leftIcon = leftIcon else { return }
-            setImage(leftIcon.withRenderingMode(.alwaysTemplate), for: .normal)
-            imageView?.translatesAutoresizingMaskIntoConstraints = false
-            imageView?.widthAnchor.constraint(equalToConstant: size.iconSize.width).isActive = true
-            imageView?.heightAnchor.constraint(equalToConstant: size.iconSize.height).isActive = true
-            
-            if let titleLabel = titleLabel {
-                imageView?.rightAnchor.constraint(equalTo: titleLabel.leftAnchor, constant: -4).isActive = true
-                imageView?.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
-            }
-            tintColor = DesignSystemAsset.Colors.systemWhite.color
-        }
-        
-        private func setupTitleLabel() {
-            switch size {
-            case .small:
-                titleLabel?.font = DesignSystemFontFamily.Pretendard.bold.font(size: 12)
-                
-            case .medium:
-                titleLabel?.font = DesignSystemFontFamily.Pretendard.semiBold.font(size: 14)
-            }
-            
-            setTitleColor(DesignSystemAsset.Colors.systemWhite.color, for: .normal)
-        }
-        
-        private func bindConstraints() {
             translatesAutoresizingMaskIntoConstraints = false
             heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        }
+        
+        private func resized(_ image: UIImage, to targetSize: CGSize) -> UIImage {
+            guard image.size != targetSize else { return image }
+            
+            return UIGraphicsImageRenderer(size: targetSize).image { _ in
+                image.draw(in: CGRect(origin: .zero, size: targetSize))
+            }
         }
     }
 }
