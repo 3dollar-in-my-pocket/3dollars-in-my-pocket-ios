@@ -104,6 +104,10 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 | `StarBadgeView` | `Sources/StarBadgeView.swift` | 별점 배지, radius 4, 별 `mainPink`/`gray70` |
 | `PaddingLabel` | `Sources/PaddingLabel.swift` | 안쪽 여백 있는 라벨 |
 | `LoadingManager` · `DimManager` | `Sources/Manager/` | 로딩(Lottie) · 딤 |
+| `Header` | `Sources/Header.swift` | 화면 제목 영역. 여백 위 20 · 좌우 20 · 아래 16. 제목 bold 24(행간 32) `gray100` + 간격 4 + 서브타이틀(선택) bold 16(행간 24) `gray40`, 둘은 세로 가운데 정렬. 설명(선택) regular 14 `gray80`, 제목 아래 8. 서브타이틀 일부 색을 바꿀 때는 `Header.subtitleAttributes`로 만든 글자를 `setSubtitle(_:)`에 넘김. 쓰는 곳: 가게 제보 단계(가게 정보 · 카테고리 (n/10) · 메뉴 (선택) · 상세 정보 (선택)), 메뉴판 인식 결과 |
+| `Top` | `Sources/Top.swift` | 화면 상단 바, 높이 56. `theme: .light`(흰 배경, 글자·아이콘 `gray100`) · `.dark`(`gray100` 배경, 흰 글자·아이콘). 뒤로 `chevron_left` 24(누르는 영역 56×56), 제목 medium 16 가운데(좌우 72 안쪽), 오른쪽 버튼(최대 2개) 간격 8 · 오른쪽 여백 16. 쓰는 곳: Dark = 마이페이지 방문 인증 내역 · 내가 쓴 리뷰 · 제보한 가게, 내 쿠폰함 / Light = 투표 상세 · 투표 카테고리(화면 배경 `gray0`에 맞춰 배경만 덮어씀) |
+| `HandleBar` | `Sources/HandleBar.swift` | 바텀시트 손잡이. 영역 높이 20, 손잡이 40×5 · radius 2.5 · `gray20`, 위 여백 7. 쓰는 곳: 홈 리스트 시트, 홈 카테고리 필터 시트. 홈 가게 미리보기는 FloatingPanel 기본 손잡이에 `HandleBar.Layout` 값을 넣어 씀 |
+| `ProgressBar` | `Sources/ProgressBar.swift` | 단계 진행 바. 두께 2, 트랙 `gray30`, 채움 `mainPink`, 단계 수만큼 같은 폭(기본 4). `setStep(_:animated:)`. 쓰는 곳: 가게 제보 상단(`WriteNavigationController`) |
 
 피그마 `Component` 하위 페이지 16개와 iOS 현재 위치입니다. `DesignSystem` 모듈에 없는 것은 화면마다 직접 그리고 있습니다.
 
@@ -112,11 +116,14 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 | Button | Medium 48 · Small 34 (H52·H44는 삭제) | `Button.Normal` |
 | Toast | 배경 gray/95, radius 10, 글자 14 흰색 | `ToastView` |
 | Rating | 별 5개, 68×20 | `StarBadgeView` |
-| Header | 제목 bold 24 + 서브타이틀 bold 16 gray/40 + 설명 14 gray/80 | 제보 단계 화면(`WriteDetailMenuViewController` 등)에서 직접 |
+| Header | 제목 bold 24 + 서브타이틀 bold 16 gray/40 + 설명 14 gray/80 | `Header` |
 | SearchField | 높이 50 | `SearchAddressView` (모서리 9 — Android는 12, 피그마 값 확인 필요) |
 | Bottom (하단 탭) | 탭 항목 규칙: 홈 · 가게 제보 · 커뮤니티 · 마이페이지, 아이콘 24 + 라벨 12 medium, 선택 `mainRed` · 미선택 `gray40`, My 탭 배경 `gray100` | 시스템 탭바(`MainTabBarViewController`)에 색·아이콘만 적용. 탭바 모양은 OS가 그림 |
 | Tabs | Width 속성: Fill = 같은 폭, Hug = 글자 길이에 맞춤(넘치면 가로 스크롤). 선택 밑줄 2 | Fill: `CouponTabView` · `CommunityTabView` · `MyPageTabView` / Hug: `StoreTabCell`(가게 상세) · `MenuCategoryTabView`(가게 제보 메뉴) |
-| Chip · Badge · SelectRow · TextField · HandleBar · ProgressBar · Top · BottomCTA · IconButton · FAB | 피그마 각 페이지 참고 | 화면마다 직접 |
+| Top | 높이 56, Theme Light · Dark | `Top`. 아직 직접 그리는 곳: 설정 · FAQ · 문의 · 팀 소개 · 닉네임 수정 · 즐겨찾기 목록·편집(마이페이지), 리뷰 목록 · 사진 목록 · 사장님 소식 목록(가게), 닉네임 설정(회원가입) |
+| HandleBar | 40×5 gray/20, 위 7 | `HandleBar` |
+| ProgressBar | 4단계, 두께 2 | `ProgressBar` |
+| Chip · Badge · SelectRow · TextField · BottomCTA · IconButton · FAB | 피그마 각 페이지 참고 | 화면마다 직접 |
 
 - 홈 인디케이터(Home bar)·상태바·키보드·스위치는 시스템 요소라 디자인 시스템에 넣지 않습니다.
 
