@@ -76,7 +76,7 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 
 ## 아이콘
 
-- 피그마 원본 프레임은 30, 코드에서 쓰는 크기는 화면마다 다릅니다(버튼 안 24·16). 색은 `withRenderingMode(.alwaysTemplate)` + `tintColor`로 입힙니다.
+- 피그마 원본 프레임은 30, 코드에서 쓰는 크기는 화면마다 다릅니다(버튼 안 24·16). 색은 고정색이면 `withTintColor`, 상태에 따라 바뀌면 `withRenderingMode(.alwaysTemplate)` + `tintColor`로 입힙니다.
 - 원본은 피그마 `ㄴ Icons` 페이지의 `Icon` 프레임입니다.
 
 **이름 규칙 (피그마 기준)**
@@ -86,7 +86,7 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 - 새 아이콘은 피그마에 먼저 같은 이름으로 만들고 iOS에 추가합니다.
 
 **피그마와 아직 다른 것** (2026-11-21)
-- 피그마에만 (앱에서 안 씀): `chevron_up`, `arrow_up`, `check_circle`, `edit_fill`(연필은 `write_solid` 사용), `Iconly/Sharp/Bold/Location`(위치는 `location_*` 사용), `Iconly/Sharp/Bold/Arrow - Right 2`(꺾쇠는 `chevron_right` 사용)
+- 피그마에만 (앱에서 안 씀): `chevron_up`, `arrow_up`, `check_circle`(약관 동의 체크는 두 색으로 채운 원이라 모양이 다름), `edit_fill`(연필은 `write_solid` 사용), `Iconly/Sharp/Bold/Location`(위치는 `location_*` 사용), `Iconly/Sharp/Bold/Arrow - Right 2`(꺾쇠는 `chevron_right` 사용)
 - 피그마에만 (서버가 그림): `mappin_fire` — 홈 지도 마커는 서버가 내려주는 이미지
 - iOS에만 (피그마에 추가 필요): `badge`(마이페이지 방문한 가게), `camera_colored`(가게 정보 수정 사진), `delete_photo`(리뷰 사진 삭제), `image_add`(리뷰 사진 추가)
 - 피그마 `category` 프레임(카테고리 아이콘·지도 핀)은 Figma 플러그인으로 관리하며 이 문서 범위 밖입니다.

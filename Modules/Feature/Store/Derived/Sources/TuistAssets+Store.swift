@@ -31,7 +31,6 @@ import SwiftUI
 // MARK: - Asset Catalogs
 
 public enum StoreAsset: Sendable {
-  public static let arrowRight = StoreImages(name: "arrow_right")
   public static let couponBackground = StoreImages(name: "coupon_background")
   public static let couponBackgroundBlack = StoreImages(name: "coupon_background_black")
   public static let couponDot = StoreImages(name: "coupon_dot")
