@@ -16,6 +16,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
         static let labelHeight: CGFloat = 20
         static let defaultIconSize: CGFloat = 20
         static let closeButtonSize: CGFloat = 14
+        static let font = Fonts.semiBold.font(size: 14)
 
         static func size(for chip: SDChip) -> CGSize {
             sizingCell.bind(chip: chip)
@@ -62,7 +63,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = Fonts.semiBold.font(size: 14)
+        label.font = Layout.font
         label.textColor = Colors.gray70.color
         return label
     }()
@@ -128,6 +129,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
     }
 
     func bind(chip: SDChip) {
+        titleLabel.font = Layout.font
         closeButton.isHidden = true
         applyImage(chip.image)
         titleLabel.setSDText(chip.text)
@@ -142,6 +144,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
     }
 
     func bind(button: SDButton, surface: SDSurfaceStyle?) {
+        titleLabel.font = Layout.font
         closeButton.isHidden = true
         applyImage(button.image)
         titleLabel.setSDText(button.text)
@@ -154,6 +157,7 @@ final class HomeFilterCell: BaseCollectionViewCell {
 
     /// `current` 가 있으면 서버가 내려준 fontColor/style 을 그대로 적용. nil 이면 SDU 미지원 fallback (분홍 pill).
     func bindSelectedCategory(chip: SDChip, current: HomeFilterCurrentCategory?, onClose: @escaping () -> Void) {
+        titleLabel.font = Layout.font
         applyImage(chip.image)
         titleLabel.setSDText(chip.text)
 

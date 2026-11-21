@@ -15,6 +15,7 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
         static func size(for actionBar: SDActionBar) -> CGSize {
             let sizingButton = makeButton()
             sizingButton.setSDButton(actionBar.button)
+            applyFont(to: sizingButton, for: actionBar.button)
             sizingButton.kf.cancelImageDownloadTask()
             sizingButton.setImage(nil, for: .normal)
             sizingButton.configuration?.image = nil
@@ -31,16 +32,23 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .init(top: 8, leading: 12, bottom: 8, trailing: 12)
         config.imagePadding = Layout.imagePadding
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Layout.font
-            return outgoing
-        }
         let button = UIButton(configuration: config)
         button.layer.cornerRadius = 18
         button.clipsToBounds = true
         button.titleLabel?.font = Layout.font
         return button
+    }
+
+    static func applyFont(to button: UIButton, for sdButton: SDButton) {
+        guard sdButton.text?.isHtml != true else {
+            button.configuration?.titleTextAttributesTransformer = nil
+            return
+        }
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Layout.font
+            return outgoing
+        }
     }
 
     private let button: UIButton = {
@@ -66,5 +74,6 @@ final class StoreScreenPreviewActionCell: BaseCollectionViewCell {
 
     func bind(_ sdButton: SDButton) {
         button.setSDButton(sdButton)
+        Self.applyFont(to: button, for: sdButton)
     }
 }
