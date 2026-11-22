@@ -25,7 +25,12 @@ final class BookmarkViewerOverviewCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let medalView = MedalView()
+    private let medalView: Badge = {
+        let badge = Badge(style: .pink)
+        badge.isIconHidden = false
+        badge.customBackgroundColor = Colors.gray90.color
+        return badge
+    }()
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
@@ -45,7 +50,7 @@ final class BookmarkViewerOverviewCell: BaseCollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        medalView.prepareForReuse()
+        medalView.iconView.clear()
     }
     
     override func setup() {
@@ -94,7 +99,8 @@ final class BookmarkViewerOverviewCell: BaseCollectionViewCell {
         titleLabel.text = uiModel.title
         descriptionLabel.text = uiModel.description
         nicknameLabel.text = uiModel.user.name
-        medalView.bind(uiModel.user.medal)
+        medalView.iconView.setImage(urlString: uiModel.user.medal.iconUrl)
+        medalView.text = uiModel.user.medal.name
     }
 }
 
@@ -112,73 +118,5 @@ extension BookmarkViewerOverviewCell {
             hasher.combine(title)
             hasher.combine(description)
         }
-    }
-}
-
-
-final class MedalView: BaseView {
-    private enum Layout {
-        static let height: CGFloat = 20
-    }
-    
-    private let containerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.gray90.color
-        view.layer.cornerRadius = 4
-        view.layer.masksToBounds = true
-        
-        return view
-    }()
-    
-    private let medalImage = UIImageView()
-    
-    private let medalTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.medium.font(size: 10)
-        label.textColor = Colors.mainPink.color
-        
-        return label
-    }()
-    
-    override func setup() {
-        addSubViews([
-            containerView,
-            medalImage,
-            medalTitleLabel
-        ])
-    }
-    
-    override func bindConstraints() {
-        containerView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalTo(medalTitleLabel).offset(4)
-            $0.top.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(Layout.height)
-        }
-        
-        medalImage.snp.makeConstraints {
-            $0.size.equalTo(16)
-            $0.centerY.equalTo(containerView)
-            $0.leading.equalTo(containerView).offset(4)
-        }
-        
-        medalTitleLabel.snp.makeConstraints {
-            $0.leading.equalTo(medalImage.snp.trailing).offset(2)
-            $0.centerY.equalTo(medalImage)
-        }
-        
-        snp.makeConstraints {
-            $0.edges.equalTo(containerView).priority(.required)
-        }
-    }
-    
-    func bind(_ medal: MedalResponse) {
-        medalImage.setImage(urlString: medal.iconUrl)
-        medalTitleLabel.text = medal.name
-    }
-    
-    func prepareForReuse() {
-        medalImage.clear()
     }
 }

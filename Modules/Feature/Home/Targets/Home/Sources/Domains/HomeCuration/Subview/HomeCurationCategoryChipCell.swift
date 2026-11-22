@@ -22,7 +22,7 @@ final class HomeCurationCategoryChipCell: BaseCollectionViewCell {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = Fonts.medium.font(size: 12)
+        label.font = Fonts.semiBold.font(size: 14)
         label.textColor = Colors.gray100.color
         label.textAlignment = .center
         return label
@@ -49,7 +49,7 @@ final class HomeCurationCategoryChipCell: BaseCollectionViewCell {
 
     func bind(_ category: HomeCurationCategoryViewData) {
         let chip = category.chip
-        titleLabel.font = Fonts.medium.font(size: 12)
+        titleLabel.font = Fonts.semiBold.font(size: 14)
         titleLabel.setSDText(chip.text)
         contentView.layer.borderWidth = 0
         contentView.layer.borderColor = nil

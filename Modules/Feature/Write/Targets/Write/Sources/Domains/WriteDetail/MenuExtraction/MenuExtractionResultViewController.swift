@@ -38,17 +38,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         return view
     }()
 
-    private let registerButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.MenuExtractionResult.register, attributes: AttributeContainer([
-            .font: Fonts.semiBold.font(size: 16),
-            .foregroundColor: Colors.systemWhite.color
-        ]))
-        config.cornerStyle = .fixed
-        config.background.cornerRadius = 12
-        config.background.backgroundColor = Colors.mainPink.color
-        return UIButton(configuration: config)
-    }()
+    private let registerButton = Button.Normal(size: .medium, text: Strings.MenuExtractionResult.register)
 
     private let viewModel: MenuExtractionResultViewModel
     private var currentInset: CGFloat = .zero

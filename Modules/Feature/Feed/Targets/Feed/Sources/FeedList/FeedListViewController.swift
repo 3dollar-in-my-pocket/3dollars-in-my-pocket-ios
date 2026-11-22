@@ -35,7 +35,6 @@ public final class FeedListViewController: BaseViewController, LocalNewsViewCont
     private let viewModel: FeedListViewModel
     private lazy var datasource = FeedListDatasource(collectionView: collectionView, rootViewController: self)
     private var lastLayoutWidth: CGFloat = 0
-    private var isVisibleInTab = false
 
     public init(viewModel: FeedListViewModel) {
         self.viewModel = viewModel
@@ -65,21 +64,10 @@ public final class FeedListViewController: BaseViewController, LocalNewsViewCont
         collectionView.reloadData()
     }
 
-    public override func sendPageView() {
-        guard isVisibleInTab else { return }
-        super.sendPageView()
-    }
+    public override func sendPageView() { }
 
     public func load(mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?) {
         viewModel.input.load.send(.init(latitude: mapLatitude, longitude: mapLongitude, maxDistanceM: maxDistanceM))
-    }
-
-    public func setVisible(_ isVisible: Bool) {
-        guard isVisibleInTab != isVisible else { return }
-        isVisibleInTab = isVisible
-        if isVisible {
-            sendPageView()
-        }
     }
 
     public func scrollToTop() {

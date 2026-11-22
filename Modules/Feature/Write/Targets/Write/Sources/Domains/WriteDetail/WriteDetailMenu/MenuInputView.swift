@@ -27,83 +27,29 @@ final class MenuInputView: BaseView {
         return button
     }()
 
-    private let nameContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.gray10.color
-        view.layer.cornerRadius = 8
-        view.layer.masksToBounds = true
-        return view
+    private let nameField: TextField = {
+        let field = TextField(placeholder: Strings.WriteDetailMenu.Menu.namePlaceholder)
+        field.textField.returnKeyType = .done
+        return field
     }()
 
-    private let nameTextField: UITextField = {
-        let textField = UITextField()
-        textField.font = Fonts.regular.font(size: 14)
-        textField.textColor = Colors.gray90.color
-        textField.attributedPlaceholder = NSAttributedString(string: Strings.WriteDetailMenu.Menu.namePlaceholder, attributes: [
-            .foregroundColor: Colors.gray50.color
-        ])
-        textField.tintColor = Colors.mainPink.color
-        textField.returnKeyType = .done
-        return textField
+    private let quantityField: TextField = {
+        let field = TextField(
+            placeholder: Strings.WriteDetailMenu.Menu.quantityPlaceholder,
+            suffix: Strings.WriteDetailMenu.Menu.quantity
+        )
+        field.textField.keyboardType = .numberPad
+        field.textField.returnKeyType = .done
+        return field
     }()
 
-    private let quantityContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.gray10.color
-        view.layer.cornerRadius = 8
-        view.layer.masksToBounds = true
-        return view
-    }()
-
-    private let quantityTextField: UITextField = {
-        let textField = UITextField()
-        textField.font = Fonts.regular.font(size: 14)
-        textField.textColor = Colors.gray90.color
-        textField.keyboardType = .numberPad
-        textField.attributedPlaceholder = NSAttributedString(string: Strings.WriteDetailMenu.Menu.quantityPlaceholder, attributes: [
-            .foregroundColor: Colors.gray50.color
-        ])
-        textField.tintColor = Colors.mainPink.color
-        textField.returnKeyType = .done
-        return textField
-    }()
-
-    private let quantityLabel: UILabel = {
-        let label = UILabel()
-        label.text = Strings.WriteDetailMenu.Menu.quantity
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray90.color
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        return label
-    }()
-
-    private let priceContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Colors.gray10.color
-        view.layer.cornerRadius = 8
-        view.layer.masksToBounds = true
-        return view
-    }()
-
-    private let priceTextField: UITextField = {
-        let textField = UITextField()
-        textField.font = Fonts.regular.font(size: 14)
-        textField.textColor = Colors.gray90.color
-        textField.keyboardType = .decimalPad
-        textField.attributedPlaceholder = NSAttributedString(string: Strings.WriteDetailMenu.Menu.pricePlaceholder, attributes: [
-            .foregroundColor: Colors.gray50.color
-        ])
-        textField.tintColor = Colors.mainPink.color
-        return textField
-    }()
-
-    private let priceLabel: UILabel = {
-        let label = UILabel()
-        label.text = Strings.WriteDetailMenu.Menu.price
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray90.color
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        return label
+    private let priceField: TextField = {
+        let field = TextField(
+            placeholder: Strings.WriteDetailMenu.Menu.pricePlaceholder,
+            suffix: Strings.WriteDetailMenu.Menu.price
+        )
+        field.textField.keyboardType = .decimalPad
+        return field
     }()
 
     private let viewModel: MenuInputViewModel
@@ -123,25 +69,12 @@ final class MenuInputView: BaseView {
     private func setupUI() {
         backgroundColor = Colors.systemWhite.color
         titleLabel.text = Strings.WriteDetailMenu.Menu.titleFormat(viewModel.output.index + 1)
-        nameTextField.delegate = self
-        quantityTextField.delegate = self
-        priceTextField.delegate = self
         addSubViews([
             titleLabel,
             deleteButton,
-            nameContainerView,
-            quantityContainerView,
-            priceContainerView
-        ])
-
-        nameContainerView.addSubview(nameTextField)
-        quantityContainerView.addSubViews([
-            quantityTextField,
-            quantityLabel
-        ])
-        priceContainerView.addSubViews([
-            priceTextField,
-            priceLabel
+            nameField,
+            quantityField,
+            priceField
         ])
 
         titleLabel.snp.makeConstraints {
@@ -157,50 +90,21 @@ final class MenuInputView: BaseView {
             $0.height.equalTo(20)
         }
 
-        nameContainerView.snp.makeConstraints {
+        nameField.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-            $0.height.equalTo(44)
         }
 
-        nameTextField.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.top.bottom.equalToSuperview().inset(12)
-        }
-
-        quantityContainerView.snp.makeConstraints {
+        quantityField.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
-            $0.top.equalTo(nameContainerView.snp.bottom).offset(8)
+            $0.top.equalTo(nameField.snp.bottom).offset(8)
             $0.width.equalTo(Layout.quantityWidth)
-            $0.height.equalTo(44)
         }
 
-        quantityLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().offset(-16)
-        }
-
-        quantityTextField.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(16)
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalTo(quantityLabel.snp.leading).offset(-8)
-        }
-
-        priceContainerView.snp.makeConstraints {
-            $0.top.bottom.equalTo(quantityContainerView)
-            $0.leading.equalTo(quantityContainerView.snp.trailing).offset(8)
+        priceField.snp.makeConstraints {
+            $0.top.equalTo(quantityField)
+            $0.leading.equalTo(quantityField.snp.trailing).offset(8)
             $0.trailing.equalToSuperview().offset(-20)
-        }
-
-        priceLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().offset(-16)
-        }
-
-        priceTextField.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(16)
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalTo(priceLabel.snp.leading).offset(-16)
         }
 
         snp.makeConstraints {
@@ -209,15 +113,15 @@ final class MenuInputView: BaseView {
     }
 
     private func bind() {
-        nameTextField.textPublisher
+        nameField.textField.textPublisher
             .subscribe(viewModel.input.inputName)
             .store(in: &cancellables)
 
-        quantityTextField.textPublisher
+        quantityField.textField.textPublisher
             .subscribe(viewModel.input.inputQuantity)
             .store(in: &cancellables)
 
-        priceTextField.textPublisher
+        priceField.textField.textPublisher
             .subscribe(viewModel.input.inputPrice)
             .store(in: &cancellables)
 
@@ -229,46 +133,22 @@ final class MenuInputView: BaseView {
         viewModel.output.name
             .main
             .sink { [weak self] name in
-                self?.nameTextField.text = name
+                self?.nameField.textField.text = name
             }
             .store(in: &cancellables)
 
         viewModel.output.price
             .main
             .sink { [weak self] price in
-                self?.priceTextField.text = price?.decimalFormat
+                self?.priceField.textField.text = price?.decimalFormat
             }
             .store(in: &cancellables)
 
         viewModel.output.quantity
             .main
             .sink { [weak self] quantity in
-                self?.quantityTextField.text = quantity?.decimalFormat
+                self?.quantityField.textField.text = quantity?.decimalFormat
             }
             .store(in: &cancellables)
-    }
-}
-
-extension MenuInputView: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        containerView(of: textField)?.layer.borderColor = Colors.mainPink.color.cgColor
-        containerView(of: textField)?.layer.borderWidth = 1
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        containerView(of: textField)?.layer.borderWidth = 0
-    }
-
-    private func containerView(of textField: UITextField) -> UIView? {
-        switch textField {
-        case nameTextField:
-            return nameContainerView
-        case quantityTextField:
-            return quantityContainerView
-        case priceTextField:
-            return priceContainerView
-        default:
-            return nil
-        }
     }
 }

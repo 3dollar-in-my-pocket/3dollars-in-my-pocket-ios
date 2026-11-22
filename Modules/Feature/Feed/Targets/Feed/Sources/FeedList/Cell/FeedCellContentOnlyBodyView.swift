@@ -11,7 +11,7 @@ final class FeedCellContentOnlyBodyView: BaseView {
         static let contentLineHeight: CGFloat = 20
 
         static func calculateHeight(body: ContentOnlyFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
-            var width = cellWidth - 56
+            var width = cellWidth - FeedCell.Layout.horizontalMargin * 2 - 24
             if body.contentLeadingImage != nil {
                 width -= contentLeadingImageWidth
             }

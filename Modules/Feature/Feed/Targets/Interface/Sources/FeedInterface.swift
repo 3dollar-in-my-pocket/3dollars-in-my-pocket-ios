@@ -11,7 +11,6 @@ public protocol LocalNewsViewControllerType: UIViewController {
     var scrollView: UIScrollView { get }
 
     func load(mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?)
-    func setVisible(_ isVisible: Bool)
     func scrollToTop()
 }
 
