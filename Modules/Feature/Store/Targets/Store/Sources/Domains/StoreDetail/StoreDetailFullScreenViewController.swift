@@ -25,7 +25,7 @@ final class StoreDetailFullScreenViewController: BaseViewController {
         return label
     }()
 
-    private let backButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.arrowLeft.image)
+    private let backButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.chevronLeft.image)
     private let saveButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.bookmarkLine.image)
     private let closeButton = StoreDetailFullScreenViewController.makeNavigationButton(icon: Icons.close.image)
 

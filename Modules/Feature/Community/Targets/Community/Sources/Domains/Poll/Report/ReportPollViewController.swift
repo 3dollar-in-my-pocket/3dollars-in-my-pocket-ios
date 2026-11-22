@@ -52,7 +52,7 @@ final class ReportPollViewController: BaseViewController {
     }()
 
     private let reportButton: Button.Normal = {
-        let reportButton = Button.Normal(size: .h48, text: "신고하기")
+        let reportButton = Button.Normal(size: .medium, text: "신고하기")
         reportButton.isEnabled = false
         return reportButton
     }()

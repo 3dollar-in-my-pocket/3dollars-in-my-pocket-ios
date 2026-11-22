@@ -52,7 +52,7 @@ final class StoreDetailDisappearanceInquiryModalView: BaseView, DismissibleStore
     }()
 
     private let reportButton: Button.Normal = {
-        let button = Button.Normal(size: .h48, text: Strings.ReportModal.button)
+        let button = Button.Normal(size: .medium, text: Strings.ReportModal.button)
         button.enabledBackgroundColor = Colors.mainRed.color
         button.isEnabled = false
         return button

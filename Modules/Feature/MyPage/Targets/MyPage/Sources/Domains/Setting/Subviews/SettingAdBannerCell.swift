@@ -26,7 +26,7 @@ final class SettingAdBannerCell: BaseCollectionViewCell {
     
     private let arrowImage: UIImageView = {
         let imageView = UIImageView()
-        let image = Icons.arrowRight.image.withRenderingMode(.alwaysTemplate)
+        let image = Icons.chevronRight.image.withRenderingMode(.alwaysTemplate)
         
         imageView.image = image
         imageView.tintColor = Colors.gray40.color
