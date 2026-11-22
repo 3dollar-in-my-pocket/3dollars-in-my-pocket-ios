@@ -50,14 +50,18 @@ final class MenuPhotoSelectViewController: BaseViewController {
         return imageView
     }()
 
-    private let albumButton = MenuPhotoSelectViewController.makeButton(
-        title: Strings.MenuPhotoSelect.album,
-        image: Assets.iconImage.image
+    private let albumButton = Button.Normal(
+        size: .medium,
+        style: .outline,
+        text: Strings.MenuPhotoSelect.album,
+        icon: Assets.iconImage.image
     )
 
-    private let cameraButton = MenuPhotoSelectViewController.makeButton(
-        title: Strings.MenuPhotoSelect.camera,
-        image: Icons.camera.image
+    private let cameraButton = Button.Normal(
+        size: .medium,
+        style: .outline,
+        text: Strings.MenuPhotoSelect.camera,
+        icon: Icons.camera.image
     )
 
     private let viewModel: MenuPhotoSelectViewModel
@@ -133,13 +137,11 @@ final class MenuPhotoSelectViewController: BaseViewController {
         albumButton.snp.makeConstraints {
             $0.top.equalTo(exampleImageView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(48)
         }
 
         cameraButton.snp.makeConstraints {
             $0.top.equalTo(albumButton.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(48)
             $0.bottom.equalToSuperview().offset(-20)
         }
     }
@@ -167,23 +169,6 @@ final class MenuPhotoSelectViewController: BaseViewController {
                 self?.handleRoute(route)
             }
             .store(in: &cancellables)
-    }
-
-    private static func makeButton(title: String, image: UIImage) -> UIButton {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(title, attributes: AttributeContainer([
-            .font: Fonts.semiBold.font(size: 14)
-        ]))
-        config.image = image
-            .resizeImage(scaledTo: 18)
-            .withRenderingMode(.alwaysTemplate)
-        config.imagePadding = 8
-        config.baseForegroundColor = Colors.gray70.color
-        config.cornerStyle = .fixed
-        config.background.cornerRadius = 12
-        config.background.strokeWidth = 1
-        config.background.strokeColor = Colors.gray40.color
-        return UIButton(configuration: config)
     }
 }
 

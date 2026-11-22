@@ -4,17 +4,8 @@ import Common
 import DesignSystem
 
 final class MenuExtractionBannerView: BaseView {
-    let registerButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.WriteDetailCategory.MenuExtractionBanner.button, attributes: AttributeContainer([
-            .font: Fonts.bold.font(size: 12),
-            .foregroundColor: Colors.systemWhite.color
-        ]))
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        config.cornerStyle = .fixed
-        config.background.cornerRadius = 10
-        config.background.backgroundColor = Colors.mainPink.color
-        let button = UIButton(configuration: config)
+    let registerButton: Button.Normal = {
+        let button = Button.Normal(size: .small, text: Strings.WriteDetailCategory.MenuExtractionBanner.button)
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         return button
