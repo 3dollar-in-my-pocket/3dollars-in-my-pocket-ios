@@ -13,7 +13,7 @@ import SnapKit
 /// tip 은 가게 상세와 같은 섹션 셀을 등록한 공용 섹션 뷰(`StorePreviewSectionsViewProtocol`)로 서버 섹션을 순서대로 그린다.
 final class StorePreviewBottomSheetViewController: BaseViewController {
     private enum Layout {
-        static let grabberAreaHeight: CGFloat = 12
+        static let grabberAreaHeight: CGFloat = HandleBar.Layout.handleTopInset + HandleBar.Layout.handleSize.height
         static let contentTop: CGFloat = grabberAreaHeight + 16
         static let horizontalMargin: CGFloat = 20
     }

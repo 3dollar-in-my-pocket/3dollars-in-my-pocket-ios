@@ -11,7 +11,11 @@ final class PollCategoryTabViewController: BaseViewController {
         return viewModel.output.screenName
     }
 
-    private lazy var communityNavigationBar = CommunityNavigationBar(title: viewModel.output.categoryName)
+    private lazy var communityNavigationBar: Top = {
+        let communityNavigationBar = Top(theme: .light, title: viewModel.output.categoryName)
+        communityNavigationBar.backgroundColor = Colors.gray0.color
+        return communityNavigationBar
+    }()
     private let tabView: CommunityTabView = {
         let tabView = CommunityTabView(titles: PollListSortType.list.compactMap { $0.title })
         tabView.isUserInteractionEnabled = false

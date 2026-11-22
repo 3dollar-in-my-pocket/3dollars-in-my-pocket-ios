@@ -4,13 +4,7 @@ import Common
 import DesignSystem
 
 final class CategoryFilterView: BaseView {
-    private let indicatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = DesignSystemAsset.Colors.gray20.color
-        view.layer.cornerRadius = 2
-        view.layer.masksToBounds = true
-        return view
-    }()
+    private let handleBar = HandleBar()
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateCollectionLayout())
     
@@ -20,20 +14,17 @@ final class CategoryFilterView: BaseView {
     
     private func setupUI() {
         addSubViews([
-            indicatorView,
+            handleBar,
             collectionView
         ])
         
-        indicatorView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(56)
-            $0.height.equalTo(4)
-            $0.top.equalToSuperview().offset(8)
+        handleBar.snp.makeConstraints {
+            $0.leading.trailing.top.equalToSuperview()
         }
         
         collectionView.snp.makeConstraints {
             $0.leading.equalTo(safeAreaLayoutGuide)
-            $0.top.equalTo(indicatorView.snp.bottom).offset(8)
+            $0.top.equalTo(handleBar.snp.bottom)
             $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
