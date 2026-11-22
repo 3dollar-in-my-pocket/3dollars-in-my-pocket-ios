@@ -43,7 +43,7 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 
 **토큰 밖 하드코딩 (정리 대상)**
 - `TooltipView`: `UIColor(red: 35/255, green: 36/255, blue: 42/255)` = #23242A (`gray90` #232323과 거의 같음)
-- `#BC4BD6`(4곳), `#FFA1AA`(2곳), `#F7E317` · `#381E1F`(카카오 브랜드 색, 유지)
+- `#BC4BD6`(4곳), `#F7E317` · `#381E1F`(카카오 브랜드 색, 유지)
 
 ## 타이포그래피
 
@@ -101,7 +101,9 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 | `Button.Normal` | `Sources/Button.swift` | 피그마 `Button`. `size:` `.medium` 48 · `.small` 34, `style:` `.primary`(`mainPink`·흰 글자) · `.secondary`(`gray10`·`gray70` 글자) · `.destructive`(`mainRed`·흰 글자) · `.outline`(흰 배경·`gray40` 테두리 1·`gray50` 글자 — 밝은 팝업의 닫기/취소, 보조 선택) · `.dark`(`gray50`·흰 글자 — 팝업의 회색 취소). 비활성(`isEnabled = false`)은 스타일과 관계없이 배경 `gray30`·흰 글자(테두리 없음). medium = 모서리 12 · 좌우 여백 12 · semiBold 14 · 아이콘 24, small = 모서리 10 · 좌우 여백 10 · bold 12 · 아이콘 16. 아이콘-글자 간격 4, `icon` + `iconPlacement`(`.leading`/`.trailing`)로 한쪽에만. 너비는 medium은 화면이 정하고 small은 글자 길이에 맞춤. 누르는 동안 글자·아이콘이 옅어짐(피그마에 눌림 상태 없음). 빨간 강조 버튼은 삭제가 아니어도 `.destructive`를 씀 |
 | `ToastView` / `ToastManager` | `Sources/Manager/Toast/` | 배경 `gray95`, radius 10, 글자 medium 14 흰색 |
 | `TooltipView` | `Sources/TooltipView.swift` | 배경 #23242A(토큰 아님), radius 8, 제목 bold 16 · 본문 regular 14 |
-| `StarBadgeView` | `Sources/StarBadgeView.swift` | 별점 배지, radius 4, 별 `mainPink`/`gray70` |
+| `Chip` | `Sources/Chip.swift` | 누를 수 있는 알약. 아래 [Chip](#chip) |
+| `Badge` | `Sources/Badge.swift` | 누를 수 없는 정보 표시. 아래 [Badge](#badge) |
+| `Rating` | `Sources/Rating.swift` | 별점 표시. 아래 [Rating](#rating) |
 | `PaddingLabel` | `Sources/PaddingLabel.swift` | 안쪽 여백 있는 라벨 |
 | `LoadingManager` · `DimManager` | `Sources/Manager/` | 로딩(Lottie) · 딤 |
 
@@ -111,14 +113,58 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 |---|---|---|
 | Button | Style(Primary · Secondary · Destructive · Outline · Dark) × Size(Medium 48 · Small 34) × State(Enabled · Disabled). Medium 모서리 12, Small 모서리 10 | `Button.Normal`. 화면 아래 꽉 찬 버튼(높이 64)은 BottomCTA라 해당 없음 |
 | Toast | 배경 gray/95, radius 10, 글자 14 흰색 | `ToastView` |
-| Rating | 별 5개, 68×20 | `StarBadgeView` |
+| Rating | 별 5개, 68×20 | `Rating` |
 | Header | 제목 bold 24 + 서브타이틀 bold 16 gray/40 + 설명 14 gray/80 | 제보 단계 화면(`WriteDetailMenuViewController` 등)에서 직접 |
 | SearchField | 높이 50 | `SearchAddressView` (모서리 9 — Android는 12, 피그마 값 확인 필요) |
 | Bottom (하단 탭) | 탭 항목 규칙: 홈 · 가게 제보 · 커뮤니티 · 마이페이지, 아이콘 24 + 라벨 12 medium, 선택 `mainRed` · 미선택 `gray40`, My 탭 배경 `gray100` | 시스템 탭바(`MainTabBarViewController`)에 색·아이콘만 적용. 탭바 모양은 OS가 그림 |
 | Tabs | Width 속성: Fill = 같은 폭, Hug = 글자 길이에 맞춤(넘치면 가로 스크롤). 선택 밑줄 2 | Fill: `CouponTabView` · `CommunityTabView` · `MyPageTabView` / Hug: `StoreTabCell`(가게 상세) · `MenuCategoryTabView`(가게 제보 메뉴) |
-| Chip · Badge · SelectRow · TextField · HandleBar · ProgressBar · Top · BottomCTA · IconButton · FAB | 피그마 각 페이지 참고 | 화면마다 직접 |
+| Chip | Filled 40·32 / Outline 36 / Filter 34 / Save 36 | `Chip` (Save는 서버가 그림) |
+| Badge | 높이 20, radius 4, 글자 10 Medium | `Badge` |
+| SelectRow · TextField · HandleBar · ProgressBar · Top · BottomCTA · IconButton · FAB | 피그마 각 페이지 참고 | 화면마다 직접 |
 
 - 홈 인디케이터(Home bar)·상태바·키보드·스위치는 시스템 요소라 디자인 시스템에 넣지 않습니다.
+
+### Chip
+
+누를 수 있는 알약입니다. 글자는 모두 `semiBold 14`, 아이콘-글자 간격 4, 닫기(✕) 14는 글자색과 같은 색입니다. 상태는 `isOn`, 닫기는 `showsClose`.
+
+| 피그마 Style · Size | iOS | 높이 · 좌우 여백 · 모서리 · 아이콘 | Off | On | 쓰는 곳 |
+|---|---|---|---|---|---|
+| Filled · Medium | `Chip(style: .filled)` | 40 · 12 · 20 · 24 | 배경 `gray10`, 글자 `gray100` | 배경 `pink200`, 글자 `mainPink` | 가게 제보 음식 종류 선택(`WriteDetailCategoryCell`) |
+| Filled · Small | `Chip(style: .filled, size: .small)` | 32 · 8 · 16 · 24 | 〃 | 〃 | iOS 화면에서는 아직 안 씀 |
+| Outline · Medium | `Chip(style: .outline)` | 36 · 12 · 18 · 20 | 배경 흰색, 테두리 `gray30`, 글자 `gray90` | 배경 `pink100`, 테두리·글자 `pink500` | 요즘 뜨는 간식 카테고리 칩 — 서버 값으로 그림(아래) |
+| Filter · Small | `Chip(style: .filter)` | 34 · 10 · 10 · 20 | 배경 흰색, 테두리 `gray30`, 글자 `gray40` | 〃 | 홈 지도 상단 필터 — 서버 값으로 그림(아래) |
+| Save · Small | 없음 | 36 · 12 · 18 · 16 | 테두리 `gray20`, 글자 `gray70` | 배경 #FFF8F9(토큰 없음), 테두리 `pink200`, 글자 `mainPink` | 가게 상세·미리보기 저장·공유 — 서버 값으로 그림(아래) |
+
+- `size`는 Filled에만 의미가 있습니다(Outline·Filter는 크기가 하나).
+- 크기 계산은 `Chip.Layout.size(style:size:text:showsIcon:showsClose:)`.
+- 서버가 색을 내려주는 칩은 `customAppearance`에 서버의 배경·테두리(색·두께)·글자색을 그대로 넣습니다. 빈 값은 "없음"으로 그리고 기본 색으로 채우지 않습니다. 글자색을 비우면(`textColor: nil`) 라벨에 이미 입힌 색(서버 글자 등)을 건드리지 않습니다.
+- 서버 값으로 그리는 칩 3곳은 `Chip`으로 바꾸지 않고, 셀에서 앱이 정하는 값만 피그마 규격에 맞춥니다: 요즘 뜨는 간식 카테고리(`HomeCurationCategoryChipCell`, Outline) · 홈 지도 상단 필터(`HomeFilterCell`, Filter: 아이콘-글자 간격 4, 글자 칸 높이 20) · 가게 상세 액션 바(`StoreScreenPreviewActionCell`, Save).
+- 이 칩들의 글자 크기·굵기·색은 서버가 글자 서식(`<span style="font-size:…; font-weight:…">`)으로 정합니다. 서식이 있으면 그대로 따르고, 서식이 없는 글자일 때만 `semiBold 14`로 그립니다. 아이콘 크기도 서버 값입니다.
+- 2026-11 기준 서버는 필터·카테고리 칩에 12px/500, 액션 바에 14px/600(방문 인증·리뷰 작성)·14px/400(공유·길안내)을 내려줍니다. 피그마(semiBold 14)와 맞추려면 서버 값을 바꿔야 합니다.
+
+### Badge
+
+누를 수 없는 정보 표시입니다. 높이 20, 모서리 4, 좌우 여백 4, 글자 `medium 10`. 앞 아이콘(16, 간격 2)은 `isIconHidden = false`.
+
+| 피그마 Style | iOS | 배경 · 글자 | 쓰는 곳 |
+|---|---|---|---|
+| Pink | `Badge(style: .pink)` | `pink100` · `mainPink` | 칭호(아이콘 켬): 투표 목록·투표 상세·투표 댓글·가게 리뷰 목록·찜 목록 보기 / 칭호(아이콘 없음): 마이페이지 / 제보 완료 음식 종류 태그(아이콘 켬) |
+| Gray | `Badge(style: .gray)` | `gray10` · `gray80` | 투표 댓글의 "작성자"·고른 선택지 |
+
+- 어두운 배경(마이페이지 `gray80`, 찜 목록 보기 `gray90`)이나 내 댓글·내 리뷰(흰색)처럼 배경만 바꿀 때는 `customBackgroundColor`를 씁니다.
+- 누를 수 있는 건 `Chip`, 별점은 `Rating`입니다.
+
+### Rating
+
+별점 표시입니다. 별 12 × 5, 여백 4 → 68×20(`Rating.Layout.size`), 모서리 4. `bind(_:)`에 채운 별 개수(0~5)를 넣으면 채운 별 `mainPink`, 빈 별 `gray70`.
+
+| 피그마 Style | iOS | 배경 | 쓰는 곳 |
+|---|---|---|---|
+| Pink | `Rating(style: .pink)` | `pink100` | 가게 리뷰 목록(내 리뷰는 흰색) |
+| None | `Rating(style: .none)` | 없음 | 우리 동네 소식(피드), 마이페이지 내 리뷰(`customBackgroundColor = gray90`) |
+
+- 별점을 입력하는 `RatingInputView`(리뷰 쓰기)는 입력 컨트롤이라 `Rating`과 별개입니다.
 
 ## 모듈
 

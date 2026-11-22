@@ -261,7 +261,7 @@ final class WriteCompleteViewController: BaseViewController {
         var currentRowWidth: CGFloat = 0
 
         for category in categories {
-            let tagView = CategoryTagView(category: category)
+            let tagView = makeCategoryBadge(category)
             let tagWidth = tagView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
             let spacing: CGFloat = currentRow.arrangedSubviews.isEmpty ? 0 : 4
 
@@ -309,6 +309,13 @@ extension WriteCompleteViewController {
         }
     }
     
+    private func makeCategoryBadge(_ category: StoreFoodCategoryResponse) -> Badge {
+        let badge = Badge(style: .pink, text: category.name)
+        badge.isIconHidden = false
+        badge.iconView.setImage(urlString: category.imageUrl)
+        return badge
+    }
+    
     private func pushWriteDetailMenu(_ viewModel: WriteDetailMenuViewModel) {
         let viewController = WriteDetailMenuViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
@@ -317,55 +324,5 @@ extension WriteCompleteViewController {
     private func pushWriteDetailAdditionalInfo(_ viewModel: WriteDetailAdditionalInfoViewModel) {
         let viewController = WriteDetailAdditionalInfoViewController(viewModel: viewModel)
         navigationController?.pushViewController(viewController, animated: true)
-    }
-}
-
-private class CategoryTagView: UIStackView {
-    private let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.medium.font(size: 10)
-        label.textColor = Colors.mainPink.color
-        return label
-    }()
-    
-    init(category: StoreFoodCategoryResponse) {
-        super.init(frame: .zero)
-        
-        setupUI()
-        imageView.setImage(urlString: category.imageUrl)
-        titleLabel.text = category.name
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        setupUI()
-    }
-    
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupUI() {
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        spacing = 2
-        axis = .horizontal
-        layoutMargins = .init(top: 2, left: 4, bottom: 2, right: 4)
-        isLayoutMarginsRelativeArrangement = true
-        backgroundColor = Colors.pink100.color
-        addArrangedSubview(imageView)
-        
-        imageView.snp.makeConstraints {
-            $0.size.equalTo(16)
-        }
-        
-        addArrangedSubview(titleLabel)
     }
 }

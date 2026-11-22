@@ -7,7 +7,7 @@ import Model
 final class FeedCellContentWithTitleBodyView: BaseView {
     enum Layout {
         static let padding: CGFloat = 12
-        static let titleRowHeight: CGFloat = StarBadgeView.Layout.size.height
+        static let titleRowHeight: CGFloat = Rating.Layout.size.height
         static let contentSpacing: CGFloat = 8
         static let contentLineHeight: CGFloat = 20
         static let contentMaxLines = 5
@@ -41,7 +41,7 @@ final class FeedCellContentWithTitleBodyView: BaseView {
         return label
     }()
     
-    private let starBadgeView = StarBadgeView()
+    private let ratingView = Rating(style: .none)
     
     private let contentLabel = Layout.makeContentLabel()
     
@@ -52,26 +52,26 @@ final class FeedCellContentWithTitleBodyView: BaseView {
         
         addSubViews([
             titleLabel,
-            starBadgeView,
+            ratingView,
             contentLabel
         ])
         
-        starBadgeView.snp.makeConstraints {
+        ratingView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(Layout.padding)
             $0.trailing.equalToSuperview().offset(-Layout.padding)
-            $0.size.equalTo(StarBadgeView.Layout.size)
+            $0.size.equalTo(Rating.Layout.size)
         }
 
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(Layout.padding)
-            $0.centerY.equalTo(starBadgeView)
-            $0.trailing.lessThanOrEqualTo(starBadgeView.snp.leading).offset(-Layout.padding)
+            $0.centerY.equalTo(ratingView)
+            $0.trailing.lessThanOrEqualTo(ratingView.snp.leading).offset(-Layout.padding)
         }
 
         contentLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(Layout.padding)
             $0.trailing.equalToSuperview().offset(-Layout.padding)
-            $0.top.equalTo(starBadgeView.snp.bottom).offset(Layout.contentSpacing)
+            $0.top.equalTo(ratingView.snp.bottom).offset(Layout.contentSpacing)
             $0.bottom.lessThanOrEqualToSuperview().offset(-Layout.padding)
         }
     }
@@ -79,9 +79,9 @@ final class FeedCellContentWithTitleBodyView: BaseView {
     func bind(body: ContentWithTitleFeedBodyResponse) {
         titleLabel.setSDText(body.title)
         
-        if let rating = body.additionalInfos?.rating?.starRating {
-            starBadgeView.bind(Int(rating))
-        }
+        let rating = body.additionalInfos?.rating?.starRating
+        ratingView.isHidden = rating == nil
+        ratingView.bind(Int(rating ?? 0))
         
         contentLabel.setSDText(
             body.content,
