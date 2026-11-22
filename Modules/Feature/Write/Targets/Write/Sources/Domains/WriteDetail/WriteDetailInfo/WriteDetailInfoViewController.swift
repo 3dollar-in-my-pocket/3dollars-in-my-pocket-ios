@@ -33,7 +33,15 @@ final class WriteDetailInfoViewController: BaseViewController {
         return label
     }()
     
-    private let nameTextField = NameTextField()
+    private let nameTextField: TextField = {
+        let textField = TextField(
+            title: Strings.WriteDetailInfo.NameTextField.title,
+            placeholder: Strings.WriteDetailInfo.NameTextField.placeholder
+        )
+        textField.textField.returnKeyType = .done
+        textField.textField.clearButtonMode = .whileEditing
+        return textField
+    }()
     
     private let storeTypeField = StoreTypeField()
     
@@ -128,10 +136,6 @@ final class WriteDetailInfoViewController: BaseViewController {
             $0.width.equalTo(scrollView.frameLayoutGuide)
         }
 
-        nameTextField.snp.makeConstraints {
-            $0.height.equalTo(71)
-        }
-        
         storeTypeField.snp.makeConstraints {
             $0.height.equalTo(64)
         }
@@ -151,7 +155,7 @@ final class WriteDetailInfoViewController: BaseViewController {
             $0.height.equalTo(64)
         }
         
-        nameTextField.setDelegate(self)
+        nameTextField.textField.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -185,7 +189,7 @@ final class WriteDetailInfoViewController: BaseViewController {
             .store(in: &cancellables)
         
         // Input
-        nameTextField.textPublisher
+        nameTextField.textField.textPublisher
             .subscribe(viewModel.input.storeName)
             .store(in: &cancellables)
         
@@ -206,7 +210,7 @@ final class WriteDetailInfoViewController: BaseViewController {
         viewModel.output.storeName
             .main
             .sink { [weak self] name in
-                self?.nameTextField.setName(name)
+                self?.nameTextField.textField.text = name
             }
             .store(in: &cancellables)
         
@@ -220,7 +224,7 @@ final class WriteDetailInfoViewController: BaseViewController {
         viewModel.output.setErrorState
             .main
             .sink { [weak self] _ in
-                self?.nameTextField.setState(.error)
+                self?.nameTextField.state = .error
             }.store(in: &cancellables)
         
         viewModel.output.route
@@ -291,12 +295,7 @@ extension WriteDetailInfoViewController: UITextFieldDelegate {
         return true
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        nameTextField.setState(.focused)
-    }
-    
     func textFieldDidEndEditing(_ textField: UITextField) {
-        nameTextField.setState(.done)
         viewModel.input.storeName.send(textField.text ?? "")
     }
 }

@@ -26,34 +26,10 @@ final class SearchAddressView: BaseView {
         return titleLabel
     }()
     
-    private let inputBoxContainer: UIView = {
-        let inputBoxContainer = UIView()
-        inputBoxContainer.backgroundColor = .white
-        inputBoxContainer.layer.cornerRadius = 9
-        return inputBoxContainer
-    }()
-    
-    let searchImage: UIImageView = {
-        let searchImage = UIImageView()
-        searchImage.image = Icons.search.image.withTintColor(Colors.gray50.color)
-        return searchImage
-    }()
-    
-    let addressField: UITextField = {
-        let addressField = UITextField()
-        addressField.placeholder = Strings.SearchAddress.placeholder
-        addressField.textColor = Colors.systemBlack.color
-        addressField.font = Fonts.regular.font(size: 14)
-        return addressField
-    }()
-    
-    let clearButton: UIButton = {
-        let button = UIButton()
-        button.setImage(Icons.deleteX.image.withTintColor(Colors.gray30.color), for: .normal)
-        button.isHidden = true
-        
-        return button
-    }()
+    let searchField = SearchField(
+        leftIcon: Icons.search.image,
+        placeholder: Strings.SearchAddress.placeholder
+    )
     
     lazy var addressCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -69,10 +45,7 @@ final class SearchAddressView: BaseView {
             navigationView,
             closeButton,
             titleLabel,
-            inputBoxContainer,
-            searchImage,
-            addressField,
-            clearButton,
+            searchField,
             addressCollectionView
         ])
     }
@@ -96,33 +69,14 @@ final class SearchAddressView: BaseView {
             $0.centerY.equalTo(closeButton)
         }
         
-        inputBoxContainer.snp.makeConstraints {
+        searchField.snp.makeConstraints {
             $0.leading.equalTo(safeAreaLayoutGuide).offset(20)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-            $0.height.equalTo(50)
             $0.top.equalTo(navigationView.snp.bottom).offset(16)
         }
         
-        searchImage.snp.makeConstraints {
-            $0.centerY.equalTo(inputBoxContainer)
-            $0.leading.equalTo(inputBoxContainer).offset(16)
-            $0.size.equalTo(24)
-        }
-        
-        clearButton.snp.makeConstraints {
-            $0.trailing.equalTo(inputBoxContainer).offset(-16)
-            $0.centerY.equalTo(inputBoxContainer)
-            $0.size.equalTo(20)
-        }
-        
-        addressField.snp.makeConstraints {
-            $0.centerY.equalTo(inputBoxContainer)
-            $0.leading.equalTo(searchImage.snp.trailing).offset(8)
-            $0.trailing.equalTo(clearButton.snp.leading).offset(-8)
-        }
-        
         addressCollectionView.snp.makeConstraints {
-            $0.top.equalTo(inputBoxContainer.snp.bottom).offset(16)
+            $0.top.equalTo(searchField.snp.bottom).offset(16)
             $0.leading.equalTo(safeAreaLayoutGuide)
             $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
@@ -130,11 +84,11 @@ final class SearchAddressView: BaseView {
     }
     
     func showKeyboard() {
-        self.addressField.becomeFirstResponder()
+        searchField.textField.becomeFirstResponder()
     }
     
     func hideKeyboard() {
-        self.addressField.resignFirstResponder()
+        searchField.textField.resignFirstResponder()
     }
     
     private func createLayout() -> UICollectionViewLayout {

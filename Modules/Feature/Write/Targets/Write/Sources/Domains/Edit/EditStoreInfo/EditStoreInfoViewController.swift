@@ -18,7 +18,15 @@ final class EditStoreInfoViewController: BaseViewController {
         return stackView
     }()
     
-    private let nameTextField = NameTextField()
+    private let nameTextField: TextField = {
+        let textField = TextField(
+            title: Strings.WriteDetailInfo.NameTextField.title,
+            placeholder: Strings.WriteDetailInfo.NameTextField.placeholder
+        )
+        textField.textField.returnKeyType = .done
+        textField.textField.clearButtonMode = .whileEditing
+        return textField
+    }()
     private let storeTypeField = StoreTypeField()
     private let paymentMethodView = PaymentMethodSectionView()
     private let appearanceDayView = AppearanceDaysSectionView()
@@ -124,7 +132,7 @@ final class EditStoreInfoViewController: BaseViewController {
             $0.height.equalTo(64)
         }
         
-        nameTextField.setDelegate(self)
+        nameTextField.textField.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -141,7 +149,7 @@ final class EditStoreInfoViewController: BaseViewController {
             .store(in: &cancellables)
         
         // Input
-        nameTextField.textPublisher
+        nameTextField.textField.textPublisher
             .subscribe(viewModel.input.storeName)
             .store(in: &cancellables)
         
@@ -187,7 +195,7 @@ final class EditStoreInfoViewController: BaseViewController {
     }
     
     private func bind(store: UserStoreResponse) {
-        nameTextField.setName(store.name)
+        nameTextField.textField.text = store.name
         storeTypeField.selectStoreType(store.salesTypeV2?.type ?? .road)
         paymentMethodView.selectPaymentMethods(store.paymentMethods)
         appearanceDayView.selectDays(store.appearanceDays)
@@ -242,12 +250,7 @@ extension EditStoreInfoViewController: UITextFieldDelegate {
         return true
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        nameTextField.setState(.focused)
-    }
-    
     func textFieldDidEndEditing(_ textField: UITextField) {
-        nameTextField.setState(.done)
         viewModel.input.storeName.send(textField.text ?? "")
     }
 }
