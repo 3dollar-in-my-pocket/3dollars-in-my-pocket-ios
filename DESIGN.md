@@ -76,7 +76,7 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 
 ## 아이콘
 
-- 피그마 원본 프레임은 30, 코드에서 쓰는 크기는 화면마다 다릅니다(버튼 안 24·16). 색은 `withRenderingMode(.alwaysTemplate)` + `tintColor`로 입힙니다.
+- 피그마 원본 프레임은 30, 코드에서 쓰는 크기는 화면마다 다릅니다(버튼 안 24·16). 색은 고정색이면 `withTintColor`, 상태에 따라 바뀌면 `withRenderingMode(.alwaysTemplate)` + `tintColor`로 입힙니다.
 - 원본은 피그마 `ㄴ Icons` 페이지의 `Icon` 프레임입니다.
 
 **이름 규칙 (피그마 기준)**
@@ -85,9 +85,9 @@ AI 에이전트와 개발자가 UI 코드를 작성할 때 읽는 문서입니�
 - 방향 아이콘은 모양대로 `chevron_*`(꺾쇠) · `arrow_*`(화살표), 닫기는 `close`입니다.
 - 새 아이콘은 피그마에 먼저 같은 이름으로 만들고 iOS에 추가합니다.
 
-**피그마와 아직 다른 것** (2026-11-16)
-- 피그마에만: `chevron_up`, `arrow_up`, `mappin_fire`, `coupon_solid`, `check_circle`, `filter`, `edit_fill`, `Iconly/Sharp/Bold/Location`, `Iconly/Sharp/Bold/Arrow - Right 2`
-- iOS에만: `badge`, `camera_colored`, `check_verified`, `delete_photo`, `image_add`
+**피그마와 아직 다른 것** (2026-11-21)
+- 피그마에만: `check_circle` — 피그마 Toast의 앞 아이콘으로 씁니다. 앱 약관 동의 체크는 두 색으로 채운 원이라 모양이 다릅니다.
+- 그 밖의 아이콘은 피그마와 iOS가 같습니다. 피그마에서 앱이 안 쓰는 6개(`chevron_up`·`arrow_up`·`edit_fill`·Iconly 2개·`mappin_fire`)를 지우고, iOS에만 있던 `badge`·`camera_colored`·`delete_photo`·`image_add`를 추가했습니다.
 - 피그마 `category` 프레임(카테고리 아이콘·지도 핀)은 Figma 플러그인으로 관리하며 이 문서 범위 밖입니다.
 
 **일러스트** (피그마 `ㄴ Illustrations`): 빈 화면 붕어빵은 `bungeoppang_default`(옛 `empty_02`), 우울한 얼굴은 `face_gloomy`(옛 `empty_100`)입니다.
