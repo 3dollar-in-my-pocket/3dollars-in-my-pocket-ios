@@ -36,7 +36,11 @@ class PollItemBaseCell: BaseCollectionViewCell {
         return userNameLabel
     }()
 
-    let medalView = CommunityUserMedalView()
+    let medalView: Badge = {
+        let badge = Badge(style: .pink)
+        badge.isIconHidden = false
+        return badge
+    }()
 
     let selectionStackView: UIStackView = {
         let selectionStackView = UIStackView()
@@ -134,7 +138,8 @@ class PollItemBaseCell: BaseCollectionViewCell {
     private func bindUI(with item: PollWithMetaApiResponse) {
         titleLabel.text = item.poll.content.title
         userNameLabel.text = item.pollWriter.name
-        medalView.bind(imageUrl: item.pollWriter.medal.iconUrl, title: item.pollWriter.medal.name)
+        medalView.iconView.setImage(urlString: item.pollWriter.medal.iconUrl)
+        medalView.text = item.pollWriter.medal.name
         commentButton.setTitle("\(item.meta.totalCommentsCount)", for: .normal)
         countButton.setTitle("\(item.meta.totalParticipantsCount)명 투표", for: .normal)
 
@@ -204,7 +209,8 @@ class PollItemBaseCell: BaseCollectionViewCell {
 
         firstSelectionView.isUserInteractionEnabled = true
         secondSelectionView.isUserInteractionEnabled = true
-        medalView.bind(imageUrl: nil, title: nil)
+        medalView.iconView.clear()
+        medalView.text = nil
     }
 }
 

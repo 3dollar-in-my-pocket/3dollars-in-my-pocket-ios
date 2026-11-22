@@ -53,18 +53,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
         return collectionView
     }()
     
-    private let editButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.WriteDetailCategoryBottomSheet.edit, attributes: AttributeContainer([
-            .font: Fonts.semiBold.font(size: 14),
-            .foregroundColor: Colors.systemWhite.color
-        ]))
-        let button = UIButton(configuration: config)
-        button.backgroundColor = Colors.mainPink.color
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let editButton = Button.Normal(size: .medium, text: Strings.WriteDetailCategoryBottomSheet.edit)
     
     override var screenName: ScreenName {
         return .writeDetailCategoryBottomSheet
@@ -258,7 +247,7 @@ final class WriteDetailCategoryBottomSheetViewController: BaseViewController {
             for item in section.items {
                 switch item {
                 case .category(let category, _):
-                    let itemSize = WriteDetailCategoryCell.Layout.calculateSize(category: category, isSmall: false)
+                    let itemSize = WriteDetailCategoryCell.Layout.calculateSize(category: category)
                     
                     // Check if item fits in current line
                     let itemWidthWithSpacing = itemSize.width + (currentLineWidth > 0 ? minimumInteritemSpacing : 0)

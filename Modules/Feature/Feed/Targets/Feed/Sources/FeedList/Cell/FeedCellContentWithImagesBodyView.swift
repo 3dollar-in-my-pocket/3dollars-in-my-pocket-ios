@@ -3,15 +3,26 @@ import UIKit
 import Common
 import DesignSystem
 import Model
-import ZMarkupParser
 
 final class FeedCellContentWithImagesBodyView: BaseView {
     enum Layout {
+        static let contentHorizontalInset: CGFloat = 16
+
         static func calculateHeight(body: ContentWithImagesFeedBodyResponse, cellWidth: CGFloat) -> CGFloat {
-            let width = cellWidth - 24
-            let contentHeight = body.content.text.height(font: Fonts.regular.font(size: 14), width: width)
+            let width = cellWidth - FeedCell.Layout.horizontalMargin * 2 - contentHorizontalInset * 2
+            let label = makeContentLabel()
+            label.setSDText(body.content)
+            let contentHeight = ceil(label.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude)).height)
 
             return contentHeight + 188
+        }
+
+        static func makeContentLabel() -> UILabel {
+            let label = UILabel()
+            label.font = Fonts.regular.font(size: 14)
+            label.textColor = Colors.gray95.color
+            label.numberOfLines = 0
+            return label
         }
     }
     
@@ -38,13 +49,7 @@ final class FeedCellContentWithImagesBodyView: BaseView {
         return layout
     }
     
-    private let contentLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray95.color
-        label.numberOfLines = 0
-        return label
-    }()
+    private let contentLabel = Layout.makeContentLabel()
     
     private var images: [ImageResponse] = []
     
@@ -66,8 +71,8 @@ final class FeedCellContentWithImagesBodyView: BaseView {
         }
         
         contentLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(16)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.leading.equalToSuperview().offset(Layout.contentHorizontalInset)
+            $0.trailing.equalToSuperview().offset(-Layout.contentHorizontalInset)
             $0.top.equalTo(collectionView.snp.bottom).offset(12)
         }
     }

@@ -142,17 +142,7 @@ final class CreatePollModalViewController: BaseViewController {
         return buttonStackView
     }()
 
-    private let cancelButton: UIButton = {
-        let cancelButton = UIButton()
-        cancelButton.setTitle("취소", for: .normal)
-        cancelButton.setTitleColor(Colors.gray50.color, for: .normal)
-        cancelButton.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        cancelButton.backgroundColor = .clear
-        cancelButton.layer.cornerRadius = 12
-        cancelButton.layer.borderWidth = 1
-        cancelButton.layer.borderColor = Colors.gray40.color.cgColor
-        return cancelButton
-    }()
+    private let cancelButton = Button.Normal(size: .medium, style: .outline, text: "취소")
 
     private let createButton: Button.Normal = {
         let createButton = Button.Normal(size: .medium, text: "투표 만들기")
