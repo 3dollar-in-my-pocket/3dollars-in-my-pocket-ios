@@ -26,7 +26,7 @@ final class CommunityPopularStoreTabCell: BaseCollectionViewCell {
         districtButton.semanticContentAttribute = .forceRightToLeft
         districtButton.contentEdgeInsets = .init(top: 6, left: 8, bottom: 6, right: 8)
         districtButton.setTitleColor(Colors.gray80.color, for: .normal)
-        districtButton.setImage(Icons.arrowRight.image
+        districtButton.setImage(Icons.chevronRight.image
             .resizeImage(scaledTo: 16)
             .withTintColor(Colors.gray60.color), for: .normal)
         return districtButton

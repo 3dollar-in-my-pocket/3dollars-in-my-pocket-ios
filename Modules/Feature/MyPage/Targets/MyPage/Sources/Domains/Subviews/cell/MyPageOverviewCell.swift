@@ -21,13 +21,9 @@ final class MyPageOverviewCell: BaseCollectionViewCell {
     
     private let medalImageButton = UIButton()
     
-    private let medalLabel: PaddingLabel = {
-        let medalLabel = PaddingLabel(topInset: 3, bottomInset: 3, leftInset: 4, rightInset: 4)
-        medalLabel.font = Fonts.medium.font(size: 10)
-        medalLabel.backgroundColor = Colors.gray80.color
-        medalLabel.textColor = Colors.mainPink.color
-        medalLabel.layer.cornerRadius = 4
-        medalLabel.clipsToBounds = true
+    private let medalLabel: Badge = {
+        let medalLabel = Badge(style: .pink)
+        medalLabel.customBackgroundColor = Colors.gray80.color
         return medalLabel
     }()
     

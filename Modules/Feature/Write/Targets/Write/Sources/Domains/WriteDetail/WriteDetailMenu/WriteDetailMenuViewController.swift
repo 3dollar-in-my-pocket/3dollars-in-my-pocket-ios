@@ -22,22 +22,10 @@ final class WriteDetailMenuViewController: BaseViewController {
         return stackView
     }()
 
-    private let titleLabel: PaddingLabel = {
-        let label = PaddingLabel(topInset: 20, bottomInset: 16, leftInset: 20, rightInset: 20)
-        label.font = Fonts.bold.font(size: 24)
-        label.textColor = Colors.gray100.color
-
-        let string = Strings.WriteDetailMenu.title
-        let range = (string as NSString).range(of: Strings.WriteDetailMenu.titleSmallRange)
-        let attributedString = NSMutableAttributedString(string: string)
-
-        attributedString.addAttribute(.font, value: Fonts.bold.font(size: 16), range: range)
-        attributedString.addAttribute(.foregroundColor, value: Colors.gray50.color, range: range)
-        label.attributedText = attributedString
-        label.textAlignment = .left
-        label.backgroundColor = Colors.systemWhite.color
-        return label
-    }()
+    private let header = Header(
+        title: Strings.WriteDetailMenu.title,
+        subtitle: Strings.WriteDetailMenu.subtitle
+    )
 
     private let imageMenuButtonContainerView = UIView()
 
@@ -66,7 +54,7 @@ final class WriteDetailMenuViewController: BaseViewController {
             .font: Fonts.medium.font(size: 16),
             .foregroundColor: Colors.gray70.color
         ]))
-        config.image = Icons.arrowRight.image
+        config.image = Icons.chevronRight.image
             .withRenderingMode(.alwaysTemplate)
             .withTintColor(Colors.gray70.color)
             .resizeImage(scaledTo: 16)
@@ -148,7 +136,7 @@ final class WriteDetailMenuViewController: BaseViewController {
         scrollView.delegate = self
         contentView.attachStickyHeader(to: view)
 
-        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(header)
         stackView.addArrangedSubview(imageMenuButtonContainerView)
         stackView.addArrangedSubview(contentView, previousSpace: 16)
 
@@ -197,7 +185,7 @@ final class WriteDetailMenuViewController: BaseViewController {
             navigationItem.rightBarButtonItem = nil
         } else {
             title = Strings.WriteDetailMenu.Navigation.Title.normal
-            navigationController.updateProgress(0.75)
+            navigationController.updateProgress(step: 3)
             navigationController.setProgressHidden(false)
 
             let closeImage = DesignSystemAsset.Icons.close.image

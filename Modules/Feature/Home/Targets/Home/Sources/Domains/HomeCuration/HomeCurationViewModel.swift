@@ -23,6 +23,7 @@ extension HomeCurationViewModel {
         let isEmpty = CurrentValueSubject<Bool, Never>(false)
         let route = PassthroughSubject<Route, Never>()
         let didSelectStore = PassthroughSubject<HomeCurationSelectedStore, Never>()
+        let resetScroll = PassthroughSubject<Void, Never>()
     }
 
     enum Route {
@@ -159,6 +160,7 @@ final class HomeCurationViewModel: BaseViewModel {
         guard request != state.loadedRequest else { return }
         state.loadedRequest = request
         state.pendingSectionImpressionLog = nil
+        output.resetScroll.send(())
 
         loadTask?.cancel()
         cardTasks.values.forEach { $0.cancel() }

@@ -17,7 +17,7 @@ final class CommunityPopularStoreNeighborhoodsHeaderView: BaseView {
     
     private let backButton: UIButton = {
         let button = UIButton()
-        button.setImage(Icons.arrowLeft.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(Icons.chevronLeft.image.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = Colors.gray100.color
         return button
     }()

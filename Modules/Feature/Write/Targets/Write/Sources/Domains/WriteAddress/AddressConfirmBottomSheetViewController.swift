@@ -92,18 +92,7 @@ final class AddressConfirmBottomSheetViewController: BaseViewController {
         return label
     }()
     
-    private let confirmButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.AddressConfirmBottomSheet.confirmButton, attributes: AttributeContainer([
-            .font: Fonts.semiBold.font(size: 14),
-            .foregroundColor: Colors.systemWhite.color
-        ]))
-        let button = UIButton(configuration: config)
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        button.backgroundColor = Colors.mainPink.color
-        return button
-    }()
+    private let confirmButton = Button.Normal(size: .medium, text: Strings.AddressConfirmBottomSheet.confirmButton)
     
     // MARK: - Init
     init(viewModel: AddressConfirmBottomSheetViewModel) {

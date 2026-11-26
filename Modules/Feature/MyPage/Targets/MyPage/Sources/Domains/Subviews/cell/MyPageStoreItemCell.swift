@@ -239,7 +239,7 @@ final private class MyPageStoreCouponView: BaseView {
     private let iconView: UIImageView = {
         let iconView = UIImageView()
         iconView.contentMode = .scaleAspectFill
-        iconView.image = MyPageAsset.iconCouponSolid.image
+        iconView.image = Icons.couponSolid.image.withTintColor(Colors.mainPink.color)
         return iconView
     }()
     

@@ -95,8 +95,8 @@
 // WriteAdditionalInfo
 "write_additional_info.navigation.title.normal" = "가게 제보";
 "write_additional_info.navigation.title.after_created" = "가게 상세 정보";
-"write_additional_info.title" = "가게 상세 정보 추가 선택";
-"write_additional_info.title_smaller_range" = "선택";
+"write_additional_info.title" = "가게 상세 정보 추가";
+"write_additional_info.subtitle" = "(선택)";
 "write_additional_info.description" = "가게 세부 정보를 입력하고 더 알찬 정보를 제공해 보세요";
 "write_additional_info.skip" = "건너뛰기";
 "write_additional_info.finish.after_created" = "작성 완료";
@@ -145,8 +145,8 @@
 "write_detail_menu.menu.price_placeholder" = "1,000";
 "write_detail_menu.menu.price" = "원";
 "write_detail_menu.edit_category" = "카테고리 수정";
-"write_detail_menu.title" = "메뉴 상세 정보 추가 선택";
-"write_detail_menu.title_small_range" = "선택";
+"write_detail_menu.title" = "메뉴 상세 정보 추가";
+"write_detail_menu.subtitle" = "(선택)";
 "write_detail_menu.category" = "음식 카테고리";
 "write_detail_menu.add_menu" = "메뉴 추가";
 "write_detail_menu.skip" = "건너뛰기";

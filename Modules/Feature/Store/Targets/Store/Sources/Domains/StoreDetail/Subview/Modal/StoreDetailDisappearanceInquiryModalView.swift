@@ -52,8 +52,7 @@ final class StoreDetailDisappearanceInquiryModalView: BaseView, DismissibleStore
     }()
 
     private let reportButton: Button.Normal = {
-        let button = Button.Normal(size: .h48, text: Strings.ReportModal.button)
-        button.enabledBackgroundColor = Colors.mainRed.color
+        let button = Button.Normal(size: .medium, style: .destructive, text: Strings.ReportModal.button)
         button.isEnabled = false
         return button
     }()
@@ -184,30 +183,7 @@ final class StoreDetailDisappearanceInquiryModalView: BaseView, DismissibleStore
 }
 
 final class DisappearanceReasonRow: UIControl {
-    private let containerView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 12
-        view.layer.borderColor = Colors.gray40.color.cgColor
-        view.layer.borderWidth = 1
-        view.backgroundColor = Colors.systemWhite.color
-        view.isUserInteractionEnabled = false
-        return view
-    }()
-
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = Fonts.regular.font(size: 14)
-        label.textColor = Colors.gray60.color
-        label.isUserInteractionEnabled = false
-        return label
-    }()
-
-    private let checkImageView: UIImageView = {
-        let imageView = UIImageView(image: Icons.check.image.withTintColor(Colors.mainRed.color))
-        imageView.isHidden = true
-        imageView.isUserInteractionEnabled = false
-        return imageView
-    }()
+    private let selectRow = SelectRow()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -219,39 +195,18 @@ final class DisappearanceReasonRow: UIControl {
     }
 
     func bind(reason: ReportReason) {
-        titleLabel.text = reason.description
+        selectRow.title = reason.description
     }
 
     func setSelected(_ selected: Bool) {
-        if selected {
-            containerView.layer.borderColor = Colors.mainRed.color.cgColor
-            checkImageView.isHidden = false
-            titleLabel.textColor = Colors.gray100.color
-        } else {
-            containerView.layer.borderColor = Colors.gray40.color.cgColor
-            checkImageView.isHidden = true
-            titleLabel.textColor = Colors.gray80.color
-        }
+        selectRow.isSelected = selected
     }
 
     private func setup() {
-        addSubview(containerView)
-        addSubview(titleLabel)
-        addSubview(checkImageView)
+        addSubview(selectRow)
 
-        containerView.snp.makeConstraints {
+        selectRow.snp.makeConstraints {
             $0.edges.equalToSuperview()
-        }
-
-        titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(12)
-            $0.centerY.equalToSuperview()
-        }
-
-        checkImageView.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(12)
-            $0.centerY.equalToSuperview()
-            $0.size.equalTo(20)
         }
     }
 }

@@ -5,6 +5,8 @@ import Model
 
 final class FeedCell: BaseCollectionViewCell {
     enum Layout {
+        static let horizontalMargin: CGFloat = 16
+
         static func calculateHeight(feed: FeedResponse, cellWidth: CGFloat) -> CGFloat {
             return feed.calculateContentHeight(cellWidth: cellWidth)
         }
@@ -13,7 +15,7 @@ final class FeedCell: BaseCollectionViewCell {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
+        stackView.layoutMargins = .init(top: 16, left: Layout.horizontalMargin, bottom: 16, right: Layout.horizontalMargin)
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()

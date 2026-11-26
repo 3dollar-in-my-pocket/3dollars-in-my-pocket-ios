@@ -29,11 +29,15 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         return badgeStackView
     }()
 
-    private let medalView = CommunityUserMedalView()
+    private let medalView: Badge = {
+        let badge = Badge(style: .pink)
+        badge.isIconHidden = false
+        return badge
+    }()
 
-    private let writerBadge = BadgeView(text: "작성자")
+    private let writerBadge = Badge(style: .gray, text: "작성자")
 
-    private let pollOptionBadge = BadgeView(text: "")
+    private let pollOptionBadge = Badge(style: .gray)
 
     private let contentLabel: UILabel = {
         let contentLabel = UILabel()
@@ -206,22 +210,33 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
         backgroundColor = isMine ? Colors.pink100.color : Colors.systemWhite.color
 
         writerBadge.isHidden = !data.poll.isWriter
-        writerBadge.setBackgroundColor(isMine ? Colors.systemWhite.color : Colors.gray10.color)
+        writerBadge.customBackgroundColor = isMine ? Colors.systemWhite.color : nil
 
         if let selectedOptionName = data.poll.selectedOptions.first?.name {
-            pollOptionBadge.bind(text: selectedOptionName, suffix: "투표")
-            pollOptionBadge.setBackgroundColor(isMine ? Colors.systemWhite.color : Colors.gray10.color)
+            pollOptionBadge.attributedText = makePollOptionText(selectedOptionName)
+            pollOptionBadge.customBackgroundColor = isMine ? Colors.systemWhite.color : nil
             pollOptionBadge.isHidden = false
         } else {
             pollOptionBadge.isHidden = true
         }
 
-        medalView.bind(
-            imageUrl: data.commentWriter.medal.iconUrl,
-            title: data.commentWriter.medal.name
-        )
-        medalView.setBackgroundColor(isMine ? Colors.systemWhite.color : nil)
+        medalView.iconView.setImage(urlString: data.commentWriter.medal.iconUrl)
+        medalView.text = data.commentWriter.medal.name
+        medalView.customBackgroundColor = isMine ? Colors.systemWhite.color : nil
         likeButton.bind(count: data.stickers.first?.count ?? 0, reactedByMe: data.stickers.first?.reactedByMe ?? false)
+    }
+
+    private func makePollOptionText(_ optionName: String) -> NSAttributedString {
+        let font = Fonts.medium.font(size: 10)
+        let text = NSMutableAttributedString(
+            string: optionName,
+            attributes: [.font: font, .foregroundColor: Colors.gray80.color]
+        )
+        text.append(NSAttributedString(
+            string: " 투표",
+            attributes: [.font: font, .foregroundColor: Colors.gray60.color]
+        ))
+        return text
     }
 
     private func showDeleteAlert() {
@@ -242,82 +257,6 @@ final class PollDetailCommentCell: BaseCollectionViewCell {
             message: "",
             [okAction, cancelAction]
         )
-    }
-}
-
-private final class BadgeView: BaseView {
-
-    private let containerView: UIView = {
-        let containerView = UIView()
-        containerView.layer.cornerRadius = 4
-        containerView.backgroundColor = Colors.gray10.color
-        return containerView
-    }()
-
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 4
-        return stackView
-    }()
-
-    private let titleLabel: UILabel = {
-        let titleLabel = UILabel()
-        titleLabel.font = Fonts.medium.font(size: 10)
-        titleLabel.textColor = Colors.gray80.color
-        return titleLabel
-    }()
-
-    private let suffixLabel: UILabel = {
-        let suffixLabel = UILabel()
-        suffixLabel.font = Fonts.medium.font(size: 10)
-        suffixLabel.textColor = Colors.gray60.color
-        return suffixLabel
-    }()
-
-    init(text: String) {
-        super.init(frame: .zero)
-
-        titleLabel.text = text
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func setup() {
-        super.setup()
-
-        addSubViews([containerView])
-        containerView.addSubViews([stackView])
-
-        backgroundColor = .clear
-    }
-
-    override func bindConstraints() {
-        super.bindConstraints()
-
-        containerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        stackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(4)
-            $0.top.bottom.equalToSuperview().inset(3)
-        }
-
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(suffixLabel)
-    }
-
-    func bind(text: String, suffix: String? = nil) {
-        titleLabel.text = text
-        suffixLabel.text = suffix
-        suffixLabel.isHidden = suffix == nil
-    }
-
-    func setBackgroundColor(_ color: UIColor) {
-        containerView.backgroundColor = color
     }
 }
 

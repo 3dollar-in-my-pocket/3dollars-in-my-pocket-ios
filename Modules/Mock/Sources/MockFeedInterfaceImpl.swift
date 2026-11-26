@@ -20,7 +20,5 @@ final class MockLocalNewsViewController: UIViewController, LocalNewsViewControll
 
     func load(mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?) { }
 
-    func setVisible(_ isVisible: Bool) { }
-
     func scrollToTop() { }
 }

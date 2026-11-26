@@ -47,7 +47,7 @@ final class TeamInfoAdButton: BaseView {
     
     private let arrowRightImage: UIImageView = {
         let imageView = UIImageView()
-        let image = Icons.arrowRight.image.withRenderingMode(.alwaysTemplate).resizeImage(scaledTo: 12)
+        let image = Icons.chevronRight.image.withRenderingMode(.alwaysTemplate).resizeImage(scaledTo: 12)
         
         imageView.image = image
         imageView.tintColor = Colors.gray40.color

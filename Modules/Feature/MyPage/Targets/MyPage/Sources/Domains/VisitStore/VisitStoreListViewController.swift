@@ -25,7 +25,7 @@ public final class VisitStoreListViewController: BaseViewController {
         return button
     }()
 
-    private lazy var myPageNavigationBar = MyPageNavigationBar(title: "방문 인증 내역", rightButtons: [editButton])
+    private lazy var myPageNavigationBar = Top(theme: .dark, title: "방문 인증 내역", rightButtons: [editButton])
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
@@ -84,7 +84,7 @@ public final class VisitStoreListViewController: BaseViewController {
         myPageNavigationBar.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(MyPageNavigationBar.Layout.height)
+            $0.height.equalTo(Top.Layout.height)
         }
         
         collectionView.snp.makeConstraints {

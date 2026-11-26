@@ -35,7 +35,7 @@ final class MenuCategoryTabView: BaseView {
 
     private let filterButton: UIButton = {
         let button = UIButton()
-        button.setImage(Assets.iconFilter.image.resizeImage(scaledTo: 18), for: .normal)
+        button.setImage(Icons.filter.image.resizeImage(scaledTo: 18).withTintColor(Colors.gray80.color), for: .normal)
         button.backgroundColor = Colors.systemWhite.color
         button.layer.cornerRadius = 14
         button.layer.borderWidth = 1

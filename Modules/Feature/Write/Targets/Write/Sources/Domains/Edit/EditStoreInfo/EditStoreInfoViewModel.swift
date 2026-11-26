@@ -19,7 +19,6 @@ extension EditStoreInfoViewModel {
     struct Output {
         let screenName: ScreenName = .editStoreInfo
         let store: CurrentValueSubject<UserStoreResponse, Never>
-        let nameFieldState = PassthroughSubject<NameTextField.State, Never>()
         let editedStoreInfo = PassthroughSubject<UserStoreResponse, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
@@ -133,7 +132,6 @@ final class EditStoreInfoViewModel: BaseViewModel {
     private func saveStoreInfo() {
         guard state.store.name.isNotEmpty else {
             output.route.send(.showToast("가게 이름을 입력해주세요."))
-            output.nameFieldState.send(.error)
             return
         }
 

@@ -22,14 +22,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         return stackView
     }()
 
-    private let titleLabel: PaddingLabel = {
-        let label = PaddingLabel(topInset: 20, bottomInset: 16, leftInset: 20, rightInset: 20)
-        label.font = Fonts.bold.font(size: 24)
-        label.textColor = Colors.gray100.color
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
+    private let header = Header()
 
     private let contentView = MenuFormContentView(showsFilterButton: false)
 
@@ -45,17 +38,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         return view
     }()
 
-    private let registerButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.attributedTitle = AttributedString(Strings.MenuExtractionResult.register, attributes: AttributeContainer([
-            .font: Fonts.semiBold.font(size: 16),
-            .foregroundColor: Colors.systemWhite.color
-        ]))
-        config.cornerStyle = .fixed
-        config.background.cornerRadius = 12
-        config.background.backgroundColor = Colors.mainPink.color
-        return UIButton(configuration: config)
-    }()
+    private let registerButton = Button.Normal(size: .medium, text: Strings.MenuExtractionResult.register)
 
     private let viewModel: MenuExtractionResultViewModel
     private var currentInset: CGFloat = .zero
@@ -98,7 +81,7 @@ final class MenuExtractionResultViewController: BaseViewController {
 
     private func setupUI() {
         view.backgroundColor = Colors.systemWhite.color
-        titleLabel.text = Strings.MenuExtractionResult.titleFormat(viewModel.output.recognizedMenuCount)
+        header.title = Strings.MenuExtractionResult.titleFormat(viewModel.output.recognizedMenuCount)
         view.addSubViews([
             scrollView,
             bottomContainerView
@@ -106,7 +89,7 @@ final class MenuExtractionResultViewController: BaseViewController {
         scrollView.addSubview(stackView)
         scrollView.delegate = self
         contentView.attachStickyHeader(to: view)
-        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(header)
         stackView.addArrangedSubview(contentView)
         bottomContainerView.addSubViews([
             bottomLineView,

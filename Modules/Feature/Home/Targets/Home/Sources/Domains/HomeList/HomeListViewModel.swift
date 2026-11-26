@@ -48,9 +48,16 @@ extension HomeListViewModel {
         var pendingSectionImpressionLog: SDImpressionLog?
         var searchArea: HomeSearchArea?
         var newsLoadedSearchArea: HomeSearchArea?
+        var newsSectionRequest: NewsSectionRequest?
+        var pendingNewsImpressionLog: SDImpressionLog?
         var latestNewsFeedId: String?
         var favoriteOverrides: [String: Bool] = [:]
         var favoriteRequestingStoreIds: Set<String> = []
+    }
+
+    struct NewsSectionRequest: Equatable {
+        let tabId: String
+        let searchArea: HomeSearchArea
     }
 
     public struct Config {
@@ -86,6 +93,7 @@ final class HomeListViewModel: BaseViewModel {
     private var state = State()
     private let dependency: Dependency
     let curationViewModel: HomeCurationViewModel
+    private var newsSectionTask: Task<Void, Never>?
 
     init(config: Config = Config(), dependency: Dependency = Dependency()) {
         self.dependency = dependency
@@ -194,6 +202,7 @@ final class HomeListViewModel: BaseViewModel {
                 owner.state.searchArea = searchArea
                 owner.state.latestNewsFeedId = nil
                 owner.loadNewsIfVisible()
+                owner.fetchNewsSectionIfNeeded()
                 owner.fetchLatestNewsFeedIdIfNeeded()
             }
             .store(in: &cancellables)
@@ -236,7 +245,9 @@ final class HomeListViewModel: BaseViewModel {
         markNewsSeenIfVisible()
         emitTabItems()
         loadNewsIfVisible()
+        fetchNewsSectionIfNeeded()
         sendSectionImpressionLogIfVisible()
+        sendNewsImpressionLogIfVisible()
     }
 
     private func emitTabItems() {
@@ -270,6 +281,38 @@ final class HomeListViewModel: BaseViewModel {
               state.newsLoadedSearchArea != searchArea else { return }
         state.newsLoadedSearchArea = searchArea
         output.loadNews.send(searchArea)
+    }
+
+    private func fetchNewsSectionIfNeeded() {
+        guard output.selectedViewType.value == .news,
+              let tabId = state.selectedTabId,
+              let searchArea = state.searchArea else { return }
+        let request = NewsSectionRequest(tabId: tabId, searchArea: searchArea)
+        guard request != state.newsSectionRequest else { return }
+        state.newsSectionRequest = request
+        state.pendingNewsImpressionLog = nil
+
+        newsSectionTask?.cancel()
+        newsSectionTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let result = await dependency.screenRepository.fetchHomeNewsSection(newsTabId: request.tabId)
+            guard !Task.isCancelled else { return }
+
+            switch result {
+            case .success(let response):
+                state.pendingNewsImpressionLog = response.impressionLog
+                sendNewsImpressionLogIfVisible()
+            case .failure:
+                state.newsSectionRequest = nil
+            }
+        }
+    }
+
+    private func sendNewsImpressionLogIfVisible() {
+        guard output.selectedViewType.value == .news,
+              let impressionLog = state.pendingNewsImpressionLog else { return }
+        state.pendingNewsImpressionLog = nil
+        dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
     }
 
     private func fetchLatestNewsFeedIdIfNeeded() {

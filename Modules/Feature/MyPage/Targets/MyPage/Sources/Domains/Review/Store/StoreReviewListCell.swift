@@ -11,7 +11,11 @@ final class StoreReviewListCell: BaseCollectionViewCell {
     
     private let storeView = ReviewStoreView()
     
-    private let starBadge = ReviewStarBadgeView()
+    private let ratingView: Rating = {
+        let rating = Rating(style: .none)
+        rating.customBackgroundColor = Colors.gray90.color
+        return rating
+    }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
@@ -31,17 +35,11 @@ final class StoreReviewListCell: BaseCollectionViewCell {
         return label
     }()
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        starBadge.prepareForReuse()
-    }
-    
     override func setup() {
         contentView.addSubViews([
             storeView,
             dateLabel,
-            starBadge,
+            ratingView,
             contentLabel
         ])
     }
@@ -51,29 +49,28 @@ final class StoreReviewListCell: BaseCollectionViewCell {
             $0.top.leading.trailing.equalToSuperview()
         }
         
-        starBadge.snp.makeConstraints {
+        ratingView.snp.makeConstraints {
             $0.top.equalTo(storeView.snp.bottom).offset(16)
             $0.leading.equalToSuperview()
-            $0.size.equalTo(ReviewStarBadgeView.Layout.size)
+            $0.size.equalTo(Rating.Layout.size)
         }
         
         dateLabel.snp.makeConstraints {
             $0.trailing.equalToSuperview()
-            $0.centerY.equalTo(starBadge)
+            $0.centerY.equalTo(ratingView)
         }
         
         contentLabel.snp.makeConstraints {
-            $0.top.equalTo(starBadge.snp.bottom).offset(8)
+            $0.top.equalTo(ratingView.snp.bottom).offset(8)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
     func bind(_ review: MyStoreReview) {
         dateLabel.text = DateUtils.toString(dateString: review.createdAt, format: "yyyy.MM.dd")
-        starBadge.bind(review.rating)
+        ratingView.bind(review.rating)
         contentLabel.text = review.contents
         contentLabel.setLineHeight(lineHeight: 20)
-        starBadge.containerView.backgroundColor = Colors.gray90.color
         storeView.bind(review.store)
     }
 }

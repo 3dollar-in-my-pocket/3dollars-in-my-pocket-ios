@@ -70,7 +70,7 @@ final class BossStoreCouponView: BaseView {
 
     private let rightIconImageView: UIImageView = {
         let rightIconImageView = UIImageView()
-        rightIconImageView.image = Assets.arrowRight.image
+        rightIconImageView.image = Icons.chevronRight.image
         return rightIconImageView
     }()
     
@@ -213,7 +213,7 @@ final class BossStoreCouponView: BaseView {
                         owner.rightTextLabel.isHidden = true
                     }
                 case .issued:
-                    owner.rightIconImageView.image =  Assets.arrowRight.image
+                    owner.rightIconImageView.image =  Icons.chevronRight.image
                     owner.titleLabel.textColor = Colors.gray80.color
                     owner.dateLabel.textColor = Colors.gray70.color
                     owner.deadlineLabel.isHidden = false

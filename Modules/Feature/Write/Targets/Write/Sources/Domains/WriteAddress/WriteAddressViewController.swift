@@ -18,7 +18,7 @@ public final class WriteAddressViewController: BaseViewController {
         return mapView
     }()
     
-    private let marker = UIImageView(image: Icons.markerFocuesd.image)
+    private let marker = UIImageView(image: Icons.mappinFocusedOn.image)
     
     private let currentLocationButton: UIButton = {
         var config = UIButton.Configuration.filled()
@@ -58,16 +58,7 @@ public final class WriteAddressViewController: BaseViewController {
         return label
     }()
     
-    private let addressButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = Colors.mainPink.color
-        button.setTitle(Strings.WriteAddress.button, for: .normal)
-        button.titleLabel?.font = Fonts.semiBold.font(size: 14)
-        button.setTitleColor(Colors.systemWhite.color, for: .normal)
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        return button
-    }()
+    private let addressButton = Button.Normal(size: .medium, text: Strings.WriteAddress.button)
     
     private let bossDescriptionLabel: UILabel = {
         let label = UILabel()

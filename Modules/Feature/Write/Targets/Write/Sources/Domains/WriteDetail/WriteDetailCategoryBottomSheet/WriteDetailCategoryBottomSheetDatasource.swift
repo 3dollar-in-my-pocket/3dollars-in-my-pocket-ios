@@ -12,7 +12,7 @@ final class WriteDetailCategoryBottomSheetDatasource: UICollectionViewDiffableDa
             switch itemIdentifier {
             case .category(let category, _):
                 let cell: WriteDetailCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(category: category, isSmall: false)
+                cell.bind(category: category)
                 return cell
             }
         }
@@ -48,7 +48,7 @@ extension WriteDetailCategoryBottomSheetDatasource: UICollectionViewDelegateFlow
         guard let item = self[indexPath] else { return .zero }
         switch item {
         case .category(let category, _):
-            return WriteDetailCategoryCell.Layout.calculateSize(category: category, isSmall: false)
+            return WriteDetailCategoryCell.Layout.calculateSize(category: category)
         }
     }
     

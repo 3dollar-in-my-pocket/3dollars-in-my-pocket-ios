@@ -101,7 +101,7 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, _) in
                 owner.dataSource.reloadAdmobCards()
-                owner.scrollToTop(owner.homeListView.collectionView)
+                owner.resetScroll(owner.homeListView.collectionView)
             }
             .store(in: &cancellables)
 
@@ -141,8 +141,6 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, viewType: HomeBottomTabViewType) in
                 owner.homeListView.showPage(viewType: viewType)
-                owner.newsViewController.setVisible(viewType == .news)
-                owner.scrollToTop(owner.trackingScrollView)
                 owner.onChangeTrackingScrollView?(owner.trackingScrollView)
             }
             .store(in: &cancellables)
@@ -151,6 +149,7 @@ final class HomeListViewController: BaseViewController {
             .main
             .withUnretained(self)
             .sink { (owner: HomeListViewController, searchArea: HomeSearchArea) in
+                owner.resetScroll(owner.newsViewController.scrollView)
                 owner.newsViewController.load(
                     mapLatitude: searchArea.latitude,
                     mapLongitude: searchArea.longitude,
@@ -174,6 +173,14 @@ final class HomeListViewController: BaseViewController {
             .withUnretained(self)
             .sink { (owner: HomeListViewController, isEmpty: Bool) in
                 owner.homeListView.curationView.setEmpty(isEmpty)
+            }
+            .store(in: &cancellables)
+
+        viewModel.curationViewModel.output.resetScroll
+            .main
+            .withUnretained(self)
+            .sink { (owner: HomeListViewController, _) in
+                owner.resetScroll(owner.homeListView.curationView.collectionView)
             }
             .store(in: &cancellables)
 
@@ -233,11 +240,13 @@ final class HomeListViewController: BaseViewController {
             .subscribe(viewModel.input.updateFavorite)
     }
 
-    private func scrollToTop(_ scrollView: UIScrollView) {
+    private func resetScroll(_ scrollView: UIScrollView) {
         scrollView.setContentOffset(
             CGPoint(x: scrollView.contentOffset.x, y: -scrollView.adjustedContentInset.top),
             animated: false
         )
+        guard scrollView === trackingScrollView else { return }
+        onChangeTrackingScrollView?(scrollView)
     }
 
     func scrollToCard(at index: Int) {
