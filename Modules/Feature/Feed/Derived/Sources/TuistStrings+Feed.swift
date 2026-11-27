@@ -29,13 +29,6 @@ public enum FeedStrings: Sendable {
       /// 소식을 불러오지 못했어요
       public static let title = FeedStrings.tr("Localization", "feed_list.error.title")
     }
-
-    public enum Header: Sendable {
-      /// 내 주변 가게들의 소식을 확인해요.
-      public static let description = FeedStrings.tr("Localization", "feed_list.header.description")
-      /// 우리 동네 가게 소식
-      public static let title = FeedStrings.tr("Localization", "feed_list.header.title")
-    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

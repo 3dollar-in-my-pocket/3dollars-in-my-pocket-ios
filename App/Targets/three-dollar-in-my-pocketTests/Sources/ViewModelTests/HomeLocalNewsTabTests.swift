@@ -43,9 +43,9 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
-        var loadedAreas: [HomeSearchArea] = []
+        var loadedRequests: [HomeListViewModel.NewsSectionRequest] = []
         viewModel.output.loadNews
-            .sink { loadedAreas.append($0) }
+            .sink { loadedRequests.append($0) }
             .store(in: &cancellables)
 
         // When
@@ -54,8 +54,9 @@ final class HomeLocalNewsTabTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.output.selectedViewType.value, .news)
         XCTAssertEqual(logManager.sentEvents.filter { $0.name == .click }.last?.parameters["value"] as? String, "NEWS")
-        XCTAssertEqual(loadedAreas.map(\.latitude), [location.coordinate.latitude])
-        XCTAssertEqual(loadedAreas.map(\.longitude), [location.coordinate.longitude])
+        XCTAssertEqual(loadedRequests.map(\.tabId), ["NEWS"])
+        XCTAssertEqual(loadedRequests.map(\.searchArea.latitude), [location.coordinate.latitude])
+        XCTAssertEqual(loadedRequests.map(\.searchArea.longitude), [location.coordinate.longitude])
     }
 
     // MARK: TH-1426 TC4
@@ -68,7 +69,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         viewModel.input.didTapTab.send(newsTabIndex)
         var loadedLatitudes: [Double] = []
         viewModel.output.loadNews
-            .sink { loadedLatitudes.append($0.latitude) }
+            .sink { loadedLatitudes.append($0.searchArea.latitude) }
             .store(in: &cancellables)
 
         // When
@@ -233,7 +234,7 @@ final class HomeLocalNewsTabTests: XCTestCase {
         let viewModel = makeViewModel()
         viewModel.input.setTabSection.send(try makeTabSection())
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: 4200))
-        var loaded: [HomeSearchArea] = []
+        var loaded: [HomeListViewModel.NewsSectionRequest] = []
         viewModel.output.loadNews
             .sink { loaded.append($0) }
             .store(in: &cancellables)
@@ -242,26 +243,30 @@ final class HomeLocalNewsTabTests: XCTestCase {
         viewModel.input.didTapTab.send(newsTabIndex)
 
         // Then
-        XCTAssertEqual(loaded.map(\.maxDistance), [4200])
+        XCTAssertEqual(loaded.map(\.searchArea.maxDistance), [4200])
     }
 
     // MARK: TH-1613 TC1
 
-    func test_TH1613_TC1_동네소식탭을누르면_소식섹션을조회하고_서버노출로그를보낸다() async throws {
+    func test_TH1613_TC1_동네소식탭을누르면_소식탭ID로소식을불러오고_받은섹션노출로그를보낸다() throws {
         // Given
         let logManager = MockLogManager()
-        let screenRepository = try makeNewsSectionRepository()
-        let viewModel = makeViewModel(screenRepository: screenRepository, logManager: logManager)
+        let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
+        var loadedTabIds: [String] = []
+        viewModel.output.loadNews
+            .sink { loadedTabIds.append($0.tabId) }
+            .store(in: &cancellables)
 
         // When
         viewModel.input.didTapTab.send(newsTabIndex)
+        viewModel.input.receiveNewsImpressionLog.send(try newsImpressionLog())
 
         // Then
-        await waitUntil { newsImpressions(logManager).count == 1 }
-        XCTAssertEqual(screenRepository.fetchHomeNewsSectionTabIds, ["NEWS"])
+        XCTAssertEqual(loadedTabIds, ["NEWS"])
         let event = try XCTUnwrap(newsImpressions(logManager).first)
+        XCTAssertEqual(newsImpressions(logManager).count, 1)
         XCTAssertEqual(event.screen.rawValue, "home")
         XCTAssertEqual(event.parameters["object_type"] as? String, "section")
         XCTAssertEqual(event.parameters["tabId"] as? String, "NEWS")
@@ -269,118 +274,94 @@ final class HomeLocalNewsTabTests: XCTestCase {
 
     // MARK: TH-1613 TC2
 
-    func test_TH1613_TC2_같은지도영역에서동네소식탭에다시들어와도_노출로그를다시보내지않는다() async throws {
+    func test_TH1613_TC2_같은지도영역에서동네소식탭에다시들어와도_다시불러오지않고_노출로그도다시보내지않는다() throws {
         // Given
         let logManager = MockLogManager()
-        let screenRepository = try makeNewsSectionRepository()
-        let viewModel = makeViewModel(screenRepository: screenRepository, logManager: logManager)
+        let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
+        var loadCount = 0
+        viewModel.output.loadNews
+            .sink { _ in loadCount += 1 }
+            .store(in: &cancellables)
         viewModel.input.didTapTab.send(newsTabIndex)
-        await waitUntil { newsImpressions(logManager).count == 1 }
+        viewModel.input.receiveNewsImpressionLog.send(try newsImpressionLog())
 
         // When
         viewModel.input.didTapTab.send(0)
         viewModel.input.didTapTab.send(newsTabIndex)
-        try await Task.sleep(nanoseconds: 200_000_000)
 
         // Then
-        XCTAssertEqual(screenRepository.fetchHomeNewsSectionTabIds, ["NEWS"])
+        XCTAssertEqual(loadCount, 1)
         XCTAssertEqual(newsImpressions(logManager).count, 1)
     }
 
     // MARK: TH-1613 TC3
 
-    func test_TH1613_TC3_동네소식탭에서지도영역이바뀌면_소식섹션노출로그를다시보낸다() async throws {
+    func test_TH1613_TC3_동네소식탭에서지도영역이바뀌면_다시불러오고_새섹션노출로그를보낸다() throws {
         // Given
         let logManager = MockLogManager()
-        let screenRepository = try makeNewsSectionRepository()
-        let viewModel = makeViewModel(screenRepository: screenRepository, logManager: logManager)
+        let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
+        var loadCount = 0
+        viewModel.output.loadNews
+            .sink { _ in loadCount += 1 }
+            .store(in: &cancellables)
         viewModel.input.didTapTab.send(newsTabIndex)
-        await waitUntil { newsImpressions(logManager).count == 1 }
+        viewModel.input.receiveNewsImpressionLog.send(try newsImpressionLog())
 
         // When
         viewModel.input.setSearchArea.send(HomeSearchArea(location: CLLocation(latitude: 37.5665, longitude: 126.9780), maxDistance: nil))
+        viewModel.input.receiveNewsImpressionLog.send(try newsImpressionLog())
 
         // Then
-        await waitUntil { newsImpressions(logManager).count == 2 }
+        XCTAssertEqual(loadCount, 2)
         XCTAssertEqual(newsImpressions(logManager).count, 2)
-        XCTAssertEqual(screenRepository.fetchHomeNewsSectionTabIds, ["NEWS", "NEWS"])
     }
 
     // MARK: TH-1613 TC4
 
-    func test_TH1613_TC4_다른탭을보는동안에는_소식섹션을조회하지않는다() async throws {
+    func test_TH1613_TC4_다른탭을보는동안에는_소식을불러오지않고_노출로그도보내지않는다() throws {
         // Given
         let logManager = MockLogManager()
-        let screenRepository = try makeNewsSectionRepository()
-        let viewModel = makeViewModel(screenRepository: screenRepository, logManager: logManager)
+        let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
+        var loadCount = 0
+        viewModel.output.loadNews
+            .sink { _ in loadCount += 1 }
+            .store(in: &cancellables)
 
         // When
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
-        try await Task.sleep(nanoseconds: 200_000_000)
+        viewModel.input.receiveNewsImpressionLog.send(try newsImpressionLog())
 
         // Then
-        XCTAssertTrue(screenRepository.fetchHomeNewsSectionTabIds.isEmpty)
+        XCTAssertEqual(loadCount, 0)
         XCTAssertTrue(newsImpressions(logManager).isEmpty)
     }
 
     // MARK: TH-1613 TC5
 
-    func test_TH1613_TC5_응답전에다른탭으로가면_노출로그를보류했다가_소식탭에돌아올때한번보낸다() async throws {
+    func test_TH1613_TC5_응답전에다른탭으로가면_노출로그를보류했다가_소식탭에돌아올때한번보낸다() throws {
         // Given
         let logManager = MockLogManager()
-        let screenRepository = MockScreenRepository()
-        let response = try FixtureLoader.decode(HomeNewsSectionResponse.self, from: "HomeNewsSection")
-        screenRepository.fetchHomeNewsSectionHandler = { _ in
-            try? await Task.sleep(nanoseconds: 300_000_000)
-            return .success(response)
-        }
-        let viewModel = makeViewModel(screenRepository: screenRepository, logManager: logManager)
+        let viewModel = makeViewModel(logManager: logManager)
         viewModel.input.setTabSection.send(try makeTabSection())
         viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
         viewModel.input.didTapTab.send(newsTabIndex)
+        viewModel.input.didTapTab.send(0)
 
         // When
-        viewModel.input.didTapTab.send(0)
-        try await Task.sleep(nanoseconds: 600_000_000)
+        viewModel.input.receiveNewsImpressionLog.send(try newsImpressionLog())
         let impressionsWhileAway = newsImpressions(logManager).count
+        viewModel.input.didTapTab.send(newsTabIndex)
+        viewModel.input.didTapTab.send(0)
         viewModel.input.didTapTab.send(newsTabIndex)
 
         // Then
         XCTAssertEqual(impressionsWhileAway, 0)
         XCTAssertEqual(newsImpressions(logManager).count, 1)
-        XCTAssertEqual(screenRepository.fetchHomeNewsSectionTabIds, ["NEWS"])
-    }
-
-    // MARK: TH-1613 TC6
-
-    func test_TH1613_TC6_소식섹션조회가실패하면_같은지도영역이어도_다시들어올때재조회한다() async throws {
-        // Given
-        let logManager = MockLogManager()
-        let screenRepository = MockScreenRepository()
-        let response = try FixtureLoader.decode(HomeNewsSectionResponse.self, from: "HomeNewsSection")
-        screenRepository.fetchHomeNewsSectionHandler = { callCount in
-            callCount == 1 ? .failure(MockError.notStubbed()) : .success(response)
-        }
-        let viewModel = makeViewModel(screenRepository: screenRepository, logManager: logManager)
-        viewModel.input.setTabSection.send(try makeTabSection())
-        viewModel.input.setSearchArea.send(HomeSearchArea(location: location, maxDistance: nil))
-        viewModel.input.didTapTab.send(newsTabIndex)
-        await waitUntil { screenRepository.fetchHomeNewsSectionTabIds.count == 1 }
-        try await Task.sleep(nanoseconds: 100_000_000)
-
-        // When
-        viewModel.input.didTapTab.send(0)
-        viewModel.input.didTapTab.send(newsTabIndex)
-
-        // Then
-        await waitUntil { newsImpressions(logManager).count == 1 }
-        XCTAssertEqual(newsImpressions(logManager).count, 1)
-        XCTAssertEqual(screenRepository.fetchHomeNewsSectionTabIds, ["NEWS", "NEWS"])
     }
 
     // MARK: - Helpers
@@ -399,23 +380,13 @@ final class HomeLocalNewsTabTests: XCTestCase {
         ))
     }
 
-    private func makeNewsSectionRepository() throws -> MockScreenRepository {
-        let repository = MockScreenRepository()
-        repository.fetchHomeNewsSectionResult = .success(try FixtureLoader.decode(HomeNewsSectionResponse.self, from: "HomeNewsSection"))
-        return repository
+    private func newsImpressionLog() throws -> SDImpressionLog {
+        try XCTUnwrap(FixtureLoader.decode(HomeNewsSectionResponse.self, from: "HomeNewsSection").impressionLog)
     }
 
     private func newsImpressions(_ logManager: MockLogManager) -> [any LogEventType] {
         logManager.sentEvents.filter {
             $0.name.rawValue == EventName.impression.rawValue && $0.parameters["object_id"] as? String == "home_news"
-        }
-    }
-
-    private func waitUntil(_ condition: () -> Bool) async {
-        var attempts = 0
-        while condition().isNot, attempts < 100 {
-            attempts += 1
-            try? await Task.sleep(nanoseconds: 20_000_000)
         }
     }
 

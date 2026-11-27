@@ -5,36 +5,32 @@ import Model
 
 struct FeedListSection: Hashable {
     var items: [FeedListSectionItem]
-}
 
-enum FeedListSectionItem: Hashable, Equatable {
-    case header
-    case advertisement(AdvertisementResponse?)
-    case skeleton(Int)
-    case empty
-    case error
-    case feed(FeedResponse)
-
-    static func == (lhs: FeedListSectionItem, rhs: FeedListSectionItem) -> Bool {
-        return lhs.hashValue == rhs.hashValue
+    static func == (lhs: FeedListSection, rhs: FeedListSection) -> Bool {
+        return true
     }
 
     func hash(into hasher: inout Hasher) {
+        hasher.combine("news")
+    }
+}
+
+enum FeedListSectionItem: Hashable {
+    case header(SDHeader)
+    case skeleton(Int)
+    case empty
+    case error
+    case contentCard(HomeNewsContentCard)
+    case admobCard(HomeListAdmobCardResponse)
+
+    var cardId: String? {
         switch self {
-        case .header:
-            hasher.combine("header")
-        case .advertisement(let response):
-            hasher.combine("advertisement")
-            hasher.combine(response?.advertisementId)
-        case .skeleton(let index):
-            hasher.combine("skeleton")
-            hasher.combine(index)
-        case .empty:
-            hasher.combine("empty")
-        case .error:
-            hasher.combine("error")
-        case .feed(let response):
-            hasher.combine(response.feedId)
+        case .contentCard(let card):
+            return card.cardId
+        case .admobCard(let card):
+            return card.cardId
+        case .header, .skeleton, .empty, .error:
+            return nil
         }
     }
 }
@@ -43,18 +39,22 @@ final class FeedListDatasource: UICollectionViewDiffableDataSource<FeedListSecti
     typealias Snapshot = NSDiffableDataSourceSnapshot<FeedListSection, FeedListSectionItem>
 
     let didTapRetry: PassthroughSubject<Void, Never>
+    let didTapImage: PassthroughSubject<FeedListViewModel.ImageTap, Never>
+    let didTapAdmob: PassthroughSubject<String, Never>
 
     init(collectionView: UICollectionView, rootViewController: UIViewController) {
         let didTapRetry = PassthroughSubject<Void, Never>()
+        let didTapImage = PassthroughSubject<FeedListViewModel.ImageTap, Never>()
+        let didTapAdmob = PassthroughSubject<String, Never>()
         self.didTapRetry = didTapRetry
-        super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+        self.didTapImage = didTapImage
+        self.didTapAdmob = didTapAdmob
+        super.init(collectionView: collectionView) { [weak rootViewController] collectionView, indexPath, itemIdentifier in
+            let cellWidth = FeedListViewController.Layout.cellWidth(in: collectionView)
             switch itemIdentifier {
-            case .header:
+            case .header(let header):
                 let cell: FeedListHeaderCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                return cell
-            case .advertisement(let advertisement):
-                let cell: FeedAdvertisementCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(advertisement: advertisement, rootViewController: rootViewController)
+                cell.bind(header: header)
                 return cell
             case .skeleton:
                 let cell: FeedSkeletonCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -66,20 +66,30 @@ final class FeedListDatasource: UICollectionViewDiffableDataSource<FeedListSecti
                 let cell: FeedErrorCell = collectionView.dequeueReusableCell(indexPath: indexPath)
                 cell.onTapRetry = { didTapRetry.send(()) }
                 return cell
-            case .feed(let feed):
-                let cell: FeedCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-                cell.bind(feed: feed, cellWidth: FeedListViewController.Layout.cellWidth(in: collectionView))
+            case .contentCard(let card):
+                let cell: FeedContentCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                cell.bind(card: card, cellWidth: cellWidth)
+                cell.onTapImage = { blockIndex, imageIndex in
+                    didTapImage.send(.init(cardId: card.cardId, blockIndex: blockIndex, imageIndex: imageIndex))
+                }
+                return cell
+            case .admobCard(let card):
+                let cell: FeedAdmobCardCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+                if let rootViewController {
+                    cell.bind(card: card, width: cellWidth, rootViewController: rootViewController)
+                }
+                cell.onClickAd = { didTapAdmob.send(card.cardId) }
                 return cell
             }
         }
 
         collectionView.register([
             FeedListHeaderCell.self,
-            FeedAdvertisementCell.self,
             FeedSkeletonCell.self,
             FeedEmptyCell.self,
             FeedErrorCell.self,
-            FeedCell.self
+            FeedContentCardCell.self,
+            FeedAdmobCardCell.self
         ])
     }
 
