@@ -85,6 +85,11 @@ final class HomeListViewController: BaseViewController {
         homeListView.tabView.didTapTab
             .subscribe(viewModel.input.didTapTab)
             .store(in: &cancellables)
+
+        newsViewController.sectionImpressionLog
+            .main
+            .subscribe(viewModel.input.receiveNewsImpressionLog)
+            .store(in: &cancellables)
     }
 
     override func bindViewModelOutput() {
@@ -148,12 +153,13 @@ final class HomeListViewController: BaseViewController {
         viewModel.output.loadNews
             .main
             .withUnretained(self)
-            .sink { (owner: HomeListViewController, searchArea: HomeSearchArea) in
+            .sink { (owner: HomeListViewController, request: HomeListViewModel.NewsSectionRequest) in
                 owner.resetScroll(owner.newsViewController.scrollView)
                 owner.newsViewController.load(
-                    mapLatitude: searchArea.latitude,
-                    mapLongitude: searchArea.longitude,
-                    maxDistanceM: searchArea.maxDistance
+                    newsTabId: request.tabId,
+                    mapLatitude: request.searchArea.latitude,
+                    mapLongitude: request.searchArea.longitude,
+                    maxDistanceM: request.searchArea.maxDistance
                 )
             }
             .store(in: &cancellables)
