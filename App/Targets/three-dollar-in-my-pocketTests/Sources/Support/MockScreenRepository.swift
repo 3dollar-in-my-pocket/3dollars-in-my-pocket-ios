@@ -15,7 +15,7 @@ final class MockScreenRepository: ScreenRepository {
     private(set) var fetchHomeCurationCarouselCardsCalls: [CarouselCardsCall] = []
     var fetchHomeNewsSectionResult: Result<HomeNewsSectionResponse, Error> = .failure(MockError.notStubbed())
     var fetchHomeNewsSectionHandler: ((Int) async -> Result<HomeNewsSectionResponse, Error>)?
-    private(set) var fetchHomeNewsSectionTabIds: [String] = []
+    private(set) var fetchHomeNewsSectionCalls: [(newsTabId: String, input: FetchHomeNewsSectionInput)] = []
 
     struct CarouselCardsCall {
         let curationTabId: String
@@ -64,10 +64,13 @@ final class MockScreenRepository: ScreenRepository {
         return fetchHomeCurationCarouselCardsResult
     }
 
-    func fetchHomeNewsSection(newsTabId: String) async -> Result<HomeNewsSectionResponse, Error> {
-        fetchHomeNewsSectionTabIds.append(newsTabId)
+    func fetchHomeNewsSection(
+        newsTabId: String,
+        input: FetchHomeNewsSectionInput
+    ) async -> Result<HomeNewsSectionResponse, Error> {
+        fetchHomeNewsSectionCalls.append((newsTabId: newsTabId, input: input))
         if let fetchHomeNewsSectionHandler {
-            return await fetchHomeNewsSectionHandler(fetchHomeNewsSectionTabIds.count)
+            return await fetchHomeNewsSectionHandler(fetchHomeNewsSectionCalls.count)
         }
         return fetchHomeNewsSectionResult
     }
