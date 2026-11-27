@@ -32,7 +32,7 @@ final class MainTabBarItemTests: XCTestCase {
 
         // Then
         for (index, item) in items.enumerated() {
-            XCTAssertEqual(item.tag.rawValue, index)
+            XCTAssertEqual(item.tag?.rawValue, index)
         }
     }
 
@@ -43,15 +43,16 @@ final class MainTabBarItemTests: XCTestCase {
         let writeItem = MainTabBarItem.all.first { $0.tag == .write }
 
         // When / Then
-        XCTAssertEqual(writeItem?.icon.pngData(), DesignSystemAsset.Icons.plus.image.pngData())
+        XCTAssertEqual(writeItem?.icon?.pngData(), DesignSystemAsset.Icons.plus.image.pngData())
     }
 
     func test_TH1340_TC2_아이콘크기가_24로_통일된다() {
         // Given / When
-        let resized = MainTabBarItem.all.map { $0.icon.resizeImage(scaledTo: MainTabBarItem.iconSize).size }
+        let resized = MainTabBarItem.all.compactMap { $0.icon?.resizeImage(scaledTo: MainTabBarItem.iconSize).size }
 
         // Then
         XCTAssertEqual(MainTabBarItem.iconSize, 24)
+        XCTAssertEqual(resized.count, 4)
         XCTAssertTrue(resized.allSatisfy { $0 == resized[0] })
     }
 }

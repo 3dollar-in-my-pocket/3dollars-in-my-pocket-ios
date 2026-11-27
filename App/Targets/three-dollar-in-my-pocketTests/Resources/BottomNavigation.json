@@ -1,0 +1,144 @@
+{
+  "tabs": [
+    {
+      "id": "home",
+      "label": "홈",
+      "icon": {
+        "url": "https://storage.threedollars.co.kr/app/home_solid.png",
+        "style": {
+          "width": 24.0,
+          "height": 24.0,
+          "dimmed": false,
+          "alpha": 1.0
+        }
+      },
+      "selectedTintColor": "#FF5C43",
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/home"
+      },
+      "clickLog": {
+        "screenName": "bottom_navigation",
+        "objectType": "bar",
+        "objectId": "tab",
+        "extraParameters": {
+          "value": "home"
+        },
+        "eventType": "CLICK"
+      }
+    },
+    {
+      "id": "store_create",
+      "label": "가게 제보",
+      "icon": {
+        "url": "https://storage.threedollars.co.kr/app/plus_solid.png",
+        "style": {
+          "width": 24.0,
+          "height": 24.0,
+          "dimmed": false,
+          "alpha": 1.0
+        }
+      },
+      "selectedTintColor": "#FF5C43",
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store/create"
+      },
+      "clickLog": {
+        "screenName": "bottom_navigation",
+        "objectType": "bar",
+        "objectId": "tab",
+        "extraParameters": {
+          "value": "store_create"
+        },
+        "eventType": "CLICK"
+      }
+    },
+    {
+      "id": "event",
+      "label": "이벤트",
+      "icon": {
+        "url": "https://storage.threedollars.co.kr/app/event_solid.png",
+        "style": {
+          "width": 24.0,
+          "height": 24.0,
+          "dimmed": false,
+          "alpha": 1.0
+        }
+      },
+      "selectedTintColor": "#FF5C43",
+      "link": {
+        "type": "WEB",
+        "link": "https://echo.dev.threedollars.co.kr/events/point"
+      },
+      "clickLog": {
+        "screenName": "bottom_navigation",
+        "objectType": "bar",
+        "objectId": "tab",
+        "extraParameters": {
+          "value": "event"
+        },
+        "eventType": "CLICK"
+      }
+    },
+    {
+      "id": "community",
+      "label": "커뮤니티",
+      "icon": {
+        "url": "https://storage.threedollars.co.kr/app/community_solid.png",
+        "style": {
+          "width": 24.0,
+          "height": 24.0,
+          "dimmed": false,
+          "alpha": 1.0
+        }
+      },
+      "selectedTintColor": "#FF5C43",
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/community"
+      },
+      "clickLog": {
+        "screenName": "bottom_navigation",
+        "objectType": "bar",
+        "objectId": "tab",
+        "extraParameters": {
+          "value": "community"
+        },
+        "eventType": "CLICK"
+      }
+    },
+    {
+      "id": "my",
+      "label": "마이페이지",
+      "icon": {
+        "url": "https://storage.threedollars.co.kr/app/my_solid.png",
+        "style": {
+          "width": 24.0,
+          "height": 24.0,
+          "dimmed": false,
+          "alpha": 1.0
+        }
+      },
+      "selectedTintColor": "#FF5C43",
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/my"
+      },
+      "clickLog": {
+        "screenName": "bottom_navigation",
+        "objectType": "bar",
+        "objectId": "tab",
+        "extraParameters": {
+          "value": "my"
+        },
+        "eventType": "CLICK"
+      }
+    }
+  ],
+  "viewLog": {
+    "screenName": "bottom_navigation",
+    "extraParameters": {},
+    "eventType": "PAGE_VIEW"
+  }
+}

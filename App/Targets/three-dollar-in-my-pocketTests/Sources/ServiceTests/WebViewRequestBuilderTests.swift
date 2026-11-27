@@ -212,4 +212,22 @@ final class WebViewRequestBuilderTests: XCTestCase {
         XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
         XCTAssertNil(customUserAgent(url, isDebugBuild: true))
     }
+
+    // MARK: TH-1649 TC4
+
+    func test_TH1649_TC4_이벤트탭_웹도메인은_토큰과_앱UA가_실린다() throws {
+        // Given
+        let devURL = "https://echo.dev.threedollars.co.kr/events/point"
+        let prodURL = "https://web.threedollars.co.kr/events/point"
+
+        // When
+        let devRequest = try makeRequest(devURL, isDebugBuild: true)
+        let prodRequest = try makeRequest(prodURL, isDebugBuild: false)
+
+        // Then
+        XCTAssertEqual(devRequest.value(forHTTPHeaderField: "Authorization"), token)
+        XCTAssertEqual(customUserAgent(devURL, isDebugBuild: true), userAgent)
+        XCTAssertEqual(prodRequest.value(forHTTPHeaderField: "Authorization"), token)
+        XCTAssertEqual(customUserAgent(prodURL, isDebugBuild: false), userAgent)
+    }
 }
