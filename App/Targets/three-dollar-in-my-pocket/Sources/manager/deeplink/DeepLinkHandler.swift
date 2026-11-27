@@ -135,10 +135,11 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
             moveTab(.home)
         case .medal:
-            let targetViewController = Environment.myPageInterface.getMyMedalViewController()
-            route(targetViewController)
+            route(Environment.myPageInterface.getMyMedalViewController())
         case .community:
             moveTab(.community)
+        case .tab:
+            handleTabLink(url: url)
         case .pollDetail:
             guard let params = url.params(),
                   let pollId = params["pollId"] as? String else { return }
@@ -193,8 +194,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
             let viewController = VisitViewController(viewModel: viewModel)
             route(viewController, forcePresent: true)
         case .myCoupons:
-            let storeDetailViewController = Environment.storeInterface.getCouponListViewController(onReload: {})
-            route(storeDetailViewController)
+            route(Environment.storeInterface.getCouponListViewController(onReload: {}))
         case .storeImages:
             guard let params = url.params(),
                   let storeId = intParam(params, key: "storeId") else { return }
@@ -302,8 +302,7 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
 
         navigationController.popToRootViewController(animated: false)
         let mainTabBarViewController = mainTabBarViewController
-        (mainTabBarViewController?.viewControllers?[safe: TabBarTag.home.rawValue] as? UINavigationController)?
-            .popToRootViewController(animated: false)
+        mainTabBarViewController?.popHomeToRoot()
 
         let land = {
             mainTabBarViewController?.selectTab(tab: .home)
@@ -322,16 +321,26 @@ final class DeepLinkHandler: DeepLinkHandlerProtocol {
     }
 
     private func moveTab(_ tab: TabBarTag) {
-        let rootViewController = SceneDelegate.shared?.window?.rootViewController
-
-        if let rootViewController {
-            let topViewController = UIUtils.getTopViewController(rootViewController)
-            if topViewController.isPanModalPresented == true {
-                topViewController.dismiss(animated: true)
-            }
-        }
-
+        dismissPanModalIfPresented()
         mainTabBarViewController?.selectTab(tab: tab)
+    }
+
+    private func handleTabLink(url: URL) {
+        guard let params = url.params(),
+              let tabId = params["id"] as? String,
+              tabId.isNotEmpty else { return }
+
+        dismissPanModalIfPresented()
+        mainTabBarViewController?.selectTab(id: tabId)
+    }
+
+    private func dismissPanModalIfPresented() {
+        guard let rootViewController = SceneDelegate.shared?.window?.rootViewController else { return }
+
+        let topViewController = UIUtils.getTopViewController(rootViewController)
+        if topViewController.isPanModalPresented == true {
+            topViewController.dismiss(animated: true)
+        }
     }
 
     private func intParam(_ params: [String: Any], key: String) -> Int? {

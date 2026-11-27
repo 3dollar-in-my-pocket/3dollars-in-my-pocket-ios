@@ -31,6 +31,7 @@ final class WebView: BaseView {
     private let webView = WKWebView()
 
     private let requestBuilder = WebViewRequestBuilder()
+    private let isNavigationBarHidden: Bool
     
     private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
@@ -39,8 +40,17 @@ final class WebView: BaseView {
         return indicator
     }()
     
+    init(isNavigationBarHidden: Bool = false) {
+        self.isNavigationBarHidden = isNavigationBarHidden
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func setup() {
-        backgroundColor = Colors.gray90.color
+        backgroundColor = isNavigationBarHidden ? Colors.systemWhite.color : Colors.gray90.color
         addSubViews([
             backButton,
             titleLabel,
@@ -50,6 +60,7 @@ final class WebView: BaseView {
         ])
         webView.uiDelegate = self
         webView.navigationDelegate = self
+        [backButton, titleLabel, topLineView].forEach { $0.isHidden = isNavigationBarHidden }
     }
     
     override func bindConstraints() {
@@ -70,8 +81,13 @@ final class WebView: BaseView {
         }
         
         webView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.top.equalTo(topLineView.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            if isNavigationBarHidden {
+                $0.top.bottom.equalTo(safeAreaLayoutGuide)
+            } else {
+                $0.bottom.equalToSuperview()
+                $0.top.equalTo(topLineView.snp.bottom)
+            }
         }
         
         loadingIndicator.snp.makeConstraints {
@@ -86,6 +102,10 @@ final class WebView: BaseView {
         load(URLRequest(url: url))
     }
     
+    func bind(url: URL) {
+        load(URLRequest(url: url))
+    }
+
     func bind(webviewType: WebViewType) {
         titleLabel.text = webviewType.title
 

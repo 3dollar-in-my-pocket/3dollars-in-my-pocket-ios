@@ -16,6 +16,8 @@ import WriteInterface
 import StoreInterface
 import MyPageInterface
 
+import Kingfisher
+
 final class MainTabBarViewController: UITabBarController {
     private enum Layout {
         static let iconSize: CGFloat = 24
@@ -32,14 +34,11 @@ final class MainTabBarViewController: UITabBarController {
         return dimView
     }()
 
-    private lazy var contentViewControllers: [UIViewController] = [
-        UINavigationController(rootViewController: homeViewController),
-        WriteTabBarIconViewController(),
-        Community.CommunityViewController.instance(),
-        myPageInterface.getMyPageViewController()
-    ]
+    private lazy var contentViewControllers: [UIViewController] = items.map(makeContentViewController)
+    private lazy var homeNavigationController = UINavigationController(rootViewController: homeViewController)
 
     private let homeViewController = HomeViewController()
+    private let items: [MainTabBarItem]
 
     private let membershipInterface: MembershipInterface
     private let writeInterface: WriteInterface
@@ -52,7 +51,10 @@ final class MainTabBarViewController: UITabBarController {
         self.removeKakaoLinkObserver()
     }
 
-    init(viewModel: MainTabBarViewModel = MainTabBarViewModel()) {
+    init(
+        viewModel: MainTabBarViewModel = MainTabBarViewModel(),
+        bottomNavigationStore: BottomNavigationStoring = BottomNavigationStore.shared
+    ) {
         guard let membershipInterface = DIContainer.shared.resolver.resolve(MembershipInterface.self) else {
             fatalError("⚠️ MembershipInterface가 등록되지 않았습니다.")
         }
@@ -74,6 +76,7 @@ final class MainTabBarViewController: UITabBarController {
         self.storeInterface = storeInterface
         self.myPageInterface = myPageInterface
         self.viewModel = viewModel
+        self.items = MainTabBarItem.items(from: bottomNavigationStore.response)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -105,8 +108,8 @@ final class MainTabBarViewController: UITabBarController {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         self.feedbackGenerator.selectionChanged()
 
-        guard let tab = TabBarTag(rawValue: item.tag) else { return }
-        self.setTabBarColor(tab: tab)
+        guard let tabItem = items[safe: item.tag] else { return }
+        self.setTabBarColor(item: tabItem)
     }
 
     func applyHomeDeepLink(preset: String?, tabId: String?) {
@@ -143,8 +146,32 @@ final class MainTabBarViewController: UITabBarController {
     }
 
     func selectTab(tab: TabBarTag) {
-        self.selectedIndex = tab.rawValue
-        self.setTabBarColor(tab: tab)
+        guard let index = items.firstIndex(where: { $0.tag == tab }) else { return }
+        selectTab(index: index)
+    }
+
+    func selectTab(id: String) {
+        guard let index = items.firstIndex(where: { $0.id.lowercased() == id.lowercased() }),
+              let item = items[safe: index] else { return }
+
+        switch item.destination {
+        case .native(.write):
+            presentWriteAddress()
+        case .deeplink(let link):
+            DeepLinkHandler.shared.handleLinkResponse(link)
+        case .native, .web:
+            selectTab(index: index)
+        }
+    }
+
+    func popHomeToRoot() {
+        homeNavigationController.popToRootViewController(animated: false)
+    }
+
+    private func selectTab(index: Int) {
+        guard let item = items[safe: index] else { return }
+        self.selectedIndex = index
+        self.setTabBarColor(item: item)
     }
 
     private func bind() {
@@ -170,37 +197,42 @@ final class MainTabBarViewController: UITabBarController {
         present(viewController, animated: true)
     }
 
-    private func setTabBarColor(tab: TabBarTag) {
-        switch tab {
+    private func setTabBarColor(item: MainTabBarItem) {
+        switch item.tag {
         case .my:
             guard !Preference.shared.isAnonymousUser else { return }
             self.tabBar.barTintColor = Colors.gray100.color
-            self.applyTabBarAppearance(backgroundColor: Colors.gray100.color)
-        case .home, .community:
+            self.applyTabBarAppearance(backgroundColor: Colors.gray100.color, selectedItem: item)
+        case .home, .community, .none:
             self.tabBar.barTintColor = .white
-            self.applyTabBarAppearance(backgroundColor: .white)
+            self.applyTabBarAppearance(backgroundColor: .white, selectedItem: item)
         case .write:
             break
         }
     }
 
-    private func applyTabBarAppearance(backgroundColor: UIColor) {
-        let appearance = Self.makeTabBarAppearance(backgroundColor: backgroundColor)
+    private func applyTabBarAppearance(backgroundColor: UIColor, selectedItem: MainTabBarItem? = nil) {
+        let selectedTintColor = (selectedItem ?? items.first)?.selectedTintColor ?? Colors.mainRed.color
+        let appearance = Self.makeTabBarAppearance(backgroundColor: backgroundColor, selectedColor: selectedTintColor)
 
         tabBar.standardAppearance = appearance
         tabBar.scrollEdgeAppearance = appearance
-        tabBar.tintColor = Colors.mainRed.color
+        tabBar.tintColor = selectedTintColor
         tabBar.unselectedItemTintColor = Colors.gray40.color
 
         // iOS 26+ 의 새 탭바는 컨트롤러 레벨 appearance 를 일부만 반영해서
         // 아이템별 appearance 로도 같은 값을 지정해야 비선택 색이 적용된다.
-        contentViewControllers.forEach { viewController in
-            viewController.tabBarItem.standardAppearance = appearance
-            viewController.tabBarItem.scrollEdgeAppearance = appearance
+        zip(contentViewControllers, items).forEach { viewController, item in
+            let itemAppearance = Self.makeTabBarAppearance(
+                backgroundColor: backgroundColor,
+                selectedColor: item.selectedTintColor
+            )
+            viewController.tabBarItem.standardAppearance = itemAppearance
+            viewController.tabBarItem.scrollEdgeAppearance = itemAppearance
         }
     }
 
-    private static func makeTabBarAppearance(backgroundColor: UIColor) -> UITabBarAppearance {
+    private static func makeTabBarAppearance(backgroundColor: UIColor, selectedColor: UIColor) -> UITabBarAppearance {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = backgroundColor
@@ -211,8 +243,8 @@ final class MainTabBarViewController: UITabBarController {
          appearance.compactInlineLayoutAppearance].forEach { itemAppearance in
             itemAppearance.normal.iconColor = Colors.gray40.color
             itemAppearance.normal.titleTextAttributes = titleAttributes(color: Colors.gray40.color)
-            itemAppearance.selected.iconColor = Colors.mainRed.color
-            itemAppearance.selected.titleTextAttributes = titleAttributes(color: Colors.mainRed.color)
+            itemAppearance.selected.iconColor = selectedColor
+            itemAppearance.selected.titleTextAttributes = titleAttributes(color: selectedColor)
         }
         return appearance
     }
@@ -232,7 +264,7 @@ final class MainTabBarViewController: UITabBarController {
 
     private func setupTabBarController() {
         self.setViewControllers(contentViewControllers, animated: true)
-        self.tabBar.tintColor = Colors.mainRed.color
+        self.tabBar.tintColor = items.first?.selectedTintColor ?? Colors.mainRed.color
         self.tabBar.layer.borderWidth = 0
         self.tabBar.layer.borderColor = UIColor.clear.cgColor
         self.tabBar.clipsToBounds = true
@@ -241,16 +273,47 @@ final class MainTabBarViewController: UITabBarController {
     }
 
     private func applyTabBarItems() {
-        for (index, item) in MainTabBarItem.all.enumerated() {
+        for (index, item) in items.enumerated() {
             guard let viewController = contentViewControllers[safe: index] else { continue }
             let tabBarItem = UITabBarItem(
                 title: item.title,
-                image: item.icon.resizeImage(scaledTo: MainTabBarItem.iconSize).withRenderingMode(.alwaysTemplate),
-                tag: item.tag.rawValue
+                image: item.icon.map(Self.tabBarIcon),
+                tag: index
             )
             tabBarItem.imageInsets = .zero
             tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: Layout.titleOffset)
             viewController.tabBarItem = tabBarItem
+            loadRemoteIcon(for: tabBarItem, urlString: item.iconUrl)
+        }
+    }
+
+    private func loadRemoteIcon(for tabBarItem: UITabBarItem, urlString: String?) {
+        guard let urlString, let url = URL(string: urlString) else { return }
+
+        KingfisherManager.shared.retrieveImage(with: url) { result in
+            guard case .success(let value) = result else { return }
+            DispatchQueue.main.async {
+                tabBarItem.image = Self.tabBarIcon(value.image)
+            }
+        }
+    }
+
+    private static func tabBarIcon(_ image: UIImage) -> UIImage {
+        image.resizeImage(scaledTo: MainTabBarItem.iconSize).withRenderingMode(.alwaysTemplate)
+    }
+
+    private func makeContentViewController(item: MainTabBarItem) -> UIViewController {
+        switch item.destination {
+        case .native(.home):
+            return homeNavigationController
+        case .native(.write), .deeplink:
+            return WriteTabBarIconViewController()
+        case .native(.community):
+            return Community.CommunityViewController.instance()
+        case .native(.my):
+            return myPageInterface.getMyPageViewController()
+        case .web(let url):
+            return WebTabViewController(url: url)
         }
     }
 
@@ -272,17 +335,16 @@ final class MainTabBarViewController: UITabBarController {
         let kakaoShareLink = Preference.shared.shareLink
         guard !kakaoShareLink.isEmpty else { return }
 
-        selectedIndex = 0
+        selectTab(tab: .home)
         pushStoreDetail(storeId: kakaoShareLink)
         Preference.shared.shareLink = ""
     }
 
     private func pushStoreDetail(storeId: String) {
-        guard let navigationController = contentViewControllers[safe: 0] as? UINavigationController,
-              let storeId = Int(storeId) else { return }
+        guard let storeId = Int(storeId) else { return }
         let viewController = storeInterface.getStoreDetailFullScreenViewController(storeId: storeId)
 
-        navigationController.pushViewController(viewController, animated: true)
+        homeNavigationController.pushViewController(viewController, animated: true)
     }
 
     private func presentWriteAddress() {
@@ -306,8 +368,9 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
-        if let tab = TabBarTag(rawValue: viewController.tabBarItem.tag) {
-            viewModel.input.didTapTab.send(tab)
+        let item = contentViewControllers.firstIndex(of: viewController).flatMap { items[safe: $0] }
+        if let item {
+            viewModel.input.didTapTab.send(item)
         }
 
         if let navigationViewController = tabBarController.selectedViewController as? UINavigationController,
@@ -316,9 +379,15 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
             presentedViewController.dismiss(animated: false)
         }
 
-        if viewController == contentViewControllers[safe: 1] {
+        switch item?.destination {
+        case .native(.write):
             presentWriteAddress()
             return false
+        case .deeplink(let link):
+            DeepLinkHandler.shared.handleLinkResponse(link)
+            return false
+        default:
+            break
         }
 
         if let navigationViewController = viewController as? UINavigationController {
