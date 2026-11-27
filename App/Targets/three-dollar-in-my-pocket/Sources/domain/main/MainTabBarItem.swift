@@ -53,6 +53,15 @@ struct MainTabBarItem: Equatable {
         return visibleItems
     }
 
+    static func initialIndex(of items: [MainTabBarItem]) -> Int {
+        switch items.first?.destination {
+        case .native(.write), .deeplink, .none:
+            return items.firstIndex { $0.tag == .home } ?? 0
+        case .native, .web:
+            return 0
+        }
+    }
+
     private static func fallback(tag: TabBarTag, title: String, icon: UIImage) -> MainTabBarItem {
         MainTabBarItem(
             id: tag.tabId,

@@ -96,6 +96,7 @@ final class MainTabBarViewController: UITabBarController {
         self.feedbackGenerator.prepare()
         self.delegate = self
         self.applyTabBarAppearance(backgroundColor: .white)
+        self.selectTab(index: MainTabBarItem.initialIndex(of: items))
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -158,7 +159,10 @@ final class MainTabBarViewController: UITabBarController {
         case .native(.write):
             presentWriteAddress()
         case .deeplink(let link):
+            guard !Self.isTabLink(link) else { return }
             DeepLinkHandler.shared.handleLinkResponse(link)
+        case .native(.my) where Preference.shared.isAnonymousUser:
+            presentSigninAnonymous()
         case .native, .web:
             selectTab(index: index)
         }
@@ -172,6 +176,16 @@ final class MainTabBarViewController: UITabBarController {
         guard let item = items[safe: index] else { return }
         self.selectedIndex = index
         self.setTabBarColor(item: item)
+    }
+
+    private func presentSigninAnonymous() {
+        let viewController = membershipInterface.createSigninAnonymousViewController(onSignin: nil)
+        present(viewController, animated: true)
+    }
+
+    private static func isTabLink(_ link: SDLink) -> Bool {
+        let path = URL(string: link.link)?.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        return path == DeeplinkPath.tab.path
     }
 
     private func bind() {
@@ -198,15 +212,15 @@ final class MainTabBarViewController: UITabBarController {
     }
 
     private func setTabBarColor(item: MainTabBarItem) {
-        switch item.tag {
-        case .my:
+        switch item.destination {
+        case .native(.my):
             guard !Preference.shared.isAnonymousUser else { return }
             self.tabBar.barTintColor = Colors.gray100.color
             self.applyTabBarAppearance(backgroundColor: Colors.gray100.color, selectedItem: item)
-        case .home, .community, .none:
+        case .native(.home), .native(.community), .web:
             self.tabBar.barTintColor = .white
             self.applyTabBarAppearance(backgroundColor: .white, selectedItem: item)
-        case .write:
+        case .native(.write), .deeplink:
             break
         }
     }
@@ -393,9 +407,7 @@ extension MainTabBarViewController: UITabBarControllerDelegate {
         if let navigationViewController = viewController as? UINavigationController {
             if navigationViewController.topViewController is MyPage.MyPageViewController,
                Preference.shared.isAnonymousUser {
-                let viewController = membershipInterface.createSigninAnonymousViewController(onSignin: nil)
-
-                self.present(viewController, animated: true)
+                presentSigninAnonymous()
                 return false
             }
         }

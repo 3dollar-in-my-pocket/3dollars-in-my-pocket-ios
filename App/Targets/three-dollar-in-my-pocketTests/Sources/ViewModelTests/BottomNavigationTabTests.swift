@@ -151,6 +151,37 @@ final class BottomNavigationTabTests: XCTestCase {
         XCTAssertEqual(items.map(\.id), ["home", "event1", "event2", "community", "my"])
     }
 
+    func test_TH1649_TC8_첫탭이_제보나_딥링크탭이면_홈을_기본선택한다() throws {
+        // Given
+        let response = BottomNavigationResponse(tabs: try [
+            tab(id: "store_create", type: "APP_DEFINED"),
+            tab(id: "medal", type: "DYNAMIC", link: ("APP_SCHEME", "/medal")),
+            tab(id: "home", type: "APP_DEFINED")
+        ])
+        let items = MainTabBarItem.items(from: response, webBaseURL: webBaseURL)
+
+        // When
+        let index = MainTabBarItem.initialIndex(of: items)
+
+        // Then
+        XCTAssertEqual(items[index].id, "home")
+    }
+
+    func test_TH1649_TC8_첫탭이_화면탭이면_첫탭을_기본선택한다() throws {
+        // Given
+        let response = BottomNavigationResponse(tabs: try [
+            tab(id: "event", type: "DYNAMIC", link: ("WEB", "https://web.threedollars.co.kr/events/point")),
+            tab(id: "home", type: "APP_DEFINED")
+        ])
+        let items = MainTabBarItem.items(from: response, webBaseURL: webBaseURL)
+
+        // When
+        let index = MainTabBarItem.initialIndex(of: items)
+
+        // Then
+        XCTAssertEqual(index, 0)
+    }
+
     // MARK: TH-1649 TC10
 
     func test_TH1649_TC10_탭딥링크_경로는_tab이다() {

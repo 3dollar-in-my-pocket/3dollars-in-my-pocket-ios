@@ -30,7 +30,9 @@ final class WebView: BaseView {
     
     private let webView = WKWebView()
 
-    private let requestBuilder = WebViewRequestBuilder()
+    private var requestBuilder: WebViewRequestBuilder {
+        WebViewRequestBuilder()
+    }
     private let isNavigationBarHidden: Bool
     
     private let loadingIndicator: UIActivityIndicatorView = {

@@ -43,12 +43,13 @@ final class BottomNavigationLoader: BottomNavigationLoading {
 
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             let resumer = SingleResumer(continuation: continuation)
-            Task {
-                await task.value
+            let timeoutTask = Task {
+                try? await Task.sleep(nanoseconds: UInt64(max(timeout, 0) * 1_000_000_000))
                 resumer.resume()
             }
             Task {
-                try? await Task.sleep(nanoseconds: UInt64(max(timeout, 0) * 1_000_000_000))
+                await task.value
+                timeoutTask.cancel()
                 resumer.resume()
             }
         }
