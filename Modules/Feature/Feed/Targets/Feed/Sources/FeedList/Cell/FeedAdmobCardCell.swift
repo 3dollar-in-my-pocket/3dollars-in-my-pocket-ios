@@ -19,12 +19,15 @@ final class FeedAdmobCardCell: BaseCollectionViewCell {
     var onClickAd: (() -> Void)?
 
     private let adBannerView = Environment.appModuleInterface.createAdBannerView(adType: .localNewsFeed)
-    private var loadedCardId: String?
+    private var requestedAd: (cardId: String, width: CGFloat)?
 
     override func setup() {
         contentView.addSubview(adBannerView)
         adBannerView.onClick = { [weak self] in
             self?.onClickAd?()
+        }
+        adBannerView.onLoadFailed = { [weak self] in
+            self?.requestedAd = nil
         }
     }
 
@@ -35,8 +38,8 @@ final class FeedAdmobCardCell: BaseCollectionViewCell {
     }
 
     func bind(card: HomeListAdmobCardResponse, width: CGFloat, rootViewController: UIViewController) {
-        guard loadedCardId != card.cardId || adBannerView.isLoaded.isNot else { return }
-        loadedCardId = card.cardId
+        guard requestedAd?.cardId != card.cardId || requestedAd?.width != width else { return }
+        requestedAd = (cardId: card.cardId, width: width)
         adBannerView.isLoaded = false
         adBannerView.setServerAdUnitId(card.adUnitId)
         adBannerView.load(in: rootViewController, size: CGSize(width: width, height: Layout.height(card)))

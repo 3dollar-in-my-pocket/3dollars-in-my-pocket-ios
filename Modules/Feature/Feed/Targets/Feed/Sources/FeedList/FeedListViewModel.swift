@@ -12,6 +12,7 @@ extension FeedListViewModel {
         let load = PassthroughSubject<LoadRequest, Never>()
         let retry = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
+        let willDisplayCard = PassthroughSubject<String, Never>()
         let didTapCard = PassthroughSubject<String, Never>()
         let didTapImage = PassthroughSubject<ImageTap, Never>()
         let didTapAdmob = PassthroughSubject<String, Never>()
@@ -95,9 +96,15 @@ public final class FeedListViewModel: BaseViewModel {
         input.willDisplayCell
             .withUnretained(self)
             .sink { (owner: FeedListViewModel, index: Int) in
-                owner.sendImpressionLogIfNeeded(at: index)
                 guard owner.canLoadMore(index: index) else { return }
                 owner.loadNextPage()
+            }
+            .store(in: &cancellables)
+
+        input.willDisplayCard
+            .withUnretained(self)
+            .sink { (owner: FeedListViewModel, cardId: String) in
+                owner.sendImpressionLogIfNeeded(cardId: cardId)
             }
             .store(in: &cancellables)
 
@@ -242,9 +249,8 @@ public final class FeedListViewModel: BaseViewModel {
         output.route.send(.presentPhotoViewer(imageUrls: block.images.map(\.url), selectedIndex: tap.imageIndex))
     }
 
-    private func sendImpressionLogIfNeeded(at index: Int) {
-        guard let cardId = output.datasource.value.first?.items[safe: index]?.cardId,
-              let impressionLog = item(cardId: cardId)?.impressionLog,
+    private func sendImpressionLogIfNeeded(cardId: String) {
+        guard let impressionLog = item(cardId: cardId)?.impressionLog,
               state.impressedCardIds.insert(cardId).inserted else { return }
         dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
     }

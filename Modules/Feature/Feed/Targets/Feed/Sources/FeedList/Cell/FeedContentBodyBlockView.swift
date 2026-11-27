@@ -183,6 +183,7 @@ final class FeedContentBodyBlockView: BaseView {
         guard let heading else { return }
 
         headingImageView.isHidden = heading.leadingImage == nil
+        headingImageView.clear()
         headingImageView.setImage(urlString: heading.leadingImage?.url)
         headingTitleLabel.setSDText(heading.title)
 
@@ -206,6 +207,7 @@ final class FeedContentBodyBlockView: BaseView {
     private func bindText(_ block: HomeNewsBodyBlock) {
         textView.isHidden = block.text == nil
         textLeadingImageView.isHidden = block.textLeadingImage == nil
+        textLeadingImageView.clear()
         textLeadingImageView.setImage(urlString: block.textLeadingImage?.url)
         textLabel.setSDText(block.text)
     }
@@ -253,7 +255,7 @@ extension FeedContentBodyBlockView {
 
         override func prepareForReuse() {
             super.prepareForReuse()
-            imageView.image = nil
+            imageView.clear()
         }
 
         override func setup() {
@@ -268,7 +270,7 @@ extension FeedContentBodyBlockView {
 
         func bind(image: SDImage) {
             imageView.setImage(urlString: image.url)
-            imageView.alpha = CGFloat(image.style.alpha)
+            imageView.alpha = image.style.dimmed ? 0.5 : CGFloat(image.style.alpha)
         }
     }
 }

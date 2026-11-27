@@ -153,10 +153,9 @@ final class LocalNewsListViewModelTests: XCTestCase {
         try await load(viewModel)
 
         // When
-        viewModel.input.willDisplayCell.send(0)
-        viewModel.input.willDisplayCell.send(1)
-        viewModel.input.willDisplayCell.send(2)
-        viewModel.input.willDisplayCell.send(2)
+        viewModel.input.willDisplayCard.send(admobCardId)
+        viewModel.input.willDisplayCard.send(visitCardId)
+        viewModel.input.willDisplayCard.send(visitCardId)
 
         // Then
         let cardImpressions = logManager.sentEvents.filter {
@@ -311,6 +310,38 @@ final class LocalNewsListViewModelTests: XCTestCase {
         await waitUntil { screenRepository.fetchHomeNewsSectionCalls.count == 2 && currentItems(viewModel).contains { $0.cardId != nil } }
         XCTAssertEqual(screenRepository.fetchHomeNewsSectionCalls.map(\.input.mapLatitude), [37.3617, 37.5665])
         XCTAssertEqual(scrollToTopCount, 2)
+    }
+
+    func test_TH1558_TC12_앞요청응답이늦게와도_마지막좌표의목록과섹션노출로그만반영한다() async throws {
+        // Given
+        let stale = try makeResponse { json in
+            var items = try XCTUnwrap(json["items"] as? [[String: Any]])
+            items[1]["cardId"] = "NEWS:stale"
+            json["items"] = [items[1]]
+        }
+        let latest = try makeResponse()
+        let screenRepository = MockScreenRepository()
+        screenRepository.fetchHomeNewsSectionHandler = { callCount in
+            if callCount == 1 {
+                try? await Task.sleep(nanoseconds: 300_000_000)
+                return .success(stale)
+            }
+            return .success(latest)
+        }
+        let viewModel = makeViewModel(screenRepository: screenRepository)
+        var sectionLogCount = 0
+        viewModel.output.sectionImpressionLog
+            .sink { _ in sectionLogCount += 1 }
+            .store(in: &cancellables)
+
+        // When
+        viewModel.input.load.send(request)
+        viewModel.input.load.send(.init(newsTabId: "NEWS", latitude: 37.5665, longitude: 126.9780, maxDistanceM: nil))
+        try await Task.sleep(nanoseconds: 600_000_000)
+
+        // Then
+        XCTAssertEqual(currentItems(viewModel).compactMap(\.cardId), [admobCardId, visitCardId, reviewCardId])
+        XCTAssertEqual(sectionLogCount, 1)
     }
 
     // MARK: TH-1593 TC4

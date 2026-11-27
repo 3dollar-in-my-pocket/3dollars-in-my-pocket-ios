@@ -40,7 +40,7 @@ public final class FeedListViewController: BaseViewController, LocalNewsViewCont
     private let viewModel: FeedListViewModel
     private lazy var datasource = FeedListDatasource(collectionView: collectionView, rootViewController: self)
     private var lastLayoutWidth: CGFloat = 0
-    private var cardHeightCache: [String: CGFloat] = [:]
+    private var cardHeightCache: [HomeNewsContentCard: CGFloat] = [:]
 
     public init(viewModel: FeedListViewModel) {
         self.viewModel = viewModel
@@ -194,6 +194,9 @@ extension FeedListViewController: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         viewModel.input.willDisplayCell.send(indexPath.item)
+        if let cardId = datasource.itemIdentifier(for: indexPath)?.cardId {
+            viewModel.input.willDisplayCard.send(cardId)
+        }
     }
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -202,11 +205,11 @@ extension FeedListViewController: UICollectionViewDelegateFlowLayout {
     }
 
     private func contentCardHeight(_ card: HomeNewsContentCard, width: CGFloat) -> CGFloat {
-        if let height = cardHeightCache[card.cardId] {
+        if let height = cardHeightCache[card] {
             return height
         }
         let height = FeedContentCardCell.Layout.height(card: card, cellWidth: width)
-        cardHeightCache[card.cardId] = height
+        cardHeightCache[card] = height
         return height
     }
 }

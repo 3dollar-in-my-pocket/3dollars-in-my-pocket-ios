@@ -108,7 +108,7 @@ final class FeedContentCardCell: BaseCollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        leadingImageView.image = nil
+        leadingImageView.clear()
         onTapImage = nil
     }
 
@@ -194,6 +194,8 @@ final class FeedContentCardCell: BaseCollectionViewCell {
             badgeLabel.setSDChip(badge)
         }
         trailingLabel.setSDText(header.trailingText)
+        headerView.isHidden = header.badge == nil && header.trailingText == nil
+        stackView.setCustomSpacing(headerView.isHidden ? 0 : Layout.headerSpacing, after: headerView)
     }
 
     private func bindSummary(_ summary: HomeNewsCardSummary) {
