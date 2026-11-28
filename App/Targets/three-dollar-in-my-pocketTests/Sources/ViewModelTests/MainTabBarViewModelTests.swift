@@ -14,7 +14,7 @@ final class MainTabBarViewModelTests: XCTestCase {
         let viewModel = makeViewModel(logManager: logManager)
 
         // When
-        viewModel.input.didTapTab.send(.home)
+        viewModel.input.didTapTab.send(fallbackItem(.home))
 
         // Then
         XCTAssertEqual(logManager.sentEvents.count, 1)
@@ -37,7 +37,7 @@ final class MainTabBarViewModelTests: XCTestCase {
         ]
 
         // When
-        [TabBarTag.home, .write, .community, .my].forEach { viewModel.input.didTapTab.send($0) }
+        [TabBarTag.home, .write, .community, .my].forEach { viewModel.input.didTapTab.send(fallbackItem($0)) }
 
         // Then
         XCTAssertEqual(logManager.sentEvents.count, 4)
@@ -59,7 +59,53 @@ final class MainTabBarViewModelTests: XCTestCase {
         XCTAssertEqual(Set(objectIds).count, 4)
     }
 
+    // MARK: TH-1649 TC6
+
+    func test_TH1649_TC6_서버clickLog가있는_탭을누르면_서버로그와_기존탭로그가_한건씩전송된다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(logManager: logManager)
+        let home = try XCTUnwrap(serverItems().first { $0.id == "home" })
+
+        // When
+        viewModel.input.didTapTab.send(home)
+
+        // Then
+        XCTAssertEqual(logManager.sentEvents.count, 2)
+        XCTAssertEqual(logManager.sentEvents[0].screen.rawValue, "main_tab_bar")
+        XCTAssertEqual(logManager.sentEvents[0].parameters["object_id"] as? String, "home")
+        XCTAssertEqual(logManager.sentEvents[1].name.rawValue, EventName.click.rawValue)
+        XCTAssertEqual(logManager.sentEvents[1].screen.rawValue, "bottom_navigation")
+        XCTAssertEqual(logManager.sentEvents[1].parameters["object_type"] as? String, "bar")
+        XCTAssertEqual(logManager.sentEvents[1].parameters["object_id"] as? String, "tab")
+        XCTAssertEqual(logManager.sentEvents[1].parameters["value"] as? String, "home")
+    }
+
+    func test_TH1649_TC6_웹뷰탭을누르면_서버clickLog만_한건전송된다() throws {
+        // Given
+        let logManager = MockLogManager()
+        let viewModel = makeViewModel(logManager: logManager)
+        let event = try XCTUnwrap(serverItems().first { $0.id == "event" })
+
+        // When
+        viewModel.input.didTapTab.send(event)
+
+        // Then
+        XCTAssertEqual(logManager.sentEvents.count, 1)
+        XCTAssertEqual(logManager.sentEvents[0].screen.rawValue, "bottom_navigation")
+        XCTAssertEqual(logManager.sentEvents[0].parameters["value"] as? String, "event")
+    }
+
     private func makeViewModel(logManager: MockLogManager) -> MainTabBarViewModel {
         MainTabBarViewModel(dependency: .init(logManager: logManager))
+    }
+
+    private func fallbackItem(_ tag: TabBarTag) -> MainTabBarItem {
+        MainTabBarItem.all.first { $0.tag == tag }!
+    }
+
+    private func serverItems() throws -> [MainTabBarItem] {
+        let response = try FixtureLoader.decode(BottomNavigationResponse.self, from: "BottomNavigation")
+        return MainTabBarItem.items(from: response, webBaseURL: URL(string: "https://echo.dev.threedollars.co.kr"))
     }
 }
