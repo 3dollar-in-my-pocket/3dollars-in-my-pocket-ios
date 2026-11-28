@@ -9,7 +9,7 @@ import Model
 final class MainTabBarViewModel: Common.BaseViewModel {
     struct Input {
         let viewDidLoad = PassthroughSubject<Void, Never>()
-        let didTapTab = PassthroughSubject<TabBarTag, Never>()
+        let didTapTab = PassthroughSubject<MainTabBarItem, Never>()
     }
     
     struct Output {
@@ -57,18 +57,24 @@ final class MainTabBarViewModel: Common.BaseViewModel {
 
         input.didTapTab
             .withUnretained(self)
-            .sink { (owner: MainTabBarViewModel, tab: TabBarTag) in
-                owner.sendTabClickLog(tab)
+            .sink { (owner: MainTabBarViewModel, item: MainTabBarItem) in
+                owner.sendTabClickLog(item)
             }
             .store(in: &cancellables)
     }
 
-    private func sendTabClickLog(_ tab: TabBarTag) {
-        dependency.logManager.sendEvent(event: ClickEvent(
-            screen: .mainTabBar,
-            objectType: .tab,
-            objectId: tab.logObjectId
-        ))
+    private func sendTabClickLog(_ item: MainTabBarItem) {
+        if let tag = item.tag {
+            dependency.logManager.sendEvent(event: ClickEvent(
+                screen: .mainTabBar,
+                objectType: .tab,
+                objectId: tag.logObjectId
+            ))
+        }
+
+        if let clickLog = item.clickLog {
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
+        }
     }
     
     private func checkIfBannerExisted() {

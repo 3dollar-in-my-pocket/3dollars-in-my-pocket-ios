@@ -71,6 +71,8 @@ final class SplashViewModel: BaseViewModel {
         let advertisementRepository: AdvertisementRepository
         let appRepository: AppRepository
         let remoteConfigService: RemoteConfigProtocol
+        let bottomNavigationLoader: BottomNavigationLoading
+        let bottomNavigationTimeout: TimeInterval
 
         init(
             preference: Preference = Preference.shared,
@@ -78,7 +80,9 @@ final class SplashViewModel: BaseViewModel {
             deviceRepository: DeviceRepository = DeviceRepositoryImpl(),
             advertisementRepository: AdvertisementRepository = AdvertisementRepositoryImpl(),
             appRepository: AppRepository = AppRepositoryImpl(),
-            remoteConfigService: RemoteConfigProtocol = RemoteConfigService.shared
+            remoteConfigService: RemoteConfigProtocol = RemoteConfigService.shared,
+            bottomNavigationLoader: BottomNavigationLoading = BottomNavigationLoader(),
+            bottomNavigationTimeout: TimeInterval = 1.5
         ) {
             self.preference = preference
             self.userRepository = userRepository
@@ -86,6 +90,8 @@ final class SplashViewModel: BaseViewModel {
             self.advertisementRepository = advertisementRepository
             self.appRepository = appRepository
             self.remoteConfigService = remoteConfigService
+            self.bottomNavigationLoader = bottomNavigationLoader
+            self.bottomNavigationTimeout = bottomNavigationTimeout
         }
     }
 
@@ -104,6 +110,7 @@ final class SplashViewModel: BaseViewModel {
             .withUnretained(self)
             .sink { (owner: SplashViewModel, _) in
                 owner.state.retryCount = 0
+                owner.dependency.bottomNavigationLoader.load()
                 owner.fetchRemoteConfig()
                 owner.loadSplashAdIfExisted()
                 owner.fetchAdvertisement()
@@ -114,6 +121,7 @@ final class SplashViewModel: BaseViewModel {
         input.retryLoad
             .withUnretained(self)
             .sink { (owner: SplashViewModel, _) in
+                owner.dependency.bottomNavigationLoader.load()
                 owner.fetchRemoteConfig()
                 owner.loadSplashAdIfExisted()
                 owner.fetchAdvertisement()
@@ -202,6 +210,7 @@ final class SplashViewModel: BaseViewModel {
                 dependency.preference.userId = user.userId
                 // 토큰 검증이 끝나면 즉시 메인으로 진입시킨다.
                 // 푸시 토큰 갱신은 앱 진입과 무관하므로 진입을 막지 않도록 비차단으로 처리한다.
+                await dependency.bottomNavigationLoader.waitUntilLoaded(timeout: dependency.bottomNavigationTimeout)
                 output.route.send(.goToMain)
                 refreshPushToken()
 

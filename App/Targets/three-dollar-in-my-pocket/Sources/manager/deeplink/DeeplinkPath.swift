@@ -4,6 +4,7 @@ enum DeeplinkPath: String {
     case home
     case medal
     case community
+    case tab
     case pollDetail
     case postList
     case browser

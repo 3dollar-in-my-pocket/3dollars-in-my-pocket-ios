@@ -12,6 +12,7 @@ enum ScreenApi {
         input: FetchHomeCurationCarouselCardsInput
     )
     case fetchHomeNewsSection(newsTabId: String)
+    case getBottomNavigation
 }
 
 extension ScreenApi: RequestType {
@@ -26,6 +27,8 @@ extension ScreenApi: RequestType {
         case .fetchHomeCurationCarouselCards(_, _, let input):
             return input
         case .fetchHomeNewsSection:
+            return nil
+        case .getBottomNavigation:
             return nil
         }
     }
@@ -42,6 +45,8 @@ extension ScreenApi: RequestType {
             return .get
         case .fetchHomeNewsSection:
             return .get
+        case .getBottomNavigation:
+            return .get
         }
     }
 
@@ -56,6 +61,8 @@ extension ScreenApi: RequestType {
         case .fetchHomeCurationCarouselCards:
             return .location
         case .fetchHomeNewsSection:
+            return .json
+        case .getBottomNavigation:
             return .json
         }
     }
@@ -72,6 +79,8 @@ extension ScreenApi: RequestType {
             return "/api/v1/screen/home/section/curation/\(curationTabId)/carousel/\(carouselId)/cards"
         case .fetchHomeNewsSection(let newsTabId):
             return "/api/v1/screen/home/section/news/\(newsTabId)"
+        case .getBottomNavigation:
+            return "/api/v1/screen/bottom-navigation"
         }
     }
 }
