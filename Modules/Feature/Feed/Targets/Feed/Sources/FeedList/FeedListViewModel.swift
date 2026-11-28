@@ -9,22 +9,33 @@ import Log
 
 extension FeedListViewModel {
     struct Input {
-        let load = PassthroughSubject<LoadArea, Never>()
+        let load = PassthroughSubject<LoadRequest, Never>()
         let retry = PassthroughSubject<Void, Never>()
         let willDisplayCell = PassthroughSubject<Int, Never>()
-        let didTapFeed = PassthroughSubject<FeedResponse, Never>()
+        let willDisplayCard = PassthroughSubject<String, Never>()
+        let didTapCard = PassthroughSubject<String, Never>()
+        let didTapImage = PassthroughSubject<ImageTap, Never>()
+        let didTapAdmob = PassthroughSubject<String, Never>()
     }
 
-    struct LoadArea {
+    struct LoadRequest: Equatable {
+        let newsTabId: String
         let latitude: Double
         let longitude: Double
         let maxDistanceM: Double?
+    }
+
+    struct ImageTap {
+        let cardId: String
+        let blockIndex: Int
+        let imageIndex: Int
     }
 
     struct Output {
         let screenName: ScreenName = .feedList
         let datasource = CurrentValueSubject<[FeedListSection], Never>([])
         let scrollToTop = PassthroughSubject<Void, Never>()
+        let sectionImpressionLog = PassthroughSubject<SDImpressionLog, Never>()
         let route = PassthroughSubject<Route, Never>()
     }
 
@@ -35,25 +46,23 @@ extension FeedListViewModel {
     }
 
     struct State {
-        var cursor: CursorString?
-        var feeds: [FeedResponse] = []
-        var mapLatitude: Double?
-        var mapLongitude: Double?
-        var maxDistanceM: Double?
-        var advertisement: AdvertisementResponse?
-        var hasFetchedAdvertisement = false
+        var request: LoadRequest?
+        var header: SDHeader?
+        var items: [HomeNewsItem] = []
+        var cursor = HomeNewsCursor()
         var contentState: ContentState = .loading
         var isLoadingMore = false
+        var impressedCardIds: Set<String> = []
     }
 
     enum Route {
         case deepLink(SDLink)
+        case presentPhotoViewer(imageUrls: [String], selectedIndex: Int)
     }
 }
 
 public final class FeedListViewModel: BaseViewModel {
     static let skeletonCount = 3
-    static let advertisementIndex = 1
 
     let input = Input()
     let output = Output()
@@ -70,11 +79,8 @@ public final class FeedListViewModel: BaseViewModel {
     public override func bind() {
         input.load
             .withUnretained(self)
-            .sink { (owner: FeedListViewModel, location) in
-                owner.state.mapLatitude = location.latitude
-                owner.state.mapLongitude = location.longitude
-                owner.state.maxDistanceM = location.maxDistanceM
-                owner.fetchAdvertisementIfNeeded()
+            .sink { (owner: FeedListViewModel, request: LoadRequest) in
+                owner.state.request = request
                 owner.loadFirstPage()
                 owner.output.scrollToTop.send(())
             }
@@ -95,45 +101,60 @@ public final class FeedListViewModel: BaseViewModel {
             }
             .store(in: &cancellables)
 
-        input.didTapFeed
+        input.willDisplayCard
             .withUnretained(self)
-            .sink { (owner: FeedListViewModel, feed: FeedResponse) in
-                owner.output.route.send(.deepLink(feed.link))
+            .sink { (owner: FeedListViewModel, cardId: String) in
+                owner.sendImpressionLogIfNeeded(cardId: cardId)
+            }
+            .store(in: &cancellables)
+
+        input.didTapCard
+            .withUnretained(self)
+            .sink { (owner: FeedListViewModel, cardId: String) in
+                owner.handleCardTap(cardId: cardId)
+            }
+            .store(in: &cancellables)
+
+        input.didTapImage
+            .withUnretained(self)
+            .sink { (owner: FeedListViewModel, tap: ImageTap) in
+                owner.handleImageTap(tap)
+            }
+            .store(in: &cancellables)
+
+        input.didTapAdmob
+            .withUnretained(self)
+            .sink { (owner: FeedListViewModel, cardId: String) in
+                guard case .admobCard(let admob) = owner.item(cardId: cardId) else { return }
+                owner.dependency.logManager.sendEvent(event: ClickEvent(clickLog: admob.clickLog))
             }
             .store(in: &cancellables)
     }
 
-    private func fetchAdvertisementIfNeeded() {
-        guard state.hasFetchedAdvertisement.isNot else { return }
-        state.hasFetchedAdvertisement = true
-
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            let response = try? await dependency.advertisementRepository.fetchAdvertisements(input: .init(position: .localNewsFeed)).get()
-            state.advertisement = response?.advertisements.first
-            refreshDatasource()
-        }
-    }
-
     private func loadFirstPage() {
-        state.cursor = nil
-        state.feeds = []
+        guard let request = state.request else { return }
+        state.items = []
+        state.cursor = HomeNewsCursor()
+        state.impressedCardIds = []
         state.isLoadingMore = false
         state.contentState = .loading
         refreshDatasource()
 
-        let input = makeFetchInput(cursor: nil)
         loadTask?.cancel()
         loadTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            let result = await dependency.feedRepository.fetchFeed(input: input)
+            let result = await fetchSection(request: request, cursor: nil)
             guard Task.isCancelled.isNot else { return }
 
             switch result {
             case .success(let response):
+                state.header = response.header ?? state.header
+                state.items = uniqueItems(response.items)
                 state.cursor = response.cursor
-                state.feeds = response.contents
                 state.contentState = .loaded
+                if let impressionLog = response.impressionLog {
+                    output.sectionImpressionLog.send(impressionLog)
+                }
             case .failure:
                 state.contentState = .failed
             }
@@ -142,48 +163,60 @@ public final class FeedListViewModel: BaseViewModel {
     }
 
     private func loadNextPage() {
+        guard let request = state.request else { return }
         state.isLoadingMore = true
-        let input = makeFetchInput(cursor: state.cursor?.nextCursor)
+        let cursor = state.cursor.nextCursor
 
         loadTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            let result = await dependency.feedRepository.fetchFeed(input: input)
+            let result = await fetchSection(request: request, cursor: cursor)
             guard Task.isCancelled.isNot else { return }
             state.isLoadingMore = false
 
             guard case .success(let response) = result else { return }
-            let loadedIds = Set(state.feeds.map(\.feedId))
             state.cursor = response.cursor
-            state.feeds.append(contentsOf: response.contents.filter { loadedIds.contains($0.feedId).isNot })
+            state.items = uniqueItems(state.items + response.items)
             refreshDatasource()
         }
     }
 
-    private func makeFetchInput(cursor: String?) -> FetchFeedInput {
-        return FetchFeedInput(
-            cursor: cursor,
-            mapLatitude: state.mapLatitude,
-            mapLongitude: state.mapLongitude,
-            maxDistanceM: state.maxDistanceM
+    private func fetchSection(request: LoadRequest, cursor: String?) async -> Result<HomeNewsSectionResponse, Error> {
+        let input = FetchHomeNewsSectionInput(
+            mapLatitude: request.latitude,
+            mapLongitude: request.longitude,
+            maxDistanceM: request.maxDistanceM,
+            cursor: cursor
         )
+        return await dependency.screenRepository.fetchHomeNewsSection(newsTabId: request.newsTabId, input: input)
+    }
+
+    private func uniqueItems(_ items: [HomeNewsItem]) -> [HomeNewsItem] {
+        var seenIds = Set<String>()
+        return items.filter { seenIds.insert($0.cardId).inserted }
     }
 
     private func refreshDatasource() {
-        var contentItems: [FeedListSectionItem]
+        var items: [FeedListSectionItem] = state.header.map { [.header($0)] } ?? []
 
         switch state.contentState {
         case .loading:
-            contentItems = (0..<Self.skeletonCount).map { FeedListSectionItem.skeleton($0) }
+            items += (0..<Self.skeletonCount).map { FeedListSectionItem.skeleton($0) }
         case .failed:
-            contentItems = [.error]
-        case .loaded where state.feeds.isEmpty:
-            contentItems = [.empty]
+            items.append(.error)
+        case .loaded where state.items.isEmpty:
+            items.append(.empty)
         case .loaded:
-            contentItems = state.feeds.map { FeedListSectionItem.feed($0) }
+            items += state.items.map { item in
+                switch item {
+                case .contentCard(let card):
+                    return .contentCard(card)
+                case .admobCard(let admob):
+                    return .admobCard(admob)
+                }
+            }
         }
 
-        contentItems.insert(.advertisement(state.advertisement), at: min(Self.advertisementIndex, contentItems.count))
-        output.datasource.send([.init(items: [.header] + contentItems)])
+        output.datasource.send([.init(items: items)])
     }
 
     private func canLoadMore(index: Int) -> Bool {
@@ -191,7 +224,34 @@ public final class FeedListViewModel: BaseViewModel {
         return index >= itemCount - 1
         && state.contentState == .loaded
         && state.isLoadingMore.isNot
-        && state.cursor?.hasMore == true
-        && state.cursor?.nextCursor != nil
+        && state.cursor.hasMore
+        && state.cursor.nextCursor != nil
+    }
+
+    private func item(cardId: String) -> HomeNewsItem? {
+        state.items.first { $0.cardId == cardId }
+    }
+
+    private func handleCardTap(cardId: String) {
+        guard case .contentCard(let card) = item(cardId: cardId) else { return }
+        if let clickLog = card.clickLog {
+            dependency.logManager.sendEvent(event: ClickEvent(clickLog: clickLog))
+        }
+        if let link = card.link {
+            output.route.send(.deepLink(link))
+        }
+    }
+
+    private func handleImageTap(_ tap: ImageTap) {
+        guard case .contentCard(let card) = item(cardId: tap.cardId),
+              let block = card.bodyBlocks[safe: tap.blockIndex],
+              block.images.indices.contains(tap.imageIndex) else { return }
+        output.route.send(.presentPhotoViewer(imageUrls: block.images.map(\.url), selectedIndex: tap.imageIndex))
+    }
+
+    private func sendImpressionLogIfNeeded(cardId: String) {
+        guard let impressionLog = item(cardId: cardId)?.impressionLog,
+              state.impressedCardIds.insert(cardId).inserted else { return }
+        dependency.logManager.sendEvent(event: ImpressionEvent(impressionLog: impressionLog))
     }
 }

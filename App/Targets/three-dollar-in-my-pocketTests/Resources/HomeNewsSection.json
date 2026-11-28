@@ -1,10 +1,419 @@
 {
+  "header": {
+    "title": {
+      "text": "<span style=\"font-size:20px; font-weight:700; color:#0F0F0F\">우리 동네 가게 소식</span>",
+      "isHtml": true,
+      "fontColor": "#0F0F0F"
+    },
+    "subTitle": {
+      "text": "<span style=\"font-size:14px; font-weight:400; color:#787878\">내 주변 가게들의 소식을 확인해요.</span>",
+      "isHtml": true,
+      "fontColor": "#787878"
+    }
+  },
+  "items": [
+    {
+      "type": "ADMOB_CARD",
+      "cardId": "ADMOB:145b038d-74f8-4cb6-b18e-1607d52ed712",
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "admob",
+        "extraParameters": {
+          "tabId": "NEWS",
+          "position": "1"
+        },
+        "eventType": "CLICK"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "admob",
+        "extraParameters": {
+          "tabId": "NEWS",
+          "position": "1"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "height": 50,
+      "adUnitId": "ca-app-pub-5385646520024289/9458339538"
+    },
+    {
+      "type": "CONTENT_CARD",
+      "cardId": "NEWS:6b03d032fdb9ab52247e1939",
+      "header": {
+        "badge": {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:700; color:#FFFFFF\">🙌 지금 뜨는 가게!</span>",
+            "isHtml": true,
+            "fontColor": "#FFFFFF"
+          },
+          "style": {
+            "backgroundColor": "#0047AB"
+          }
+        },
+        "trailingText": {
+          "text": "<span style=\"font-size:12px; font-weight:400; color:#B7B7B7\">4일 전</span>",
+          "isHtml": true,
+          "fontColor": "#B7B7B7"
+        },
+        "summary": {
+          "leadingImage": {
+            "url": "https://storage.threedollars.co.kr/menu/icon_menu_3x_cake.png?version=1",
+            "style": {
+              "width": 60.0,
+              "height": 60.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "overline": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">#카페/디저트 #와플 #문어빵 #땅콩빵 #계란빵 #붕어빵 #분식 #군고구마 #호떡 #국화빵 #꼬치 #전기통닭 #달고나</span>",
+            "isHtml": true,
+            "fontColor": "#B7B7B7"
+          },
+          "title": {
+            "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">ㅗㅎㅎㅎ</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metadata": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">1개</span>",
+                "isHtml": true,
+                "fontColor": "#B7B7B7"
+              },
+              "contentSpacing": 2.0
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/star_solid.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">5.0</span>",
+                "isHtml": true,
+                "fontColor": "#B7B7B7"
+              },
+              "contentSpacing": 2.0
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">1.0km</span>",
+                "isHtml": true,
+                "fontColor": "#B7B7B7"
+              },
+              "contentSpacing": 2.0
+            }
+          ]
+        }
+      },
+      "bodyBlocks": [
+        {
+          "images": [],
+          "text": {
+            "text": "<span style=\"font-size:14px; font-weight:400; color:#2E2E2E\">💬 지금 가장 핫한 이곳, 최근 </span><span style=\"font-size:14px; font-weight:700; color:#2E2E2E\">3명</span><span style=\"font-size:14px; font-weight:400; color:#2E2E2E\">이 다녀갔어요!</span>",
+            "isHtml": true,
+            "fontColor": "#2E2E2E"
+          },
+          "style": {
+            "backgroundColor": "#F4F4F4"
+          }
+        }
+      ],
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/store?storeId=530045&storeType=USER_STORE&view=collapsed"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "home_news_card",
+        "extraParameters": {
+          "tabId": "NEWS",
+          "position": "2",
+          "feed_id": "6b03d032fdb9ab52247e1939",
+          "feed_category": "STORE_VISIT_COUNT_REACHED",
+          "store_id": "530045"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "home_news_card",
+        "extraParameters": {
+          "tabId": "NEWS",
+          "position": "2",
+          "feed_id": "6b03d032fdb9ab52247e1939",
+          "feed_category": "STORE_VISIT_COUNT_REACHED",
+          "store_id": "530045"
+        },
+        "eventType": "CLICK"
+      }
+    },
+    {
+      "type": "CONTENT_CARD",
+      "cardId": "NEWS:6af4a1f27af92de3599ff76b",
+      "header": {
+        "badge": {
+          "text": {
+            "text": "<span style=\"font-size:12px; font-weight:700; color:#FFFFFF\">❤️ 새로운 리뷰가 올라왔어요!</span>",
+            "isHtml": true,
+            "fontColor": "#FFFFFF"
+          },
+          "style": {
+            "backgroundColor": "#FF8181"
+          }
+        },
+        "trailingText": {
+          "text": "<span style=\"font-size:12px; font-weight:400; color:#B7B7B7\">15일 전</span>",
+          "isHtml": true,
+          "fontColor": "#B7B7B7"
+        },
+        "summary": {
+          "leadingImage": {
+            "url": "https://storage.threedollars.co.kr/menu/wakbbu_salt_bread_3x.png",
+            "style": {
+              "width": 60.0,
+              "height": 60.0,
+              "dimmed": false,
+              "alpha": 1.0
+            }
+          },
+          "overline": {
+            "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">#왁뿌 소금빵 #소금빵 #문어빵</span>",
+            "isHtml": true,
+            "fontColor": "#B7B7B7"
+          },
+          "title": {
+            "text": "<span style=\"font-size:16px; font-weight:700; color:#0F0F0F\">뽀미네 두쫀쿠 붕어빵</span>",
+            "isHtml": true,
+            "fontColor": "#0F0F0F"
+          },
+          "metadata": [
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/review.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">507개</span>",
+                "isHtml": true,
+                "fontColor": "#B7B7B7"
+              },
+              "contentSpacing": 2.0
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/star_solid.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">4.6</span>",
+                "isHtml": true,
+                "fontColor": "#B7B7B7"
+              },
+              "contentSpacing": 2.0
+            },
+            {
+              "image": {
+                "url": "https://storage.threedollars.co.kr/app/location_soild.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              "imageAlignment": "START",
+              "text": {
+                "text": "<span style=\"font-size:12px; font-weight:500; color:#B7B7B7\">907m</span>",
+                "isHtml": true,
+                "fontColor": "#B7B7B7"
+              },
+              "contentSpacing": 2.0
+            }
+          ]
+        }
+      },
+      "bodyBlocks": [
+        {
+          "heading": {
+            "leadingImage": {
+              "url": "https://storage.threedollars.co.kr/medal/v1-challenger-default.png?version=1",
+              "style": {
+                "width": 16.0,
+                "height": 16.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            "title": {
+              "text": "<span style=\"font-size:12px; font-weight:700; color:#2E2E2E\">뽀미</span>",
+              "isHtml": true,
+              "fontColor": "#2E2E2E"
+            },
+            "trailingImages": [
+              {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              },
+              {
+                "url": "https://storage.threedollars.co.kr/app/start_pink.png",
+                "style": {
+                  "width": 12.0,
+                  "height": 12.0,
+                  "dimmed": false,
+                  "alpha": 1.0
+                }
+              }
+            ]
+          },
+          "images": [
+            {
+              "url": "https://storage.dev.threedollars.co.kr/store-review/v1/v1-96652db4-6cab-4f7b-91e4-6fb510018185.jpeg?width=360&height=360&fit=outside",
+              "style": {
+                "width": 124.0,
+                "height": 124.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            },
+            {
+              "url": "https://storage.dev.threedollars.co.kr/store-review/v1/v1-8238e194-2337-44fb-9dd1-ab1ce5914e4d.jpeg?width=360&height=360&fit=outside",
+              "style": {
+                "width": 124.0,
+                "height": 124.0,
+                "dimmed": false,
+                "alpha": 1.0
+              }
+            }
+          ],
+          "text": {
+            "text": "<span style=\"font-size:14px; font-weight:400; color:#2E2E2E\">ww</span>",
+            "isHtml": true,
+            "fontColor": "#2E2E2E"
+          },
+          "style": {
+            "backgroundColor": "#FAFAFA"
+          }
+        }
+      ],
+      "link": {
+        "type": "APP_SCHEME",
+        "link": "/reviewList?storeId=120009&storeType=BOSS_STORE"
+      },
+      "impressionLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "home_news_card",
+        "extraParameters": {
+          "tabId": "NEWS",
+          "position": "5",
+          "feed_id": "6af4a1f27af92de3599ff76b",
+          "feed_category": "NEW_REVIEW",
+          "store_id": "120009"
+        },
+        "eventType": "IMPRESSION"
+      },
+      "clickLog": {
+        "screenName": "home",
+        "objectType": "card",
+        "objectId": "home_news_card",
+        "extraParameters": {
+          "tabId": "NEWS",
+          "position": "5",
+          "feed_id": "6af4a1f27af92de3599ff76b",
+          "feed_category": "NEW_REVIEW",
+          "store_id": "120009"
+        },
+        "eventType": "CLICK"
+      }
+    }
+  ],
+  "cursor": {
+    "nextCursor": "R0VYRE9PSlRHNDJUR01aWEhFM1RJTkNGR0VaRFVPUldNRlNXQ09CUkdJWldFTjNHR1laRE9OTEdHUVpURU9CVU1ZWlRRPT09",
+    "hasMore": true
+  },
   "impressionLog": {
     "screenName": "home",
     "objectType": "section",
     "objectId": "home_news",
     "extraParameters": {
-      "tabId": "NEWS"
+      "tabId": "NEWS",
+      "ad_card_count": "1"
     },
     "eventType": "IMPRESSION"
   }

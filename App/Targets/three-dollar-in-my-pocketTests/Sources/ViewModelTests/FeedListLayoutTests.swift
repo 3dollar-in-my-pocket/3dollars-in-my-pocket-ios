@@ -1,6 +1,7 @@
 import UIKit
 import XCTest
 
+import Model
 @testable import Feed
 
 @MainActor
@@ -12,13 +13,14 @@ final class FeedListLayoutTests: XCTestCase {
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 402, height: 874))
         window.rootViewController = viewController
         window.makeKeyAndVisible()
-        viewModel.output.datasource.send([.init(items: [.header, .skeleton(0)])])
+        let header = try XCTUnwrap(FixtureLoader.decode(HomeNewsSectionResponse.self, from: "HomeNewsSection").header)
+        viewModel.output.datasource.send([.init(items: [.header(header), .skeleton(0)])])
         try await Task.sleep(nanoseconds: 100_000_000)
         let collectionView = try XCTUnwrap(viewController.scrollView as? UICollectionView)
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 34, right: 0)
 
         // When
-        viewModel.output.datasource.send([.init(items: [.header, .empty])])
+        viewModel.output.datasource.send([.init(items: [.header(header), .empty])])
         try await Task.sleep(nanoseconds: 100_000_000)
         collectionView.layoutIfNeeded()
 

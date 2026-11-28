@@ -83,7 +83,7 @@ extension FeedDemoViewController: UICollectionViewDelegateFlowLayout {
         case .feedList:
             let viewController = FeedListViewController(viewModel: FeedListViewModel())
             present(viewController, animated: true)
-            viewController.load(mapLatitude: 37.287934, mapLongitude: 127.056573, maxDistanceM: nil)
+            viewController.load(newsTabId: "NEWS", mapLatitude: 37.287934, mapLongitude: 127.056573, maxDistanceM: nil)
         }
     }
 }

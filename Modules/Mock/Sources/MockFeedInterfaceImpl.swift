@@ -1,6 +1,8 @@
 import UIKit
+import Combine
 
 import FeedInterface
+import Model
 import DependencyInjection
 
 public final class MockFeedInterfaceImpl: FeedInterface {
@@ -17,8 +19,9 @@ public final class MockFeedInterfaceImpl: FeedInterface {
 
 final class MockLocalNewsViewController: UIViewController, LocalNewsViewControllerType {
     let scrollView = UIScrollView()
+    let sectionImpressionLog = Empty<SDImpressionLog, Never>().eraseToAnyPublisher()
 
-    func load(mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?) { }
+    func load(newsTabId: String, mapLatitude: Double, mapLongitude: Double, maxDistanceM: Double?) { }
 
     func scrollToTop() { }
 }

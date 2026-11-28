@@ -14,7 +14,10 @@ public protocol ScreenRepository {
         carouselId: String,
         input: FetchHomeCurationCarouselCardsInput
     ) async -> Result<HomeCurationCarouselCardsResponse, Error>
-    func fetchHomeNewsSection(newsTabId: String) async -> Result<HomeNewsSectionResponse, Error>
+    func fetchHomeNewsSection(
+        newsTabId: String,
+        input: FetchHomeNewsSectionInput
+    ) async -> Result<HomeNewsSectionResponse, Error>
     func getBottomNavigation() async -> Result<BottomNavigationResponse, Error>
 }
 
@@ -52,8 +55,11 @@ public final class ScreenRepositoryImpl: ScreenRepository {
         return await NetworkManager.shared.request(requestType: request)
     }
 
-    public func fetchHomeNewsSection(newsTabId: String) async -> Result<HomeNewsSectionResponse, Error> {
-        let request = ScreenApi.fetchHomeNewsSection(newsTabId: newsTabId)
+    public func fetchHomeNewsSection(
+        newsTabId: String,
+        input: FetchHomeNewsSectionInput
+    ) async -> Result<HomeNewsSectionResponse, Error> {
+        let request = ScreenApi.fetchHomeNewsSection(newsTabId: newsTabId, input: input)
         return await NetworkManager.shared.request(requestType: request)
     }
 
